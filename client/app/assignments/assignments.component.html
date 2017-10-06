@@ -1,0 +1,50 @@
+<div class="card">
+  <h4 class="card-header">Assignments</h4>
+  <div class="card-block">
+
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Login</th>
+          <th>Grade</th>
+          <th>Location</th>
+          <th>Pool</th>
+        </tr>
+      </thead>
+      <tr *ngFor="let resource of resources">
+        <td>{{ resource.name }}</td>
+        <td>{{ resource.login }}</td>
+        <td>{{ resource.grade }}</td>
+        <td>{{ resource.location }}</td>
+        <td>{{ resource.pool }}</td>
+      </tr>
+    </table>
+
+
+    <form class="form-inline" [formGroup]="addResourceForm" (ngSubmit)="addResource()" style="display:inline">
+      <div class="form-group">
+          <input class="form-control" type="text" name="name" formControlName="name" placeholder="Name" required>
+      </div>
+      <div class="form-group">
+        <input class="form-control" type="text" name="login" formControlName="login" placeholder="Login" required>
+      </div>
+      <div class="form-group">
+        <input class="form-control" type="text" name="grade" formControlName="grade" placeholder="Grade (e.g. T2)" required>
+      </div>
+      <div class="form-group">
+        <select class="form-control" name="location" formControlName="location" required>
+          <option value=""></option>
+          <option [value]="location" *ngFor="let location of locations">{{ location }}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <select class="form-control" name="pool" formControlName="pool" required>
+          <option value=""></option>
+          <option [value]="pool" *ngFor="let pool of pools">{{ pool }}</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" type="submit" [disabled]="!addResourceForm.valid"><i class="fa fa-floppy-o"></i> Save</button>
+    </form>
+  </div>
+</div>
