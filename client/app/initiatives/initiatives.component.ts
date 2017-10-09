@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Http } from '@angular/http';
-import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
-import { ResourceService } from '../services/resource.service';
+import { InitiativeService } from '../services/initiative.service';
 import { ToastComponent } from '../shared/toast/toast.component';
 
 @Component({
@@ -12,80 +11,76 @@ import { ToastComponent } from '../shared/toast/toast.component';
 })
 export class InitiativesComponent implements OnInit {
 
-  resource = {};
-  resources = [];
+  initiative = {};
+  initiatives = [];
   isLoading = true;
   isEditing = false;
 
-  addCatForm: FormGroup;
-  name = new FormControl('', Validators.required);
-  age = new FormControl('', Validators.required);
-  weight = new FormControl('', Validators.required);
+  addInitiativeForm = new FormGroup({
+    name: new FormControl('', Validators.required),
+    start: new FormControl(''),
+    end: new FormControl('')
+  });
 
-  constructor(private resourceService: ResourceService,
-              private formBuilder: FormBuilder,
-              private http: Http,
-              public toast: ToastComponent) { }
+  constructor(
+    private initiativeService: InitiativeService,
+    public toast: ToastComponent
+  ) { }
 
   ngOnInit() {
-    this.getCats();
-    this.addCatForm = this.formBuilder.group({
-      name: this.name,
-      age: this.age,
-      weight: this.weight
-    });
+    this.getInitiatives();
   }
 
-  getCats() {
-    this.resourceService.getAll().subscribe(
-      data => this.resources = data,
+  getInitiatives() {
+    this.initiativeService.getAll().subscribe(
+      data => this.initiatives = data,
       error => console.log(error),
       () => this.isLoading = false
     );
   }
 
-  addCat() {
-    this.resourceService.add(this.addCatForm.value).subscribe(
+  addInitiative() {
+    this.initiativeService.add(this.addInitiativeForm.value).subscribe(
       res => {
-        const newCat = res.json();
-        this.resources.push(newCat);
-        this.addCatForm.reset();
+        const newInitiative = res.json();
+        this.initiatives.push(newInitiative);
+        this.addInitiativeForm.reset();
         this.toast.setMessage('item added successfully.', 'success');
       },
       error => console.log(error)
     );
   }
 
-  enableEditing(resource) {
+  enableEditing(initiative) {
     this.isEditing = true;
-    this.resource = resource;
+    this.initiative = initiative;
   }
 
   cancelEditing() {
     this.isEditing = false;
-    this.resource = {};
+    this.initiative = {};
     this.toast.setMessage('item editing cancelled.', 'warning');
-    // reload the cats to reset the editing
-    this.getCats();
+    // reload the Initiatives to reset the editing
+    this.getInitiatives();
   }
 
-  editCat(resource) {
-    this.resourceService.edit(resource).subscribe(
+  editInitiative(initiative) {
+    this.initiativeService.edit(initiative).subscribe(
       res => {
         this.isEditing = false;
-        this.resource = resource;
+        this.initiative = initiative;
         this.toast.setMessage('item edited successfully.', 'success');
       },
       error => console.log(error)
     );
   }
 
-  deleteCat(cat) {
+  deleteInitiative(initiative) {
     if (window.confirm('Are you sure you want to permanently delete this item?')) {
-      this.resourceService.delete(cat).subscribe(
+      this.initiativeService.delete(initiative).subscribe(
         res => {
-          const pos = this.resources.map(elem => elem._id).indexOf(cat._id);
-          this.resources.splice(pos, 1);
+          const pos = this.initiatives.map(elem => elem._id).indexOf(initiative._id);
+          this.initiatives.splice(pos, 1);
           this.toast.setMessage('item deleted successfully.', 'success');
         },
         error => console.log(error)

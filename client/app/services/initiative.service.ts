@@ -3,10 +3,10 @@ import { Http } from '@angular/http';
 import { BaseService } from './base.service';
 
 @Injectable()
-export class ResourceService extends BaseService {
+export class InitiativeService extends BaseService {
 
   constructor(http: Http) {
-    super('resource', http);
+    super('initiative', http);
   }
 
 }

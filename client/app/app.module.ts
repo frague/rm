@@ -2,7 +2,9 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 import { RoutingModule } from './routing.module';
 import { SharedModule } from './shared/shared.module';
+import { AssignmentService } from './services/assignment.service';
 import { ResourceService } from './services/resource.service';
+import { InitiativeService } from './services/initiative.service';
 import { UserService } from './services/user.service';
 import { AuthService } from './services/auth.service';
 import { AuthGuardLogin } from './services/auth-guard-login.service';
@@ -10,6 +12,7 @@ import { AuthGuardAdmin } from './services/auth-guard-admin.service';
 import { AppComponent } from './app.component';
 import { InitiativesComponent } from './initiatives/initiatives.component';
 import { AssignmentsComponent } from './assignments/assignments.component';
+import { PeopleComponent } from './people/people.component';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { LogoutComponent } from './logout/logout.component';
@@ -22,6 +25,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
     AppComponent,
     InitiativesComponent,
     AssignmentsComponent,
+    PeopleComponent,
     RegisterComponent,
     LoginComponent,
     LogoutComponent,
@@ -38,6 +42,8 @@ import { NotFoundComponent } from './not-found/not-found.component';
     AuthGuardLogin,
     AuthGuardAdmin,
     ResourceService,
+    InitiativeService,
+    AssignmentService,
     UserService
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

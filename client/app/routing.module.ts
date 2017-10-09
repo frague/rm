@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
 import { InitiativesComponent } from './initiatives/initiatives.component';
 import { AssignmentsComponent } from './assignments/assignments.component';
+import { PeopleComponent } from './people/people.component';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { LogoutComponent } from './logout/logout.component';
@@ -15,6 +16,7 @@ import { AuthGuardAdmin } from './services/auth-guard-admin.service';
 
 const routes: Routes = [
   { path: '', component: AssignmentsComponent },
+  { path: 'people', component: PeopleComponent },
   { path: 'initiatives', component: InitiativesComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },

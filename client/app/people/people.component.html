@@ -1,17 +1,23 @@
 <div class="card">
-  <h4 class="card-header">Assignments</h4>
+  <h4 class="card-header">People</h4>
   <div class="card-block">
 
     <table>
       <thead>
         <tr>
-          <th>Resource</th>
-          <th>Assignments</th>
+          <th>Name</th>
+          <th>Login</th>
+          <th>Grade</th>
+          <th>Location</th>
+          <th>Pool</th>
         </tr>
       </thead>
-      <tr *ngFor="let assignment of items">
-        <td>{{ assignment.resourceId }}</td>
-        <td>{{ assignment.initiativeId }}</td>
+      <tr *ngFor="let resource of items">
+        <td>{{ resource.name }}</td>
+        <td>{{ resource.login }}</td>
+        <td>{{ resource.grade }}</td>
+        <td>{{ resource.location }}</td>
+        <td>{{ resource.pool }}</td>
       </tr>
     </table>
 
