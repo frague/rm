@@ -1,49 +1,44 @@
-<div class="card">
-  <h4 class="card-header">Assignments</h4>
-  <div class="card-block">
+<div>
+  <h4>Assignments</h4>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Resource</th>
-          <th>Assignments</th>
-        </tr>
-      </thead>
-      <tr *ngFor="let assignment of items">
-        <td>{{ assignment.name }}</td>
-        <td>{{ assignment.assignments.length }}</td>
-      </tr>
-    </table>
-
-
-    <form class="form-inline" [formGroup]="form" (ngSubmit)="add(form.value)" style="display:inline">
-      <div class="form-group">
-        <select class="form-control" name="resource" formControlName="resourceId" required>
-          <option></option>
-          <option *ngFor="let resource of resources" [value]="resource._id">{{ resource.name }}</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <select class="form-control" name="initiative" formControlName="initiativeId" required>
-          <option></option>
-          <option *ngFor="let initiative of initiatives" [value]="initiative._id">{{ initiative.name }}</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <input class="form-control" type="date" name="start" formControlName="start" placeholder="Start date">
-      </div>
-      <div class="form-group">
-        <input class="form-control" type="date" name="end" formControlName="end" placeholder="End date">
-      </div>
-      <div class="form-group">
-        <label>
-          <input class="form-control" type="checkbox" name="isBillable" formControlName="isBillable"> Billable?
-        </label>
-      </div>
-      <div class="form-group">
-        <input class="form-control" type="number" name="involvement" formControlName="involvement" placeholder="Involvement" max="100" min="0">
-      </div>
-      <button class="btn btn-primary" type="submit" [disabled]="!form.valid"><i class="fa fa-floppy-o"></i> Save</button>
-    </form>
+  <div class="assignments row">
+    <div class="col-md-2 lines">
+      <div *ngFor="let assignment of items">{{ assignment.name }}</div>
+    </div>
+    <div class="col-md-10 lines">
+      <div *ngFor="let assignment of items">{{ assignment.assignments.length }}</div>
+    </div>
   </div>
+
+
+  <form class="form-inline" [formGroup]="form" (ngSubmit)="add(form.value)" style="display:inline">
+    <div class="form-group">
+      <select class="form-control" name="resource" formControlName="resourceId" required>
+        <option></option>
+        <option *ngFor="let resource of resources" [value]="resource._id">{{ resource.name }}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <select class="form-control" name="initiative" formControlName="initiativeId" required>
+        <option></option>
+        <option *ngFor="let initiative of initiatives" [value]="initiative._id">{{ initiative.name }}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <input class="form-control" type="date" name="start" formControlName="start" placeholder="Start date">
+    </div>
+    <div class="form-group">
+      <input class="form-control" type="date" name="end" formControlName="end" placeholder="End date">
+    </div>
+    <div class="form-group">
+      <label>
+        <input class="form-control" type="checkbox" name="isBillable" formControlName="isBillable"> Billable?
+      </label>
+    </div>
+    <div class="form-group">
+      <input class="form-control" type="number" name="involvement" formControlName="involvement" placeholder="Involvement" max="100" min="0">
+    </div>
+    <button class="btn btn-primary" type="submit" [disabled]="!form.valid"><i class="fa fa-floppy-o"></i> Save</button>
+  </form>
+
 </div>

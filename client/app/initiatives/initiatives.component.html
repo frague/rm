@@ -2,51 +2,46 @@
 
 <app-toast [message]="toast.message"></app-toast>
 
-<div class="card" *ngIf="!isLoading">
-  <h4 class="card-header">Current initiatives ({{initiatives.length}})</h4>
-  <div class="card-block">
-    <table class="table table-bordered table-striped">
-      <thead class="thead-default">
-        <tr>
-          <th>Name</th>
-          <th>Start</th>
-          <th>End</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody *ngIf="initiatives.length === 0">
-        <tr>
-          <td colspan="4">There are no initiatives in the DB. Add a new initiative below.</td>
-        </tr>
-      </tbody>
-      <tbody>
-        <tr *ngFor="let initiative of initiatives">
-          <td>{{initiative.name}}</td>
-          <td>{{initiative.start}}</td>
-          <td>{{initiative.end}}</td>
-          <td>
-            <button class="btn btn-sm btn-warning" (click)="enableEditing(initiative)"><i class="fa fa-pencil"></i> Edit</button> <button class="btn btn-sm btn-danger" (click)="deleteInitiative(initiative)"><i class="fa fa-trash"></i> Delete</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
+<div>
+  <h4>Current initiatives ({{items.length}})</h4>
+  <table class="table table-bordered table-striped">
+    <thead class="thead-default">
+      <tr>
+        <th>Name</th>
+        <th>Start</th>
+        <th>End</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody *ngIf="items.length === 0">
+      <tr>
+        <td colspan="4">There are no initiatives in the DB. Add a new initiative below.</td>
+      </tr>
+    </tbody>
+    <tbody>
+      <tr *ngFor="let initiative of items">
+        <td>{{initiative.name}}</td>
+        <td>{{initiative.start}}</td>
+        <td>{{initiative.end}}</td>
+        <td>
+          <button class="btn btn-sm btn-warning" (click)="enableEditing(initiative)"><i class="fa fa-pencil"></i> Edit</button> <button class="btn btn-sm btn-danger" (click)="delete(initiative)"><i class="fa fa-trash"></i> Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
-<div class="card" *ngIf="!isEditing">
-  <h4 class="card-header">Add new initiative</h4>
-  <div class="card-block">
-    <form class="form-inline" [formGroup]="addInitiativeForm" (ngSubmit)="addInitiative()" style="text-align:center">
-      <div class="form-group">
-          <input class="form-control" type="text" name="name" formControlName="name" placeholder="Name">
-      </div>
-      <div class="form-group">
-        <input class="form-control" type="date" name="start" formControlName="start" placeholder="Start date">
-      </div>
-      <div class="form-group">
-        <input class="form-control" type="date" name="end" formControlName="end" placeholder="End date">
-      </div>
-      <button class="btn btn-primary" type="submit" [disabled]="!addInitiativeForm.valid"><i class="fa fa-floppy-o"></i> Add</button>
-    </form>
-  </div>
+
+  <form class="form-inline" [formGroup]="form" (ngSubmit)="add(form.value)">
+    <div class="form-group">
+        <input class="form-control" type="text" name="name" formControlName="name" placeholder="Name">
+    </div>
+    <div class="form-group">
+      <input class="form-control" type="date" name="start" formControlName="start" placeholder="Start date">
+    </div>
+    <div class="form-group">
+      <input class="form-control" type="date" name="end" formControlName="end" placeholder="End date">
+    </div>
+    <button class="btn btn-primary" type="submit" [disabled]="!form.valid"><i class="fa fa-floppy-o"></i> Add</button>
+  </form>
+
 </div>

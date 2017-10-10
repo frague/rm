@@ -1,0 +1,15 @@
+.assignments {
+  max-height: 200px;
+  
+  .lines {
+    div {
+      height: 30px;
+      border-top: solid 1px #AAA;
+
+      &:first-child {
+        border-top: none;
+      }
+    }
+  }
+  
+}
