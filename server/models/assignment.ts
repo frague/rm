@@ -1,12 +1,15 @@
 import * as mongoose from 'mongoose';
 
+var idType = mongoose.Schema.Types.ObjectId;
+
 const assignmentSchema = new mongoose.Schema({
-  resourceId: String,
-  initiativeId: String,
+  resourceId: idType,
+  initiativeId: idType,
   start: Date,
   end: Date,
   isBillable: Boolean,
-  involvement: Number
+  involvement: Number,
+  comments: String
 });
 
 const Assignment = mongoose.model('Assignment', assignmentSchema);

@@ -10,33 +10,38 @@
         </tr>
       </thead>
       <tr *ngFor="let assignment of items">
-        <td>{{ assignment.resourceId }}</td>
-        <td>{{ assignment.initiativeId }}</td>
+        <td>{{ assignment.name }}</td>
+        <td>{{ assignment.assignments.length }}</td>
       </tr>
     </table>
 
 
     <form class="form-inline" [formGroup]="form" (ngSubmit)="add(form.value)" style="display:inline">
       <div class="form-group">
-          <input class="form-control" type="text" name="name" formControlName="name" placeholder="Name" required>
-      </div>
-      <div class="form-group">
-        <input class="form-control" type="text" name="login" formControlName="login" placeholder="Login" required>
-      </div>
-      <div class="form-group">
-        <input class="form-control" type="text" name="grade" formControlName="grade" placeholder="Grade (e.g. T2)" required>
-      </div>
-      <div class="form-group">
-        <select class="form-control" name="location" formControlName="location" required>
-          <option value=""></option>
-          <option [value]="location" *ngFor="let location of locations">{{ location }}</option>
+        <select class="form-control" name="resource" formControlName="resourceId" required>
+          <option></option>
+          <option *ngFor="let resource of resources" [value]="resource._id">{{ resource.name }}</option>
         </select>
       </div>
       <div class="form-group">
-        <select class="form-control" name="pool" formControlName="pool" required>
-          <option value=""></option>
-          <option [value]="pool" *ngFor="let pool of pools">{{ pool }}</option>
+        <select class="form-control" name="initiative" formControlName="initiativeId" required>
+          <option></option>
+          <option *ngFor="let initiative of initiatives" [value]="initiative._id">{{ initiative.name }}</option>
         </select>
+      </div>
+      <div class="form-group">
+        <input class="form-control" type="date" name="start" formControlName="start" placeholder="Start date">
+      </div>
+      <div class="form-group">
+        <input class="form-control" type="date" name="end" formControlName="end" placeholder="End date">
+      </div>
+      <div class="form-group">
+        <label>
+          <input class="form-control" type="checkbox" name="isBillable" formControlName="isBillable"> Billable?
+        </label>
+      </div>
+      <div class="form-group">
+        <input class="form-control" type="number" name="involvement" formControlName="involvement" placeholder="Involvement" max="100" min="0">
       </div>
       <button class="btn btn-primary" type="submit" [disabled]="!form.valid"><i class="fa fa-floppy-o"></i> Save</button>
     </form>

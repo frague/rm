@@ -15,29 +15,44 @@ import { ResourceService } from '../services/resource.service';
 })
 export class AssignmentsComponent extends BaseComponent implements OnInit {
 
-  resource = {};
   resources = [];
-  resourceService: ResourceService;
+  initiatives = [];
+  assignments = [];
+  assignment = {};
   isLoading = true;
-  locations = ['SAR', 'SPB', 'MP', 'KHR', 'LV'];
-  pools = ['ML', 'UI'];
 
   public form = new FormGroup({
-    name: new FormControl('', Validators.required),
-    login: new FormControl('', Validators.required),
-    grade: new FormControl('', Validators.required),
-    location: new FormControl('', Validators.required),
-    pool: new FormControl('', Validators.required)
+    resourceId: new FormControl('', Validators.required),
+    initiativeId: new FormControl('', Validators.required),
+    start: new FormControl('', Validators.required),
+    end: new FormControl('', Validators.required),
+    isBillable: new FormControl(''),
+    involvement: new FormControl('100', Validators.required),
+    comment: new FormControl('')
   });
 
   constructor(
-    resourceService: ResourceService,
+    assignmenService: AssignmentService,
+    private resourceService: ResourceService,
+    private initiativeService: InitiativeService,
     private toast: ToastComponent
   ) {
-    super(resourceService);
+    super(assignmenService);
   }
 
   ngOnInit() {
     this.getAll();
+    this.resourceService.getAll().subscribe(
+      data => this.resources = data,
+      error => console.log(error)
+    );
+    this.initiativeService.getAll().subscribe(
+      data => this.initiatives = data,
+      error => console.log(error)
+    );
+  }
+
+  getAll() {
+    return super.getAll();
   }
 }
