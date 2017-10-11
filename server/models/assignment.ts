@@ -9,7 +9,7 @@ const assignmentSchema = new mongoose.Schema({
   end: Date,
   isBillable: Boolean,
   involvement: Number,
-  comments: String
+  comment: String
 });
 
 const Assignment = mongoose.model('Assignment', assignmentSchema);

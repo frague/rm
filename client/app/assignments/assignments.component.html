@@ -10,10 +10,18 @@
     <div class="col-md-2 people lines">
       <div *ngFor="let assignee of items">{{ assignee.name }}</div>
     </div>
-    <div class="col-md-10 schedule lines">
-      <div [ngStyle]="getScheduleStyles()">
+    <div class="col-md-10 schedule">
+      <div [ngStyle]="getScheduleStyles()" class="lines">
+        <ol>
+          <li *ngFor="let week of weekTitles">{{ week }}</li>
+        </ol>
+
         <div *ngFor="let assignee of items">
-          <initiative [data]="showAssignment(assignment)" *ngFor="let assignment of assignee.assignments"></initiative>
+          <initiative 
+            *ngFor="let assignment of assignee.assignments" 
+            [data]="showAssignment(assignment)" 
+            (click)="enableEditing(cleanup(assignment))"
+          ></initiative>
         </div>
       </div>
     </div>
@@ -45,6 +53,9 @@
     </div>
     <div class="form-group">
       <input class="form-control" type="number" name="involvement" formControlName="involvement" placeholder="Involvement" max="100" min="0">
+    </div>
+    <div class="form-group">
+      <textarea class="form-control" name="comment" formControlName="comment" placeholder="Comments" rows="1"></textarea>
     </div>
     <button class="btn btn-primary" type="submit" [disabled]="!form.valid"><i class="fa fa-floppy-o"></i> Save</button>
     <button class="btn btn-default" type="reset" (ngClick)="cancelEditing()">Discard</button>

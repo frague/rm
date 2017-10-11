@@ -21,35 +21,47 @@ i.initiative {
   	position: absolute;
   	overflow: hidden;
     opacity: 0.95;
+    height: 27px;
   }
 }
 
 .assignments {
   max-height: 200px;
-  border: solid 1px #AAA;
-
-  .lines {
-    div {
-      // width: 4000px;
-
-      div {
-        height: 30px;
-        border-top: solid 1px #AAA;
-
-        &:first-child {
-          border-top: none;
-        }
-      }
-    }
-  }
+  // border: solid 1px #AAA;
 
   .schedule {
     overflow-x: auto;
     padding-left: 0;
+
+    ol {
+      position: absolute;
+      padding: 0 0 0 3px;
+      top: -3px;
+      font-size: 11px;
+      white-space: nowrap;
+
+      li {
+        list-style: none;
+        display: inline-block;
+        width: 60px;
+      }
+    }
   }
 
   .people, .schedule > div {
     padding-top: 20px;
+
+    div {
+      height: 30px;
+      border-top: solid 1px #AAA;
+      padding-top: 1px;
+
+    }
+  }
+
+  .people, .schedule {
+    padding-left: 0;
+    padding-right: 0;
   }
 
 }

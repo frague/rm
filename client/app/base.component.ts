@@ -1,4 +1,3 @@
-// import { ToastComponent } from './shared/toast/toast.component';
 import { FormGroup } from '@angular/forms';
 
 type baseServiceType = {
@@ -46,14 +45,6 @@ export abstract class BaseComponent {
       },
       error => console.log(error)
     );
-  }
-
-  leadingZero(value: number): string {
-    return ('0' + value).substr(-2);
-  }
-
-  formatDate(date: Date): string {
-    return date.getFullYear() + '-' + '0' + this.leadingZero(date.getMonth() + 1) + '-' + this.leadingZero(date.getDate());
   }
 
   enableEditing(item) {

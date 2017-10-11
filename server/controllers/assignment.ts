@@ -20,6 +20,8 @@ export default class AssignmentCtrl extends BaseCtrl {
           _id: 1,
           name: 1,
           assignments: 1,
+          starts: 1,
+          ends: 1,
           minDate: {
             $min: '$assignments.start'
           },
