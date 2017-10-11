@@ -16,7 +16,7 @@ import { ResourceService } from '../services/resource.service';
 export class AssignmentsComponent extends BaseComponent implements OnInit {
 
   resources = [];
-  initiatives = [];
+  initiatives = {};
   assignments = [];
   item = {};
   isLoading = true;
@@ -41,6 +41,10 @@ export class AssignmentsComponent extends BaseComponent implements OnInit {
     super(assignmenService);
   }
 
+  getInitiatives() {
+    return Object.values(this.initiatives);
+  }
+
   ngOnInit() {
     this.getAll();
     this.resourceService.getAll().subscribe(
@@ -48,12 +52,26 @@ export class AssignmentsComponent extends BaseComponent implements OnInit {
       error => console.log(error)
     );
     this.initiativeService.getAll().subscribe(
-      data => this.initiatives = data,
+      data => {
+        this.initiatives = data.reduce((result, initiative) => {
+          result[initiative._id] = initiative;
+          return result;
+        }, {})
+      },
       error => console.log(error)
     );
   }
 
   getAll() {
     return super.getAll();
+  }
+
+  showAssignment(assignment) {
+    let initiative = this.initiatives[assignment.initiativeId];
+    return {
+      name: initiative.name,
+      offset: 1000 * Math.random(),
+      width: 50 + 50 * Math.random()
+    }
   }
 }

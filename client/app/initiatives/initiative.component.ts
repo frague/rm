@@ -2,22 +2,23 @@ import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'initiative',
-  template: '<i class="initiative" [ngStyle]="style">{{ data.name }}</i>'
+  template: '<i class="initiative" [ngStyle]="getStyle()">{{ data.name }}</i>'
 })
 export class InitiativeComponent implements OnInit {
-  @Input() data = {
+  @Input() data: any = {
     color: '',
     name: 'None'
   };
 
-  public get style(): any {
+  public getStyle(): any {
     return {
-      'background-color': this.data.color || '#EEE'
+      'background-color': this.data.color || '#EEE',
+      left: (this.data.offset || 0) + 'px',
+      width: (this.data.width || '50') + 'px'
     };
   }
 
   constructor() {
-    
   }
 
   ngOnInit() {

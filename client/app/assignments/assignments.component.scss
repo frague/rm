@@ -1,6 +1,6 @@
 .assignments {
   max-height: 200px;
-  
+
   .lines {
     div {
       height: 30px;
@@ -11,5 +11,9 @@
       }
     }
   }
-  
+
+  .schedule {
+    overflow-x: auto;
+  }
+
 }
