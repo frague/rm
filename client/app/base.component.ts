@@ -27,9 +27,12 @@ export abstract class BaseComponent {
     this.getAll();
   }
 
-  getAll() {
+  getAll(onLoad?: Function) {
     return this.apiService.getAll().subscribe(
-      data => this.items = data,
+      data => {
+        this.items = data;
+        if (onLoad) onLoad();
+      },
       error => console.log(error),
       () => this.isLoading = false
     );

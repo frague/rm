@@ -8,6 +8,12 @@ import { AssignmentService } from '../services/assignment.service';
 import { InitiativeService } from '../services/initiative.service';
 import { ResourceService } from '../services/resource.service';
 
+const day = 1000 * 60 * 60 * 24;
+const week = day * 7;
+const weekWidth = 60;
+const dayWidth = weekWidth / 7;
+const dayCoefficient = dayWidth / day;
+
 @Component({
   selector: 'assignments',
   templateUrl: './assignments.component.html',
@@ -19,7 +25,10 @@ export class AssignmentsComponent extends BaseComponent implements OnInit {
   initiatives = {};
   assignments = [];
   item = {};
-  isLoading = true;
+
+  minDate: any = '3';
+  maxDate: any = '0';
+  shownWeeks = 0;
 
   public form = new FormGroup({
     _id: new FormControl(''),
@@ -45,6 +54,13 @@ export class AssignmentsComponent extends BaseComponent implements OnInit {
     return Object.values(this.initiatives);
   }
 
+  getScheduleStyles() {
+    return {
+      'background-image': 'repeating-linear-gradient(90deg, #000, #000 1px, #fff 1px, #fff ' + weekWidth + 'px)',
+      width: weekWidth * this.shownWeeks + 'px'
+    };
+  }
+
   ngOnInit() {
     this.getAll();
     this.resourceService.getAll().subscribe(
@@ -62,16 +78,46 @@ export class AssignmentsComponent extends BaseComponent implements OnInit {
     );
   }
 
+  adjustToMonday(date: Date, doIncrease=true): Date {
+    let dow = (date.getDay() + 6) % 7;
+    if (dow) {
+      let offset = date.getDate() + (doIncrease ? 7 - dow : dow - 7);
+      date.setDate(offset);
+    }
+    return date;
+  }
+
   getAll() {
-    return super.getAll();
+    super.getAll(() => {
+      this.items.forEach(resource => {
+        if (resource.minDate < this.minDate) this.minDate = resource.minDate;
+        if (resource.maxDate > this.maxDate) this.maxDate = resource.maxDate;
+      });
+
+      this.minDate = this.adjustToMonday(new Date(this.minDate), false);
+      this.maxDate = this.adjustToMonday(new Date(this.maxDate));
+      this.shownWeeks = (this.maxDate.getTime() - this.minDate.getTime()) / week;
+
+      this.items.forEach(resource => {
+        resource.assignments.forEach(assignment => {
+          let start = new Date(assignment.start).getTime();
+          let end = new Date(assignment.end).getTime();
+          assignment.offset = (start - this.minDate) * dayCoefficient;
+          assignment.width = (end - start) * dayCoefficient;
+        });
+      });
+    });
   }
 
   showAssignment(assignment) {
-    let initiative = this.initiatives[assignment.initiativeId];
-    return {
+    let initiative = this.initiatives[assignment.initiativeId] || {};
+    let a = {
       name: initiative.name,
-      offset: 1000 * Math.random(),
-      width: 50 + 50 * Math.random()
-    }
+      color: initiative.color,
+      offset: assignment.offset,
+      width: assignment.width
+    };
+    console.log(a);
+    return a;
   }
 }

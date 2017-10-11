@@ -21,7 +21,8 @@ export class InitiativesComponent extends BaseComponent implements OnInit {
     _id: new FormControl(''),
     name: new FormControl('', Validators.required),
     start: new FormControl(''),
-    end: new FormControl('')
+    end: new FormControl(''),
+    color: new FormControl('')
   });
 
   constructor(

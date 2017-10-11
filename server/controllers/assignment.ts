@@ -14,6 +14,19 @@ export default class AssignmentCtrl extends BaseCtrl {
           foreignField: 'resourceId',
           as: 'assignments'
         }
+      },
+      {
+        '$project': {
+          _id: 1,
+          name: 1,
+          assignments: 1,
+          minDate: {
+            $min: '$assignments.start'
+          },
+          maxDate: {
+            $max: '$assignments.end'
+          }
+        }
       }
     ], (err, docs) => {
       if (err) { return console.error(err); }

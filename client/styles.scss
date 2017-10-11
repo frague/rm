@@ -5,11 +5,51 @@ body {
   margin-bottom: 10px;
 }
 
-.input-group {
-  margin-bottom: 15px;
+form {
+  margin-top: 50px;
+
+	.input-group {
+	  margin-bottom: 15px;
+	}
 }
+
 
 i.initiative {
   font-style: normal;
-  position: absolute;
+
+  .schedule div & {
+  	position: absolute;
+  	overflow: hidden;
+    opacity: 0.95;
+  }
+}
+
+.assignments {
+  max-height: 200px;
+  border: solid 1px #AAA;
+
+  .lines {
+    div {
+      // width: 4000px;
+
+      div {
+        height: 30px;
+        border-top: solid 1px #AAA;
+
+        &:first-child {
+          border-top: none;
+        }
+      }
+    }
+  }
+
+  .schedule {
+    overflow-x: auto;
+    padding-left: 0;
+  }
+
+  .people, .schedule > div {
+    padding-top: 20px;
+  }
+
 }

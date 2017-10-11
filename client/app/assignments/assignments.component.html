@@ -1,19 +1,25 @@
 <div>
   <h4>Assignments</h4>
 
-  <div class="assignments row">
-    <div class="col-md-2 lines">
+  <div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-10"></div>
+  </div>
+
+  <div class="assignments row" *ngIf="items.length">
+    <div class="col-md-2 people lines">
       <div *ngFor="let assignee of items">{{ assignee.name }}</div>
     </div>
     <div class="col-md-10 schedule lines">
-      <div *ngFor="let assignee of items">
-        <initiative [data]="showAssignment(assignment)" *ngFor="let assignment of assignee.assignments"></initiative>
+      <div [ngStyle]="getScheduleStyles()">
+        <div *ngFor="let assignee of items">
+          <initiative [data]="showAssignment(assignment)" *ngFor="let assignment of assignee.assignments"></initiative>
+        </div>
       </div>
     </div>
   </div>
 
-
-  <form class="form-inline" [formGroup]="form" (ngSubmit)="save()" style="display:inline">
+  <form class="form-inline" [formGroup]="form" (ngSubmit)="save()">
     <div class="form-group">
       <select class="form-control" name="resource" formControlName="resourceId" required>
         <option></option>
