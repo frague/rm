@@ -13,12 +13,12 @@ import { InitiativeService } from '../services/initiative.service';
 })
 export class InitiativesComponent extends BaseComponent implements OnInit {
 
-  initiative = {};
   initiatives = [];
   isLoading = true;
   isEditing = false;
 
   public form = new FormGroup({
+    _id: new FormControl(''),
     name: new FormControl('', Validators.required),
     start: new FormControl(''),
     end: new FormControl('')

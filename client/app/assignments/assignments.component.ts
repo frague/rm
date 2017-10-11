@@ -18,10 +18,11 @@ export class AssignmentsComponent extends BaseComponent implements OnInit {
   resources = [];
   initiatives = [];
   assignments = [];
-  assignment = {};
+  item = {};
   isLoading = true;
 
   public form = new FormGroup({
+    _id: new FormControl(''),
     resourceId: new FormControl('', Validators.required),
     initiativeId: new FormControl('', Validators.required),
     start: new FormControl('', Validators.required),

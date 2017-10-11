@@ -1,14 +1,15 @@
 <div>
   <h4>People</h4>
 
-  <table>
-    <thead>
+  <table class="table table-bordered table-striped">
+    <thead class="thead-default">
       <tr>
         <th>Name</th>
         <th>Login</th>
         <th>Grade</th>
         <th>Location</th>
         <th>Pool</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tr *ngFor="let resource of items">
@@ -17,11 +18,14 @@
       <td>{{ resource.grade }}</td>
       <td>{{ resource.location }}</td>
       <td>{{ resource.pool }}</td>
+      <td>
+          <button class="btn btn-sm btn-warning" (click)="enableEditing(resource)"><i class="fa fa-pencil"></i> Edit</button> <button class="btn btn-sm btn-danger" (click)="delete(resource)"><i class="fa fa-trash"></i> Delete</button>
+        </td>
     </tr>
   </table>
 
 
-  <form class="form-inline" [formGroup]="form" (ngSubmit)="add(form.value)" style="display:inline">
+  <form class="form-inline" [formGroup]="form" (ngSubmit)="save()" style="display:inline">
     <div class="form-group">
         <input class="form-control" type="text" name="name" formControlName="name" placeholder="Name" required>
     </div>
@@ -44,6 +48,7 @@
       </select>
     </div>
     <button class="btn btn-primary" type="submit" [disabled]="!form.valid"><i class="fa fa-floppy-o"></i> Save</button>
+    <button class="btn btn-default" type="reset" (ngClick)="cancelEditing()">Discard</button>
   </form>
 
 </div>

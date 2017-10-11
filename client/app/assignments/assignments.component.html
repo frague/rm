@@ -11,7 +11,7 @@
   </div>
 
 
-  <form class="form-inline" [formGroup]="form" (ngSubmit)="add(form.value)" style="display:inline">
+  <form class="form-inline" [formGroup]="form" (ngSubmit)="save()" style="display:inline">
     <div class="form-group">
       <select class="form-control" name="resource" formControlName="resourceId" required>
         <option></option>
@@ -39,6 +39,7 @@
       <input class="form-control" type="number" name="involvement" formControlName="involvement" placeholder="Involvement" max="100" min="0">
     </div>
     <button class="btn btn-primary" type="submit" [disabled]="!form.valid"><i class="fa fa-floppy-o"></i> Save</button>
+    <button class="btn btn-default" type="reset" (ngClick)="cancelEditing()">Discard</button>
   </form>
 
 </div>

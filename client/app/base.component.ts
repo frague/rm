@@ -8,11 +8,15 @@ type baseServiceType = {
   delete: Function
 };
 
-export class BaseComponent {
+const isDate = new RegExp(/^[12]\d{3}\-/);
+
+export abstract class BaseComponent {
   items = [];
-  item = {};
+  item: any = {};
   isLoading = false;
   isEditing = false;
+
+  abstract form: FormGroup;
 
    constructor(
     private apiService: baseServiceType
@@ -34,33 +38,58 @@ export class BaseComponent {
   add(item) {
     return this.apiService.add(item).subscribe(
       res => {
-        const newItem = res.json();
-        this.items.push(newItem);
-        // this.form.reset();
-        // this.toast.setMessage('item added successfully.', 'success');
+        this.getAll();
+        this.form.reset();
       },
       error => console.log(error)
     );
   }
 
+  leadingZero(value: number): string {
+    return ('0' + value).substr(-2);
+  }
+
+  formatDate(date: Date): string {
+    return date.getFullYear() + '-' + '0' + this.leadingZero(date.getMonth() + 1) + '-' + this.leadingZero(date.getDate());
+  }
+
   enableEditing(item) {
-    this.isEditing = true;
     this.item = item;
+    let o: any = Object.assign({}, item);
+    delete o.__v;
+    Object.keys(o).forEach(key => {
+      let v = o[key];
+      if (isDate.test(v)) {
+        o[key] = v.substr(0, 10);
+      }
+    });
+    console.log(o);
+    this.form.setValue(o);
   }
 
   cancelEditing() {
-    this.isEditing = false;
     this.item = {};
     // this.toast.setMessage('item editing cancelled.', 'warning');
-    this.getAll();
+  }
+
+  save() {
+    let updatedItem = this.form.value;
+    if (this.item && this.item._id) {
+      updatedItem._id = this.item._id;
+      return this.edit(updatedItem);
+    } else {
+      delete updatedItem._id;
+      return this.add(updatedItem);
+    }
   }
 
   edit(item) {
     return this.apiService.edit(item).subscribe(
       res => {
-        this.isEditing = false;
-        this.item = item;
+        this.item = {};
+        this.form.reset();
         // this.toast.setMessage('item edited successfully.', 'success');
+        this.getAll();
       },
       error => console.log(error)
     );

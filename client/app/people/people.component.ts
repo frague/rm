@@ -11,13 +11,13 @@ import { BaseComponent } from '../base.component';
 })
 export class PeopleComponent extends BaseComponent implements OnInit {
 
-  resource = {};
   resources = [];
   isLoading = true;
   locations = ['SAR', 'SPB', 'MP', 'KHR', 'LV'];
   pools = ['ML', 'UI'];
 
   form = new FormGroup({
+    _id: new FormControl(''),
     name: new FormControl('', Validators.required),
     login: new FormControl('', Validators.required),
     grade: new FormControl('', Validators.required),

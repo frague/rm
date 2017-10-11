@@ -20,18 +20,18 @@
     </tbody>
     <tbody>
       <tr *ngFor="let initiative of items">
-        <td>{{initiative.name}}</td>
+        <td><initiative [data]="initiative"></initiative></td>
         <td>{{initiative.start}}</td>
         <td>{{initiative.end}}</td>
         <td>
-          <button class="btn btn-sm btn-warning" (click)="enableEditing(initiative)"><i class="fa fa-pencil"></i> Edit</button> <button class="btn btn-sm btn-danger" (click)="delete(initiative)"><i class="fa fa-trash"></i> Delete</button>
+          <button class="btn btn-sm btn-warning" (click)="enableEditing(initiative, form)"><i class="fa fa-pencil"></i> Edit</button> <button class="btn btn-sm btn-danger" (click)="delete(initiative)"><i class="fa fa-trash"></i> Delete</button>
         </td>
       </tr>
     </tbody>
   </table>
 
 
-  <form class="form-inline" [formGroup]="form" (ngSubmit)="add(form.value)">
+  <form class="form-inline" [formGroup]="form" (ngSubmit)="save()">
     <div class="form-group">
         <input class="form-control" type="text" name="name" formControlName="name" placeholder="Name">
     </div>
@@ -41,7 +41,8 @@
     <div class="form-group">
       <input class="form-control" type="date" name="end" formControlName="end" placeholder="End date">
     </div>
-    <button class="btn btn-primary" type="submit" [disabled]="!form.valid"><i class="fa fa-floppy-o"></i> Add</button>
+    <button class="btn btn-primary" type="submit" [disabled]="!form.valid"><i class="fa fa-floppy-o"></i> Save</button>
+    <button class="btn btn-default" type="reset" (ngClick)="cancelEditing()">Discard</button>
   </form>
 
 </div>

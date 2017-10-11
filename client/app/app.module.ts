@@ -11,6 +11,7 @@ import { AuthGuardLogin } from './services/auth-guard-login.service';
 import { AuthGuardAdmin } from './services/auth-guard-admin.service';
 import { AppComponent } from './app.component';
 import { InitiativesComponent } from './initiatives/initiatives.component';
+import { InitiativeComponent } from './initiatives/initiative.component';
 import { AssignmentsComponent } from './assignments/assignments.component';
 import { PeopleComponent } from './people/people.component';
 import { RegisterComponent } from './register/register.component';
@@ -24,6 +25,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
   declarations: [
     AppComponent,
     InitiativesComponent,
+    InitiativeComponent,
     AssignmentsComponent,
     PeopleComponent,
     RegisterComponent,
