@@ -2,9 +2,12 @@ import { FormGroup } from '@angular/forms';
 
 type baseServiceType = {
   getAll: Function,
+  count?: Function,
   add: Function,
   edit: Function,
-  delete: Function
+  delete: Function,
+  login?: Function,
+  register?: Function
 };
 
 const isDate = new RegExp(/^[12]\d{3}\-/);

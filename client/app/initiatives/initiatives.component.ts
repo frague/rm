@@ -14,9 +14,7 @@ import { AssignmentService } from '../services/assignment.service';
 })
 export class InitiativesComponent extends BaseComponent implements OnInit {
 
-  initiatives = [];
   isLoading = true;
-  isEditing = false;
 
   public form = new FormGroup({
     _id: new FormControl(''),

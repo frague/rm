@@ -3,7 +3,7 @@
 <app-toast [message]="toast.message"></app-toast>
 
 <div class="card" *ngIf="!isLoading">
-  <h4 class="card-header">Registered users ({{users.length}})</h4>
+  <h4 class="card-header">Registered users ({{items.length}})</h4>
   <div class="card-block">
     <table class="table table-bordered table-striped">
       <thead class="thead-default">
@@ -14,22 +14,22 @@
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody *ngIf="users.length === 0">
+      <tbody *ngIf="items.length === 0">
         <tr>
           <td colspan="4">There are no registered users.</td>
-        </tr>  
+        </tr>
       </tbody>
       <tbody>
-        <tr *ngFor="let user of users">
+        <tr *ngFor="let user of items">
           <td>{{user.username}}</td>
           <td>{{user.email}}</td>
           <td>{{user.role}}</td>
           <td>
-            <button class="btn btn-sm btn-danger" (click)="deleteUser(user)" [disabled]="auth.currentUser._id === user._id">
+            <button class="btn btn-sm btn-danger" (click)="delete(user)" [disabled]="auth.currentUser._id === user._id">
               <i class="fa fa-trash"></i>
             </button>
           </td>
-        </tr>  
+        </tr>
       </tbody>
     </table>
   </div>

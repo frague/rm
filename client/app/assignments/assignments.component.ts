@@ -15,6 +15,7 @@ const week = day * 7;
 const weekWidth = 60;
 const dayWidth = weekWidth / 7;
 const dayCoefficient = dayWidth / day;
+const transparent = 'rgba(0,0,0,0)';
 
 @Component({
   selector: 'assignments',
@@ -33,6 +34,9 @@ export class AssignmentsComponent extends BaseComponent implements OnInit {
   shownWeeks = 0;
   weekTitles = [];
 
+  todayOffset: number = -10;
+  todayCaption = '';
+
   public form = new FormGroup({
     _id: new FormControl(''),
     resourceId: new FormControl('', Validators.required),
@@ -45,12 +49,12 @@ export class AssignmentsComponent extends BaseComponent implements OnInit {
   });
 
   constructor(
-    assignmenService: AssignmentService,
+    assignmentService: AssignmentService,
     private resourceService: ResourceService,
     private initiativeService: InitiativeService,
     private toast: ToastComponent
   ) {
-    super(assignmenService);
+    super(assignmentService);
   }
 
   getInitiatives() {
@@ -59,7 +63,8 @@ export class AssignmentsComponent extends BaseComponent implements OnInit {
 
   getScheduleStyles() {
     return {
-      'background-image': 'repeating-linear-gradient(90deg, #000, #000 1px, #fff 1px, #fff ' + weekWidth + 'px)',
+      'background': 'repeating-linear-gradient(90deg, #000, #000 1px, ' + transparent + ' 1px, ' + transparent + ' ' + weekWidth + 'px), ' +
+        'linear-gradient(90deg, ' + transparent + ' ' + this.todayOffset + 'px, red ' + this.todayOffset + 'px, ' + transparent + ' ' + (1 + this.todayOffset) + 'px) left top/' + (1 + this.todayOffset) + 'px repeat-y',
       width: (weekWidth * this.shownWeeks) + 1 + 'px'
     };
   }
@@ -96,7 +101,7 @@ export class AssignmentsComponent extends BaseComponent implements OnInit {
       let offset = date.getDate() + (doIncrease ? 7 - dow : -dow);
       date.setDate(offset);
     }
-    console.log(dateString, dow, date);
+    // console.log(dateString, dow, date);
     return date;
   }
 
@@ -113,24 +118,29 @@ export class AssignmentsComponent extends BaseComponent implements OnInit {
       this.minDate = this.adjustToMonday(this.minDate, false);
       this.maxDate = this.adjustToMonday(this.maxDate);
       this.shownWeeks = Math.round((this.maxDate.getTime() - this.minDate.getTime()) / week);
-      console.log(this.minDate, this.maxDate, this.shownWeeks);
+      let minTime = this.minDate.getTime();
+      // console.log(this.minDate, this.maxDate, this.shownWeeks);
 
       this.items.forEach(resource => {
         resource.assignments.forEach(assignment => {
           let start = new Date(assignment.start).getTime();
           let end = new Date(assignment.end).getTime();
-          assignment.offset = (start - this.minDate) * dayCoefficient;
+          assignment.offset = (start - minTime) * dayCoefficient;
           assignment.width = (end - start + day) * dayCoefficient - 1;
         });
       });
 
       let start = new Date(this.minDate);
-      this.weekTitles = new Array(this.shownWeeks).join('.').split('').map(() => {
+      this.weekTitles = new Array(this.shownWeeks + 1).join('.').split('').map(() => {
         let d = start.getDate();
         let w = d + '/' + Utils.leadingZero(start.getMonth() + 1);
         start.setDate(d + 7);
         return w;
       });
+
+      let today = new Date();
+      this.todayOffset = (today.getTime() - minTime) * dayCoefficient;
+      this.todayCaption = today.getDate() + '/' + Utils.leadingZero(today.getMonth() + 1);
     });
   }
 

@@ -13,6 +13,7 @@
     <div class="col-md-10 schedule">
       <div [ngStyle]="getScheduleStyles()" class="lines">
         <ol>
+          <li class="today" [ngStyle]="{left: todayOffset + 2 + 'px'}">{{ todayCaption }}</li>
           <li *ngFor="let week of weekTitles">{{ week }}</li>
         </ol>
 

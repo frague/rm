@@ -1,41 +1,28 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 
 import { ToastComponent } from '../shared/toast/toast.component';
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
+
+import { BaseComponent } from '../base.component';
 
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
 })
-export class AdminComponent implements OnInit {
+export class AdminComponent extends BaseComponent implements OnInit {
 
-  users = [];
   isLoading = true;
 
-  constructor(public auth: AuthService,
-              public toast: ToastComponent,
-              private userService: UserService) { }
+  form = new FormGroup({});
 
-  ngOnInit() {
-    this.getUsers();
+  constructor(
+    public auth: AuthService,
+    public toast: ToastComponent,
+    userService: UserService
+  ) {
+    super(userService);
   }
-
-  getUsers() {
-    this.userService.getUsers().subscribe(
-      data => this.users = data,
-      error => console.log(error),
-      () => this.isLoading = false
-    );
-  }
-
-  deleteUser(user) {
-    this.userService.deleteUser(user).subscribe(
-      data => this.toast.setMessage('user deleted successfully.', 'success'),
-      error => console.log(error),
-      () => this.getUsers()
-    );
-  }
-
 }

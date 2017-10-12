@@ -7,7 +7,7 @@ import 'rxjs/add/operator/map';
 export class BaseService {
 
   private headers = new Headers({ 'Content-Type': 'application/json', 'charset': 'UTF-8' });
-  private options = new RequestOptions({ headers: this.headers });
+  options = new RequestOptions({ headers: this.headers });
   private entity;
 
   constructor(entity: string, private http: Http) {

@@ -16,12 +16,13 @@ form {
 
 i.initiative {
   font-style: normal;
+  display: inline-block;
+  height: 27px;
 
   .schedule div & {
-  	position: absolute;
-  	overflow: hidden;
-    opacity: 0.95;
-    height: 27px;
+    position: absolute;
+    overflow: hidden;
+    opacity: 0.8;
   }
 }
 
@@ -44,6 +45,12 @@ i.initiative {
         list-style: none;
         display: inline-block;
         width: 60px;
+
+        &.today {
+          position: absolute;
+          color: red;
+          font-weight: 600;
+        }
       }
     }
   }

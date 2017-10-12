@@ -14,7 +14,7 @@ export class InitiativeComponent implements OnInit {
     return {
       'background-color': this.data.color || '#EEE',
       left: (this.data.offset || 0) + 'px',
-      width: (this.data.width || '50') + 'px'
+      width: this.data.width ? this.data.width + 'px' : 'auto'
     };
   }
 
