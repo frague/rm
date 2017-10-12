@@ -1,6 +1,10 @@
+import * as mongoose from 'mongoose';
+
 abstract class BaseCtrl {
 
-  abstract model: any;
+  abstract model: mongoose.Schema;
+
+  cleanup = (req, res) => res.sendStatus(200);
 
   // Get all
   getAll = (req, res) => {
@@ -53,7 +57,7 @@ abstract class BaseCtrl {
   delete = (req, res) => {
     this.model.findOneAndRemove({ _id: req.params.id }, (err) => {
       if (err) { return console.error(err); }
-      res.sendStatus(200);
+      this.cleanup(req, res);
     });
   }
 }

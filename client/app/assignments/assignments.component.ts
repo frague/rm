@@ -89,26 +89,31 @@ export class AssignmentsComponent extends BaseComponent implements OnInit {
     return clean;
   }
 
-  adjustToMonday(date: Date, doIncrease=true): Date {
+  adjustToMonday(dateString: string, doIncrease=true): Date {
+    let date = new Date(dateString && dateString.length > 1 ? dateString : null);
     let dow = (date.getDay() + 6) % 7;
     if (dow) {
-      let offset = date.getDate() + (doIncrease ? 7 - dow : dow - 7);
+      let offset = date.getDate() + (doIncrease ? 7 - dow : -dow);
       date.setDate(offset);
     }
+    console.log(dateString, dow, date);
     return date;
   }
 
   getAll() {
     super.getAll(() => {
+      this.minDate = '3';
+      this.maxDate = '0';
+
       this.items.forEach(resource => {
-        if (resource.minDate < this.minDate) this.minDate = resource.minDate;
-        if (resource.maxDate > this.maxDate) this.maxDate = resource.maxDate;
+        if (resource.minDate && resource.minDate < this.minDate) this.minDate = resource.minDate;
+        if (resource.maxDate && resource.maxDate > this.maxDate) this.maxDate = resource.maxDate;
       });
 
-      this.minDate = this.adjustToMonday(new Date(this.minDate), false);
-      this.maxDate = this.adjustToMonday(new Date(this.maxDate));
-      this.shownWeeks = (this.maxDate.getTime() - this.minDate.getTime()) / week;
-      // console.log(this.minDate, this.maxDate, this.shownWeeks);
+      this.minDate = this.adjustToMonday(this.minDate, false);
+      this.maxDate = this.adjustToMonday(this.maxDate);
+      this.shownWeeks = Math.round((this.maxDate.getTime() - this.minDate.getTime()) / week);
+      console.log(this.minDate, this.maxDate, this.shownWeeks);
 
       this.items.forEach(resource => {
         resource.assignments.forEach(assignment => {

@@ -37,5 +37,4 @@ export class BaseService {
   delete(item: any): Observable<any> {
     return this.http.delete('/api/' + this.entity + '/' + item._id, this.options);
   }
-
 }

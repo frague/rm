@@ -57,8 +57,15 @@
     <div class="form-group">
       <textarea class="form-control" name="comment" formControlName="comment" placeholder="Comments" rows="1"></textarea>
     </div>
-    <button class="btn btn-primary" type="submit" [disabled]="!form.valid"><i class="fa fa-floppy-o"></i> Save</button>
-    <button class="btn btn-default" type="reset" (ngClick)="cancelEditing()">Discard</button>
+    <button class="btn btn-primary" type="submit" [disabled]="!form.valid">
+      <i class="fa fa-floppy-o"></i> Save
+    </button>
+    <button class="btn btn-default" type="reset" (click)="cancelEditing()">
+      Discard
+    </button>
+    <button *ngIf="item._id" class="btn btn-danger btn-default" (click)="delete(item)">
+      Delete
+    </button>
   </form>
 
 </div>

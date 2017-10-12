@@ -5,6 +5,7 @@ import { ToastComponent } from '../shared/toast/toast.component';
 import { BaseComponent } from '../base.component';
 
 import { InitiativeService } from '../services/initiative.service';
+import { AssignmentService } from '../services/assignment.service';
 
 @Component({
   selector: 'initiatives',
@@ -27,6 +28,7 @@ export class InitiativesComponent extends BaseComponent implements OnInit {
 
   constructor(
     private initiativeService: InitiativeService,
+    private assignmentService: AssignmentService,
     private toast: ToastComponent
   ) {
     super(initiativeService);
@@ -35,5 +37,4 @@ export class InitiativesComponent extends BaseComponent implements OnInit {
   ngOnInit() {
     this.getAll();
   }
-
 }
