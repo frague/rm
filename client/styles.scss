@@ -48,8 +48,11 @@ i.initiative {
 
         &.today {
           position: absolute;
+          width: auto;
           color: red;
           font-weight: 600;
+          background-color: rgba(255,255,255,0.8);
+          border-radius: 2px;
         }
       }
     }
