@@ -10,6 +10,7 @@ import { AuthService } from './services/auth.service';
 import { AuthGuardLogin } from './services/auth-guard-login.service';
 import { AuthGuardAdmin } from './services/auth-guard-admin.service';
 import { AppComponent } from './app.component';
+import { SyncComponent } from './sync/sync.component';
 import { InitiativesComponent } from './initiatives/initiatives.component';
 import { InitiativeComponent } from './initiatives/initiative.component';
 import { AssignmentsComponent } from './assignments/assignments.component';
@@ -33,7 +34,8 @@ import { NotFoundComponent } from './not-found/not-found.component';
     LogoutComponent,
     AccountComponent,
     AdminComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    SyncComponent
   ],
   imports: [
     RoutingModule,

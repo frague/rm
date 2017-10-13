@@ -60,6 +60,14 @@ abstract class BaseCtrl {
       this.cleanup(req, res);
     });
   }
+
+  // Delete all
+  deleteAll = (req, res) => {
+    this.model.remove({}, (err) => {
+      if (err) { return console.error(err); }
+      res.sendStatus(200);
+    });
+  }
 }
 
 export default BaseCtrl;

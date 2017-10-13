@@ -6,7 +6,11 @@ import 'rxjs/add/operator/map';
 
 export class BaseService {
 
-  private headers = new Headers({ 'Content-Type': 'application/json', 'charset': 'UTF-8' });
+  private headers = new Headers({
+    'Content-Type': 'application/json',
+    'charset': 'UTF-8'
+  });
+
   options = new RequestOptions({ headers: this.headers });
   private entity;
 
@@ -36,5 +40,9 @@ export class BaseService {
 
   delete(item: any): Observable<any> {
     return this.http.delete('/api/' + this.entity + '/' + item._id, this.options);
+  }
+
+  deleteAll(): Observable<any> {
+    return this.http.delete('/api/' + this.entity + 's', this.options);
   }
 }
