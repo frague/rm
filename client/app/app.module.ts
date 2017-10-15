@@ -5,6 +5,7 @@ import { SharedModule } from './shared/shared.module';
 import { AssignmentService } from './services/assignment.service';
 import { ResourceService } from './services/resource.service';
 import { InitiativeService } from './services/initiative.service';
+import { PmoService } from './services/pmo.service';
 import { UserService } from './services/user.service';
 import { AuthService } from './services/auth.service';
 import { AuthGuardLogin } from './services/auth-guard-login.service';
@@ -48,7 +49,8 @@ import { NotFoundComponent } from './not-found/not-found.component';
     ResourceService,
     InitiativeService,
     AssignmentService,
-    UserService
+    UserService,
+    PmoService
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]

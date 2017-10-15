@@ -6,8 +6,11 @@ import { ToastComponent } from '../shared/toast/toast.component';
 import { InitiativeService } from '../services/initiative.service';
 import { ResourceService } from '../services/resource.service';
 import { AssignmentService } from '../services/assignment.service';
+import { PmoService } from '../services/pmo.service';
 
 import { environment } from '../../environments/environment';
+
+import * as convert from 'color-convert';
 
 @Component({
   selector: 'sync',
@@ -21,20 +24,21 @@ export class SyncComponent {
   constructor(
     private http: Http,
     public toast: ToastComponent,
-    private initiativeServie: InitiativeService,
+    private initiativeService: InitiativeService,
     private resourceService: ResourceService,
-    private assignmentService: AssignmentService
+    private assignmentService: AssignmentService,
+    private pmo: PmoService
  ) {
   }
 
   cleanup(): Subscription {
     this.isLoading = true;
-    return this.initiativeServie.deleteAll().subscribe(
+    return this.initiativeService.deleteAll().subscribe(
       () => {
         return this.resourceService.deleteAll().subscribe(
           () => {
             return this.assignmentService.deleteAll().subscribe(
-              () => {},
+              () => true,
               error => console.log(error)
             )
           },
@@ -45,18 +49,21 @@ export class SyncComponent {
     );
   }
 
-  authInPMO() {
-    console.log('PMO');
-    this.http.get('/api/pmo').subscribe(() => {
-      console.log('here');
-      this.http.get('/api/pmo/accounts').subscribe();
-    });
-  }
-
   sync() {
     this.cleanup().add(() => {
-      console.log(1);
-      this.authInPMO();
+      this.pmo.getAccounts().subscribe(data => {
+        data.forEach(account => {
+          console.log('account', account.name);
+          account.projects.forEach(project => {
+            console.log(project.name);
+            let initiative = {
+              name: project.name,
+              color: '#' + convert.hsl.hex(360 * Math.random(), 50, 80)
+            };
+            this.initiativeService.add(initiative).subscribe();
+          });
+        });
+      });
     });
   }
 }
