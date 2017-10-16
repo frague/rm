@@ -146,7 +146,7 @@ export class AssignmentsComponent extends BaseComponent implements OnInit {
       });
 
       let today = new Date();
-      this.todayOffset = (today.getTime() - minTime) * dayCoefficient;
+      this.todayOffset = Math.round((today.getTime() - minTime) * dayCoefficient);
       this.todayCaption = today.getDate() + '/' + Utils.leadingZero(today.getMonth() + 1);
     });
   }
