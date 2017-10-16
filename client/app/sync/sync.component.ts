@@ -12,6 +12,15 @@ import { environment } from '../../environments/environment';
 
 import * as convert from 'color-convert';
 
+const locations = {
+  'Saratov': 'SAR',
+  'Saint-Petersburg': 'SPB',
+  'Menlo Park': 'MP',
+  'Kharkov': 'KHR',
+  'Krakow': 'KR',
+  'Lviv': 'LV'
+};
+
 @Component({
   selector: 'sync',
   templateUrl: './sync.component.html'
@@ -64,6 +73,24 @@ export class SyncComponent {
           });
         });
       });
+      this.pmo.getPeople().subscribe(data => {
+        data.rows.forEach(person => {
+          let pool = '';
+          if (person.workProfile === 'Data Scientist') pool = 'DS';
+          else if (person.specialization === 'UI' && (['Saratov', 'Saint Petersburg'].indexOf(person.location))
+          ) pool = 'UI';
+          if (!pool) return;
+          let resource = {
+            name: person.fullName,
+            login: person.employeeId,
+            grade: person.grade,
+            location: locations[person.location],
+            pool
+          };
+          this.resourceService.add(resource).subscribe();
+        });
+      });
+
     });
   }
 }

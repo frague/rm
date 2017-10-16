@@ -58,6 +58,7 @@ export default function setRoutes(app) {
 
   // PMO
   router.route('/pmo/accounts').get(integrationsCtrl.getAccounts);
+  router.route('/pmo/people').get(integrationsCtrl.getPeople);
   router.route('/pmo').get(integrationsCtrl.pmoLogin);
 
 

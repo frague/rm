@@ -13,5 +13,9 @@ export class PmoService {
     return this.http.get('/api/pmo/accounts').map(res => res.json());
   }
 
+  getPeople(): Observable<any> {
+    return this.http.get('/api/pmo/people').map(res => res.json());
+  }
+
 
 }

@@ -38,4 +38,15 @@ export default class IntegrationsCtrl {
     });
   }
 
+  getPeople = (req, res) => {
+    this._login().on('response', () => {
+      request.get(
+        this._fillRequest(pmo + 'service/people'),
+        (error, response, body) => {
+          res.setHeader('Content-Type', 'application/json');
+          res.send(body);
+        });
+    });
+  }
+
 }

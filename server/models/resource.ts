@@ -6,7 +6,7 @@ const resourceSchema = new mongoose.Schema({
   name: String,
   login: String,
   grade: String,
-  location: ['SAR', 'SPB', 'MP', 'KHR', 'LV'],
+  location: ['SAR', 'SPB', 'MP', 'KHR', 'KR'],
   pool: ['ML', 'UI']
 });
 
