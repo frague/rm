@@ -8,7 +8,7 @@
 
   <div class="assignments row" *ngIf="items.length">
     <div class="col-md-2 people lines">
-      <div *ngFor="let assignee of items">{{ assignee.name }}</div>
+      <div *ngFor="let assignee of items; let i = index" [ngClass]="getAssignmentsCount(i)">{{ assignee.name }}</div>
     </div>
     <div class="col-md-10 schedule">
       <div [ngStyle]="getScheduleStyles()" class="lines">
@@ -17,7 +17,7 @@
           <li *ngFor="let week of weekTitles">{{ week }}</li>
         </ol>
 
-        <div *ngFor="let assignee of items">
+        <div *ngFor="let assignee of items; let i = index" [ngClass]="getAssignmentsCount(i)">
           <initiative 
             *ngFor="let assignment of assignee.assignments" 
             [data]="showAssignment(assignment)" 
@@ -49,7 +49,7 @@
     </div>
     <div class="form-group">
       <label>
-        <input class="form-control" type="checkbox" name="isBillable" formControlName="isBillable"> Billable?
+        <input class="form-control" type="text" name="billability" formControlName="billability" placeholder="Billability">
       </label>
     </div>
     <div class="form-group">

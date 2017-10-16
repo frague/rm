@@ -20,7 +20,7 @@ export abstract class BaseComponent {
 
   abstract form: FormGroup;
 
-   constructor(
+  constructor(
     private apiService: baseServiceType
   ) {
   }

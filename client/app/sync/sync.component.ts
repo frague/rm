@@ -113,7 +113,7 @@ export class SyncComponent {
                 account,
                 start: this.parseDate(person.assignmentStart[index]),
                 end: this.parseDate(person.assignmentFinish[index]),
-                isBillable: person.assignmentStatus[index].name,
+                billability: person.assignmentStatus[index].name,
                 involvement: person.involvements[index]
               };
               let initiative = initiatives[name];

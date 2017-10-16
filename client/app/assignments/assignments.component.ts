@@ -16,6 +16,7 @@ const weekWidth = 60;
 const dayWidth = weekWidth / 7;
 const dayCoefficient = dayWidth / day;
 const transparent = 'rgba(0,0,0,0)';
+const emptyItem = {assignments: []};
 
 @Component({
   selector: 'assignments',
@@ -43,7 +44,7 @@ export class AssignmentsComponent extends BaseComponent implements OnInit {
     initiativeId: new FormControl('', Validators.required),
     start: new FormControl('', Validators.required),
     end: new FormControl('', Validators.required),
-    isBillable: new FormControl(''),
+    billability: new FormControl('', Validators.required),
     involvement: new FormControl('100', Validators.required),
     comment: new FormControl('')
   });
@@ -59,6 +60,11 @@ export class AssignmentsComponent extends BaseComponent implements OnInit {
 
   getInitiatives() {
     return Object.values(this.initiatives);
+  }
+
+  getAssignmentsCount(index) {
+    console.log(index, this.items[index]);
+    return 'an' + (this.items[index] || emptyItem).assignments.length;
   }
 
   getScheduleStyles() {
@@ -149,7 +155,9 @@ export class AssignmentsComponent extends BaseComponent implements OnInit {
     let initiative = this.initiatives[assignment.initiativeId] || {};
     return {
       name: initiative.name,
+      account: initiative.account,
       color: initiative.color,
+      billability: assignment.billability,
       offset: assignment.offset,
       width: assignment.width
     };

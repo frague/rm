@@ -67,6 +67,24 @@ i.initiative {
       padding-top: 1px;
       white-space: nowrap;
       overflow: hidden;
+
+      @for $i from 0 through 4 {
+        &.an#{$i+1} {
+          height: 30px + ($i * 28);
+        }
+        initiative:nth-child(#{$i + 1}) i {
+          margin-top: ($i * 28px);
+        }
+      }
+      .nb {
+        background: repeating-linear-gradient(
+          54deg,
+          rgba(0, 0, 0, 0),
+          rgba(0, 0, 0, 0) 10px,
+          rgba(0, 0, 0, 0.1) 10px,
+          rgba(0, 0, 0, 0.1) 20px
+        );
+      }
     }
   }
 
