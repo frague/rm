@@ -20,6 +20,7 @@ const locations = {
   'Krakow': 'KR',
   'Lviv': 'LV'
 };
+const myLocations = ['Saratov', 'Saint-Petersburg'];
 
 @Component({
   selector: 'sync',
@@ -58,27 +59,39 @@ export class SyncComponent {
     );
   }
 
+  parseDate(milliseconds: number): string {
+    if (!milliseconds) return '';
+    return new Date(milliseconds).toString();
+  }
+
   sync() {
     this.cleanup().add(() => {
-      this.pmo.getAccounts().subscribe(data => {
-        data.forEach(account => {
-          console.log('account', account.name);
-          account.projects.forEach(project => {
-            console.log(project.name);
-            let initiative = {
-              name: project.name,
-              color: '#' + convert.hsl.hex(360 * Math.random(), 50, 80)
-            };
-            this.initiativeService.add(initiative).subscribe();
-          });
-        });
-      });
+      let initiativesIds = {};
+
+      // this.pmo.getAccounts().subscribe(data => {
+      //   data.forEach(account => {
+      //     console.log('account', account.name);
+      //     account.projects.forEach(project => {
+      //       console.log(project.name);
+      //       let initiative = {
+      //         name: project.name,
+      //         color: '#' + convert.hsl.hex(360 * Math.random(), 50, 80)
+      //       };
+      //       this.initiativeService.add(initiative).subscribe(
+      //         initiative => 
+      //       );
+      //     });
+      //   });
+      // });
       this.pmo.getPeople().subscribe(data => {
+        let initiatives = {};
+        let assignments = [];
+
         data.rows.forEach(person => {
           let pool = '';
           if (person.workProfile === 'Data Scientist') pool = 'DS';
-          else if (person.specialization === 'UI' && (['Saratov', 'Saint Petersburg'].indexOf(person.location))
-          ) pool = 'UI';
+          else if (person.specialization === 'UI' && myLocations.indexOf(person.location) >= 0) pool = 'UI';
+
           if (!pool) return;
           let resource = {
             name: person.fullName,
@@ -87,7 +100,42 @@ export class SyncComponent {
             location: locations[person.location],
             pool
           };
-          this.resourceService.add(resource).subscribe();
+
+          this.resourceService.add(resource).subscribe(resource => {
+            if (!person.account) return;
+
+            person.account.forEach((account, index) => {
+              let project = person.project[index];
+              let name = account + ':' + project;
+              let assignment = {
+                resourceId: resource._id,
+                name: project,
+                account,
+                start: this.parseDate(person.assignmentStart[index]),
+                end: this.parseDate(person.assignmentFinish[index]),
+                isBillable: person.assignmentStatus[index].name,
+                involvement: person.involvements[index]
+              };
+              let initiative = initiatives[name];
+              if (initiative) {
+                assignment['initiativeId'] = initiative._id;
+                console.log(1, assignment, resource);
+                this.assignmentService.add(assignment).subscribe();
+              } else {
+                let initiative = {
+                  name: project,
+                  account,
+                  color: '#' + convert.hsl.hex(360 * Math.random(), 50, 80)
+                };
+                this.initiativeService.add(initiative).subscribe(initiative => {
+                  initiatives[name] = initiative;
+                  assignment['initiativeId'] = initiative._id;
+                  console.log(2, assignment, initiative);
+                  this.assignmentService.add(assignment).subscribe();
+                });
+              }
+            });
+          });
         });
       });
 

@@ -7,7 +7,7 @@ const assignmentSchema = new mongoose.Schema({
   initiativeId: idType,
   start: Date,
   end: Date,
-  isBillable: Boolean,
+  isBillable: String,
   involvement: Number,
   comment: String
 });

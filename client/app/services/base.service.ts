@@ -27,7 +27,7 @@ export class BaseService {
   }
 
   add(item: any): Observable<any> {
-    return this.http.post('/api/' + this.entity, JSON.stringify(item), this.options);
+    return this.http.post('/api/' + this.entity, JSON.stringify(item), this.options).map(res => res.json());
   }
 
   get(item: any): Observable<any> {
@@ -35,7 +35,7 @@ export class BaseService {
   }
 
   edit(item: any): Observable<any> {
-    return this.http.put('/api/' + this.entity + '/' + item._id, JSON.stringify(item), this.options);
+    return this.http.put('/api/' + this.entity + '/' + item._id, JSON.stringify(item), this.options).map(res => res.json());
   }
 
   delete(item: any): Observable<any> {

@@ -65,7 +65,8 @@ i.initiative {
       height: 30px;
       border-top: solid 1px #AAA;
       padding-top: 1px;
-
+      white-space: nowrap;
+      overflow: hidden;
     }
   }
 

@@ -117,14 +117,15 @@ export class AssignmentsComponent extends BaseComponent implements OnInit {
 
       this.minDate = this.adjustToMonday(this.minDate, false);
       this.maxDate = this.adjustToMonday(this.maxDate);
-      this.shownWeeks = Math.round((this.maxDate.getTime() - this.minDate.getTime()) / week);
+      let maxTime = this.maxDate.getTime();
+      this.shownWeeks = Math.round((maxTime - this.minDate.getTime()) / week);
       let minTime = this.minDate.getTime();
       // console.log(this.minDate, this.maxDate, this.shownWeeks);
 
       this.items.forEach(resource => {
         resource.assignments.forEach(assignment => {
           let start = new Date(assignment.start).getTime();
-          let end = new Date(assignment.end).getTime();
+          let end = assignment.end ? new Date(assignment.end).getTime() : maxTime;
           assignment.offset = (start - minTime) * dayCoefficient;
           assignment.width = (end - start + day) * dayCoefficient - 1;
         });
