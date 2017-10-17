@@ -158,6 +158,7 @@ export class AssignmentsComponent extends BaseComponent implements OnInit {
       account: initiative.account,
       color: initiative.color,
       billability: assignment.billability,
+      involvement: assignment.involvement,
       offset: assignment.offset,
       width: assignment.width
     };

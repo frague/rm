@@ -4,16 +4,23 @@ const billable = ['Billable', 'Funded'];
 
 @Component({
   selector: 'initiative',
-  template: '<i class="initiative" [ngClass]="getClass()" [ngStyle]="getStyle()" [title]="data.account">{{ data.name }}</i>'
+  template: '<i class="initiative" [ngClass]="getClass()" [ngStyle]="getStyle()" [title]="data.account">{{ getTitle() }}</i>'
 })
 export class InitiativeComponent implements OnInit {
   @Input() data: any = {
     color: '',
     name: 'None',
-    billability: ''
+    billability: '',
+    imvolvement: 100
   };
 
-  public getStyle(): any {
+  getTitle(): string {
+    let involved = this.data.involvement;
+    if (involved == 100) involved = '';
+    return this.data.name + (involved ? ' (' + involved + '%)' : '');
+  }
+
+  getStyle(): any {
     return {
       'background-color': this.data.color || '#EEE',
       left: (this.data.offset || 0) + 'px',
@@ -21,7 +28,7 @@ export class InitiativeComponent implements OnInit {
     };
   }
 
-  public getClass() {
+  getClass() {
     return {
       nb: billable.indexOf(this.data.billability) < 0
     }
