@@ -57,9 +57,12 @@ export default function setRoutes(app) {
   router.route('/user/:id').delete(userCtrl.delete);
 
   // PMO
-  router.route('/pmo/accounts').get(integrationsCtrl.getAccounts);
-  router.route('/pmo/people').get(integrationsCtrl.getPeople);
+  router.route('/pmo/accounts').get(integrationsCtrl.pmoGetAccounts);
+  router.route('/pmo/people').get(integrationsCtrl.pmoGetPeople);
   router.route('/pmo').get(integrationsCtrl.pmoLogin);
+
+  // BambooHR
+  router.route('/bamboo').get(integrationsCtrl.bambooTimeoff);
 
 
   // Apply the routes to our application with the prefix /api

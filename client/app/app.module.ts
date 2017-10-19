@@ -8,6 +8,7 @@ import { InitiativeService } from './services/initiative.service';
 import { PmoService } from './services/pmo.service';
 import { UserService } from './services/user.service';
 import { AuthService } from './services/auth.service';
+import { BambooService } from './services/bamboo.service';
 import { AuthGuardLogin } from './services/auth-guard-login.service';
 import { AuthGuardAdmin } from './services/auth-guard-admin.service';
 import { AppComponent } from './app.component';
@@ -50,7 +51,8 @@ import { NotFoundComponent } from './not-found/not-found.component';
     InitiativeService,
     AssignmentService,
     UserService,
-    PmoService
+    PmoService,
+    BambooService
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]

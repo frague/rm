@@ -7,6 +7,7 @@ import { InitiativeService } from '../services/initiative.service';
 import { ResourceService } from '../services/resource.service';
 import { AssignmentService } from '../services/assignment.service';
 import { PmoService } from '../services/pmo.service';
+import { BambooService } from '../services/bamboo.service';
 
 import { environment } from '../../environments/environment';
 
@@ -37,7 +38,8 @@ export class SyncComponent {
     private initiativeService: InitiativeService,
     private resourceService: ResourceService,
     private assignmentService: AssignmentService,
-    private pmo: PmoService
+    private pmo: PmoService,
+    private bamboo: BambooService
  ) {
   }
 
@@ -62,6 +64,10 @@ export class SyncComponent {
   parseDate(milliseconds: number): string {
     if (!milliseconds) return '';
     return new Date(milliseconds).toString();
+  }
+
+  accessBamboo() {
+    this.bamboo.getTimeoffs().subscribe(data => console.log(data));
   }
 
   sync() {

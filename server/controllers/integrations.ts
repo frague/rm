@@ -1,6 +1,8 @@
 const request = require('request');
 const env = process.env;
 const pmo = 'https://pmo.griddynamics.net/';
+const bamboo = 'api.bamboohr.com/api/gateway.php/griddynamics/v1/';
+var parser = require('xml2json');
 
 export default class IntegrationsCtrl {
 
@@ -27,7 +29,7 @@ export default class IntegrationsCtrl {
     this._login().then(() => res.setStatus(200));
   }
 
-  getAccounts = (req, res) => {
+  pmoGetAccounts = (req, res) => {
     this._login().on('response', () => {
       request.get(
         this._fillRequest(pmo + 'service/account/getAccounts.action'),
@@ -38,7 +40,7 @@ export default class IntegrationsCtrl {
     });
   }
 
-  getPeople = (req, res) => {
+  pmoGetPeople = (req, res) => {
     this._login().on('response', () => {
       request.get(
         this._fillRequest(pmo + 'service/people'),
@@ -48,5 +50,23 @@ export default class IntegrationsCtrl {
         });
     });
   }
+
+  _makeBambooRequest(endpoint: string, payload={}) {
+    return {
+      url: 'https://' + env.BAMBOO_KEY + ':x@' + bamboo + endpoint
+    };
+  }
+
+  bambooTimeoff = (req, res) => {
+    let data = [];
+    return request.get(this._makeBambooRequest('time_off/requests/'))
+      .on('data', chunk => {
+        data.push(chunk);
+      })
+      .on('end', () => {
+        let body = Buffer.concat(data).toString();
+        console.log(parser.toJson(body));
+      });
+  };
 
 }
