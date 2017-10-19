@@ -64,8 +64,10 @@ export default class IntegrationsCtrl {
         data.push(chunk);
       })
       .on('end', () => {
-        let body = Buffer.concat(data).toString();
-        console.log(parser.toJson(body));
+        let body = parser.toJson(Buffer.concat(data).toString());
+        res.setHeader('Content-Type', 'application/json');
+        console.log(body);
+        res.send(body);
       });
   };
 
