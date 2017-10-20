@@ -1,8 +1,9 @@
-<app-loading [condition]="isLoading"></app-loading>
-
 <app-toast [message]="toast.message"></app-toast>
 
-<button (click)="sync()" class="btn btn-danger" [disabled]="isLoading">Sync!</button>
-<button (click)="accessBamboo()" class="btn btn-danger">Try Bamboo</button>
+<button 
+  (click)="sync()" 
+  class="btn btn-danger" 
+  [disabled]="isLoading"
+>Sync!</button>
 
 <pre>{{ data }}</pre>

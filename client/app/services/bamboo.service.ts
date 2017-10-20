@@ -10,7 +10,7 @@ export class BambooService {
   }
 
   getTimeoffs(): Observable<any> {
-    return this.http.get('/api/bamboo').map(res => console.log(res));
+    return this.http.get('/api/bamboo').map(res => res.json());
   }
 
 }
