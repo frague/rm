@@ -23,6 +23,8 @@ import { LogoutComponent } from './logout/logout.component';
 import { AccountComponent } from './account/account.component';
 import { AdminComponent } from './admin/admin.component';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { PersonComponent } from './people/person.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -37,11 +39,13 @@ import { NotFoundComponent } from './not-found/not-found.component';
     AccountComponent,
     AdminComponent,
     NotFoundComponent,
-    SyncComponent
+    SyncComponent,
+    PersonComponent
   ],
   imports: [
     RoutingModule,
-    SharedModule
+    SharedModule,
+    NgbModule.forRoot()
   ],
   providers: [
     AuthService,

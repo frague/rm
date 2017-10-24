@@ -8,7 +8,7 @@
 
   <div class="assignments row" *ngIf="items.length">
     <div class="col-md-2 people lines">
-      <div *ngFor="let assignee of items; let i = index" [ngClass]="getAssignmentsCount(i)">{{ assignee.name }}</div>
+      <div *ngFor="let assignee of items; let i = index" [ngClass]="getAssignmentsCount(i)" (click)="person.show()">{{ assignee.name }}</div>
     </div>
     <div class="col-md-10 schedule">
       <div [ngStyle]="getScheduleStyles()" class="lines">
@@ -68,5 +68,7 @@
       Delete
     </button>
   </form>
+
+  <person></person>
 
 </div>

@@ -147,9 +147,11 @@ export class SyncComponent {
     // Query PMO
     return this.pmo.getPeople().subscribe(data => {
       let initiatives = {};
+      let initiativesCreators = {};
       let assignments = [];
 
-      data.rows.forEach(person => {
+      let peopleSorted = data.rows.sort((a, b) => (a.name > b.name) ? 1 : -1);
+      peopleSorted.forEach(person => {
         let pool = '';
         if (person.workProfile === 'Data Scientist') pool = 'DS';
         else if (person.specialization === 'UI' && myLocations.indexOf(person.location) >= 0) pool = 'UI';
@@ -183,18 +185,20 @@ export class SyncComponent {
               billability: person.assignmentStatus[index].name,
               involvement: person.involvements[index]
             };
-            let initiative = initiatives[name];
+            let initiative = initiativesCreators[name];
             if (initiative) {
-              assignment['initiativeId'] = initiative._id;
-              this.assignmentService.add(assignment).subscribe();
+              initiative.add(() => {
+                assignment['initiativeId'] = initiatives[name]._id;
+                this.assignmentService.add(assignment).subscribe();
+              });
             } else {
-              hue = (hue + 5) % 360;
+              hue = (hue + 10) % 360;
               let initiative = {
                 name: project,
                 account,
                 color: '#' + convert.hsl.hex(hue, 50, 80)
               };
-              this.initiativeService.add(initiative).subscribe(initiative => {
+              initiativesCreators[name] = this.initiativeService.add(initiative).subscribe(initiative => {
                 initiatives[name] = initiative;
                 assignment['initiativeId'] = initiative._id;
                 this.assignmentService.add(assignment).subscribe();

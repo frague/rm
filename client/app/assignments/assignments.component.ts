@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastComponent } from '../shared/toast/toast.component';
 
@@ -7,6 +7,8 @@ import { BaseComponent } from '../base.component';
 import { AssignmentService } from '../services/assignment.service';
 import { InitiativeService } from '../services/initiative.service';
 import { ResourceService } from '../services/resource.service';
+
+import { PersonComponent } from '../people/person.component';
 
 import { Utils } from '../utils';
 
@@ -24,6 +26,8 @@ const emptyItem = {assignments: []};
   styleUrls: ['./assignments.component.scss']
 })
 export class AssignmentsComponent extends BaseComponent implements OnInit {
+
+  @ViewChild(PersonComponent) person: PersonComponent;
 
   resources = [];
   initiatives = {};
@@ -63,7 +67,6 @@ export class AssignmentsComponent extends BaseComponent implements OnInit {
   }
 
   getAssignmentsCount(index) {
-    console.log(index, this.items[index]);
     return 'an' + (this.items[index] || emptyItem).assignments.length;
   }
 
@@ -115,6 +118,8 @@ export class AssignmentsComponent extends BaseComponent implements OnInit {
     super.getAll(() => {
       this.minDate = '3';
       this.maxDate = '0';
+
+      this.items = this.items.sort((a, b) => (a.name > b.name) ? 1 : -1);
 
       this.items.forEach(resource => {
         if (resource.minDate && resource.minDate < this.minDate) this.minDate = resource.minDate;
