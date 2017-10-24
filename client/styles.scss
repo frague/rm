@@ -95,3 +95,15 @@ i.initiative {
   }
 
 }
+
+.fade {
+  opacity: 1;
+}
+
+.modal-backdrop.fade {
+    opacity: 0.2;
+}
+
+.modal-dialog {
+  top: 100px;
+}
