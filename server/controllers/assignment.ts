@@ -29,6 +29,11 @@ export default class AssignmentCtrl extends BaseCtrl {
             $max: '$assignments.end'
           }
         }
+      },
+      {
+        '$sort': {
+          name: 1
+        }
       }
     ], (err, docs) => {
       if (err) { return console.error(err); }

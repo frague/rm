@@ -18,11 +18,13 @@
         </ol>
 
         <div *ngFor="let assignee of items; let i = index" [ngClass]="getAssignmentsCount(i)">
-          <initiative 
-            *ngFor="let assignment of assignee.assignments" 
-            [data]="showAssignment(assignment)" 
-            (click)="enableEditing(cleanup(assignment))"
-          ></initiative>
+          <span *ngFor="let assignmentsGroup of getAssignmentsGroups(assignee.assignments)" >
+            <initiative 
+              *ngFor="let assignment of assignmentsGroup" 
+              [data]="showAssignment(assignment)" 
+              (click)="enableEditing(cleanup(assignment))"
+            ></initiative>
+          </span>
         </div>
       </div>
     </div>

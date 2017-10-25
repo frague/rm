@@ -67,7 +67,7 @@ export class AssignmentsComponent extends BaseComponent implements OnInit {
   }
 
   getAssignmentsCount(index) {
-    return 'an' + (this.items[index] || emptyItem).assignments.length;
+    return 'an' + Object.keys((this.items[index] || emptyItem).assignments).length;
   }
 
   getScheduleStyles() {
@@ -76,6 +76,9 @@ export class AssignmentsComponent extends BaseComponent implements OnInit {
         'linear-gradient(90deg, ' + transparent + ' ' + this.todayOffset + 'px, red ' + this.todayOffset + 'px, ' + transparent + ' ' + (1 + this.todayOffset) + 'px) left top/' + (1 + this.todayOffset) + 'px repeat-y',
       width: (weekWidth * this.shownWeeks) + 1 + 'px'
     };
+  }
+  getAssignmentsGroups(assignments: any) {
+    return Object.values(assignments);
   }
 
   ngOnInit() {
@@ -134,12 +137,18 @@ export class AssignmentsComponent extends BaseComponent implements OnInit {
       // console.log(this.minDate, this.maxDate, this.shownWeeks);
 
       this.items.forEach(resource => {
+        let assignmentsGrouped = {};
         resource.assignments.forEach(assignment => {
+          if (!assignmentsGrouped[assignment.initiativeId]) {
+            assignmentsGrouped[assignment.initiativeId] = [];
+          }
           let start = new Date(assignment.start).getTime();
           let end = assignment.end ? new Date(assignment.end).getTime() : maxTime;
           assignment.offset = (start - minTime) * dayCoefficient;
           assignment.width = (end - start + day) * dayCoefficient - 1;
+          assignmentsGrouped[assignment.initiativeId].push(assignment);
         });
+        resource.assignments = assignmentsGrouped;
       });
 
       let start = new Date(this.minDate);

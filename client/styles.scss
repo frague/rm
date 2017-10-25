@@ -25,6 +25,7 @@ i.initiative {
     position: absolute;
     overflow: hidden;
     opacity: 0.8;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
   }
 }
 
@@ -73,7 +74,7 @@ i.initiative {
         &.an#{$i+1} {
           height: 30px + ($i * 28);
         }
-        initiative:nth-child(#{$i + 1}) i {
+        span:nth-child(#{$i + 1}) i {
           margin-top: ($i * 28px);
         }
       }

@@ -10,5 +10,13 @@ export default class ResourceCtrl extends BaseCtrl {
       if (err) { return console.error(err); }
       res.sendStatus(200);
     })
-  };
+  }
+
+	getAll = (req, res) => {
+    this.model.find({}).sort({name: 1}).exec((err, docs) => {
+      if (err) { return console.error(err); }
+      res.json(docs);
+    });
+  }
+
 }
