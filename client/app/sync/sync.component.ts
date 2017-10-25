@@ -102,40 +102,10 @@ export class SyncComponent {
             console.log('Unable to add vacations for', name);
             return;
           }
-
-          addVacation(resource._id, request.start, request.end);
+          if (request.status && request.status['$t'] === 'approved') {
+            addVacation(resource._id, request.start, request.end);
+          }
         });
-
-        // Object.keys(vacationRequests).forEach(name => {
-        //   let resource = this._peopleByName[name];
-        //   if (!resource) {
-        //     console.log('Unable to add vacations for', name);
-        //     return;
-        //   }
-
-        //   let dates = vacationRequests[name].sort();
-        //   let startDate, endDate, cursorDate;
-        //   dates.forEach(date => {
-        //     addVacation(resource._id, startDate, dates.pop());
-        //     let d = new Date(date).getMilliseconds();
-        //     if (!cursorDate) {
-        //       startDate = date;
-        //       endDate = date;
-        //       cursorDate = d;
-        //       return;
-        //     } else if (d - cursorDate != hours24) {
-        //       addVacation(resource._id, startDate, endDate);
-        //       startDate = date;
-        //       endDate = date;
-        //       cursorDate = d;
-        //     } else {
-        //       endDate = date;
-        //     }
-        //   });
-        //   if (dates.length) {
-        //     addVacation(resource._id, startDate, dates.pop());
-        //   }
-        // });
 
         this._loadings['bamboo'] = false;
       });
