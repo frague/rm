@@ -97,43 +97,45 @@ export class SyncComponent {
         let vacationRequests = {};
         data.requests.request.forEach(request => {
           let name = request.employee['$t'];
-          let employee = vacationRequests[name];
-          if (!employee) vacationRequests[name] = [];
-          vacationRequests[name].push(request.start);
-        });
-
-        console.log(2, this._peopleByName);
-        Object.keys(vacationRequests).forEach(name => {
           let resource = this._peopleByName[name];
           if (!resource) {
             console.log('Unable to add vacations for', name);
             return;
           }
 
-          console.log(3);
-          let dates = vacationRequests[name].sort();
-          console.log(dates);
-          let startDate, endDate, cursorDate;
-          dates.forEach(date => {
-            let d = new Date(date).getMilliseconds();
-            if (!cursorDate) {
-              startDate = date;
-              endDate = date;
-              cursorDate = d;
-              return;
-            } else if (d - cursorDate != hours24) {
-              addVacation(resource._id, startDate, endDate);
-              startDate = date;
-              endDate = date;
-              cursorDate = d;
-            } else {
-              endDate = date;
-            }
-          });
-          if (dates.length) {
-            addVacation(resource._id, startDate, dates.pop());
-          }
+          addVacation(resource._id, request.start, request.end);
         });
+
+        // Object.keys(vacationRequests).forEach(name => {
+        //   let resource = this._peopleByName[name];
+        //   if (!resource) {
+        //     console.log('Unable to add vacations for', name);
+        //     return;
+        //   }
+
+        //   let dates = vacationRequests[name].sort();
+        //   let startDate, endDate, cursorDate;
+        //   dates.forEach(date => {
+        //     addVacation(resource._id, startDate, dates.pop());
+        //     let d = new Date(date).getMilliseconds();
+        //     if (!cursorDate) {
+        //       startDate = date;
+        //       endDate = date;
+        //       cursorDate = d;
+        //       return;
+        //     } else if (d - cursorDate != hours24) {
+        //       addVacation(resource._id, startDate, endDate);
+        //       startDate = date;
+        //       endDate = date;
+        //       cursorDate = d;
+        //     } else {
+        //       endDate = date;
+        //     }
+        //   });
+        //   if (dates.length) {
+        //     addVacation(resource._id, startDate, dates.pop());
+        //   }
+        // });
 
         this._loadings['bamboo'] = false;
       });
