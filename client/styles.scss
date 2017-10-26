@@ -12,6 +12,14 @@ form {
 	}
 }
 
+.table thead th {
+  border-bottom: 2px solid #888;
+  border-top: none;
+}
+
+.table td {
+  border-top: 1px solid #AAA;
+}
 
 i.initiative {
   font-style: normal;

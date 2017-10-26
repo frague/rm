@@ -9,7 +9,7 @@
         <th>Grade</th>
         <th>Location</th>
         <th>Pool</th>
-        <th>Actions</th>
+        <!-- <th>Actions</th> -->
       </tr>
     </thead>
     <tr *ngFor="let resource of items">
@@ -18,9 +18,9 @@
       <td>{{ resource.grade }}</td>
       <td>{{ resource.location }}</td>
       <td>{{ resource.pool }}</td>
-      <td>
+<!--       <td>
           <button class="btn btn-sm btn-warning" (click)="enableEditing(resource)"><i class="fa fa-pencil"></i> Edit</button> <button class="btn btn-sm btn-danger" (click)="delete(resource)"><i class="fa fa-trash"></i> Delete</button>
-        </td>
+        </td> -->
     </tr>
   </table>
 
