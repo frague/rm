@@ -30,6 +30,8 @@ export class AssignmentsComponent extends BaseComponent implements OnInit {
   @ViewChild(PersonComponent) person: PersonComponent;
 
   resources = [];
+  resourcesById = {};
+
   initiatives = {};
   assignments = [];
   item = {};
@@ -84,7 +86,13 @@ export class AssignmentsComponent extends BaseComponent implements OnInit {
   ngOnInit() {
     this.getAll();
     this.resourceService.getAll().subscribe(
-      data => this.resources = data,
+      data => {
+        this.resources = data;
+        this.resourcesById = data.reduce((result, person) => {
+          result[person._id] = person;
+          return result;
+        }, {});
+      },
       error => console.log(error)
     );
     this.initiativeService.getAll().subscribe(

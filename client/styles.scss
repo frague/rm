@@ -116,3 +116,12 @@ i.initiative {
 .modal-dialog {
   top: 100px;
 }
+
+dl.attributes {
+  dt {
+    float: left;
+  }
+  dd {
+    padding-left: 100px;
+  }
+}

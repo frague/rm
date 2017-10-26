@@ -8,7 +8,11 @@
 
   <div class="assignments row" *ngIf="items.length">
     <div class="col-md-2 people lines">
-      <div *ngFor="let assignee of items; let i = index" [ngClass]="getAssignmentsCount(i)" (click)="person.show()">{{ assignee.name }}</div>
+      <div
+        *ngFor="let assignee of items; let i = index"
+        [ngClass]="getAssignmentsCount(i)"
+        (click)="person.show(resourcesById[assignee._id])"
+      >{{ assignee.name }}</div>
     </div>
     <div class="col-md-10 schedule">
       <div [ngStyle]="getScheduleStyles()" class="lines">
@@ -19,9 +23,9 @@
 
         <div *ngFor="let assignee of items; let i = index" [ngClass]="getAssignmentsCount(i)">
           <span *ngFor="let assignmentsGroup of getAssignmentsGroups(assignee.assignments)" >
-            <initiative 
-              *ngFor="let assignment of assignmentsGroup" 
-              [data]="showAssignment(assignment)" 
+            <initiative
+              *ngFor="let assignment of assignmentsGroup"
+              [data]="showAssignment(assignment)"
               (click)="enableEditing(cleanup(assignment))"
             ></initiative>
           </span>

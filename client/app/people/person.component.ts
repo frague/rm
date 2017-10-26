@@ -1,5 +1,12 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, Input } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+
+type personType = {
+  name: string,
+  login: string,
+  grade: [string],
+  location: [string]
+};
 
 @Component({
   selector: 'person',
@@ -7,12 +14,13 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 })
 export class PersonComponent {
   @ViewChild('content') content;
-  constructor(private modalService: NgbModal) {
+  person: personType = {} as personType;
 
-  }
+  constructor(private modalService: NgbModal) {}
 
-  show() {
-    console.log(this.content);
+  show(person: any) {
+    this.person = person;
+    console.log(person);
     this.modalService.open(this.content);
   }
 
