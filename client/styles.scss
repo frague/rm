@@ -4,14 +4,6 @@ body {
   margin-bottom: 10px;
 }
 
-form {
-  margin-top: 50px;
-
-	.input-group {
-	  margin-bottom: 15px;
-	}
-}
-
 .table thead th {
   border-bottom: 2px solid #888;
   border-top: none;
@@ -123,5 +115,16 @@ dl.attributes {
   }
   dd {
     padding-left: 100px;
+  }
+}
+
+.form-row {
+  .form-group {
+      &:first-child {
+        padding-left: 0px;
+      }
+      &:last-child {
+        padding-right: 0px;
+      }
   }
 }

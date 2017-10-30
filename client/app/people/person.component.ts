@@ -9,11 +9,11 @@ type personType = {
 };
 
 @Component({
-  selector: 'person',
+  selector: 'person-modal',
   templateUrl: './person.component.html'
 })
 export class PersonComponent {
-  @ViewChild('content') content;
+  @ViewChild('person_modal') content;
   person: personType = {} as personType;
 
   constructor(private modalService: NgbModal) {}

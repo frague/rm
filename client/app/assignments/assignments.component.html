@@ -1,6 +1,8 @@
 <div>
   <h4>Assignments</h4>
 
+  <assignment-modal [resources]="resources" [initiatives]="initiatives"></assignment-modal>
+
   <div class="row">
     <div class="col-md-2"></div>
     <div class="col-md-10"></div>
@@ -11,7 +13,7 @@
       <div
         *ngFor="let assignee of items; let i = index"
         [ngClass]="getAssignmentsCount(i)"
-        (click)="person.show(resourcesById[assignee._id])"
+        (click)="personModal.show(resourcesById[assignee._id])"
       >{{ assignee.name }}</div>
     </div>
     <div class="col-md-10 schedule">
@@ -26,7 +28,7 @@
             <initiative
               *ngFor="let assignment of assignmentsGroup"
               [data]="showAssignment(assignment)"
-              (click)="enableEditing(cleanup(assignment))"
+              (click)="assignmentModal.show(cleanup(assignment))"
             ></initiative>
           </span>
         </div>
@@ -34,47 +36,7 @@
     </div>
   </div>
 
-  <form class="form-inline" [formGroup]="form" (ngSubmit)="save()">
-    <div class="form-group">
-      <select class="form-control" name="resource" formControlName="resourceId" required>
-        <option></option>
-        <option *ngFor="let resource of resources" [value]="resource._id">{{ resource.name }}</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <select class="form-control" name="initiative" formControlName="initiativeId" required>
-        <option></option>
-        <option *ngFor="let initiative of getInitiatives()" [value]="initiative._id">{{ initiative.name }}</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <input class="form-control" type="date" name="start" formControlName="start" placeholder="Start date">
-    </div>
-    <div class="form-group">
-      <input class="form-control" type="date" name="end" formControlName="end" placeholder="End date">
-    </div>
-    <div class="form-group">
-      <label>
-        <input class="form-control" type="text" name="billability" formControlName="billability" placeholder="Billability">
-      </label>
-    </div>
-    <div class="form-group">
-      <input class="form-control" type="number" name="involvement" formControlName="involvement" placeholder="Involvement" max="100" min="0">
-    </div>
-    <div class="form-group">
-      <textarea class="form-control" name="comment" formControlName="comment" placeholder="Comments" rows="1"></textarea>
-    </div>
-    <button class="btn btn-primary" type="submit" [disabled]="!form.valid">
-      <i class="fa fa-floppy-o"></i> Save
-    </button>
-    <button class="btn btn-default" type="reset" (click)="cancelEditing()">
-      Discard
-    </button>
-    <button *ngIf="item._id" class="btn btn-danger btn-default" (click)="delete(item)">
-      Delete
-    </button>
-  </form>
 
-  <person></person>
+  <!-- <person-modal></person-modal> -->
 
 </div>

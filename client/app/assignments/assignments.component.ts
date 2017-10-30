@@ -9,6 +9,7 @@ import { InitiativeService } from '../services/initiative.service';
 import { ResourceService } from '../services/resource.service';
 
 import { PersonComponent } from '../people/person.component';
+import { AssignmentComponent } from './assignment.component';
 
 import { Utils } from '../utils';
 
@@ -22,12 +23,12 @@ const emptyItem = {assignments: []};
 
 @Component({
   selector: 'assignments',
-  templateUrl: './assignments.component.html',
-  styleUrls: ['./assignments.component.scss']
+  templateUrl: './assignments.component.html'
 })
 export class AssignmentsComponent extends BaseComponent implements OnInit {
 
-  @ViewChild(PersonComponent) person: PersonComponent;
+  @ViewChild(PersonComponent) personModal: PersonComponent;
+  @ViewChild(AssignmentComponent) assignmentModal: AssignmentComponent;
 
   resources = [];
   resourcesById = {};
@@ -44,16 +45,7 @@ export class AssignmentsComponent extends BaseComponent implements OnInit {
   todayOffset: number = -10;
   todayCaption = '';
 
-  public form = new FormGroup({
-    _id: new FormControl(''),
-    resourceId: new FormControl('', Validators.required),
-    initiativeId: new FormControl('', Validators.required),
-    start: new FormControl('', Validators.required),
-    end: new FormControl('', Validators.required),
-    billability: new FormControl('', Validators.required),
-    involvement: new FormControl('100', Validators.required),
-    comment: new FormControl('')
-  });
+  public form = new FormGroup({});
 
   constructor(
     assignmentService: AssignmentService,
@@ -110,6 +102,7 @@ export class AssignmentsComponent extends BaseComponent implements OnInit {
     let clean = Object.assign({}, item);
     delete clean.offset;
     delete clean.width;
+    delete clean.__v;
     clean.comment = clean.comment || '';
     return clean;
   }
@@ -142,7 +135,6 @@ export class AssignmentsComponent extends BaseComponent implements OnInit {
       let maxTime = this.maxDate.getTime();
       this.shownWeeks = Math.round((maxTime - this.minDate.getTime()) / week);
       let minTime = this.minDate.getTime();
-      // console.log(this.minDate, this.maxDate, this.shownWeeks);
 
       this.items.forEach(resource => {
         let assignmentsGrouped = {};

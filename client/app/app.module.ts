@@ -1,4 +1,5 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { RoutingModule } from './routing.module';
 import { SharedModule } from './shared/shared.module';
@@ -24,7 +25,7 @@ import { AccountComponent } from './account/account.component';
 import { AdminComponent } from './admin/admin.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { PersonComponent } from './people/person.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { AssignmentComponent } from './assignments/assignment.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     AdminComponent,
     NotFoundComponent,
     SyncComponent,
-    PersonComponent
+    PersonComponent,
+    AssignmentComponent
   ],
   imports: [
     RoutingModule,
