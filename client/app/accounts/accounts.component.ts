@@ -61,7 +61,7 @@ export class AccountsComponent extends BaseComponent implements OnInit {
   }
 
   getAssignmentsCount(initiative) {
-    return 'an' + (this.initiativeAssignments[initiative._id] || []).length;
+    return 'an' + this.getPersonInitiativeAssignments(initiative).length;
   }
 
   getScheduleStyles() {
@@ -79,6 +79,10 @@ export class AccountsComponent extends BaseComponent implements OnInit {
     return Object.keys(this.accountInitiatives).sort();
   }
 
+  getPersonInitiativeAssignments(initiative) {
+    return Object.keys(this.initiativeAssignments[initiative._id] || {})
+  }
+
   _push(collection: any, key: string, item: any, makeUnique=true) {
     collection[key] = collection[key] || [];
     if (!makeUnique || collection[key].indexOf(item) < 0) {
@@ -90,7 +94,8 @@ export class AccountsComponent extends BaseComponent implements OnInit {
     this.getAll().add(() => {
       this.items.forEach(resource => {
         Object.keys(resource.assignments).forEach(initiativeId => {
-          this.initiativeAssignments[initiativeId] = (this.initiativeAssignments[initiativeId] || []).concat(resource.assignments[initiativeId]);
+          this.initiativeAssignments[initiativeId] = (this.initiativeAssignments[initiativeId] || {});
+          this.initiativeAssignments[initiativeId][resource._id] = resource.assignments[initiativeId];
         });
       });
       console.log('Initiatives assignments', this.initiativeAssignments);

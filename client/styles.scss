@@ -70,7 +70,7 @@ i.initiative {
       white-space: nowrap;
       overflow: hidden;
 
-      @for $i from 0 through 200 {
+      @for $i from 0 through 100 {
         &.an#{$i+1} {
           height: 30px + ($i * 28);
         }

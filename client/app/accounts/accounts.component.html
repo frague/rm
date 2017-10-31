@@ -32,10 +32,10 @@
             class="line" 
             [ngClass]="getAssignmentsCount(initiative)"
           >
-            <span *ngFor="let assignment of initiativeAssignments[initiative._id]">
+            <span *ngFor="let personId of getPersonInitiativeAssignments(initiative)">
               <initiative
+                 *ngFor="let assignment of initiativeAssignments[initiative._id][personId]"
                 [data]="showAssignment(assignment)"
-                (click)="assignmentModal.show(cleanup(assignment))"
               ></initiative>
             </span>
           </div>
