@@ -1,4 +1,5 @@
 import { FormGroup } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 type baseServiceType = {
   getAll: Function,
@@ -29,7 +30,7 @@ export abstract class BaseComponent {
     this.getAll();
   }
 
-  getAll(onLoad?: Function) {
+  getAll(onLoad?: Function): Subscription {
     return this.apiService.getAll().subscribe(
       data => {
         this.items = data;

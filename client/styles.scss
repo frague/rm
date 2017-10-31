@@ -63,14 +63,14 @@ i.initiative {
   .people, .schedule > div {
     padding-top: 20px;
 
-    div {
+    div.line {
       height: 30px;
       border-top: solid 1px #AAA;
       padding-top: 1px;
       white-space: nowrap;
       overflow: hidden;
 
-      @for $i from 0 through 4 {
+      @for $i from 0 through 200 {
         &.an#{$i+1} {
           height: 30px + ($i * 28);
         }
@@ -136,5 +136,24 @@ ul.sync {
     padding: 4px 0px;
     text-transform: uppercase;
     list-style: none;
+  }
+}
+
+.accounts {
+
+  .initiative-item {
+    border-top: solid 2px #888;
+
+    span {
+      height: 40px;
+      font-weight: 600;
+      display: block;
+    }
+  }
+  .schedule {
+    .account {
+      border-top: solid 2px #888;
+      padding-top: 40px;
+    }
   }
 }

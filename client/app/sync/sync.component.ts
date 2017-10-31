@@ -93,7 +93,7 @@ export class SyncComponent {
       }).subscribe(vacation => {
         let vacationId = vacation._id;
         let addVacation = (resourceId, startDate, endDate) => {
-          console.log('add vacation', resourceId, startDate, endDate);
+          // console.log('add vacation', resourceId, startDate, endDate);
           this.assignmentService.add({
             initiativeId: vacationId,
             resourceId,

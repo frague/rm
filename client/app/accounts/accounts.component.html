@@ -7,29 +7,41 @@
   </div>
 
   <div class="accounts row" *ngIf="getAccounts().length">
-    <div class="col-md-2 people lines">
-      <div
-        *ngFor="let account of getAccounts(); let i = index"
-        [ngClass]="getAssignmentsCount(i)"
-      >{{ account }}</div>
+    <div class="people col-md-2">
+      <div class="initiative-item" *ngFor="let account of getAccounts()">
+        <span>{{ account }}</span>
+        <div class="lines">
+          <div
+            *ngFor="let initiative of accountInitiatives[account]; let i = index"
+            class="line"
+            [ngClass]="getAssignmentsCount(initiative)"
+          >{{ initiative.name }}</div>
+        </div>
+      </div>
     </div>
-    <div class="col-md-10 schedule">
+    <div class="schedule col-md-10">
       <div [ngStyle]="getScheduleStyles()" class="lines">
         <ol>
           <li class="today" [ngStyle]="{left: todayOffset + 2 + 'px'}">{{ todayCaption }}</li>
           <li *ngFor="let week of weekTitles">{{ week }}</li>
         </ol>
+        <div *ngFor="let account of getAccounts()" class="account">
 
-<!--         <div *ngFor="let assignee of items; let i = index" [ngClass]="getAssignmentsCount(i)">
-          <span *ngFor="let assignmentsGroup of getAssignmentsGroups(assignee.assignments)" >
-            <initiative
-              *ngFor="let assignment of assignmentsGroup"
-              [data]="showAssignment(assignment)"
-              (click)="assignmentModal.show(cleanup(assignment))"
-            ></initiative>
-          </span>
+          <div 
+            *ngFor="let initiative of accountInitiatives[account]; let i = index" 
+            class="line" 
+            [ngClass]="getAssignmentsCount(initiative)"
+          >
+            <span *ngFor="let assignment of initiativeAssignments[initiative._id]">
+              <initiative
+                [data]="showAssignment(assignment)"
+                (click)="assignmentModal.show(cleanup(assignment))"
+              ></initiative>
+            </span>
+          </div>
+      
         </div>
- -->      </div>
+      </div>
     </div>
   </div>
 

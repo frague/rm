@@ -119,7 +119,7 @@ export class AssignmentsComponent extends BaseComponent implements OnInit {
   }
 
   getAll() {
-    super.getAll(() => {
+    return super.getAll(() => {
       this.minDate = '3';
       this.maxDate = '0';
 

@@ -33,8 +33,9 @@ export class AccountsComponent extends BaseComponent implements OnInit {
   assignments = [];
   item = {};
 
-  accountsInitiatives = {};
+  accountInitiatives = {};
   accountsAssignments = {};
+  initiativeAssignments = {};
 
   minDate: any = '3';
   maxDate: any = '0';
@@ -59,8 +60,8 @@ export class AccountsComponent extends BaseComponent implements OnInit {
     return Object.values(this.initiatives);
   }
 
-  getAssignmentsCount(index) {
-    return 'an' + Object.keys((this.items[index] || emptyItem).assignments).length;
+  getAssignmentsCount(initiative) {
+    return 'an' + (this.initiativeAssignments[initiative._id] || []).length;
   }
 
   getScheduleStyles() {
@@ -75,11 +76,25 @@ export class AccountsComponent extends BaseComponent implements OnInit {
   }
 
   getAccounts() {
-    return Object.keys(this.accountsInitiatives).sort();
+    return Object.keys(this.accountInitiatives).sort();
+  }
+
+  _push(collection: any, key: string, item: any, makeUnique=true) {
+    collection[key] = collection[key] || [];
+    if (!makeUnique || collection[key].indexOf(item) < 0) {
+      collection[key].push(item);
+    }
   }
 
   ngOnInit() {
-    this.getAll();
+    this.getAll().add(() => {
+      this.items.forEach(resource => {
+        Object.keys(resource.assignments).forEach(initiativeId => {
+          this.initiativeAssignments[initiativeId] = (this.initiativeAssignments[initiativeId] || []).concat(resource.assignments[initiativeId]);
+        });
+      });
+      console.log('Initiatives assignments', this.initiativeAssignments);
+    });
     this.resourceService.getAll().subscribe(
       data => {
         this.resources = data;
@@ -95,14 +110,11 @@ export class AccountsComponent extends BaseComponent implements OnInit {
         this.initiatives = data.reduce((result, initiative) => {
           result[initiative._id] = initiative;
 
-          let ais = this.accountsInitiatives[initiative.account] || [];
-          if (ais.indexOf(initiative) < 0) {
-            ais.push(initiative);
-            this.accountsInitiatives[initiative.account] = ais;
-          }
+          this._push(this.accountInitiatives, initiative.account, initiative);
 
           return result;
-        }, {})
+        }, {});
+        console.log('Account initiatives', this.accountInitiatives);
       },
       error => console.log(error)
     );
@@ -124,12 +136,11 @@ export class AccountsComponent extends BaseComponent implements OnInit {
       let offset = date.getDate() + (doIncrease ? 7 - dow : -dow);
       date.setDate(offset);
     }
-    // console.log(dateString, dow, date);
     return date;
   }
 
   getAll() {
-    super.getAll(() => {
+    return super.getAll(() => {
       this.minDate = '3';
       this.maxDate = '0';
 
@@ -178,7 +189,7 @@ export class AccountsComponent extends BaseComponent implements OnInit {
   showAssignment(assignment) {
     let initiative = this.initiatives[assignment.initiativeId] || {};
     return {
-      name: initiative.name,
+      name: this.resourcesById[assignment.resourceId].name,
       account: initiative.account,
       color: initiative.color,
       billability: assignment.billability,

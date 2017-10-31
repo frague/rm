@@ -12,6 +12,7 @@
     <div class="col-md-2 people lines">
       <div
         *ngFor="let assignee of items; let i = index"
+        class="line"
         [ngClass]="getAssignmentsCount(i)"
         (click)="personModal.show(resourcesById[assignee._id])"
       >{{ assignee.name }}</div>
@@ -23,7 +24,7 @@
           <li *ngFor="let week of weekTitles">{{ week }}</li>
         </ol>
 
-        <div *ngFor="let assignee of items; let i = index" [ngClass]="getAssignmentsCount(i)">
+        <div *ngFor="let assignee of items; let i = index" class="line" [ngClass]="getAssignmentsCount(i)">
           <span *ngFor="let assignmentsGroup of getAssignmentsGroups(assignee.assignments)" >
             <initiative
               *ngFor="let assignment of assignmentsGroup"
