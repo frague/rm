@@ -64,6 +64,9 @@ export default function setRoutes(app) {
   // BambooHR
   router.route('/bamboo').get(integrationsCtrl.bambooTimeoff);
 
+  // Google Spreadsheet (demand file)
+  router.route('/demand').get(integrationsCtrl.googleGetInfo);
+
 
   // Apply the routes to our application with the prefix /api
   app.use('/api', router);

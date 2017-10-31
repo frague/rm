@@ -13,7 +13,7 @@ type personType = {
   templateUrl: './person.component.html'
 })
 export class PersonComponent {
-  @ViewChild('person_modal') content;
+  @ViewChild('content') content;
   person: personType = {} as personType;
 
   constructor(private modalService: NgbModal) {}

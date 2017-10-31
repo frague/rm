@@ -53,14 +53,14 @@
 
   </div>
   <div class="modal-footer">
+    <button *ngIf="assignment._id" class="btn btn-danger btn-default pull-left" (click)="delete(item)">
+      Delete
+    </button>
     <button class="btn btn-primary" type="submit" [disabled]="!form.valid">
       <i class="fa fa-floppy-o"></i> Save
     </button>
-    <button class="btn btn-default" type="reset" (click)="cancelEditing()">
+    <button class="btn btn-default" type="reset" (click)="d('Cross click')">
       Discard
-    </button>
-    <button *ngIf="assignment._id" class="btn btn-danger btn-default" (click)="delete(item)">
-      Delete
     </button>
   </div>
 </ng-template>
