@@ -6,13 +6,12 @@
     <div class="col-md-10"></div>
   </div>
 
-  <div class="assignments row" *ngIf="items.length">
+  <div class="accounts row" *ngIf="getAccounts().length">
     <div class="col-md-2 people lines">
       <div
-        *ngFor="let assignee of items; let i = index"
+        *ngFor="let account of getAccounts(); let i = index"
         [ngClass]="getAssignmentsCount(i)"
-        (click)="personModal.show(resourcesById[assignee._id])"
-      >{{ assignee.name }}</div>
+      >{{ account }}</div>
     </div>
     <div class="col-md-10 schedule">
       <div [ngStyle]="getScheduleStyles()" class="lines">
@@ -21,7 +20,7 @@
           <li *ngFor="let week of weekTitles">{{ week }}</li>
         </ol>
 
-        <div *ngFor="let assignee of items; let i = index" [ngClass]="getAssignmentsCount(i)">
+<!--         <div *ngFor="let assignee of items; let i = index" [ngClass]="getAssignmentsCount(i)">
           <span *ngFor="let assignmentsGroup of getAssignmentsGroups(assignee.assignments)" >
             <initiative
               *ngFor="let assignment of assignmentsGroup"
@@ -30,7 +29,7 @@
             ></initiative>
           </span>
         </div>
-      </div>
+ -->      </div>
     </div>
   </div>
 

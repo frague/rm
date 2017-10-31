@@ -33,6 +33,9 @@ export class AccountsComponent extends BaseComponent implements OnInit {
   assignments = [];
   item = {};
 
+  accountsInitiatives = {};
+  accountsAssignments = {};
+
   minDate: any = '3';
   maxDate: any = '0';
   shownWeeks = 0;
@@ -71,6 +74,10 @@ export class AccountsComponent extends BaseComponent implements OnInit {
     return Object.values(assignments);
   }
 
+  getAccounts() {
+    return Object.keys(this.accountsInitiatives).sort();
+  }
+
   ngOnInit() {
     this.getAll();
     this.resourceService.getAll().subscribe(
@@ -87,6 +94,13 @@ export class AccountsComponent extends BaseComponent implements OnInit {
       data => {
         this.initiatives = data.reduce((result, initiative) => {
           result[initiative._id] = initiative;
+
+          let ais = this.accountsInitiatives[initiative.account] || [];
+          if (ais.indexOf(initiative) < 0) {
+            ais.push(initiative);
+            this.accountsInitiatives[initiative.account] = ais;
+          }
+
           return result;
         }, {})
       },
