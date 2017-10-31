@@ -32,7 +32,7 @@ const hours24 = 86400000;
 export class SyncComponent {
 
   data: any = [];
-  private _loadings = {};
+  loadings = {};
   private _peopleByName = {};
 
   constructor(
@@ -48,11 +48,15 @@ export class SyncComponent {
   }
 
   get isLoading(): boolean {
-    return Object.values(this._loadings).some(value => !!value);
+    return Object.values(this.loadings).some(value => !!value);
+  }
+
+  getProgress() {
+    return Object.keys(this.loadings);
   }
 
   cleanup(): Subscription {
-    this._loadings['cleanup'] = true;
+    this.loadings['cleanup'] = true;
     return this.initiativeService.deleteAll().subscribe(
       () => {
         return this.resourceService.deleteAll().subscribe(
@@ -60,7 +64,7 @@ export class SyncComponent {
             return this.assignmentService.deleteAll().subscribe(
               () => {
                 return this.demandService.deleteAll().subscribe(
-                  () => this._loadings['cleanup'] = false,
+                  () => this.loadings['cleanup'] = false,
                   error => console.log(error)
                 )
               },
@@ -80,7 +84,7 @@ export class SyncComponent {
   }
 
   _queryBamboo() {
-    this._loadings['bamboo'] = true;
+    this.loadings['bamboo'] = true;
     return this.bamboo.getTimeoffs().subscribe(data => {
       this.initiativeService.add({
         name: 'Vacation',
@@ -113,13 +117,13 @@ export class SyncComponent {
           }
         });
 
-        this._loadings['bamboo'] = false;
+        this.loadings['bamboo'] = false;
       });
     });
   }
 
   _queryPMO(): Subscription {
-    this._loadings['pmo'] = true;
+    this.loadings['pmo'] = true;
     let initiativesIds = {};
     let hue = 0;
 
@@ -184,7 +188,7 @@ export class SyncComponent {
               });
             }
           });
-          this._loadings['pmo'] = false;
+          this.loadings['pmo'] = false;
         });
       });
     });
@@ -203,7 +207,7 @@ export class SyncComponent {
   }
 
   _queryDemand() {
-    this._loadings['demands'] = true;
+    this.loadings['demands'] = true;
 
     // Query Demand file
     return this.demandService.import().subscribe(data => {
@@ -235,20 +239,19 @@ export class SyncComponent {
           requestId: demandLine[17]
         };
 
-        // if (demand.status !== 'active') return;
         if (demand.status !== 'active' || demand.profile.toLowerCase().indexOf('ui') < 0) return;
         this.demandService.add(demand).subscribe();
       });
-      this._loadings['demands'] = false;
+      this.loadings['demands'] = false;
     });
   }
 
   sync() {
     this.cleanup().add(() => {
       this._queryDemand();
-      // this._queryPMO().add(() => {
-      //   this._queryBamboo();
-      // });
+      this._queryPMO().add(() => {
+        this._queryBamboo();
+      });
     });
   }
 }

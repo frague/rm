@@ -1,9 +1,11 @@
 <app-toast [message]="toast.message"></app-toast>
 
 <button 
-  (click)="sync()" 
-  class="btn btn-danger" 
+  (click)="sync()"
+  class="btn btn-danger"
   [disabled]="isLoading"
 >Sync!</button>
 
-<pre>{{ data }}</pre>
+<ul class="sync">
+  <li *ngFor="let item of getProgress()">{{ item }} <i *ngIf="loadings[item]" class="fa fa-cog fa-spin fa-fw"></i></li>
+</ul>
