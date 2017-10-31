@@ -8,6 +8,7 @@ import { ResourceService } from '../services/resource.service';
 import { AssignmentService } from '../services/assignment.service';
 import { PmoService } from '../services/pmo.service';
 import { BambooService } from '../services/bamboo.service';
+import { DemandService } from '../services/demand.service';
 
 import { environment } from '../../environments/environment';
 
@@ -41,7 +42,8 @@ export class SyncComponent {
     private resourceService: ResourceService,
     private assignmentService: AssignmentService,
     private pmo: PmoService,
-    private bamboo: BambooService
+    private bamboo: BambooService,
+    private demandService: DemandService
  ) {
   }
 
@@ -50,21 +52,25 @@ export class SyncComponent {
   }
 
   cleanup(): Subscription {
-    this._loadings['pmo'] = true;
+    this._loadings['cleanup'] = true;
     return this.initiativeService.deleteAll().subscribe(
       () => {
         return this.resourceService.deleteAll().subscribe(
           () => {
             return this.assignmentService.deleteAll().subscribe(
-              () => true,
+              () => {
+                return this.demandService.deleteAll().subscribe(
+                  () => this._loadings['cleanup'] = false,
+                  error => console.log(error)
+                )
+              },
               error => console.log(error)
             )
           },
           error => console.log(error)
         )
       },
-      error => console.log(error),
-      () => this._loadings['pmo'] = false
+      error => console.log(error)
     );
   }
 
@@ -113,6 +119,7 @@ export class SyncComponent {
   }
 
   _queryPMO(): Subscription {
+    this._loadings['pmo'] = true;
     let initiativesIds = {};
     let hue = 0;
 
@@ -177,16 +184,71 @@ export class SyncComponent {
               });
             }
           });
+          this._loadings['pmo'] = false;
         });
       });
     });
   }
 
+  _parseDate(date: string): Date {
+    date = date.replace(/[^\da-zA-Z\-\s]/g, ' ').replace(/\s+/g, ' ');
+    if (date) return new Date(date)
+    else return null;
+  }
+
+  _parseDuration(duration: string): number {
+    duration = duration.replace(/^[^\d]+/g, '').substr(0, 2);
+    if (!duration) return 6;
+    return parseInt(duration);
+  }
+
+  _queryDemand() {
+    this._loadings['demands'] = true;
+
+    // Query Demand file
+    return this.demandService.import().subscribe(data => {
+      data.forEach(demandLine => {
+        let start = this._parseDate(demandLine[7]);
+        let duration = this._parseDuration(demandLine[9]);
+        let end = start ? (duration ? start.setMonth(start.getMonth() + duration) : start) : null;
+
+        let demand = {
+          account: demandLine[0],
+          status: demandLine[1],
+          acknowledgement: demandLine[2],
+          role: demandLine[3],
+          profile: demandLine[4],
+          comment: demandLine[5],
+          deployment: demandLine[6],
+          start,
+          end,
+          stage: demandLine[8],
+          grades: demandLine[10].split(/[,-]/g),
+          locations: [
+            !!demandLine[11],
+            !!demandLine[12],
+            !!demandLine[13],
+            !!demandLine[14],
+            !!demandLine[15],
+            !!demandLine[16]
+          ],
+          requestId: demandLine[17]
+        };
+
+        // if (demand.status !== 'active') return;
+        if (demand.status !== 'active' || demand.profile.toLowerCase().indexOf('ui') < 0) return;
+        this.demandService.add(demand).subscribe();
+      });
+      this._loadings['demands'] = false;
+    });
+  }
+
   sync() {
     this.cleanup().add(() => {
-      this._queryPMO().add(() => {
-        this._queryBamboo();
-      });
+      this._queryDemand();
+      // this._queryPMO().add(() => {
+      //   this._queryBamboo();
+      // });
     });
   }
 }

@@ -1,0 +1,37 @@
+<div>
+  <h4>Assignments</h4>
+
+  <div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-10"></div>
+  </div>
+
+  <div class="assignments row" *ngIf="items.length">
+    <div class="col-md-2 people lines">
+      <div
+        *ngFor="let assignee of items; let i = index"
+        [ngClass]="getAssignmentsCount(i)"
+        (click)="personModal.show(resourcesById[assignee._id])"
+      >{{ assignee.name }}</div>
+    </div>
+    <div class="col-md-10 schedule">
+      <div [ngStyle]="getScheduleStyles()" class="lines">
+        <ol>
+          <li class="today" [ngStyle]="{left: todayOffset + 2 + 'px'}">{{ todayCaption }}</li>
+          <li *ngFor="let week of weekTitles">{{ week }}</li>
+        </ol>
+
+        <div *ngFor="let assignee of items; let i = index" [ngClass]="getAssignmentsCount(i)">
+          <span *ngFor="let assignmentsGroup of getAssignmentsGroups(assignee.assignments)" >
+            <initiative
+              *ngFor="let assignment of assignmentsGroup"
+              [data]="showAssignment(assignment)"
+              (click)="assignmentModal.show(cleanup(assignment))"
+            ></initiative>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

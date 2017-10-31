@@ -6,6 +6,7 @@ import InitiativeCtrl from './controllers/initiative';
 import AssignmentCtrl from './controllers/assignment';
 import UserCtrl from './controllers/user';
 import IntegrationsCtrl from './controllers/integrations';
+import DemandCtrl from './controllers/demand';
 
 import Resource from './models/resource';
 import User from './models/user';
@@ -19,6 +20,7 @@ export default function setRoutes(app) {
   const assignmentCtrl = new AssignmentCtrl();
   const userCtrl = new UserCtrl();
   const integrationsCtrl = new IntegrationsCtrl();
+  const demandCtrl = new DemandCtrl();
 
   // Assignments
   router.route('/assignments').get(assignmentCtrl.getAll);
@@ -47,6 +49,18 @@ export default function setRoutes(app) {
   router.route('/initiative/:id').put(initiativeCtrl.update);
   router.route('/initiative/:id').delete(initiativeCtrl.delete);
 
+  // Google Spreadsheet (demand file)
+  router.route('/demands/import').get(integrationsCtrl.googleGetInfo);
+
+  // Demands
+  router.route('/demands').get(demandCtrl.getAll);
+  router.route('/demands').delete(demandCtrl.deleteAll);
+  router.route('/demands/count').get(demandCtrl.count);
+  router.route('/demand').post(demandCtrl.insert);
+  router.route('/demand/:id').get(demandCtrl.get);
+  router.route('/demand/:id').put(demandCtrl.update);
+  router.route('/demand/:id').delete(demandCtrl.delete);
+
   // Users
   router.route('/login').post(userCtrl.login);
   router.route('/users').get(userCtrl.getAll);
@@ -63,10 +77,6 @@ export default function setRoutes(app) {
 
   // BambooHR
   router.route('/bamboo').get(integrationsCtrl.bambooTimeoff);
-
-  // Google Spreadsheet (demand file)
-  router.route('/demand').get(integrationsCtrl.googleGetInfo);
-
 
   // Apply the routes to our application with the prefix /api
   app.use('/api', router);

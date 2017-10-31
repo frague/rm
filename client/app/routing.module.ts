@@ -11,12 +11,14 @@ import { AccountComponent } from './account/account.component';
 import { AdminComponent } from './admin/admin.component';
 import { SyncComponent } from './sync/sync.component';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { AccountsComponent } from './accounts/accounts.component';
 
 import { AuthGuardLogin } from './services/auth-guard-login.service';
 import { AuthGuardAdmin } from './services/auth-guard-admin.service';
 
 const routes: Routes = [
   { path: '', component: AssignmentsComponent },
+  { path: 'accounts', component: AccountsComponent },
   { path: 'people', component: PeopleComponent },
   { path: 'initiatives', component: InitiativesComponent },
   { path: 'register', component: RegisterComponent },

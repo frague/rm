@@ -8,8 +8,7 @@ const bamboo = 'api.bamboohr.com/api/gateway.php/griddynamics/v1/';
 
 import { creds } from '../google.credentials';
 
-// var doc = new GoogleSpreadsheet('1HOs5FxjZ180jUh8VcI2ch_J8jqyJRce4J_PTUv9MzLA');
-var doc = new GoogleSpreadsheet('1BQqU4ii3xv7jRhUPHuX61LFAqt9RH79b67B8IuC1uFY');
+var doc = new GoogleSpreadsheet(env.DEMAND_SHEET);
 var sheet;
 
 export default class IntegrationsCtrl {

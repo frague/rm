@@ -6,6 +6,7 @@ import { SharedModule } from './shared/shared.module';
 import { AssignmentService } from './services/assignment.service';
 import { ResourceService } from './services/resource.service';
 import { InitiativeService } from './services/initiative.service';
+import { DemandService } from './services/demand.service';
 import { PmoService } from './services/pmo.service';
 import { UserService } from './services/user.service';
 import { AuthService } from './services/auth.service';
@@ -26,6 +27,7 @@ import { AdminComponent } from './admin/admin.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { PersonComponent } from './people/person.component';
 import { AssignmentComponent } from './assignments/assignment.component';
+import { AccountsComponent } from './accounts/accounts.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +44,8 @@ import { AssignmentComponent } from './assignments/assignment.component';
     NotFoundComponent,
     SyncComponent,
     PersonComponent,
-    AssignmentComponent
+    AssignmentComponent,
+    AccountsComponent
   ],
   imports: [
     RoutingModule,
@@ -58,7 +61,8 @@ import { AssignmentComponent } from './assignments/assignment.component';
     AssignmentService,
     UserService,
     PmoService,
-    BambooService
+    BambooService,
+    DemandService
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
