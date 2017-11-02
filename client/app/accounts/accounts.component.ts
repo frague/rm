@@ -7,6 +7,7 @@ import { BaseComponent } from '../base.component';
 import { AssignmentService } from '../services/assignment.service';
 import { InitiativeService } from '../services/initiative.service';
 import { ResourceService } from '../services/resource.service';
+import { DemandService } from '../services/demand.service';
 
 import { PersonComponent } from '../people/person.component';
 
@@ -19,6 +20,7 @@ const dayWidth = weekWidth / 7;
 const dayCoefficient = dayWidth / day;
 const transparent = 'rgba(0,0,0,0)';
 const emptyItem = {assignments: []};
+const demandPrefix = 'Demand';
 
 @Component({
   selector: 'accounts',
@@ -51,6 +53,7 @@ export class AccountsComponent extends BaseComponent implements OnInit {
     assignmentService: AssignmentService,
     private resourceService: ResourceService,
     private initiativeService: InitiativeService,
+    private demandService: DemandService,
     private toast: ToastComponent
   ) {
     super(assignmentService);
@@ -92,37 +95,95 @@ export class AccountsComponent extends BaseComponent implements OnInit {
 
   ngOnInit() {
     this.getAll().add(() => {
-      this.items.forEach(resource => {
-        Object.keys(resource.assignments).forEach(initiativeId => {
-          this.initiativeAssignments[initiativeId] = (this.initiativeAssignments[initiativeId] || {});
-          this.initiativeAssignments[initiativeId][resource._id] = resource.assignments[initiativeId];
+      this.demandService.getAll().subscribe(demands => {
+        let demandAccounts = {};
+        let demandResources = [];
+
+        demands.forEach((demand, index) => {
+          let demandId = demand._id;
+          let initiativeId = demandId;
+          if (demandAccounts[demand.account]) {
+            initiativeId = demandAccounts[demand.account];
+          } else {
+            demandAccounts[demand.account] = initiativeId;
+          }
+          demandResources.push(demand);
+
+          let item = {
+            _id: demandId,
+            name: demandPrefix + index,
+            assignments: [{
+              _id: demandId,
+              start: demand.start,
+              end: demand.end,
+              initiativeId,
+              resourceId: demandId,
+              billability: demand.role,
+              involvement: 100,
+              comment: demand.comment
+            }],
+            minDate: demand.start,
+            maxDate: demand.end
+          };
+          this.items.push(item);
         });
+        this.calculate();
+        console.log('Items', this.items);
+
+        this.items.forEach(resource => {
+          Object.keys(resource.assignments).forEach(initiativeId => {
+            this.initiativeAssignments[initiativeId] = (this.initiativeAssignments[initiativeId] || {});
+            this.initiativeAssignments[initiativeId][resource._id] = resource.assignments[initiativeId];
+          });
+        });
+        console.log('Initiatives assignments', this.initiativeAssignments);
+
+        this.initiativeService.getAll().subscribe(
+          data => {
+            let demandInitiative = data.find(demand => demand.name === 'Demand');
+
+            Object.keys(demandAccounts).forEach(account => {
+              data.push(Object.assign(
+                {},
+                demandInitiative,
+                {
+                  _id: demandAccounts[account],
+                  account
+                }
+              ));
+            });
+
+            this.initiatives = data.reduce((result, initiative) => {
+              result[initiative._id] = initiative;
+
+              this._push(this.accountInitiatives, initiative.account, initiative);
+
+              return result;
+            }, {});
+            console.log('Account initiatives', this.accountInitiatives);
+          },
+          error => console.log(error)
+        );
+
+        this.resourceService.getAll().subscribe(
+          data => {
+            demandResources.forEach(demand => data.push({
+              _id: demand._id,
+              name: demand.profile + ': ' + demand.comment
+            }));
+            console.log(demandResources);
+
+            this.resources = data;
+            this.resourcesById = data.reduce((result, person) => {
+              result[person._id] = person;
+              return result;
+            }, {});
+          },
+          error => console.log(error)
+        );
+
       });
-      console.log('Initiatives assignments', this.initiativeAssignments);
     });
-    this.resourceService.getAll().subscribe(
-      data => {
-        this.resources = data;
-        this.resourcesById = data.reduce((result, person) => {
-          result[person._id] = person;
-          return result;
-        }, {});
-      },
-      error => console.log(error)
-    );
-    this.initiativeService.getAll().subscribe(
-      data => {
-        this.initiatives = data.reduce((result, initiative) => {
-          result[initiative._id] = initiative;
-
-          this._push(this.accountInitiatives, initiative.account, initiative);
-
-          return result;
-        }, {});
-        console.log('Account initiatives', this.accountInitiatives);
-      },
-      error => console.log(error)
-    );
   }
 
   cleanup(item) {
@@ -144,57 +205,56 @@ export class AccountsComponent extends BaseComponent implements OnInit {
     return date;
   }
 
-  getAll() {
-    return super.getAll(() => {
-      this.minDate = '3';
-      this.maxDate = '0';
+  calculate() {
+    this.minDate = '3';
+    this.maxDate = '0';
 
-      this.items = this.items.sort((a, b) => (a.name > b.name) ? 1 : -1);
+    this.items = this.items.sort((a, b) => (a.name > b.name) ? 1 : -1);
 
-      this.items.forEach(resource => {
-        if (resource.minDate && resource.minDate < this.minDate) this.minDate = resource.minDate;
-        if (resource.maxDate && resource.maxDate > this.maxDate) this.maxDate = resource.maxDate;
-      });
-
-      this.minDate = this.adjustToMonday(this.minDate, false);
-      this.maxDate = this.adjustToMonday(this.maxDate);
-      let maxTime = this.maxDate.getTime();
-      this.shownWeeks = Math.round((maxTime - this.minDate.getTime()) / week);
-      let minTime = this.minDate.getTime();
-
-      this.items.forEach(resource => {
-        let assignmentsGrouped = {};
-        resource.assignments.forEach(assignment => {
-          if (!assignmentsGrouped[assignment.initiativeId]) {
-            assignmentsGrouped[assignment.initiativeId] = [];
-          }
-          let start = new Date(assignment.start).getTime();
-          let end = assignment.end ? new Date(assignment.end).getTime() : maxTime;
-          assignment.offset = (start - minTime) * dayCoefficient;
-          assignment.width = (end - start + day) * dayCoefficient - 1;
-          assignmentsGrouped[assignment.initiativeId].push(assignment);
-        });
-        resource.assignments = assignmentsGrouped;
-      });
-
-      let start = new Date(this.minDate);
-      this.weekTitles = new Array(this.shownWeeks + 1).join('.').split('').map(() => {
-        let d = start.getDate();
-        let w = d + '/' + Utils.leadingZero(start.getMonth() + 1);
-        start.setDate(d + 7);
-        return w;
-      });
-
-      let today = new Date();
-      this.todayOffset = Math.round((today.getTime() - minTime) * dayCoefficient);
-      this.todayCaption = today.getDate() + '/' + Utils.leadingZero(today.getMonth() + 1);
+    this.items.forEach(resource => {
+      if (resource.minDate && resource.minDate < this.minDate) this.minDate = resource.minDate;
+      if (resource.maxDate && resource.maxDate > this.maxDate) this.maxDate = resource.maxDate;
     });
+
+    this.minDate = this.adjustToMonday(this.minDate, false);
+    this.maxDate = this.adjustToMonday(this.maxDate);
+    let maxTime = this.maxDate.getTime();
+    this.shownWeeks = Math.round((maxTime - this.minDate.getTime()) / week);
+    let minTime = this.minDate.getTime();
+
+    this.items.forEach(resource => {
+      let assignmentsGrouped = {};
+      resource.assignments.forEach(assignment => {
+        if (!assignmentsGrouped[assignment.initiativeId]) {
+          assignmentsGrouped[assignment.initiativeId] = [];
+        }
+        let start = new Date(assignment.start).getTime();
+        let end = assignment.end ? new Date(assignment.end).getTime() : maxTime;
+        assignment.offset = (start - minTime) * dayCoefficient;
+        assignment.width = (end - start + day) * dayCoefficient - 1;
+        assignmentsGrouped[assignment.initiativeId].push(assignment);
+      });
+      resource.assignments = assignmentsGrouped;
+    });
+
+    let start = new Date(this.minDate);
+    this.weekTitles = new Array(this.shownWeeks + 1).join('.').split('').map(() => {
+      let d = start.getDate();
+      let w = d + '/' + Utils.leadingZero(start.getMonth() + 1);
+      start.setDate(d + 7);
+      return w;
+    });
+
+    let today = new Date();
+    this.todayOffset = Math.round((today.getTime() - minTime) * dayCoefficient);
+    this.todayCaption = today.getDate() + '/' + Utils.leadingZero(today.getMonth() + 1);
   }
 
   showAssignment(assignment) {
     let initiative = this.initiatives[assignment.initiativeId] || {};
+    let resource = this.resourcesById[assignment.resourceId] || {};
     return {
-      name: this.resourcesById[assignment.resourceId].name,
+      name: resource.name,
       account: initiative.account,
       color: initiative.color,
       billability: assignment.billability,

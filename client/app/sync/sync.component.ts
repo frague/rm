@@ -14,7 +14,7 @@ import { environment } from '../../environments/environment';
 
 import * as convert from 'color-convert';
 
-import { accountsMap } from './mappings';
+import { replaceFromMap, accountsMap, billabilityMap } from './mappings';
 
 const locations = {
   'Saratov': 'SAR',
@@ -199,15 +199,13 @@ export class SyncComponent {
   }
 
   _parseDate(date: string): Date {
-    date = date.replace(/[^\da-zA-Z\-\s]/g, ' ').replace(/\s+/g, ' ');
-    if (date) return new Date(date)
-    else return null;
+    let d = date.replace(/[^\da-zA-Z\-\s]/g, ' ').replace(/\s+/g, ' ');
+    return d ? new Date(d) : null;
   }
 
   _parseDuration(duration: string): number {
-    duration = duration.replace(/^[^\d]+/g, '').substr(0, 2);
-    if (!duration) return 6;
-    return parseInt(duration);
+    duration = duration.replace(/[^\d]/g, '').substr(0, 2);
+    return duration ? parseInt(duration) : 6;
   }
 
   _queryDemand() {
@@ -224,7 +222,16 @@ export class SyncComponent {
       data.forEach(demandLine => {
         let start = this._parseDate(demandLine[7]);
         let duration = this._parseDuration(demandLine[9]);
-        let end = start ? (duration ? start.setMonth(start.getMonth() + duration) : start) : null;
+        let end;
+        if (start) {
+          if (!duration) {
+            duration = 6;
+          }
+          end = new Date(start);
+          end.setMonth(start.getMonth() + duration);
+        } else {
+          end = start;
+        }
 
         let account = demandLine[0];
         if (!this._accounts[account]) {
@@ -239,7 +246,7 @@ export class SyncComponent {
           account,
           status: demandLine[1],
           acknowledgement: demandLine[2],
-          role: demandLine[3],
+          role: replaceFromMap(billabilityMap, demandLine[3]),
           profile: demandLine[4],
           comment: demandLine[5],
           deployment: demandLine[6],
@@ -258,7 +265,9 @@ export class SyncComponent {
           requestId: demandLine[17]
         };
 
+
         if (demand.status !== 'active' || demand.profile.toLowerCase().indexOf('ui') < 0) return;
+        console.log(demand);
         this.demandService.add(demand).subscribe();
       });
       this.loadings['demands'] = false;

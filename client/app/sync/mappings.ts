@@ -1,3 +1,7 @@
+export function replaceFromMap(where, what) {
+  return where[what] ? where[what] : what;
+}
+
 export var accountsMap = {
   'American Eagle Outfitters': 'AEO',
   'Blackhawk Network': '',
@@ -11,4 +15,10 @@ export var accountsMap = {
   'Sephora': '',
   'Silicon Valley Bank': '',
   'Toys R Us': ''
+};
+
+export var billabilityMap = {
+  'New non-billable': 'Non-billable',
+  'New billable': 'Billable',
+  'Replacement': 'Billable'
 };
