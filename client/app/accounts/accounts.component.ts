@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastComponent } from '../shared/toast/toast.component';
 
@@ -28,6 +28,10 @@ const demandPrefix = 'Demand';
 })
 export class AccountsComponent extends BaseComponent implements OnInit {
 
+  @ViewChild('schedule') schedule: ElementRef;
+
+  scrolled = false;
+
   resources = [];
   resourcesById = {};
 
@@ -39,6 +43,7 @@ export class AccountsComponent extends BaseComponent implements OnInit {
   accountsAssignments = {};
   initiativeAssignments = {};
 
+  fromDate: any;
   minDate: any = '3';
   maxDate: any = '0';
   shownWeeks = 0;
@@ -57,6 +62,9 @@ export class AccountsComponent extends BaseComponent implements OnInit {
     private toast: ToastComponent
   ) {
     super(assignmentService);
+    this.fromDate = new Date();
+    this.fromDate.setMonth(this.fromDate.getMonth() - 2);
+    this.fromDate = this.adjustToMonday(this.fromDate.toString());
   }
 
   getInitiatives() {
@@ -90,6 +98,13 @@ export class AccountsComponent extends BaseComponent implements OnInit {
     collection[key] = collection[key] || [];
     if (!makeUnique || collection[key].indexOf(item) < 0) {
       collection[key].push(item);
+    }
+  }
+
+  ngAfterViewChecked() {
+    if (this.schedule && !this.scrolled && this.todayOffset) {
+      this.schedule.nativeElement.scrollTo(this.todayOffset - window.innerWidth / 2.5, 0);
+      this.scrolled = true;
     }
   }
 
@@ -208,6 +223,8 @@ export class AccountsComponent extends BaseComponent implements OnInit {
   calculate() {
     this.minDate = '3';
     this.maxDate = '0';
+    let fromDate = this.fromDate.toString();
+    let fromTime = this.fromDate.getTime();
 
     this.items = this.items.sort((a, b) => (a.name > b.name) ? 1 : -1);
 
@@ -215,6 +232,10 @@ export class AccountsComponent extends BaseComponent implements OnInit {
       if (resource.minDate && resource.minDate < this.minDate) this.minDate = resource.minDate;
       if (resource.maxDate && resource.maxDate > this.maxDate) this.maxDate = resource.maxDate;
     });
+
+    // if (this.minDate < fromDate) {
+    //   this.minDate = fromDate;
+    // }
 
     this.minDate = this.adjustToMonday(this.minDate, false);
     this.maxDate = this.adjustToMonday(this.maxDate);
@@ -228,6 +249,8 @@ export class AccountsComponent extends BaseComponent implements OnInit {
         if (!assignmentsGrouped[assignment.initiativeId]) {
           assignmentsGrouped[assignment.initiativeId] = [];
         }
+        if (!assignment.start) assignment.start = this.minDate;
+
         let start = new Date(assignment.start).getTime();
         let end = assignment.end ? new Date(assignment.end).getTime() : maxTime;
         assignment.offset = (start - minTime) * dayCoefficient;
@@ -248,6 +271,9 @@ export class AccountsComponent extends BaseComponent implements OnInit {
     let today = new Date();
     this.todayOffset = Math.round((today.getTime() - minTime) * dayCoefficient);
     this.todayCaption = today.getDate() + '/' + Utils.leadingZero(today.getMonth() + 1);
+
+    console.log(document.getElementById('schedule'));
+    // document.getElementById('schedule').scrollLeft = this.todayOffset - 200;
   }
 
   showAssignment(assignment) {

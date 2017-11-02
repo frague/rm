@@ -265,8 +265,11 @@ export class SyncComponent {
           requestId: demandLine[17]
         };
 
-
-        if (demand.status !== 'active' || demand.profile.toLowerCase().indexOf('ui') < 0) return;
+        let profile = demand.profile.toLowerCase();
+        if (
+          demand.status !== 'active'
+          || (profile.indexOf('ui') < 0 && profile.indexOf('datascientist') < 0)
+        ) return;
         console.log(demand);
         this.demandService.add(demand).subscribe();
       });
