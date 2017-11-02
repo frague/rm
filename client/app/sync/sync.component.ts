@@ -14,6 +14,8 @@ import { environment } from '../../environments/environment';
 
 import * as convert from 'color-convert';
 
+import { accountsMap } from './mappings';
+
 const locations = {
   'Saratov': 'SAR',
   'Saint-Petersburg': 'SPB',
@@ -34,6 +36,7 @@ export class SyncComponent {
   data: any = [];
   loadings = {};
   private _peopleByName = {};
+  private _accounts = {};
 
   constructor(
     private http: Http,
@@ -168,6 +171,7 @@ export class SyncComponent {
               billability: person.assignmentStatus[index].name,
               involvement: person.involvements[index]
             };
+            this._accounts[account] = true;
             let initiative = initiativesCreators[name];
             if (initiative) {
               initiative.add(() => {
@@ -209,6 +213,12 @@ export class SyncComponent {
   _queryDemand() {
     this.loadings['demands'] = true;
 
+    this.initiativeService.add({
+      name: 'Demand',
+      account: 'Griddynamics',
+      color: '#AAA'
+    }).subscribe();
+
     // Query Demand file
     return this.demandService.import().subscribe(data => {
       data.forEach(demandLine => {
@@ -216,8 +226,17 @@ export class SyncComponent {
         let duration = this._parseDuration(demandLine[9]);
         let end = start ? (duration ? start.setMonth(start.getMonth() + duration) : start) : null;
 
+        let account = demandLine[0];
+        if (!this._accounts[account]) {
+          if (accountsMap[account]) {
+            account = accountsMap[account];
+          } else {
+            console.log('Unknown account:', account);
+          }
+        }
+
         let demand = {
-          account: demandLine[0],
+          account,
           status: demandLine[1],
           acknowledgement: demandLine[2],
           role: demandLine[3],
@@ -248,9 +267,9 @@ export class SyncComponent {
 
   sync() {
     this.cleanup().add(() => {
-      this._queryDemand();
       this._queryPMO().add(() => {
         this._queryBamboo();
+        this._queryDemand();
       });
     });
   }
