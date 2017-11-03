@@ -25,7 +25,7 @@
         </ol>
 
         <div *ngFor="let assignee of items; let i = index" class="line" [ngClass]="getAssignmentsCount(i)">
-          <span *ngFor="let assignmentsGroup of getAssignmentsGroups(assignee.assignments)" >
+          <span *ngFor="let assignmentsGroup of getAssignmentsGroups(assignee.assignments, assignee)" >
             <initiative
               *ngFor="let assignment of assignmentsGroup"
               [data]="showAssignment(assignment)"

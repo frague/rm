@@ -34,7 +34,7 @@
           >
             <span *ngFor="let personId of getPersonInitiativeAssignments(initiative)">
               <initiative
-                 *ngFor="let assignment of initiativeAssignments[initiative._id][personId]"
+                *ngFor="let assignment of initiativeAssignments[initiative._id][personId]"
                 [data]="showAssignment(assignment)"
               ></initiative>
             </span>
