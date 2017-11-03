@@ -3,6 +3,10 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BaseComponent } from './base.component';
 import { Utils } from './utils';
 
+import { PersonComponent } from './people/person.component';
+import { AssignmentComponent } from './assignments/assignment.component';
+import { DemandComponent } from './assignments/demand.component';
+
 import { AssignmentService } from './services/assignment.service';
 import { InitiativeService } from './services/initiative.service';
 import { ResourceService } from './services/resource.service';
@@ -17,6 +21,10 @@ const transparent = 'rgba(0,0,0,0)';
 const demandPrefix = 'Demand';
 
 export class Schedule extends BaseComponent {
+
+  @ViewChild(DemandComponent) demandModal: DemandComponent;
+  @ViewChild(PersonComponent) personModal: PersonComponent;
+  @ViewChild(AssignmentComponent) assignmentModal: AssignmentComponent;
 
   @ViewChild('schedule') schedule: ElementRef;
   isScrolled = false;
@@ -274,5 +282,13 @@ export class Schedule extends BaseComponent {
     this.todayOffset = Math.round((today.getTime() - minTime) * dayCoefficient);
     this.todayCaption = today.getDate() + '/' + Utils.leadingZero(today.getMonth() + 1);
   }
+
+  showAssignment(assignment: any) {
+    if (assignment.demand) {
+      this.demandModal.show(assignment.demand);
+    } else {
+      this.assignmentModal.show(this.cleanup(assignment))
+    }
+  };
 
 }

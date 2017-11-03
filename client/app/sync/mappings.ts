@@ -22,3 +22,20 @@ export var billabilityMap = {
   'New billable': 'Billable',
   'Replacement': 'Billable'
 };
+
+export var months = [
+  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+];
+
+export var locationsMap = {
+  'Saratov': 'SAR',
+  'Saint-Petersburg': 'SPB',
+  'Menlo Park': 'MP',
+  'Kharkov': 'KHR',
+  'Krakow': 'KR',
+  'Lviv': 'LV'
+};
+
+export var locations = [
+  'SPB', 'SAR', 'KHA', 'LV', 'KR', 'US'
+];

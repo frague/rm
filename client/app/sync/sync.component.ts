@@ -14,16 +14,8 @@ import { environment } from '../../environments/environment';
 
 import * as convert from 'color-convert';
 
-import { replaceFromMap, accountsMap, billabilityMap } from './mappings';
+import { replaceFromMap, accountsMap, billabilityMap, locationsMap, locations } from './mappings';
 
-const locations = {
-  'Saratov': 'SAR',
-  'Saint-Petersburg': 'SPB',
-  'Menlo Park': 'MP',
-  'Kharkov': 'KHR',
-  'Krakow': 'KR',
-  'Lviv': 'LV'
-};
 const myLocations = ['Saratov', 'Saint-Petersburg'];
 const hours24 = 86400000;
 
@@ -148,7 +140,7 @@ export class SyncComponent {
           name: person.fullName,
           login: person.employeeId,
           grade: person.grade,
-          location: locations[person.location],
+          location: locationsMap[person.location],
           pool
         };
 
@@ -204,7 +196,8 @@ export class SyncComponent {
   }
 
   _parseDuration(duration: string): number {
-    duration = duration.replace(/[^\d]/g, '').substr(0, 2);
+    duration = duration.replace(/[^\d-]/g, '').substr(0, 2);
+    duration = duration.split('-')[0];    // 6-9 months
     return duration ? parseInt(duration) : 6;
   }
 
@@ -242,6 +235,9 @@ export class SyncComponent {
           }
         }
 
+        let demandLocations = demandLine.slice(11, 17);
+        let l = locations.filter((location, index) => !!demandLocations[index]);
+
         let demand = {
           account,
           status: demandLine[1],
@@ -254,14 +250,7 @@ export class SyncComponent {
           end,
           stage: demandLine[8],
           grades: demandLine[10].split(/[,-]/g),
-          locations: [
-            !!demandLine[11],
-            !!demandLine[12],
-            !!demandLine[13],
-            !!demandLine[14],
-            !!demandLine[15],
-            !!demandLine[16]
-          ],
+          locations: l,
           requestId: demandLine[17]
         };
 

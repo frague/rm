@@ -3,6 +3,10 @@
 
   <assignment-modal [resources]="resources" [initiatives]="initiatives"></assignment-modal>
 
+  <person-modal></person-modal>
+
+  <demand-modal></demand-modal>
+
   <div class="row">
     <div class="col-md-2"></div>
     <div class="col-md-10"></div>
@@ -28,16 +32,12 @@
           <span *ngFor="let assignmentsGroup of getAssignmentsGroups(assignee.assignments, assignee)" >
             <initiative
               *ngFor="let assignment of assignmentsGroup"
-              [data]="showAssignment(assignment)"
-              (click)="assignmentModal.show(cleanup(assignment))"
+              [data]="getAssignment(assignment)"
+              (click)="showAssignment(assignment)"
             ></initiative>
           </span>
         </div>
       </div>
     </div>
   </div>
-
-
-  <person-modal></person-modal>
-
 </div>

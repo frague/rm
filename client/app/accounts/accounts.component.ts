@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ToastComponent } from '../shared/toast/toast.component';
 
 import { BaseComponent } from '../base.component';
@@ -18,7 +18,7 @@ const demandPrefix = 'Demand';
   selector: 'accounts',
   templateUrl: './accounts.component.html'
 })
-export class AccountsComponent extends Schedule implements OnInit {
+export class AccountsComponent extends Schedule {
 
   constructor(
     assignmentService: AssignmentService,
@@ -33,8 +33,7 @@ export class AccountsComponent extends Schedule implements OnInit {
     return 'an' + this.getPersonInitiativeAssignments(initiative).length;
   }
 
-
-  showAssignment(assignment) {
+  getAssignment(assignment) {
     let initiative = this.initiatives[assignment.initiativeId] || {};
     let resource = this.resourcesById[assignment.resourceId] || {};
     let demand = assignment.demand;

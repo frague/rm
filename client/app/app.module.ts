@@ -28,6 +28,8 @@ import { NotFoundComponent } from './not-found/not-found.component';
 import { PersonComponent } from './people/person.component';
 import { AssignmentComponent } from './assignments/assignment.component';
 import { AccountsComponent } from './accounts/accounts.component';
+import { DemandComponent } from './assignments/demand.component';
+import { PrintableDatePipe } from './pipes';
 
 @NgModule({
   declarations: [
@@ -45,7 +47,9 @@ import { AccountsComponent } from './accounts/accounts.component';
     SyncComponent,
     PersonComponent,
     AssignmentComponent,
-    AccountsComponent
+    AccountsComponent,
+    DemandComponent,
+    PrintableDatePipe
   ],
   imports: [
     RoutingModule,
@@ -62,7 +66,8 @@ import { AccountsComponent } from './accounts/accounts.component';
     UserService,
     PmoService,
     BambooService,
-    DemandService
+    DemandService,
+    PrintableDatePipe
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
