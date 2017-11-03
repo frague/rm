@@ -1,16 +1,5 @@
 import { Component, ViewChild, Input } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-
-type assignmentType = {
-  resourceId: string,
-  initiativeId: string,
-  start: string,
-  end: [string],
-  billability: string,
-  ivolvement: number,
-  comments: string
-};
 
 @Component({
   selector: 'assignment-modal',
@@ -21,20 +10,9 @@ export class AssignmentComponent {
   @Input() resources: any[] = [];
   @Input() initiatives: any = {};
 
-  assignment: assignmentType = {} as assignmentType;
+  assignment: any;
 
-  public form = new FormGroup({
-    _id: new FormControl(''),
-    resourceId: new FormControl('', Validators.required),
-    initiativeId: new FormControl('', Validators.required),
-    start: new FormControl('', Validators.required),
-    end: new FormControl('', Validators.required),
-    billability: new FormControl('', Validators.required),
-    involvement: new FormControl('100', Validators.required),
-    comment: new FormControl('')
-  });
-
-constructor(private modalService: NgbModal) {}
+  constructor(private modalService: NgbModal) {}
 
   getInitiatives() {
     return Object.values(this.initiatives);
@@ -42,8 +20,21 @@ constructor(private modalService: NgbModal) {}
 
   show(assignment: any) {
     this.assignment = assignment;
-    this.form.setValue(assignment);
+    console.log(assignment);
     this.modalService.open(this.content);
+  }
+
+  getAssignee(): any {
+    return this.resources[this.assignment.resourceId] || {};
+  }
+
+  getAssigneeName(): string {
+    let assignee = this.getAssignee();
+    return assignee ? assignee.name : '-';
+  }
+
+  getInitiative(): any {
+    return this.initiatives[this.assignment.initiativeId] || {};
   }
 
 }

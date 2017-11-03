@@ -4,14 +4,13 @@
 
 <div>
   <h4>Current initiatives ({{items.length}})</h4>
-  
+
   <table class="table">
     <thead>
       <tr>
         <th>Name</th>
         <th>Start</th>
         <th>End</th>
-        <!-- <th>Action§s</th> -->
       </tr>
     </thead>
     <tbody *ngIf="items.length === 0">
@@ -24,14 +23,6 @@
         <td><initiative [data]="initiative"></initiative></td>
         <td>{{initiative.start}}</td>
         <td>{{initiative.end}}</td>
-<!--         <td>
-          <button class="btn btn-sm btn-warning" (click)="enableEditing(initiative, form)">
-            <i class="fa fa-pencil"></i> Edit
-          </button>
-          <button class="btn btn-sm btn-danger" (click)="delete(initiative)">
-            <i class="fa fa-trash"></i> Delete
-          </button>
-        </td> -->
       </tr>
     </tbody>
   </table>

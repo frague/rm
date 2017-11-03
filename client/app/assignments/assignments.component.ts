@@ -43,4 +43,16 @@ export class AssignmentsComponent extends Schedule {
       width: assignment.width
     };
   }
+
+  showResource(assignee: any) {
+    if (assignee.isDemand) {
+      // console.log(assignee);
+      let assignments = assignee.assignments;
+      if (assignments) {
+        return this.demandModal.show(assignments[Object.keys(assignments)[0]][0].demand);
+      }
+    } else {
+      return this.personModal.show(this.resourcesById[assignee._id])
+    }
+  }
 }

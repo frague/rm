@@ -29,7 +29,7 @@ import { PersonComponent } from './people/person.component';
 import { AssignmentComponent } from './assignments/assignment.component';
 import { AccountsComponent } from './accounts/accounts.component';
 import { DemandComponent } from './assignments/demand.component';
-import { PrintableDatePipe } from './pipes';
+import { PrintableDatePipe, AvatarUrlPipe } from './pipes';
 
 @NgModule({
   declarations: [
@@ -49,7 +49,7 @@ import { PrintableDatePipe } from './pipes';
     AssignmentComponent,
     AccountsComponent,
     DemandComponent,
-    PrintableDatePipe
+    PrintableDatePipe, AvatarUrlPipe
   ],
   imports: [
     RoutingModule,
@@ -67,7 +67,7 @@ import { PrintableDatePipe } from './pipes';
     PmoService,
     BambooService,
     DemandService,
-    PrintableDatePipe
+    PrintableDatePipe, AvatarUrlPipe
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]

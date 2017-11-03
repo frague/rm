@@ -12,3 +12,10 @@ export class PrintableDatePipe implements PipeTransform {
     return [d.getDate(), months[d.getMonth()], d.getFullYear()].join(' ');
   }
 }
+
+@Pipe({name: 'avatarUrl'})
+export class AvatarUrlPipe implements PipeTransform {
+  transform(login: string): string {
+    return 'https://in.griddynamics.net/service/photos/' + login + '.jpg';
+  }
+}

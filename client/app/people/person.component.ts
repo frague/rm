@@ -16,11 +16,13 @@ export class PersonComponent {
   @ViewChild('content') content;
   person: personType = {} as personType;
 
-  constructor(private modalService: NgbModal) {}
+  constructor(
+    private modalService: NgbModal
+  ) {}
 
   show(person: any) {
     this.person = person;
-    console.log(person);
+    // console.log(person);
     this.modalService.open(this.content);
   }
 

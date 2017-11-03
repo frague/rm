@@ -6,61 +6,31 @@
     <h4 class="modal-title">Assignment Details</h4>
   </div>
   <div class="modal-body">
+    <img class="avatar" src="{{ getAssignee().login|avatarUrl }}">
 
-    <form [formGroup]="form" (ngSubmit)="save()">
-      <input type="hidden" name="_id" formControlName="_id">
-      <div class="form-row">
-        <div class="col-md-6 form-group">
-          <label for="resource">Assignee</label>
-          <select class="form-control" name="resource" formControlName="resourceId" required>
-            <option></option>
-            <option *ngFor="let resource of resources" [value]="resource._id">{{ resource.name }}</option>
-          </select>
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="initiative">Initiative</label>
-          <select class="form-control" name="initiative" formControlName="initiativeId" required>
-            <option></option>
-            <option *ngFor="let initiative of getInitiatives()" [value]="initiative._id">{{ initiative.name }}</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="col-md-6 form-group">
-          <label for="start">Start Date</label>
-          <input class="form-control" type="date" name="start" formControlName="start" placeholder="Start date">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="end">End Date</label>
-          <input class="form-control" type="date" name="end" formControlName="end" placeholder="End date">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="col-md-6 form-group">
-          <label for="billability">Billability</label>
-          <input class="form-control" type="text" name="billability" formControlName="billability" placeholder="Billability">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="involvement">Involvement</label>
-          <input class="form-control" type="number" name="involvement" formControlName="involvement" placeholder="Involvement" max="100" min="0">
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="comment">Comments</label>
-        <textarea class="form-control" name="comment" formControlName="comment" placeholder="Comments" rows="1"></textarea>
-      </div>
-    </form>
+    <dl class="attributes">
+      <dt>Assignee</dt>
+      <dd>{{ getAssigneeName() }}</dd>
 
-  </div>
-  <div class="modal-footer">
-    <button *ngIf="assignment._id" class="btn btn-danger btn-default pull-left" (click)="delete(item)">
-      Delete
-    </button>
-    <button class="btn btn-primary" type="submit" [disabled]="!form.valid">
-      <i class="fa fa-floppy-o"></i> Save
-    </button>
-    <button class="btn btn-default" type="reset" (click)="d('Cross click')">
-      Discard
-    </button>
+      <dt>Account</dt>
+      <dd>{{ getInitiative().account }}</dd>
+
+      <dt>Initiative</dt>
+      <dd>{{ getInitiative().name }}</dd>
+
+      <dt>Dates</dt>
+      <dd>{{ assignment.start|date }} - {{ assignment.end|date }}</dd>
+
+      <dt>Billability</dt>
+      <dd>{{ assignment.billability }}</dd>
+
+      <dt>Involvement</dt>
+      <dd>{{ assignment.involvement }}%</dd>
+
+      <dt>Comment</dt>
+      <dd>{{ assignment.comment }}</dd>
+
+    </dl>
+
   </div>
 </ng-template>

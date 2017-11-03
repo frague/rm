@@ -5,19 +5,17 @@
     </button>
     <h4 class="modal-title">{{ person.name }}</h4>
   </div>
-  <div class="modal-body">
-    <div class="row">
-      <div class="col-sm-4 col-xs-12">
-        <img class="avatar" [src]="'https://in.griddynamics.net/service/photos/' + person.login + '.jpg'">
-      </div>
-      <dl class="attributes col-sm-8 col-xs-12">
-        <dt>Location</dt>
-        <dd>{{ person.location.join(', ') }}</dd>
-        <dt>Grade</dt>
-        <dd>{{ person.grade }}</dd>
-        <dt>Pool</dt>
-        <dd>{{ person.pool.join(', ') }}</dd>
-      </dl>
-    </div>
+  <div class="modal-body with-image">
+    <img class="avatar" src="{{ person.login|avatarUrl }}">
+    <dl class="attributes col-sm-8 col-xs-12">
+      <dt>Location</dt>
+      <dd>{{ person.location.join(', ') }}</dd>
+
+      <dt>Grade</dt>
+      <dd>{{ person.grade }}</dd>
+
+      <dt>Pool</dt>
+      <dd>{{ person.pool.join(', ') }}</dd>
+    </dl>
   </div>
 </ng-template>

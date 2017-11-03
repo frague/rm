@@ -1,7 +1,7 @@
 <div>
   <h4>Assignments</h4>
 
-  <assignment-modal [resources]="resources" [initiatives]="initiatives"></assignment-modal>
+  <assignment-modal [resources]="resourcesById" [initiatives]="initiatives"></assignment-modal>
 
   <person-modal></person-modal>
 
@@ -18,7 +18,7 @@
         *ngFor="let assignee of items; let i = index"
         class="line"
         [ngClass]="getAssignmentsCount(i)"
-        (click)="personModal.show(resourcesById[assignee._id])"
+        (click)="showResource(assignee)"
       >{{ assignee.name }}</div>
     </div>
     <div class="col-md-10 schedule" #schedule>

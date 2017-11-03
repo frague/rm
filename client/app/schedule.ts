@@ -146,7 +146,7 @@ export class Schedule extends BaseComponent {
                 demandInitiative,
                 {
                   _id: demandAccounts[account],
-                  demand: true,
+                  isDemand: true,
                   account
                 }
               ));
@@ -169,7 +169,7 @@ export class Schedule extends BaseComponent {
             demandResources.forEach(demand => data.push({
               _id: demand._id,
               name: demandPrefix,
-              demand: true
+              isDemand: true
             }));
             // console.log(demandResources);
 

@@ -101,6 +101,10 @@ i.initiative {
   opacity: 1;
 }
 
+.modal-body.with-image {
+  min-height: 180px;
+}
+
 .modal-backdrop.fade {
     opacity: 0.2;
 }
@@ -115,6 +119,10 @@ dl.attributes {
   }
   dd {
     padding-left: 120px;
+
+    &:empty:after {
+      content: "-";
+    }
   }
 }
 
@@ -158,4 +166,9 @@ ul.sync {
       padding-top: 40px;
     }
   }
+}
+
+img.avatar {
+  float: right;
+  margin: 0 0 10px 10px;
 }
