@@ -17,7 +17,7 @@
         (click)="personModal.show(resourcesById[assignee._id])"
       >{{ assignee.name }}</div>
     </div>
-    <div class="col-md-10 schedule">
+    <div class="col-md-10 schedule" #schedule>
       <div [ngStyle]="getScheduleStyles()" class="lines">
         <ol>
           <li class="today" [ngStyle]="{left: todayOffset + 2 + 'px'}">{{ todayCaption }}</li>

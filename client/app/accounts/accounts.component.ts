@@ -1,5 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
 import { ToastComponent } from '../shared/toast/toast.component';
 
 import { BaseComponent } from '../base.component';
@@ -11,26 +10,15 @@ import { DemandService } from '../services/demand.service';
 
 import { PersonComponent } from '../people/person.component';
 
-import { Utils } from '../utils';
+import { Schedule } from '../schedule';
 
-const day = 1000 * 60 * 60 * 24;
-const week = day * 7;
-const weekWidth = 60;
-const dayWidth = weekWidth / 7;
-const dayCoefficient = dayWidth / day;
-const transparent = 'rgba(0,0,0,0)';
-const emptyItem = {assignments: []};
 const demandPrefix = 'Demand';
 
 @Component({
   selector: 'accounts',
   templateUrl: './accounts.component.html'
 })
-export class AccountsComponent extends BaseComponent implements OnInit {
-
-  @ViewChild('schedule') schedule: ElementRef;
-
-  scrolled = false;
+export class AccountsComponent extends Schedule implements OnInit {
 
   resources = [];
   resourcesById = {};
@@ -43,17 +31,6 @@ export class AccountsComponent extends BaseComponent implements OnInit {
   accountsAssignments = {};
   initiativeAssignments = {};
 
-  fromDate: any;
-  minDate: any = '3';
-  maxDate: any = '0';
-  shownWeeks = 0;
-  weekTitles = [];
-
-  todayOffset: number = -10;
-  todayCaption = '';
-
-  public form = new FormGroup({});
-
   constructor(
     assignmentService: AssignmentService,
     private resourceService: ResourceService,
@@ -62,9 +39,6 @@ export class AccountsComponent extends BaseComponent implements OnInit {
     private toast: ToastComponent
   ) {
     super(assignmentService);
-    this.fromDate = new Date();
-    this.fromDate.setMonth(this.fromDate.getMonth() - 2);
-    this.fromDate = this.adjustToMonday(this.fromDate.toString());
   }
 
   getInitiatives() {
@@ -73,17 +47,6 @@ export class AccountsComponent extends BaseComponent implements OnInit {
 
   getAssignmentsCount(initiative) {
     return 'an' + this.getPersonInitiativeAssignments(initiative).length;
-  }
-
-  getScheduleStyles() {
-    return {
-      'background': 'repeating-linear-gradient(90deg, #000, #000 1px, ' + transparent + ' 1px, ' + transparent + ' ' + weekWidth + 'px), ' +
-        'linear-gradient(90deg, ' + transparent + ' ' + this.todayOffset + 'px, red ' + this.todayOffset + 'px, ' + transparent + ' ' + (1 + this.todayOffset) + 'px) left top/' + (1 + this.todayOffset) + 'px repeat-y',
-      width: (weekWidth * this.shownWeeks) + 1 + 'px'
-    };
-  }
-  getAssignmentsGroups(assignments: any) {
-    return Object.values(assignments);
   }
 
   getAccounts() {
@@ -98,13 +61,6 @@ export class AccountsComponent extends BaseComponent implements OnInit {
     collection[key] = collection[key] || [];
     if (!makeUnique || collection[key].indexOf(item) < 0) {
       collection[key].push(item);
-    }
-  }
-
-  ngAfterViewChecked() {
-    if (this.schedule && !this.scrolled && this.todayOffset) {
-      this.schedule.nativeElement.scrollTo(this.todayOffset - window.innerWidth / 2.5, 0);
-      this.scrolled = true;
     }
   }
 
@@ -143,7 +99,7 @@ export class AccountsComponent extends BaseComponent implements OnInit {
           this.items.push(item);
         });
         this.calculate();
-        console.log('Items', this.items);
+        // console.log('Items', this.items);
 
         this.items.forEach(resource => {
           Object.keys(resource.assignments).forEach(initiativeId => {
@@ -151,7 +107,7 @@ export class AccountsComponent extends BaseComponent implements OnInit {
             this.initiativeAssignments[initiativeId][resource._id] = resource.assignments[initiativeId];
           });
         });
-        console.log('Initiatives assignments', this.initiativeAssignments);
+        // console.log('Initiatives assignments', this.initiativeAssignments);
 
         this.initiativeService.getAll().subscribe(
           data => {
@@ -175,7 +131,7 @@ export class AccountsComponent extends BaseComponent implements OnInit {
 
               return result;
             }, {});
-            console.log('Account initiatives', this.accountInitiatives);
+            // console.log('Account initiatives', this.accountInitiatives);
           },
           error => console.log(error)
         );
@@ -210,71 +166,6 @@ export class AccountsComponent extends BaseComponent implements OnInit {
     return clean;
   }
 
-  adjustToMonday(dateString: string, doIncrease=true): Date {
-    let date = new Date(dateString && dateString.length > 1 ? dateString : null);
-    let dow = (date.getDay() + 6) % 7;
-    if (dow) {
-      let offset = date.getDate() + (doIncrease ? 7 - dow : -dow);
-      date.setDate(offset);
-    }
-    return date;
-  }
-
-  calculate() {
-    this.minDate = '3';
-    this.maxDate = '0';
-    let fromDate = this.fromDate.toString();
-    let fromTime = this.fromDate.getTime();
-
-    this.items = this.items.sort((a, b) => (a.name > b.name) ? 1 : -1);
-
-    this.items.forEach(resource => {
-      if (resource.minDate && resource.minDate < this.minDate) this.minDate = resource.minDate;
-      if (resource.maxDate && resource.maxDate > this.maxDate) this.maxDate = resource.maxDate;
-    });
-
-    // if (this.minDate < fromDate) {
-    //   this.minDate = fromDate;
-    // }
-
-    this.minDate = this.adjustToMonday(this.minDate, false);
-    this.maxDate = this.adjustToMonday(this.maxDate);
-    let maxTime = this.maxDate.getTime();
-    this.shownWeeks = Math.round((maxTime - this.minDate.getTime()) / week);
-    let minTime = this.minDate.getTime();
-
-    this.items.forEach(resource => {
-      let assignmentsGrouped = {};
-      resource.assignments.forEach(assignment => {
-        if (!assignmentsGrouped[assignment.initiativeId]) {
-          assignmentsGrouped[assignment.initiativeId] = [];
-        }
-        if (!assignment.start) assignment.start = this.minDate;
-
-        let start = new Date(assignment.start).getTime();
-        let end = assignment.end ? new Date(assignment.end).getTime() : maxTime;
-        assignment.offset = (start - minTime) * dayCoefficient;
-        assignment.width = (end - start + day) * dayCoefficient - 1;
-        assignmentsGrouped[assignment.initiativeId].push(assignment);
-      });
-      resource.assignments = assignmentsGrouped;
-    });
-
-    let start = new Date(this.minDate);
-    this.weekTitles = new Array(this.shownWeeks + 1).join('.').split('').map(() => {
-      let d = start.getDate();
-      let w = d + '/' + Utils.leadingZero(start.getMonth() + 1);
-      start.setDate(d + 7);
-      return w;
-    });
-
-    let today = new Date();
-    this.todayOffset = Math.round((today.getTime() - minTime) * dayCoefficient);
-    this.todayCaption = today.getDate() + '/' + Utils.leadingZero(today.getMonth() + 1);
-
-    console.log(document.getElementById('schedule'));
-    // document.getElementById('schedule').scrollLeft = this.todayOffset - 200;
-  }
 
   showAssignment(assignment) {
     let initiative = this.initiatives[assignment.initiativeId] || {};

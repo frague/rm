@@ -214,7 +214,7 @@ export class SyncComponent {
     this.initiativeService.add({
       name: 'Demand',
       account: 'Griddynamics',
-      color: '#AAA'
+      color: '#FF3232'
     }).subscribe();
 
     // Query Demand file
