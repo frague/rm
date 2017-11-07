@@ -39,6 +39,9 @@ export class Schedule extends BaseComponent {
   todayOffset: number = -10;
   todayCaption = '';
 
+  markerDateOffset: number = -10;
+  markerDateCaption = '';
+
   public form = new FormGroup({});
 
   resources = [];
@@ -186,11 +189,25 @@ export class Schedule extends BaseComponent {
     });
   }
 
+  makeCaptionStyles(offset: number): Object {
+    return {left: offset + 2 + 'px'};
+  }
+
+  makeDateCaption(date) {
+    return date.getDate() + '/' + Utils.leadingZero(date.getMonth() + 1);
+  }
+
+  setMarker(event: MouseEvent) {
+    this.markerDateOffset = event.offsetX;
+    this.markerDateCaption = this.makeDateCaption(new Date(this.minDate.getTime() + this.markerDateOffset * day / dayWidth));
+  }
+
   getScheduleStyles() {
     return {
       background:
         'repeating-linear-gradient(90deg, #000, #000 1px, ' + transparent + ' 1px, ' + transparent + ' ' + weekWidth + 'px), ' +
-        'linear-gradient(90deg, red, red) ' + this.todayOffset + 'px top/1px auto repeat-y',
+        'linear-gradient(90deg, red, red) ' + this.todayOffset + 'px top/2px auto repeat-y,' +
+        'linear-gradient(90deg, darkorange, darkorange) ' + this.markerDateOffset + 'px top/2px auto repeat-y',
       width: (weekWidth * this.shownWeeks) + 1 + 'px'
     };
   }
@@ -281,10 +298,11 @@ export class Schedule extends BaseComponent {
 
     let today = new Date();
     this.todayOffset = Math.round((today.getTime() - minTime) * dayCoefficient);
-    this.todayCaption = today.getDate() + '/' + Utils.leadingZero(today.getMonth() + 1);
+    this.todayCaption = this.makeDateCaption(today);
   }
 
-  showAssignment(assignment: any) {
+  showAssignment(assignment: any, event: MouseEvent) {
+    event.stopPropagation();
     if (assignment.demand) {
       this.demandModal.show(assignment.demand);
     } else {

@@ -50,11 +50,17 @@ i.initiative {
         width: 60px;
 
         &.today {
+          color: red;
+        }
+        &.marker {
+          color: darkorange;
+        }
+        &.today, &.marker {
           position: absolute;
           width: auto;
-          color: red;
           font-weight: 600;
           background-color: #FFF;
+          padding: 0 2px;
         }
       }
     }

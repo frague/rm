@@ -26,9 +26,14 @@
       </div>
     </div>
     <div class="schedule col-md-10" #schedule>
-      <div [ngStyle]="getScheduleStyles()" class="lines">
+      <div
+        [ngStyle]="getScheduleStyles()"
+        class="lines"
+        (click)="setMarker($event)"
+      >
         <ol>
-          <li class="today" [ngStyle]="{left: todayOffset + 2 + 'px'}">{{ todayCaption }}</li>
+          <li class="today" [ngStyle]="makeCaptionStyles(todayOffset)">{{ todayCaption }}</li>
+          <li class="marker" [ngStyle]="makeCaptionStyles(markerDateOffset)">{{ markerDateCaption }}</li>
           <li *ngFor="let week of weekTitles">{{ week }}</li>
         </ol>
         <div *ngFor="let account of getAccounts()" class="account">
@@ -42,7 +47,7 @@
               <initiative
                 *ngFor="let assignment of initiativeAssignments[initiative._id][personId]"
                 [data]="getAssignment(assignment)"
-                (click)="showAssignment(assignment)"
+                (click)="showAssignment(assignment, $event)"
               ></initiative>
             </span>
           </div>
