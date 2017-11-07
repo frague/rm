@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { ToastComponent } from '../shared/toast/toast.component';
 
 import { BaseComponent } from '../base.component';
@@ -24,9 +25,10 @@ export class AccountsComponent extends Schedule {
     assignmentService: AssignmentService,
     resourceService: ResourceService,
     initiativeService: InitiativeService,
-    demandService: DemandService
+    demandService: DemandService,
+    route: ActivatedRoute
   ) {
-    super(assignmentService, resourceService, initiativeService, demandService);
+    super(assignmentService, resourceService, initiativeService, demandService, route);
   }
 
   getAssignmentsCount(initiative) {

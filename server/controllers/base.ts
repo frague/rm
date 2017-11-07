@@ -8,7 +8,8 @@ abstract class BaseCtrl {
 
   // Get all
   getAll = (req, res) => {
-    this.model.find({}, (err, docs) => {
+    console.log('Finding all', req.query);
+    this.model.find(req.query, (err, docs) => {
       if (err) { return console.error(err); }
       res.json(docs);
     });

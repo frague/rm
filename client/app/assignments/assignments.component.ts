@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { ToastComponent } from '../shared/toast/toast.component';
 
 import { Schedule } from '../schedule';
@@ -20,9 +21,10 @@ export class AssignmentsComponent extends Schedule {
     assignmentService: AssignmentService,
     resourceService: ResourceService,
     initiativeService: InitiativeService,
-    demandService: DemandService
+    demandService: DemandService,
+    route: ActivatedRoute
   ) {
-    super(assignmentService, resourceService, initiativeService, demandService);
+    super(assignmentService, resourceService, initiativeService, demandService, route);
   }
 
   getAssignmentsCount(index) {
@@ -55,4 +57,5 @@ export class AssignmentsComponent extends Schedule {
       return this.personModal.show(this.resourcesById[assignee._id])
     }
   }
+
 }

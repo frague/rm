@@ -1,5 +1,7 @@
+import { ActivatedRoute } from '@angular/router';
 import { ViewChild, ElementRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+
 import { BaseComponent } from './base.component';
 import { Utils } from './utils';
 
@@ -20,13 +22,17 @@ const dayCoefficient = dayWidth / day;
 const transparent = 'rgba(0,0,0,0)';
 const demandPrefix = 'Demand';
 
-export class Schedule extends BaseComponent {
+export class Schedule {
 
   @ViewChild(DemandComponent) demandModal: DemandComponent;
   @ViewChild(PersonComponent) personModal: PersonComponent;
   @ViewChild(AssignmentComponent) assignmentModal: AssignmentComponent;
 
   @ViewChild('schedule') schedule: ElementRef;
+
+  pool = null;
+  items = [];
+
   isScrolled = false;
   isCalculated = false;
 
@@ -56,13 +62,12 @@ export class Schedule extends BaseComponent {
   initiativeAssignments = {};
 
   constructor(
-    assignmentService: AssignmentService,
+    private assignmentService: AssignmentService,
     private resourceService: ResourceService,
     private initiativeService: InitiativeService,
-    private demandService: DemandService
+    private demandService: DemandService,
+    private route: ActivatedRoute
   ) {
-    super(assignmentService);
-
     this.fromDate = new Date();
     this.fromDate.setMonth(this.fromDate.getMonth() - 2);
     this.fromDate = this.adjustToMonday(this.fromDate.toString());
@@ -92,100 +97,108 @@ export class Schedule extends BaseComponent {
   }
 
   ngOnInit() {
-    this.getAll().add(() => {
-      this.demandService.getAll().subscribe(demands => {
-        let demandAccounts = {};
-        let demandResources = [];
+    this.route.paramMap.subscribe(params => {
+      this.pool = params.get('pool');
 
-        demands.forEach((demand, index) => {
-          let demandId = demand._id;
-          let initiativeId = demandId;
-          if (demandAccounts[demand.account]) {
-            initiativeId = demandAccounts[demand.account];
-          } else {
-            demandAccounts[demand.account] = initiativeId;
-          }
-          demandResources.push(demand);
+      this.assignmentService.getAll(this.pool ? {'pool': this.pool} : null).subscribe(data => {
+        this.items = data;
 
-          let item = {
-            _id: demandId,
-            // name: demandPrefix,
-            name: demand.profile,
-            assignments: [{
+        this.demandService.getAll().subscribe(demands => {
+          let demandAccounts = {};
+          let demandResources = [];
+
+          demands.forEach((demand, index) => {
+            let demandId = demand._id;
+            let initiativeId = demandId;
+            if (demandAccounts[demand.account]) {
+              initiativeId = demandAccounts[demand.account];
+            } else {
+              demandAccounts[demand.account] = initiativeId;
+            }
+            demandResources.push(demand);
+
+            let item = {
               _id: demandId,
-              start: demand.start,
-              end: demand.end,
-              initiativeId,
-              resourceId: demandId,
-              billability: demand.role,
-              involvement: 100,
-              comment: demand.comment,
-              demand
-            }],
-            minDate: demand.start,
-            maxDate: demand.end,
-            isDemand: true
-          };
-          this.items.push(item);
-        });
-        this.calculate();
-        // console.log('Items', this.items);
-
-        this.items.forEach(resource => {
-          Object.keys(resource.assignments).forEach(initiativeId => {
-            this.initiativeAssignments[initiativeId] = (this.initiativeAssignments[initiativeId] || {});
-            this.initiativeAssignments[initiativeId][resource._id] = resource.assignments[initiativeId];
-          });
-        });
-        // console.log('Initiatives assignments', this.initiativeAssignments);
-
-        this.initiativeService.getAll().subscribe(
-          data => {
-            let demandInitiative = data.find(demand => demand.name === 'Demand');
-
-            Object.keys(demandAccounts).forEach(account => {
-              data.push(Object.assign(
-                {},
-                demandInitiative,
-                {
-                  _id: demandAccounts[account],
-                  isDemand: true,
-                  account
-                }
-              ));
-            });
-
-            this.initiatives = data.reduce((result, initiative) => {
-              result[initiative._id] = initiative;
-
-              this._push(this.accountInitiatives, initiative.account, initiative);
-
-              return result;
-            }, {});
-            // console.log('Account initiatives', this.accountInitiatives);
-          },
-          error => console.log(error)
-        );
-
-        this.resourceService.getAll().subscribe(
-          data => {
-            demandResources.forEach(demand => data.push({
-              _id: demand._id,
-              name: demandPrefix,
+              // name: demandPrefix,
+              name: demand.profile,
+              assignments: [{
+                _id: demandId,
+                start: demand.start,
+                end: demand.end,
+                initiativeId,
+                resourceId: demandId,
+                billability: demand.role,
+                involvement: 100,
+                comment: demand.comment,
+                demand
+              }],
+              minDate: demand.start,
+              maxDate: demand.end,
               isDemand: true
-            }));
-            // console.log(demandResources);
+            };
+            this.items.push(item);
+          });
+          this.calculate();
+          // console.log('Items', this.items);
 
-            this.resources = data;
-            this.resourcesById = data.reduce((result, person) => {
-              result[person._id] = person;
-              return result;
-            }, {});
-          },
-          error => console.log(error)
-        );
+          this.items.forEach(resource => {
+            Object.keys(resource.assignments).forEach(initiativeId => {
+              this.initiativeAssignments[initiativeId] = (this.initiativeAssignments[initiativeId] || {});
+              this.initiativeAssignments[initiativeId][resource._id] = resource.assignments[initiativeId];
+            });
+          });
+          // console.log('Initiatives assignments', this.initiativeAssignments);
+
+          this.initiativeService.getAll().subscribe(
+            data => {
+              let demandInitiative = data.find(demand => demand.name === 'Demand');
+
+              Object.keys(demandAccounts).forEach(account => {
+                data.push(Object.assign(
+                  {},
+                  demandInitiative,
+                  {
+                    _id: demandAccounts[account],
+                    isDemand: true,
+                    account
+                  }
+                ));
+              });
+
+              this.initiatives = data.reduce((result, initiative) => {
+                result[initiative._id] = initiative;
+
+                this._push(this.accountInitiatives, initiative.account, initiative);
+
+                return result;
+              }, {});
+              // console.log('Account initiatives', this.accountInitiatives);
+            },
+            error => console.log(error)
+          );
+
+          this.resourceService.getAll().subscribe(
+            data => {
+              demandResources.forEach(demand => data.push({
+                _id: demand._id,
+                name: demandPrefix,
+                isDemand: true
+              }));
+              // console.log(demandResources);
+
+              this.resources = data;
+              this.resourcesById = data.reduce((result, person) => {
+                result[person._id] = person;
+                return result;
+              }, {});
+            },
+            error => console.log(error)
+          );
+
+        });
 
       });
+
     });
   }
 

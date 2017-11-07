@@ -30,14 +30,10 @@ export abstract class BaseComponent {
     this.getAll();
   }
 
-  getAll(onLoad?: Function): Subscription {
-    return this.apiService.getAll().subscribe(
-      data => {
-        this.items = data;
-        if (onLoad) onLoad();
-      },
-      error => console.log(error),
-      () => this.isLoading = false
+  getAll(criteria?: any): Subscription {
+    return this.apiService.getAll(criteria).subscribe(
+      data => this.items = data,
+      error => console.log(error)
     );
   }
 

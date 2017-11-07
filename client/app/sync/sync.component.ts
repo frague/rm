@@ -14,7 +14,7 @@ import { environment } from '../../environments/environment';
 
 import * as convert from 'color-convert';
 
-import { replaceFromMap, accountsMap, billabilityMap, locationsMap, locations } from './mappings';
+import { replaceFromMap, accountsMap, billabilityMap, locationsMap, locations, profilesInvertedMap } from './mappings';
 
 const myLocations = ['Saratov', 'Saint-Petersburg'];
 const hours24 = 86400000;
@@ -128,18 +128,10 @@ export class SyncComponent {
       let initiativesCreators = {};
       let assignments = [];
 
-      let profiles = {};
-
       let peopleSorted = data.rows.sort((a, b) => (a.name > b.name) ? 1 : -1);
-      peopleSorted.forEach(person => {
-        let pool = '';
-        if (person.workProfile === 'Data Scientist') pool = 'DS';
-        else if (person.specialization === 'UI' && myLocations.indexOf(person.location) >= 0) pool = 'UI';
-
-        if (!profiles[person.workProfile]) profiles[person.workProfile] = [];
-        if (profiles[person.workProfile].indexOf(person.specialization) < 0) profiles[person.workProfile].push(person.specialization);
-
-
+      peopleSorted.forEach(person => {        
+        if (!profilesInvertedMap[person.workProfile]) return;
+        let pool = profilesInvertedMap[person.workProfile][person.specialization];
         if (!pool) return;
 
         let resource = {
@@ -147,8 +139,11 @@ export class SyncComponent {
           login: person.employeeId,
           grade: person.grade,
           location: locationsMap[person.location],
+          profile: person.workProfile,
+          specialization: person.specialization,
           pool
         };
+        console.log(resource);
 
         this.resourceService.add(resource).subscribe(resource => {
           let name = resource.name.split(' ').reverse().join(' ');
@@ -193,7 +188,6 @@ export class SyncComponent {
           this.loadings['pmo'] = false;
         });
       });
-      console.log('Profiles', profiles);
     });
   }
 

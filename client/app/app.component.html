@@ -2,25 +2,66 @@
 
   <nav class="navbar navbar-light">
     <div class="nav navbar-nav">
-      <a routerLink="/" class="nav-item nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+      <a 
+        [routerLink]="['/']" 
+        class="nav-item nav-link" 
+        routerLinkActive="active" 
+      >
+        Pools
+      </a>
+      <a 
+        [routerLink]="['assignments', pool]" 
+        class="nav-item nav-link" 
+        routerLinkActive="active" 
+        *ngIf="isPoolChosen"
+      >
         Assignments
       </a>
-      <a routerLink="/accounts" class="nav-item nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+      <a 
+        [routerLink]="['accounts', pool]" 
+        class="nav-item nav-link" 
+        routerLinkActive="active"
+        *ngIf="isPoolChosen"
+      >
         Accounts
       </a>
-      <a routerLink="/people" class="nav-item nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+      <a 
+        [routerLink]="['people', pool]" 
+        class="nav-item nav-link" 
+        routerLinkActive="active"
+        *ngIf="isPoolChosen"
+      >
         People
       </a>
-      <a routerLink="/initiatives" class="nav-item nav-link" routerLinkActive="active">
+      <a
+        [routerLink]="['initiatives', pool]" 
+        class="nav-item nav-link" 
+        routerLinkActive="active"
+        *ngIf="isPoolChosen"
+      >
         Initiatives
       </a>
-      <a routerLink="/sync" class="nav-item nav-link" routerLinkActive="active">
+      <a
+        routerLink="/sync" 
+        class="nav-item nav-link" 
+        routerLinkActive="active"
+      >
         Sync
       </a>
-      <a routerLink="/login" class="nav-item nav-link" routerLinkActive="active" *ngIf="!auth.loggedIn">
+      <a
+        routerLink="/login" 
+        class="nav-item nav-link" 
+        routerLinkActive="active" 
+        *ngIf="!auth.loggedIn"
+      >
         Login
       </a>
-      <a routerLink="/register" class="nav-item nav-link" routerLinkActive="active" *ngIf="!auth.loggedIn">
+      <a 
+        routerLink="/register" 
+        class="nav-item nav-link" 
+        routerLinkActive="active" 
+        *ngIf="!auth.loggedIn"
+      >
         Register
       </a>
 

@@ -20,6 +20,7 @@ export default class AssignmentCtrl extends BaseCtrl {
           _id: 1,
           name: 1,
           assignments: 1,
+          pool: 1,
           starts: 1,
           ends: 1,
           minDate: {
@@ -34,6 +35,9 @@ export default class AssignmentCtrl extends BaseCtrl {
         '$sort': {
           name: 1
         }
+      },
+      {
+        '$match': req.query
       }
     ], (err, docs) => {
       if (err) { return console.error(err); }

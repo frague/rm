@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions } from '@angular/http';
+import { Http, Headers, RequestOptions, URLSearchParams } from '@angular/http';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
@@ -18,8 +18,12 @@ export class BaseService {
     this.entity = entity;
   }
 
-  getAll(): Observable<any> {
-    return this.http.get('/api/' + this.entity + 's').map(res => res.json());
+  getAll(params={}): Observable<any> {
+    let query = new URLSearchParams();
+    for (let key in params) {
+      query.set(key, params[key]) 
+    }
+    return this.http.get('/api/' + this.entity + 's?' + query.toString()).map(res => res.json());
   }
 
   count(): Observable<any> {

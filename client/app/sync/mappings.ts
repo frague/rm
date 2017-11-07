@@ -18,20 +18,47 @@ export var accountsMap = {
 };
 
 export var profilesMap = {
-  'Account Director': [''],
-  'Account Success Manager': [''],
-  'Architect': ['', 'UI', 'BigData'],
-  'Business/System Analyst': [''],
-  'Data Scientist': [''],
-  'Delivery Director': [''],
-  'Delivery Manager': ['', 'BigData', 'Search'],
-  'DevOps': ['', 'BigData'],
-  'Developer': ['Java', 'BigData', 'UI', '.NET', 'Python', 'Search', 'Android', 'iOS', 'Oracle ODI', 'Ruby'],
-  'NOC Engineer': [''],
-  'Quality Engineer': ['Automation', 'BigData', 'Manual'],
-  'Site Reliability Engineer': [''],
-  'UX Designer': ['']
+  'QA': {
+    'Quality Engineer': []
+  },
+  'DevOps': {
+    'DevOps': []
+  },
+  'Custom Dev': {
+    'Developer': ['Java', '.NET', 'Python', 'Oracle ODI', 'Ruby']
+  },
+  'BigData': {
+    'Developer': ['BigData'],
+    'Architect': ['BigData'],
+    'Delivery Manager': ['BigData']
+  },
+  'Search': {
+    'Developer': ['Search'],
+    'Delivery Manager': ['Search'],
+  },
+  'Machine Learning': {
+    'Data Scientist': [''],
+  },
+  'UI': {
+    'Architect': ['UI'],
+    'Developer': ['UI'],
+    'UX Designer': [''],
+    'Site Reliability Engineer': ['']
+  },
+  'Mobile': {
+    'Developer': ['Android', 'iOS']
+  }
 };
+
+export var profilesInvertedMap = (() => {
+  return Object.keys(profilesMap).reduce((result, key) => {
+    Object.keys(profilesMap[key]).forEach(profile => {
+      if (!result[profile]) result[profile] = {};
+      profilesMap[key][profile].forEach(specialization => result[profile][specialization] = key);
+    });
+    return result;
+  }, {});
+})();
 
 export var billabilityMap = {
   'New non-billable': 'Non-billable',

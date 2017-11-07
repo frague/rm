@@ -1,24 +1,9 @@
 <div>
-  <h4>People</h4>
+  <h4>Pools ({{ items.length }})</h4>
 
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Login</th>
-        <th>Grade</th>
-        <th>Location</th>
-        <th>Pool</th>
-        <!-- <th>Actions</th> -->
-      </tr>
-    </thead>
-    <tr *ngFor="let resource of items">
-      <td>{{ resource.name }}</td>
-      <td>{{ resource.login }}</td>
-      <td>{{ resource.grade }}</td>
-      <td>{{ resource.location }}</td>
-      <td>{{ resource.pool }}</td>
-    </tr>
-  </table>
-
+  <ul class="pools">
+    <li *ngFor="let pool of items">
+      <a [routerLink]="['assignments', pool]">{{ pool }}</a>
+    </li>
+  </ul>
 </div>

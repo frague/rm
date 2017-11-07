@@ -6,8 +6,10 @@ const resourceSchema = new mongoose.Schema({
   name: String,
   login: String,
   grade: String,
-  location: ['SAR', 'SPB', 'MP', 'KHR', 'KR'],
-  pool: ['ML', 'UI']
+  location: String,
+  profile: String,
+  specialization: String,
+  pool: String
 });
 
 const Resource = mongoose.model('Resource', resourceSchema);
