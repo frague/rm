@@ -188,8 +188,9 @@ export class Schedule extends BaseComponent {
 
   getScheduleStyles() {
     return {
-      'background': 'repeating-linear-gradient(90deg, #000, #000 1px, ' + transparent + ' 1px, ' + transparent + ' ' + weekWidth + 'px), ' +
-        'linear-gradient(90deg, ' + transparent + ' ' + this.todayOffset + 'px, red ' + this.todayOffset + 'px, ' + transparent + ' ' + (1 + this.todayOffset) + 'px) left top/' + (1 + this.todayOffset) + 'px repeat-y',
+      background:
+        'repeating-linear-gradient(90deg, #000, #000 1px, ' + transparent + ' 1px, ' + transparent + ' ' + weekWidth + 'px), ' +
+        'linear-gradient(90deg, red, red) ' + this.todayOffset + 'px top/1px auto repeat-y',
       width: (weekWidth * this.shownWeeks) + 1 + 'px'
     };
   }
