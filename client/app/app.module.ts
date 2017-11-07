@@ -30,6 +30,7 @@ import { AssignmentComponent } from './assignments/assignment.component';
 import { AccountsComponent } from './accounts/accounts.component';
 import { DemandComponent } from './assignments/demand.component';
 import { PrintableDatePipe, AvatarUrlPipe } from './pipes';
+import { PoolsComponent } from './pools/pools.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { PrintableDatePipe, AvatarUrlPipe } from './pipes';
     AssignmentComponent,
     AccountsComponent,
     DemandComponent,
-    PrintableDatePipe, AvatarUrlPipe
+    PrintableDatePipe, AvatarUrlPipe,
+    PoolsComponent
   ],
   imports: [
     RoutingModule,

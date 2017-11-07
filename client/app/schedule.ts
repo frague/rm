@@ -207,7 +207,7 @@ export class Schedule extends BaseComponent {
       background:
         'repeating-linear-gradient(90deg, #000, #000 1px, ' + transparent + ' 1px, ' + transparent + ' ' + weekWidth + 'px), ' +
         'linear-gradient(90deg, red, red) ' + this.todayOffset + 'px top/2px auto repeat-y,' +
-        'linear-gradient(90deg, darkorange, darkorange) ' + this.markerDateOffset + 'px top/2px auto repeat-y',
+        'linear-gradient(90deg, #000, #000) ' + this.markerDateOffset + 'px top/2px auto repeat-y',
       width: (weekWidth * this.shownWeeks) + 1 + 'px'
     };
   }

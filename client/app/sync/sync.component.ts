@@ -128,11 +128,17 @@ export class SyncComponent {
       let initiativesCreators = {};
       let assignments = [];
 
+      let profiles = {};
+
       let peopleSorted = data.rows.sort((a, b) => (a.name > b.name) ? 1 : -1);
       peopleSorted.forEach(person => {
         let pool = '';
         if (person.workProfile === 'Data Scientist') pool = 'DS';
         else if (person.specialization === 'UI' && myLocations.indexOf(person.location) >= 0) pool = 'UI';
+
+        if (!profiles[person.workProfile]) profiles[person.workProfile] = [];
+        if (profiles[person.workProfile].indexOf(person.specialization) < 0) profiles[person.workProfile].push(person.specialization);
+
 
         if (!pool) return;
 
@@ -187,6 +193,7 @@ export class SyncComponent {
           this.loadings['pmo'] = false;
         });
       });
+      console.log('Profiles', profiles);
     });
   }
 

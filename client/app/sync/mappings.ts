@@ -17,6 +17,22 @@ export var accountsMap = {
   'Toys R Us': ''
 };
 
+export var profilesMap = {
+  'Account Director': [''],
+  'Account Success Manager': [''],
+  'Architect': ['', 'UI', 'BigData'],
+  'Business/System Analyst': [''],
+  'Data Scientist': [''],
+  'Delivery Director': [''],
+  'Delivery Manager': ['', 'BigData', 'Search'],
+  'DevOps': ['', 'BigData'],
+  'Developer': ['Java', 'BigData', 'UI', '.NET', 'Python', 'Search', 'Android', 'iOS', 'Oracle ODI', 'Ruby'],
+  'NOC Engineer': [''],
+  'Quality Engineer': ['Automation', 'BigData', 'Manual'],
+  'Site Reliability Engineer': [''],
+  'UX Designer': ['']
+};
+
 export var billabilityMap = {
   'New non-billable': 'Non-billable',
   'New billable': 'Billable',
