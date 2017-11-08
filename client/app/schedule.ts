@@ -61,6 +61,9 @@ export class Schedule {
   accountsAssignments = {};
   initiativeAssignments = {};
 
+  visibleAccounts = {};
+  visibleInitiatives = {};
+
   constructor(
     private assignmentService: AssignmentService,
     private resourceService: ResourceService,
@@ -107,6 +110,15 @@ export class Schedule {
 
     this.accountsAssignments = {};
     this.initiativeAssignments = {};
+
+    this.visibleInitiatives = {};
+  }
+
+  findVisibleAccounts() {
+    this.visibleAccounts = {};
+    Object.keys(this.visibleInitiatives).forEach(
+      initiativeId => this.visibleAccounts[(this.initiatives[initiativeId] || {}).account] = true
+    );
   }
 
   ngOnInit() {
@@ -160,6 +172,8 @@ export class Schedule {
           Object.keys(resource.assignments).forEach(initiativeId => {
             this.initiativeAssignments[initiativeId] = (this.initiativeAssignments[initiativeId] || {});
             this.initiativeAssignments[initiativeId][resource._id] = resource.assignments[initiativeId];
+
+            this.visibleInitiatives[initiativeId] = true;
           });
         });
 
@@ -188,6 +202,7 @@ export class Schedule {
 
                 return result;
               }, {});
+              this.findVisibleAccounts();
             },
             error => console.log(error)
           );
@@ -210,6 +225,8 @@ export class Schedule {
             error => console.log(error)
           );
           
+        } else {
+          this.findVisibleAccounts();
         }
 
 
@@ -242,7 +259,11 @@ export class Schedule {
   }
 
   getInitiatives() {
-    return Object.values(this.initiatives);
+    return Object.values(this.initiatives).filter((initiative: any) => !!this.visibleInitiatives[initiative._id]);
+  }
+
+  getAccountInitiatives(account: string) {
+    return (this.accountInitiatives[account] || []).filter((initiative: any) => !!this.visibleInitiatives[initiative._id]);
   }
 
   getAssignmentsGroups(assignments: any, assignee: any) {
@@ -251,7 +272,7 @@ export class Schedule {
   }
 
   getAccounts() {
-    return Object.keys(this.accountInitiatives).sort();
+    return Object.keys(this.accountInitiatives).filter(account => !!this.visibleAccounts[account]).sort();
   }
 
   getPersonInitiativeAssignments(initiative) {

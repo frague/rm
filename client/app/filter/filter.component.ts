@@ -33,7 +33,8 @@ export class FilterComponent {
       }
       return result;
     }, {});
-    console.log(query);
+    // console.log(query);
+    
     if (this.timer) clearTimeout(this.timer);
     this.timer = setTimeout(() => {
       this.bus.updateQuery(query);

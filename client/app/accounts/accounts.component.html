@@ -18,7 +18,7 @@
         <span>{{ account }}</span>
         <div class="lines">
           <div
-            *ngFor="let initiative of accountInitiatives[account]; let i = index"
+            *ngFor="let initiative of getAccountInitiatives(account); let i = index"
             class="line"
             [ngClass]="getAssignmentsCount(initiative)"
           >{{ initiative.name }}</div>
@@ -39,7 +39,7 @@
         <div *ngFor="let account of getAccounts()" class="account">
 
           <div
-            *ngFor="let initiative of accountInitiatives[account]; let i = index"
+            *ngFor="let initiative of getAccountInitiatives(account); let i = index"
             class="line"
             [ngClass]="getAssignmentsCount(initiative)"
           >
