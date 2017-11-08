@@ -21,7 +21,7 @@ export class BaseService {
   getAll(params={}): Observable<any> {
     let query = new URLSearchParams();
     for (let key in params) {
-      query.set(key, params[key]) 
+      query.set(key, JSON.stringify(params[key]));
     }
     return this.http.get('/api/' + this.entity + 's?' + query.toString()).map(res => res.json());
   }

@@ -2,64 +2,39 @@
 
   <nav class="navbar navbar-light">
     <div class="nav navbar-nav">
-      <a 
-        [routerLink]="['/']" 
-        class="nav-item nav-link" 
-        routerLinkActive="active" 
-      >
-        Pools
-      </a>
-      <a 
-        [routerLink]="['assignments', pool]" 
-        class="nav-item nav-link" 
-        routerLinkActive="active" 
-        *ngIf="isPoolChosen"
+      <a
+        [routerLink]="['assignments']"
+        class="nav-item nav-link"
+        routerLinkActive="active"
       >
         Assignments
       </a>
-      <a 
-        [routerLink]="['accounts', pool]" 
-        class="nav-item nav-link" 
+      <a
+        [routerLink]="['accounts']"
+        class="nav-item nav-link"
         routerLinkActive="active"
-        *ngIf="isPoolChosen"
       >
         Accounts
       </a>
-      <a 
-        [routerLink]="['people', pool]" 
-        class="nav-item nav-link" 
-        routerLinkActive="active"
-        *ngIf="isPoolChosen"
-      >
-        People
-      </a>
       <a
-        [routerLink]="['initiatives', pool]" 
-        class="nav-item nav-link" 
-        routerLinkActive="active"
-        *ngIf="isPoolChosen"
-      >
-        Initiatives
-      </a>
-      <a
-        routerLink="/sync" 
-        class="nav-item nav-link" 
+        routerLink="/sync"
+        class="nav-item nav-link"
         routerLinkActive="active"
       >
         Sync
       </a>
       <a
-        routerLink="/login" 
-        class="nav-item nav-link" 
-        routerLinkActive="active" 
+        routerLink="/login"
+        class="nav-item nav-link"
+        routerLinkActive="active"
         *ngIf="!auth.loggedIn"
       >
         Login
       </a>
-      <a 
-        routerLink="/register" 
-        class="nav-item nav-link" 
-        routerLinkActive="active" 
+      <a
+        routerLink="/register"
+        class="nav-item nav-link"
+        routerLinkActive="active"
         *ngIf="!auth.loggedIn"
       >
         Register
@@ -78,6 +53,8 @@
       </div>
     </div>
   </nav>
+
+  <filter></filter>
 
   <router-outlet></router-outlet>
 

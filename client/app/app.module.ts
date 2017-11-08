@@ -13,6 +13,7 @@ import { AuthService } from './services/auth.service';
 import { BambooService } from './services/bamboo.service';
 import { AuthGuardLogin } from './services/auth-guard-login.service';
 import { AuthGuardAdmin } from './services/auth-guard-admin.service';
+import { BusService } from './services/bus.service';
 import { AppComponent } from './app.component';
 import { SyncComponent } from './sync/sync.component';
 import { InitiativesComponent } from './initiatives/initiatives.component';
@@ -30,7 +31,7 @@ import { AssignmentComponent } from './assignments/assignment.component';
 import { AccountsComponent } from './accounts/accounts.component';
 import { DemandComponent } from './assignments/demand.component';
 import { PrintableDatePipe, AvatarUrlPipe } from './pipes';
-import { PoolsComponent } from './pools/pools.component';
+import { FilterComponent } from './filter/filter.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,7 @@ import { PoolsComponent } from './pools/pools.component';
     AccountsComponent,
     DemandComponent,
     PrintableDatePipe, AvatarUrlPipe,
-    PoolsComponent
+    FilterComponent
   ],
   imports: [
     RoutingModule,
@@ -69,6 +70,7 @@ import { PoolsComponent } from './pools/pools.component';
     PmoService,
     BambooService,
     DemandService,
+    BusService,
     PrintableDatePipe, AvatarUrlPipe
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

@@ -8,6 +8,7 @@ import { AssignmentService } from '../services/assignment.service';
 import { InitiativeService } from '../services/initiative.service';
 import { ResourceService } from '../services/resource.service';
 import { DemandService } from '../services/demand.service';
+import { BusService } from '../services/bus.service';
 
 const emptyItem = {assignments: []};
 
@@ -22,9 +23,10 @@ export class AssignmentsComponent extends Schedule {
     resourceService: ResourceService,
     initiativeService: InitiativeService,
     demandService: DemandService,
-    route: ActivatedRoute
+    route: ActivatedRoute,
+    bus: BusService
   ) {
-    super(assignmentService, resourceService, initiativeService, demandService, route);
+    super(assignmentService, resourceService, initiativeService, demandService, route, bus);
   }
 
   getAssignmentsCount(index) {
