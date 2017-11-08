@@ -9,8 +9,8 @@ export default class AssignmentCtrl extends BaseCtrl {
     let assignmentsQuery = {};
     let query =Object.keys(req.query).reduce((result, key) => {
       let value = JSON.parse(req.query[key]);
-      if (key.indexOf('assignments') >= 0) {
-        assignmentsQuery[key.replace('assignments.', 'assignments.')] = value;
+      if (key.indexOf('assignment') >= 0) {
+        assignmentsQuery[key] = value;
       } else {
         result[key] = value;
       }
@@ -23,11 +23,28 @@ export default class AssignmentCtrl extends BaseCtrl {
           from: 'assignments',
           localField: '_id',
           foreignField: 'resourceId',
-          as: 'assignments'
+          as: 'assignment'
         }
       },
       {
-        '$unwind': '$assignments'
+        '$unwind': '$assignment'
+      },
+      {
+        '$lookup': {
+          from: 'initiatives',
+          localField: 'assignment.initiativeId',
+          foreignField: '_id',
+          as: 'initiative'
+        }
+      },
+      {
+        '$unwind': '$initiative'
+      },
+      {
+        '$addFields': {
+          'assignment.account': '$initiative.account',
+          'assignment.initiative': '$initiative.name'
+        } 
       },
       {
         '$match': assignmentsQuery
@@ -35,7 +52,7 @@ export default class AssignmentCtrl extends BaseCtrl {
       {
         '$group': {
           _id: '$_id', 
-          assignments: { '$push': '$assignments' },
+          assignments: { '$push': '$assignment' },
           name: { '$first': '$name' },
           grade: { '$first': '$grade' },
           location: { '$first': '$location' },
@@ -45,10 +62,10 @@ export default class AssignmentCtrl extends BaseCtrl {
           starts: { '$first': '$starts' },
           ends: { '$first': '$ends' },
           minDate: {
-            $min: '$assignments.start'
+            $min: '$assignment.start'
           },
           maxDate: {
-            $max: '$assignments.end'
+            $max: '$assignment.end'
           }
         }
       },

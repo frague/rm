@@ -10,6 +10,14 @@ export class AssignmentComponent {
   @Input() resources: any[] = [];
   @Input() initiatives: any = {};
 
+  public get assignee(): any {
+    return this.resources[this.assignment.resourceId] || {};
+  }
+
+  public get initiative(): any {
+    return this.initiatives[this.assignment.initiativeId] || {};
+  }
+
   assignment: any;
 
   constructor(private modalService: NgbModal) {}
@@ -24,17 +32,12 @@ export class AssignmentComponent {
     this.modalService.open(this.content);
   }
 
-  getAssignee(): any {
-    return this.resources[this.assignment.resourceId] || {};
-  }
-
   getAssigneeName(): string {
-    let assignee = this.getAssignee();
-    return assignee ? assignee.name : '-';
+    return this.assignee.name ? this.assignee.name + ' (' + this.assignee.grade + ', ' + this.assignee.location + ')' : '';
   }
 
-  getInitiative(): any {
-    return this.initiatives[this.assignment.initiativeId] || {};
+  getAssigneeProfile() {
+    return this.assignee.profile ? this.assignee.profile + ' (' + this.assignee.specialization + ')' : '';
   }
 
 }

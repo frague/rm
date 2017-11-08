@@ -6,17 +6,22 @@
     <h4 class="modal-title">Assignment Details</h4>
   </div>
   <div class="modal-body">
-    <img class="avatar" src="{{ getAssignee().login|avatarUrl }}">
+    <img class="avatar" src="{{ assignee.login|avatarUrl }}">
 
     <dl class="attributes">
       <dt>Assignee</dt>
       <dd>{{ getAssigneeName() }}</dd>
 
+      <dt>Profile</dt>
+      <dd>{{ getAssigneeProfile() }}</dd>
+
+      <hr>
+
       <dt>Account</dt>
-      <dd>{{ getInitiative().account }}</dd>
+      <dd>{{ initiative.account }}</dd>
 
       <dt>Initiative</dt>
-      <dd>{{ getInitiative().name }}</dd>
+      <dd>{{ initiative.name }}</dd>
 
       <dt>Dates</dt>
       <dd>{{ assignment.start|date }} - {{ assignment.end|date }}</dd>
