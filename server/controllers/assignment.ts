@@ -27,20 +27,23 @@ export default class AssignmentCtrl extends BaseCtrl {
         }
       },
       {
+        '$unwind': '$assignments'
+      },
+      {
         '$match': assignmentsQuery
       },
       {
-        '$project': {
-          _id: 1,
-          name: 1,
-          assignments: 1,
-          grade: 1,
-          location: 1,
-          profile: 1,
-          specialization: 1,
-          pool: 1,
-          starts: 1,
-          ends: 1,
+        '$group': {
+          _id: '$_id', 
+          assignments: { '$push': '$assignments' },
+          name: { '$first': '$name' },
+          grade: { '$first': '$grade' },
+          location: { '$first': '$location' },
+          profile: { '$first': '$profile' },
+          specialization: { '$first': '$specialization' },
+          pool: { '$first': '$pool' },
+          starts: { '$first': '$starts' },
+          ends: { '$first': '$ends' },
           minDate: {
             $min: '$assignments.start'
           },

@@ -36,7 +36,7 @@ export class FilterComponent {
     console.log(query);
     if (this.timer) clearTimeout(this.timer);
     this.timer = setTimeout(() => {
-      this.bus.filterUpdated.emit(query);
+      this.bus.updateQuery(query);
     }, 2000);
   }
 }

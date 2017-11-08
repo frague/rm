@@ -104,21 +104,17 @@ export class Schedule {
     this.isScrolled = false;
     this.isCalculated = false;
     this.items = [];
-    this.resources = [];
-    this.resourcesById = {};
-    this.initiatives = {};
-    this.assignments = [];
-    this.item = {};
-    this.accountInitiatives = {};
+
     this.accountsAssignments = {};
     this.initiativeAssignments = {};
   }
 
   ngOnInit() {
-    this.fetchData(this.bus.filterQuery);
+    console.log(this.bus.filterQuery);
+    this.fetchData(this.bus.filterQuery, true);
   }
 
-  fetchData(query={}) {
+  fetchData(query={}, fetchAll=false) {
     this.reset();
 
     this.assignmentService.getAll(query).subscribe(data => {
@@ -140,7 +136,6 @@ export class Schedule {
 
           let item = {
             _id: demandId,
-            // name: demandPrefix,
             name: demand.profile,
             assignments: [{
               _id: demandId,
@@ -160,7 +155,6 @@ export class Schedule {
           this.items.push(item);
         });
         this.calculate();
-        // console.log('Items', this.items);
 
         this.items.forEach(resource => {
           Object.keys(resource.assignments).forEach(initiativeId => {
@@ -168,53 +162,56 @@ export class Schedule {
             this.initiativeAssignments[initiativeId][resource._id] = resource.assignments[initiativeId];
           });
         });
-        // console.log('Initiatives assignments', this.initiativeAssignments);
 
-        this.initiativeService.getAll().subscribe(
-          data => {
-            let demandInitiative = data.find(demand => demand.name === 'Demand');
+        if (fetchAll) {
+          // Fetch Initiatives
+          this.initiativeService.getAll().subscribe(
+            data => {
+              let demandInitiative = data.find(demand => demand.name === 'Demand');
 
-            Object.keys(demandAccounts).forEach(account => {
-              data.push(Object.assign(
-                {},
-                demandInitiative,
-                {
-                  _id: demandAccounts[account],
-                  isDemand: true,
-                  account
-                }
-              ));
-            });
+              Object.keys(demandAccounts).forEach(account => {
+                data.push(Object.assign(
+                  {},
+                  demandInitiative,
+                  {
+                    _id: demandAccounts[account],
+                    isDemand: true,
+                    account
+                  }
+                ));
+              });
 
-            this.initiatives = data.reduce((result, initiative) => {
-              result[initiative._id] = initiative;
+              this.initiatives = data.reduce((result, initiative) => {
+                result[initiative._id] = initiative;
 
-              this._push(this.accountInitiatives, initiative.account, initiative);
+                this._push(this.accountInitiatives, initiative.account, initiative);
 
-              return result;
-            }, {});
-            // console.log('Account initiatives', this.accountInitiatives);
-          },
-          error => console.log(error)
-        );
+                return result;
+              }, {});
+            },
+            error => console.log(error)
+          );
+  
+          // Fetch resources
+          this.resourceService.getAll().subscribe(
+            data => {
+              demandResources.forEach(demand => data.push({
+                _id: demand._id,
+                name: demandPrefix,
+                isDemand: true
+              }));
 
-        this.resourceService.getAll().subscribe(
-          data => {
-            demandResources.forEach(demand => data.push({
-              _id: demand._id,
-              name: demandPrefix,
-              isDemand: true
-            }));
-            // console.log(demandResources);
+              this.resources = data;
+              this.resourcesById = data.reduce((result, person) => {
+                result[person._id] = person;
+                return result;
+              }, {});
+            },
+            error => console.log(error)
+          );
+          
+        }
 
-            this.resources = data;
-            this.resourcesById = data.reduce((result, person) => {
-              result[person._id] = person;
-              return result;
-            }, {});
-          },
-          error => console.log(error)
-        );
 
       });
 

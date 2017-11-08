@@ -50,7 +50,6 @@ export class AssignmentsComponent extends Schedule {
 
   showResource(assignee: any) {
     if (assignee.isDemand) {
-      // console.log(assignee);
       let assignments = assignee.assignments;
       if (assignments) {
         return this.demandModal.show(assignments[Object.keys(assignments)[0]][0].demand);
