@@ -28,7 +28,7 @@ export class AssignmentComponent {
 
   show(assignment: any) {
     this.assignment = assignment;
-    console.log(assignment);
+    // console.log(assignment);
     this.modalService.open(this.content);
   }
 

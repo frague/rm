@@ -122,7 +122,7 @@ export class Schedule {
   }
 
   ngOnInit() {
-    console.log(this.bus.filterQuery);
+    // console.log(this.bus.filterQuery);
     this.fetchData(this.bus.filterQuery, true);
   }
 

@@ -6,13 +6,13 @@ import { BusService } from '../services/bus.service';
   templateUrl: './filter.component.html'
 })
 export class FilterComponent {
-  timer = null;
+  query = {};
 
   constructor(private bus: BusService) {}
 
   parseCriteria(event: KeyboardEvent) {
     let criteria = event.srcElement['value'];
-    let query = criteria.split(',').reduce((result, pair) => {
+    this.query = criteria.split(',').reduce((result, pair) => {
       let [param, operation, value] = pair.replace(/([=~])/g, '\n$1\n').split('\n', 3);
 
       switch (operation) {
@@ -33,11 +33,9 @@ export class FilterComponent {
       }
       return result;
     }, {});
-    // console.log(query);
 
-    if (this.timer) clearTimeout(this.timer);
-    this.timer = setTimeout(() => {
-      this.bus.updateQuery(query);
-    }, 2000);
+    if (event.code === 'Enter') {
+      this.bus.updateQuery(this.query);
+    };
   }
 }
