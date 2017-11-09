@@ -22,7 +22,7 @@ export var profilesMap = {
     'Quality Engineer': []
   },
   'DevOps': {
-    'DevOps': []
+    'DevOps': ['', 'BigData']
   },
   'Custom Dev': {
     'Developer': ['Java', '.NET', 'Python', 'Oracle ODI', 'Ruby']

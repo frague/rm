@@ -11,6 +11,9 @@ import { creds } from '../google.credentials';
 var doc = new GoogleSpreadsheet(env.DEMAND_SHEET);
 var sheet;
 
+var Confluence = require('confluence-api');
+
+
 export default class IntegrationsCtrl {
 
   cookie = '';
@@ -115,6 +118,23 @@ export default class IntegrationsCtrl {
           res.send(result);
         });
       });
+    });
+  }
+
+  confluenceGetPage = (req, res) => {
+    var config = {
+      username: env.PMO_LOGIN,
+      password: env.PMO_PASSWORD,
+      baseUrl: 'https://wiki.griddynamics.net'
+    };
+    var confluence = new Confluence(config);
+    confluence.getContentByPageTitle('HQ', 'New WhoIs', function(err, data) {
+      if (err) return res.setStatus(500);
+
+      let [, , body, ,] = data.results[0].body.storage.value.split(/(var dataSet = |;\s+var newData =)/g);
+
+      res.setHeader('Content-Type', 'application/json');
+      res.send(JSON.parse(body.replace(/\t/g, ' ')));
     });
   }
 }

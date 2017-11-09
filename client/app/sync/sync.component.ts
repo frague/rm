@@ -13,6 +13,7 @@ import { DemandService } from '../services/demand.service';
 import { environment } from '../../environments/environment';
 
 import * as convert from 'color-convert';
+import * as Confluence from 'confluence-api';
 
 import { replaceFromMap, accountsMap, billabilityMap, locationsMap, locations, profilesInvertedMap } from './mappings';
 
@@ -29,6 +30,7 @@ export class SyncComponent {
   loadings = {};
   private _peopleByName = {};
   private _accounts = {};
+  private _whois = {};
 
   constructor(
     private http: Http,
@@ -129,10 +131,12 @@ export class SyncComponent {
       let assignments = [];
 
       let peopleSorted = data.rows.sort((a, b) => (a.name > b.name) ? 1 : -1);
-      peopleSorted.forEach(person => {        
+      peopleSorted.forEach(person => {
         if (!profilesInvertedMap[person.workProfile]) return;
         let pool = profilesInvertedMap[person.workProfile][person.specialization];
         if (!pool) return;
+
+        let who = this._whois[person.employeeId] || {};
 
         let resource = {
           name: person.fullName,
@@ -141,7 +145,11 @@ export class SyncComponent {
           location: locationsMap[person.location],
           profile: person.workProfile,
           specialization: person.specialization,
-          pool
+          pool,
+          manager: who.manager,
+          skype: who.skype,
+          phone: who.phone,
+          room: who.room
         };
         console.log(resource);
 
@@ -191,6 +199,21 @@ export class SyncComponent {
     });
   }
 
+  _queryConfluence() {
+    this.loadings['whois'] = true;
+
+    return this.resourceService.getWhois().subscribe(
+      data => {
+        this._whois = data.reduce((result, u) => {
+          let [pool, name, account, initiative, profile, grade, manager, location, skype, phone, room, login] = u;
+          result[login] = {manager, skype, phone, room};
+          return result;
+        }, {});
+        this.loadings['whois'] = false;
+      }
+    );
+  }
+
   _parseDate(date: string): Date {
     let d = date.replace(/[^\da-zA-Z\-\s]/g, ' ').replace(/\s+/g, ' ');
     return d ? new Date(d) : null;
@@ -198,7 +221,7 @@ export class SyncComponent {
 
   _parseDuration(duration: string): number {
     duration = duration.replace(/[^\d-]/g, '').substr(0, 2);
-    duration = duration.split('-')[0];    // 6-9 months
+    duration = duration.split('-')[0];    // 6-9 months range
     return duration ? parseInt(duration) : 6;
   }
 
@@ -269,10 +292,12 @@ export class SyncComponent {
 
   sync() {
     this.cleanup().add(() => {
-      this._queryPMO().add(() => {
-        this._queryBamboo();
-        this._queryDemand();
-      });
-    });
+      this._queryConfluence().add(() =>
+        this._queryPMO().add(() => {
+          this._queryBamboo();
+          this._queryDemand();
+        })
+      )
+    })
   }
 }

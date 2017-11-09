@@ -78,6 +78,9 @@ export default function setRoutes(app) {
   // BambooHR
   router.route('/bamboo').get(integrationsCtrl.bambooTimeoff);
 
+  // Confluence
+  router.route('/confluence').get(integrationsCtrl.confluenceGetPage);
+
   // Apply the routes to our application with the prefix /api
   app.use('/api', router);
 

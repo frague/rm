@@ -9,7 +9,11 @@ const resourceSchema = new mongoose.Schema({
   location: String,
   profile: String,
   specialization: String,
-  pool: String
+  pool: String,
+  manager: String,
+  skype: String,
+  phone: String,
+  room: String
 });
 
 const Resource = mongoose.model('Resource', resourceSchema);

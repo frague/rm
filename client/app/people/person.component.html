@@ -11,14 +11,29 @@
       <dt>Location</dt>
       <dd>{{ person.location }}</dd>
 
+      <dt>Profile</dt>
+      <dd>
+        {{ person.profile }}
+        <span *ngIf="person.specialization"> ({{ person.specialization }})</span>
+      </dd>
+
       <dt>Grade</dt>
       <dd>{{ person.grade }}</dd>
 
       <dt>Pool</dt>
       <dd>{{ person.pool }}</dd>
 
-      <dt>Profile</dt>
-      <dd>{{ person.profile }} ({{ person.specialization }})</dd>
+      <dt>Manager</dt>
+      <dd>{{ person.manager }}</dd>
+
+      <dt>Skype</dt>
+      <dd><a [href]="'skype:' + person.skype" *ngIf="person.skype">{{ person.skype }}</a></dd>
+
+      <dt>Room</dt>
+      <dd>{{ person.room }}</dd>
+
+      <dt>Phone</dt>
+      <dd>{{ person.phone }}</dd>
 
     </dl>
   </div>

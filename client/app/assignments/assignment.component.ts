@@ -35,9 +35,4 @@ export class AssignmentComponent {
   getAssigneeName(): string {
     return this.assignee.name ? this.assignee.name + ' (' + this.assignee.grade + ', ' + this.assignee.location + ')' : '';
   }
-
-  getAssigneeProfile() {
-    return this.assignee.profile ? this.assignee.profile + ' (' + this.assignee.specialization + ')' : '';
-  }
-
 }
