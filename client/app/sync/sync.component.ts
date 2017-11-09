@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { Http } from '@angular/http';
 import { Subscription } from 'rxjs';
 
@@ -26,7 +26,10 @@ const hours24 = 86400000;
 })
 export class SyncComponent {
 
+  @ViewChild('log') logWindow: ElementRef;
+
   data: any = [];
+  logs = [];
   loadings = {};
   private _peopleByName = {};
   private _accounts = {};
@@ -52,16 +55,30 @@ export class SyncComponent {
     return Object.keys(this.loadings);
   }
 
+  private addLog(text: string, source='') {
+    this.logs.push((source ? source + ': ' : '') + text);
+    if (this.logWindow) {
+      this.logWindow.nativeElement.scrollBy(0, 50);
+    }
+  }
+
   cleanup(): Subscription {
+    this.logs = [];
     this.loadings['cleanup'] = true;
     return this.initiativeService.deleteAll().subscribe(
       () => {
+        this.addLog('Initiatives removed');
         return this.resourceService.deleteAll().subscribe(
           () => {
+            this.addLog('Resources removed');
             return this.assignmentService.deleteAll().subscribe(
               () => {
+                 this.addLog('Assignments removed');
                 return this.demandService.deleteAll().subscribe(
-                  () => this.loadings['cleanup'] = false,
+                  () => {
+                    this.addLog('Demands removed');
+                    this.loadings['cleanup'] = false;
+                  },
                   error => console.log(error)
                 )
               },
@@ -83,6 +100,8 @@ export class SyncComponent {
   _queryBamboo() {
     this.loadings['bamboo'] = true;
     return this.bamboo.getTimeoffs().subscribe(data => {
+      this.addLog('Received vacations information', 'Bamboo');
+
       this.initiativeService.add({
         name: 'Vacation',
         account: 'Griddynamics',
@@ -102,18 +121,21 @@ export class SyncComponent {
         };
 
         let vacationRequests = {};
+        let vacationsCount = 0;
         data.requests.request.forEach(request => {
           let name = request.employee['$t'];
           let resource = this._peopleByName[name];
           if (!resource) {
-            console.log('Unable to add vacations for', name);
+            this.addLog('Unable to add vacations for ' + name);
             return;
           }
           if (request.status && request.status['$t'] === 'approved') {
             addVacation(resource._id, request.start, request.end);
+            vacationsCount++;
           }
         });
 
+        this.addLog(vacationsCount + ' vacation records created', 'Bamboo');
         this.loadings['bamboo'] = false;
       });
     });
@@ -129,6 +151,8 @@ export class SyncComponent {
       let initiatives = {};
       let initiativesCreators = {};
       let assignments = [];
+
+      this.addLog(data.rows.length + ' records received', 'PMO');
 
       let peopleSorted = data.rows.sort((a, b) => (a.name > b.name) ? 1 : -1);
       peopleSorted.forEach(person => {
@@ -151,9 +175,11 @@ export class SyncComponent {
           phone: who.phone,
           room: who.room
         };
-        console.log(resource);
+        // console.log(resource);
 
         this.resourceService.add(resource).subscribe(resource => {
+          this.addLog('Created profile for ' + resource.name);
+
           let name = resource.name.split(' ').reverse().join(' ');
           this._peopleByName[resource.name] = resource;
           this._peopleByName[name] = resource;
@@ -204,6 +230,8 @@ export class SyncComponent {
 
     return this.resourceService.getWhois().subscribe(
       data => {
+        this.addLog(data.length + ' records received', 'Whois');
+
         this._whois = data.reduce((result, u) => {
           let [pool, name, account, initiative, profile, grade, manager, location, skype, phone, room, login] = u;
           result[login] = {manager, skype, phone, room};
@@ -236,6 +264,7 @@ export class SyncComponent {
 
     // Query Demand file
     return this.demandService.import().subscribe(data => {
+      this.addLog(data.length + ' records received', 'Demand');
       data.forEach(demandLine => {
         let start = this._parseDate(demandLine[7]);
         let duration = this._parseDuration(demandLine[9]);
@@ -283,7 +312,9 @@ export class SyncComponent {
           demand.status !== 'active'
           || (profile.indexOf('ui') < 0 && profile.indexOf('datascientist') < 0)
         ) return;
-        console.log(demand);
+        // console.log(demand);
+        this.addLog('Created demand for ' + demand.account);
+
         this.demandService.add(demand).subscribe();
       });
       this.loadings['demands'] = false;

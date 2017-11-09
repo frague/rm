@@ -8,6 +8,15 @@
   Sync!
 </button>
 
-<ul class="sync">
-  <li *ngFor="let item of getProgress()">{{ item }} <i *ngIf="loadings[item]" class="fa fa-cog fa-spin fa-fw"></i></li>
-</ul>
+<div class="row">
+	<div class="col-md-2">
+		<ul class="sync">
+		  <li *ngFor="let item of getProgress()">{{ item }} <i *ngIf="loadings[item]" class="fa fa-cog fa-spin fa-fw"></i></li>
+		</ul>
+  </div>
+  <div class="col-md-10 log" #log>
+    <ol>
+      <li *ngFor="let log of logs">{{ log }}</li>
+    </ol>
+  </div>
+</div>

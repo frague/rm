@@ -189,3 +189,13 @@ img.avatar {
   float: right;
   margin: 0 0 10px 10px;
 }
+
+.log {
+  height: 200px;
+  overflow-y: auto;
+  overflow-x: none;
+
+  li {
+    list-style: none;
+  }
+}
