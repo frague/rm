@@ -7,6 +7,7 @@ import AssignmentCtrl from './controllers/assignment';
 import UserCtrl from './controllers/user';
 import IntegrationsCtrl from './controllers/integrations';
 import DemandCtrl from './controllers/demand';
+import FilterCtrl from './controllers/filter';
 
 import Resource from './models/resource';
 import User from './models/user';
@@ -21,6 +22,7 @@ export default function setRoutes(app) {
   const userCtrl = new UserCtrl();
   const integrationsCtrl = new IntegrationsCtrl();
   const demandCtrl = new DemandCtrl();
+  const filterCtrl = new FilterCtrl();
 
   // Assignments
   router.route('/assignments').get(assignmentCtrl.getAll);
@@ -69,6 +71,15 @@ export default function setRoutes(app) {
   router.route('/user/:id').get(userCtrl.get);
   router.route('/user/:id').put(userCtrl.update);
   router.route('/user/:id').delete(userCtrl.delete);
+
+
+  // Filters
+  router.route('/filters').get(filterCtrl.getAll);
+  router.route('/filters').delete(filterCtrl.deleteAll);
+  router.route('/filter').post(filterCtrl.insert);
+  router.route('/filter/:id').get(filterCtrl.get);
+  router.route('/filter/:id').put(filterCtrl.update);
+  router.route('/filter/:id').delete(filterCtrl.delete);
 
   // PMO
   router.route('/pmo/accounts').get(integrationsCtrl.pmoGetAccounts);

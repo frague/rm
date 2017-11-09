@@ -14,6 +14,7 @@ import { BambooService } from './services/bamboo.service';
 import { AuthGuardLogin } from './services/auth-guard-login.service';
 import { AuthGuardAdmin } from './services/auth-guard-admin.service';
 import { BusService } from './services/bus.service';
+import { FilterService } from './services/filter.service';
 import { AppComponent } from './app.component';
 import { SyncComponent } from './sync/sync.component';
 import { InitiativesComponent } from './initiatives/initiatives.component';
@@ -71,6 +72,7 @@ import { FilterComponent } from './filter/filter.component';
     BambooService,
     DemandService,
     BusService,
+    FilterService,
     PrintableDatePipe, AvatarUrlPipe
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

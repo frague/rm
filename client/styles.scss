@@ -1,8 +1,37 @@
+$primary: #b9e498;
+$danger: #f7bf9e;
+
 
 body {
   background-color: #f5feff;
   margin-top: 15px;
   margin-bottom: 10px;
+}
+
+.btn-primary {
+  background-color: $primary;
+  border-color: $primary - #111;
+  &:hover {
+    background-color: $primary - #111;
+    border-color: $primary - #111;
+  }
+  &:active, &:focus, &:focus:active {
+    background-color: $primary - #222;
+    border-color: $primary - #111;
+  }
+}
+
+.btn-danger {
+  background-color: $danger;
+  border-color: $danger - #111;
+  &:hover {
+    background-color: $danger - #111;
+    border-color: $danger - #111;
+  }
+  &:active, &:focus, &:focus:active {
+    background-color: $danger - #222;
+    border-color: $danger - #111;
+  }
 }
 
 .table thead th {
