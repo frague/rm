@@ -43,15 +43,22 @@ export default class AssignmentCtrl extends BaseCtrl {
       {
         '$addFields': {
           'assignment.account': '$initiative.account',
-          'assignment.initiative': '$initiative.name'
-        } 
+          'assignment.initiative': '$initiative.name',
+          'assignment.billable': {
+            '$cond': {
+              if: {'$eq': ['$assignment.billability', 'Billable']},
+              then: 'true',
+              else: 'false'
+            }
+          }
+        }
       },
       {
         '$match': assignmentsQuery
       },
       {
         '$group': {
-          _id: '$_id', 
+          _id: '$_id',
           assignments: { '$push': '$assignment' },
           name: { '$first': '$name' },
           grade: { '$first': '$grade' },
@@ -62,20 +69,23 @@ export default class AssignmentCtrl extends BaseCtrl {
           starts: { '$first': '$starts' },
           ends: { '$first': '$ends' },
           minDate: {
-            $min: '$assignment.start'
+            '$min': '$assignment.start'
           },
           maxDate: {
-            $max: '$assignment.end'
+            '$max': '$assignment.end'
+          },
+          billable: {
+            '$max': '$assignment.billable'
           }
         }
+      },
+      {
+        '$match': query
       },
       {
         '$sort': {
           name: 1
         }
-      },
-      {
-        '$match': query
       }
     ], (err, docs) => {
       if (err) { return console.error(err); }
