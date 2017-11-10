@@ -1,9 +1,9 @@
 <div class="filter form-row">
 	<div class="form-group col-md-7">
-	  <input 
-      (keyup)="parseCriteria($event)" 
-      type="text" 
-      class="form-control" 
+	  <input
+      (keyup)="parseCriteria($event)"
+      type="text"
+      class="form-control"
       placeholder="key1=value1,key2=value2,..."
       [(ngModel)]="criteria"
     >
@@ -11,9 +11,9 @@
 	</div>
   <div class="form-group col-md-5">
     <div class="input-group">
-      <input 
-        type="text" 
-        class="form-control" 
+      <input
+        type="text"
+        class="form-control"
         placeholder="Filter name"
         [(ngModel)]="title"
       >
@@ -31,8 +31,8 @@
           <span class="sr-only">Toggle Dropdown</span>
         </button>
         <div class="dropdown-menu dropdown-menu-right">
-          <a 
-            class="dropdown-item" 
+          <a
+            class="dropdown-item"
             *ngFor="let filter of getFilters()"
             (click)="select(filter)"
           >{{ filter.title }}</a>

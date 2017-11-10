@@ -1,5 +1,5 @@
-$primary: #b9e498;
-$danger: #f7bf9e;
+$primary: #9fdead;
+$danger: #eca98a;
 
 
 body {
@@ -8,29 +8,34 @@ body {
   margin-bottom: 10px;
 }
 
-.btn-primary {
-  background-color: $primary;
-  border-color: $primary - #111;
-  &:hover {
-    background-color: $primary - #111;
-    border-color: $primary - #111;
-  }
-  &:active, &:focus, &:focus:active {
-    background-color: $primary - #222;
-    border-color: $primary - #111;
-  }
-}
 
-.btn-danger {
-  background-color: $danger;
-  border-color: $danger - #111;
-  &:hover {
-    background-color: $danger - #111;
-    border-color: $danger - #111;
+.btn {
+  outline-width: 0px !important;
+
+  &.btn-primary {
+    background-color: $primary;
+    border-color: $primary - #111;
+    &:hover {
+      background-color: $primary - #111;
+      border-color: $primary - #111;
+    }
+    &:active, &:focus, &:focus:active {
+      background-color: $primary - #222;
+      border-color: $primary - #111;
+    }
   }
-  &:active, &:focus, &:focus:active {
-    background-color: $danger - #222;
+
+  &.btn-danger {
+    background-color: $danger;
     border-color: $danger - #111;
+    &:hover {
+      background-color: $danger - #111;
+      border-color: $danger - #111;
+    }
+    &:active, &:focus, &:focus:active {
+      background-color: $danger - #222;
+      border-color: $danger - #111;
+    }
   }
 }
 
@@ -226,5 +231,15 @@ img.avatar {
 
   li {
     list-style: none;
+  }
+}
+
+.filter {
+  .btn {
+    width: 35px;
+    padding: 8px;
+  }
+  .dropdown-toggle::after {
+    margin-left: 0px;
   }
 }

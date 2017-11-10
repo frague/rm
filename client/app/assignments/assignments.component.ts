@@ -48,6 +48,10 @@ export class AssignmentsComponent extends Schedule {
     };
   }
 
+  makeCaption(assignee) {
+    return (assignee.grade ? assignee.grade + ', ' : '') + assignee.name;
+  }
+
   showResource(assignee: any) {
     if (assignee.isDemand) {
       let assignments = assignee.assignments;
