@@ -35,6 +35,18 @@
       <dt>Phone</dt>
       <dd>{{ person.phone }}</dd>
 
+      <dt>Visas</dt>
+      <dd>
+        <ul *ngIf="hasVisas()">
+          <li>{{ getVisaInfo('visaB', 'B1/B2') }}</li>
+          <li>{{ getVisaInfo('visaL', 'L') }}</li>
+        </ul>
+        <span *ngIf="!hasVisas()">-</span>
+      </dd>
+
+      <dt>Driver's License</dt>
+      <dd>{{ person.license }}</dd>
+
     </dl>
   </div>
 </ng-template>

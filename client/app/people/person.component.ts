@@ -1,12 +1,6 @@
 import { Component, ViewChild, Input } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-
-type personType = {
-  name: string,
-  login: string,
-  grade: [string],
-  location: [string]
-};
+import { PrintableDatePipe } from '../pipes';
 
 @Component({
   selector: 'person-modal',
@@ -14,16 +8,29 @@ type personType = {
 })
 export class PersonComponent {
   @ViewChild('content') content;
-  person: personType = {} as personType;
+  person: any = {};
 
   constructor(
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private makeDate: PrintableDatePipe
   ) {}
 
   show(person: any) {
     this.person = person;
-    // console.log(person);
+    console.log(person);
     this.modalService.open(this.content);
+  }
+
+  hasVisas() {
+    return this.person.visaB || this.person.visaL;
+  }
+
+  getVisaInfo(key: string, title: string) {
+    let till = this.person[key];
+    if (till) {
+      return title + ' till ' + this.makeDate.transform(till);
+    }
+    return '';
   }
 
 }

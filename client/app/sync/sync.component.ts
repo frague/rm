@@ -147,79 +147,98 @@ export class SyncComponent {
     let hue = 0;
 
     // Query PMO
-    return this.pmo.getPeople().subscribe(data => {
-      let initiatives = {};
-      let initiativesCreators = {};
-      let assignments = [];
+    return this.resourceService.getVisas()
+      .map(data => {
+        Object.assign(data, Object.keys(data).reduce((result, name) => {
+          let [first, last] = name.split(' ');
+          let mena = last +  ' ' + first;
+          result[mena] = data[name];
+          return result;
+        }, {}));
+        return data;
+      })
+      .subscribe(visas => {
 
-      this.addLog(data.rows.length + ' records received', 'PMO');
+      this.pmo.getPeople().subscribe(data => {
+        let initiatives = {};
+        let initiativesCreators = {};
+        let assignments = [];
 
-      let peopleSorted = data.rows.sort((a, b) => (a.name > b.name) ? 1 : -1);
-      peopleSorted.forEach(person => {
-        if (!profilesInvertedMap[person.workProfile]) return;
-        let pool = profilesInvertedMap[person.workProfile][person.specialization];
-        if (!pool) return;
+        this.addLog(data.rows.length + ' records received', 'PMO');
 
-        let who = this._whois[person.employeeId] || {};
+        let peopleSorted = data.rows.sort((a, b) => (a.name > b.name) ? 1 : -1);
+        peopleSorted.forEach(person => {
+          if (!profilesInvertedMap[person.workProfile]) return;
+          let pool = profilesInvertedMap[person.workProfile][person.specialization];
+          if (!pool) return;
 
-        let resource = {
-          name: person.fullName,
-          login: person.employeeId,
-          grade: person.grade,
-          location: locationsMap[person.location],
-          profile: person.workProfile,
-          specialization: person.specialization,
-          pool,
-          manager: who.manager,
-          skype: who.skype,
-          phone: who.phone,
-          room: who.room
-        };
-        // console.log(resource);
+          let who = this._whois[person.employeeId] || {};
+          let visa = visas[person.fullName] || {};
+          console.log(visa);
 
-        this.resourceService.add(resource).subscribe(resource => {
-          this.addLog('Created profile for ' + resource.name);
+          let resource = {
+            name: person.fullName,
+            login: person.employeeId,
+            grade: person.grade,
+            location: locationsMap[person.location],
+            profile: person.workProfile,
+            specialization: person.specialization,
+            pool,
+            manager: who.manager,
+            skype: who.skype,
+            phone: who.phone,
+            room: who.room,
+            passport: visa.passport,
+            visaB: visa.visaB,
+            visaL: visa.visaL,
+            license: visa.license
+          };
+          // console.log(resource);
 
-          let name = resource.name.split(' ').reverse().join(' ');
-          this._peopleByName[resource.name] = resource;
-          this._peopleByName[name] = resource;
+          this.resourceService.add(resource).subscribe(resource => {
+            this.addLog('Created profile for ' + resource.name);
 
-          if (!person.account) return;
+            let name = resource.name.split(' ').reverse().join(' ');
+            this._peopleByName[resource.name] = resource;
+            this._peopleByName[name] = resource;
 
-          person.account.forEach((account, index) => {
-            let project = person.project[index];
-            let name = account + ':' + project;
-            let assignment = {
-              resourceId: resource._id,
-              name: project,
-              account,
-              start: this.parseDate(person.assignmentStart[index]),
-              end: this.parseDate(person.assignmentFinish[index]),
-              billability: person.assignmentStatus[index].name,
-              involvement: person.involvements[index]
-            };
-            this._accounts[account] = true;
-            let initiative = initiativesCreators[name];
-            if (initiative) {
-              initiative.add(() => {
-                assignment['initiativeId'] = initiatives[name]._id;
-                this.assignmentService.add(assignment).subscribe();
-              });
-            } else {
-              hue = (hue + 10) % 360;
-              let initiative = {
+            if (!person.account) return;
+
+            person.account.forEach((account, index) => {
+              let project = person.project[index];
+              let name = account + ':' + project;
+              let assignment = {
+                resourceId: resource._id,
                 name: project,
                 account,
-                color: '#' + convert.hsl.hex(hue, 50, 80)
+                start: this.parseDate(person.assignmentStart[index]),
+                end: this.parseDate(person.assignmentFinish[index]),
+                billability: person.assignmentStatus[index].name,
+                involvement: person.involvements[index]
               };
-              initiativesCreators[name] = this.initiativeService.add(initiative).subscribe(initiative => {
-                initiatives[name] = initiative;
-                assignment['initiativeId'] = initiative._id;
-                this.assignmentService.add(assignment).subscribe();
-              });
-            }
+              this._accounts[account] = true;
+              let initiative = initiativesCreators[name];
+              if (initiative) {
+                initiative.add(() => {
+                  assignment['initiativeId'] = initiatives[name]._id;
+                  this.assignmentService.add(assignment).subscribe();
+                });
+              } else {
+                hue = (hue + 10) % 360;
+                let initiative = {
+                  name: project,
+                  account,
+                  color: '#' + convert.hsl.hex(hue, 50, 80)
+                };
+                initiativesCreators[name] = this.initiativeService.add(initiative).subscribe(initiative => {
+                  initiatives[name] = initiative;
+                  assignment['initiativeId'] = initiative._id;
+                  this.assignmentService.add(assignment).subscribe();
+                });
+              }
+            });
+            this.loadings['pmo'] = false;
           });
-          this.loadings['pmo'] = false;
         });
       });
     });

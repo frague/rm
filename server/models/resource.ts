@@ -14,11 +14,10 @@ const resourceSchema = new mongoose.Schema({
   skype: String,
   phone: String,
   room: String,
-  hasPassport: Boolean,
-  visa: String,
-  visaExpiration: Date,
-  visaComment: String,
-  drivingLicense: Boolean
+  passport: Date,
+  visaB: Date,
+  visaL: Date,
+  license: Boolean
 });
 
 const Resource = mongoose.model('Resource', resourceSchema);

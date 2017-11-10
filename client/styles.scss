@@ -166,10 +166,23 @@ dl.attributes {
     float: left;
   }
   dd {
-    padding-left: 120px;
+    padding-left: 140px;
 
     &:empty:after {
       content: "-";
+    }
+
+    ul {
+      padding-left: 0px;
+      margin-bottom: 0px;
+
+      li {
+        list-style: none;
+        &:empty {
+          display: none;
+        }
+      }
+      
     }
   }
   hr {
