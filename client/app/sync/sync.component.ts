@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { Http } from '@angular/http';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 
 import { ToastComponent } from '../shared/toast/toast.component';
 import { InitiativeService } from '../services/initiative.service';
@@ -225,14 +225,21 @@ export class SyncComponent {
     });
   }
 
+  test() {
+    this.resourceService.getVisas().subscribe();
+  }
+
   _queryConfluence() {
     this.loadings['whois'] = true;
 
-    return this.resourceService.getWhois().subscribe(
-      data => {
-        this.addLog(data.length + ' records received', 'Whois');
+    return Observable.forkJoin(
+      this.resourceService.getWhois(),
+      this.resourceService.getVisas()
+    ).subscribe(
+      ([whois, visas]) => {
+        this.addLog(whois.length + ' records received', 'Whois');
 
-        this._whois = data.reduce((result, u) => {
+        this._whois = whois.reduce((result, u) => {
           let [pool, name, account, initiative, profile, grade, manager, location, skype, phone, room, login] = u;
           result[login] = {manager, skype, phone, room};
           return result;

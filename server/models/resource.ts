@@ -13,7 +13,12 @@ const resourceSchema = new mongoose.Schema({
   manager: String,
   skype: String,
   phone: String,
-  room: String
+  room: String,
+  hasPassport: Boolean,
+  visa: String,
+  visaExpiration: Date,
+  visaComment: String,
+  drivingLicense: Boolean
 });
 
 const Resource = mongoose.model('Resource', resourceSchema);

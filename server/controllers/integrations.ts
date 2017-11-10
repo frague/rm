@@ -7,12 +7,18 @@ const pmo = 'https://pmo.griddynamics.net/';
 const bamboo = 'api.bamboohr.com/api/gateway.php/griddynamics/v1/';
 
 import { creds } from '../google.credentials';
+import { htmlParse } from './htmlparser';
 
 var doc = new GoogleSpreadsheet(env.DEMAND_SHEET);
 var sheet;
 
 var Confluence = require('confluence-api');
-
+var confluenceConfig = {
+  username: env.PMO_LOGIN,
+  password: env.PMO_PASSWORD,
+  baseUrl: 'https://wiki.griddynamics.net'
+};
+var confluence = new Confluence(confluenceConfig);
 
 export default class IntegrationsCtrl {
 
@@ -121,13 +127,7 @@ export default class IntegrationsCtrl {
     });
   }
 
-  confluenceGetPage = (req, res) => {
-    var config = {
-      username: env.PMO_LOGIN,
-      password: env.PMO_PASSWORD,
-      baseUrl: 'https://wiki.griddynamics.net'
-    };
-    var confluence = new Confluence(config);
+  confluenceGetWhois = (req, res) => {
     confluence.getContentByPageTitle('HQ', 'New WhoIs', function(err, data) {
       if (err) return res.setStatus(500);
 
@@ -137,4 +137,17 @@ export default class IntegrationsCtrl {
       res.send(JSON.parse(body.replace(/\t/g, ' ')));
     });
   }
+
+  confluenceGetVisas = (req, res) => {
+    confluence.getCustomContentById({
+      id: '1802301',
+      expanders: ['body.view']
+    }, function(err, data) {
+      if (err) return res.setStatus(500);
+
+      res.setHeader('Content-Type', 'application/json');
+      res.send(htmlParse(data.body.view.value));
+    });
+  }
+
 }

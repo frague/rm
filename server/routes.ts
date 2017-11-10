@@ -90,7 +90,8 @@ export default function setRoutes(app) {
   router.route('/bamboo').get(integrationsCtrl.bambooTimeoff);
 
   // Confluence
-  router.route('/confluence').get(integrationsCtrl.confluenceGetPage);
+  router.route('/confluence/whois').get(integrationsCtrl.confluenceGetWhois);
+  router.route('/confluence/visas').get(integrationsCtrl.confluenceGetVisas);
 
   // Apply the routes to our application with the prefix /api
   app.use('/api', router);
