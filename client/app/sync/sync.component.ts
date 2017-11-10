@@ -98,6 +98,7 @@ export class SyncComponent {
   }
 
   _queryBamboo() {
+    let todayYear = new Date().getFullYear();
     this.loadings['bamboo'] = true;
     return this.bamboo.getTimeoffs().subscribe(data => {
       this.addLog('Received vacations information', 'Bamboo');
@@ -129,6 +130,9 @@ export class SyncComponent {
             this.addLog('Unable to add vacations for ' + name);
             return;
           }
+          let endYear = new Date(request.end).getFullYear();
+          if (todayYear - endYear > 1) return;
+
           if (request.status && request.status['$t'] === 'approved') {
             addVacation(resource._id, request.start, request.end);
             vacationsCount++;
@@ -174,7 +178,6 @@ export class SyncComponent {
 
           let who = this._whois[person.employeeId] || {};
           let visa = visas[person.fullName] || {};
-          console.log(visa);
 
           let resource = {
             name: person.fullName,
