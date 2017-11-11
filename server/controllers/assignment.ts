@@ -17,6 +17,7 @@ export default class AssignmentCtrl extends BaseCtrl {
       return result;
     }, {});
     console.log(query, assignmentsQuery);
+    let now = new Date();
     Resource.aggregate([
       {
         '$lookup': {
@@ -50,7 +51,19 @@ export default class AssignmentCtrl extends BaseCtrl {
               then: 'true',
               else: 'false'
             }
-          }
+          },
+          'canTravel': {
+            '$cond': {
+              if: {
+                '$or': [
+                  {'$gt': ['$visaB', now]},
+                  {'$gt': ['$visaL', now]}
+                ]
+              },
+              then: 'true',
+              else: 'false'
+            }
+          },
         }
       },
       {
@@ -76,7 +89,8 @@ export default class AssignmentCtrl extends BaseCtrl {
           },
           billable: {
             '$max': '$assignment.billable'
-          }
+          },
+          canTravel: { '$first': '$canTravel' }
         }
       },
       {

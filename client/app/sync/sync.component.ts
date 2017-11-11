@@ -247,10 +247,6 @@ export class SyncComponent {
     });
   }
 
-  test() {
-    this.resourceService.getVisas().subscribe();
-  }
-
   _queryConfluence() {
     this.loadings['whois'] = true;
 
