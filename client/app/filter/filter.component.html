@@ -18,10 +18,10 @@
         [(ngModel)]="title"
       >
       <div class="input-group-btn">
-        <button type="button" class="btn btn-primary" *ngIf="criteria" (click)="save()" [disabled]="!title">
+        <button type="button" class="btn btn-secondary" *ngIf="criteria" (click)="save()" [disabled]="!title">
           <i class="fa fa-check"></i>
         </button>
-        <button type="button" class="btn btn-danger" *ngIf="selectedFilter._id" (click)="delete()">
+        <button type="button" class="btn btn-secondary" *ngIf="selectedFilter._id" (click)="delete()">
           <i class="fa fa-trash"></i>
         </button>
         <button type="button" class="btn btn-secondary" *ngIf="selectedFilter._id" (click)="reset()">
