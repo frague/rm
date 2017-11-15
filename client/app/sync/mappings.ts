@@ -17,12 +17,46 @@ export var accountsMap = {
   'Toys R Us': ''
 };
 
+export var demandProfilesMap = {
+  'QE-Automation': 'QA',
+  'QE-Mobile': 'QA',
+  'BSA-Common': 'QA',
+
+  'Dev-Search-Elastic': 'Custom Dev',
+  'Dev-Search-Solr': 'Custom Dev',
+  'Dev-Services-ATG': 'Custom Dev',
+  'Dev-Services-DotNet': 'Custom Dev',
+  'Dev-Services-Java': 'Custom Dev',
+  'Dev-Services-Other': 'Custom Dev',
+  'Dev-Services-Scala': 'Custom Dev',
+
+  'Dev-Services-Node': 'UI',
+  'Dev-UI-Angular2': 'UI',
+  'Dev-UI-Common': 'UI',
+
+  'Architect-BigData': 'BigData',
+  'BigDataEng-Dev': 'BigData',
+
+  'DevOps-CICD': 'DevOps',
+  'DevOps-Cloud': 'DevOps',
+  'DevOps-NOC': 'DevOps',
+  'DevOps-BigData': 'DevOps',
+  'Architect-CICD': 'DevOps',
+
+  'Architect-Search': 'Search',
+
+  'BigDataEng-DataScientist': 'Machine Learning',
+  'ML Engineer': 'Machine Learning',
+
+  'Dev-Mobile-Android': 'Mobile'
+};
+
 export var profilesMap = {
   'QA': {
     'Quality Engineer': []
   },
   'DevOps': {
-    'DevOps': ['', 'BigData']
+    'DevOps': ['', 'BigData', 'CICD', 'Cloud', 'NOC']
   },
   'Custom Dev': {
     'Developer': ['Java', '.NET', 'Python', 'Oracle ODI', 'Ruby']
@@ -49,6 +83,7 @@ export var profilesMap = {
     'Developer': ['Android', 'iOS']
   }
 };
+
 
 export var profilesInvertedMap = (() => {
   return Object.keys(profilesMap).reduce((result, key) => {

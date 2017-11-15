@@ -1,6 +1,7 @@
 import { ActivatedRoute } from '@angular/router';
 import { ViewChild, ElementRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Subscription, Observable } from 'rxjs';
 
 import { BaseComponent } from './base.component';
 import { Utils } from './utils';
@@ -52,6 +53,7 @@ export class Schedule {
   items = [];
   resources = [];
   resourcesById = {};
+  demands = [];
 
   initiatives = {};
   assignments = [];
@@ -64,6 +66,8 @@ export class Schedule {
   visibleAccounts = {};
   visibleInitiatives = {};
 
+  private $query;
+
   constructor(
     private assignmentService: AssignmentService,
     private resourceService: ResourceService,
@@ -75,7 +79,14 @@ export class Schedule {
     this.fromDate = new Date();
     this.fromDate.setMonth(this.fromDate.getMonth() - 2);
     this.fromDate = this.adjustToMonday(this.fromDate.toString());
-    this.bus.filterUpdated.subscribe(query => this.fetchData(query));
+  }
+
+  ngOnInit() {
+    this.$query = this.bus.filterUpdated.subscribe(query => {
+      console.log('Emitted', query);
+      this.fetchData(query);
+    });
+    this.fetchData(this.bus.filterQuery, true);
   }
 
   ngAfterViewChecked() {
@@ -85,7 +96,11 @@ export class Schedule {
     }
   }
 
-  _push(collection: any, key: string, item: any, makeUnique=true) {
+  ngOnDestroy() {
+    this.$query.unsubscribe();
+  }
+
+  private _push(collection: any, key: string, item: any, makeUnique=true) {
     collection[key] = collection[key] || [];
     if (!makeUnique || collection[key].indexOf(item) < 0) {
       collection[key].push(item);
@@ -121,18 +136,23 @@ export class Schedule {
     );
   }
 
-  ngOnInit() {
-    // console.log(this.bus.filterQuery);
-    this.fetchData(this.bus.filterQuery, true);
-  }
-
   fetchData(query={}, fetchAll=false) {
     this.reset();
 
     this.assignmentService.getAll(query).subscribe(data => {
       this.items = data;
 
-      this.demandService.getAll().subscribe(demands => {
+      this.demandService.getAll(query).subscribe(demands => {
+        if (!this.demands.length) {
+          this.demands = demands;
+        }
+
+        let showDemand = query['demand'] !== 'false';
+        if (query['demand'] === 'true') {
+          // Show demand only
+          this.items = [];
+        }
+
         let demandAccounts = {};
         let demandResources = [];
 
@@ -151,6 +171,7 @@ export class Schedule {
             name: demand.profile,
             assignments: [{
               _id: demandId,
+              account: 'B',
               start: demand.start,
               end: demand.end,
               initiativeId,
@@ -160,12 +181,14 @@ export class Schedule {
               comment: demand.comment,
               demand
             }],
+            pool: 'A',
             minDate: demand.start,
             maxDate: demand.end,
             isDemand: true
           };
-          this.items.push(item);
+          if (showDemand) this.items.push(item);
         });
+
         this.calculate();
 
         this.items.forEach(resource => {
@@ -206,7 +229,7 @@ export class Schedule {
             },
             error => console.log(error)
           );
-  
+
           // Fetch resources
           this.resourceService.getAll().subscribe(
             data => {
@@ -224,7 +247,6 @@ export class Schedule {
             },
             error => console.log(error)
           );
-          
         } else {
           this.findVisibleAccounts();
         }

@@ -61,6 +61,7 @@ export class FilterComponent {
   }
 
   parseCriteria(event: KeyboardEvent, force=false) {
+    event.stopPropagation();
     if (force || event.code === 'Enter') {
       this.query = this.criteria.split(',').reduce((result, pair) => {
         let [param, operation, value]: any[] = pair.replace(/([=~])/g, '\n$1\n').split('\n', 3);
@@ -85,6 +86,7 @@ export class FilterComponent {
       }, {});
 
       this.bus.updateQuery(this.query);
+      return false;
     };
   }
 }

@@ -16,6 +16,9 @@ export default class AssignmentCtrl extends BaseCtrl {
       }
       return result;
     }, {});
+
+    delete query['demand'];
+
     console.log(query, assignmentsQuery);
     let now = new Date();
     Resource.aggregate([

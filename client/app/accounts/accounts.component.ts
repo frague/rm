@@ -39,7 +39,7 @@ export class AccountsComponent extends Schedule {
 
   getAssignment(assignment) {
     let initiative = this.initiatives[assignment.initiativeId] || {};
-    let resource = this.resourcesById[assignment.resourceId] || {};
+    let resource = this.resourcesById[assignment.resourceId] || {name: '...', grade: '...'};
     let demand = assignment.demand;
     return {
       name: (demand ? (demand.profile + ': ' + demand.comment) : resource.name + ', ' + resource.grade),

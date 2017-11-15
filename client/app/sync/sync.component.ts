@@ -15,7 +15,7 @@ import { environment } from '../../environments/environment';
 import * as convert from 'color-convert';
 import * as Confluence from 'confluence-api';
 
-import { replaceFromMap, accountsMap, billabilityMap, locationsMap, locations, profilesInvertedMap } from './mappings';
+import { replaceFromMap, accountsMap, billabilityMap, locationsMap, locations, profilesInvertedMap, demandProfilesMap } from './mappings';
 
 const myLocations = ['Saratov', 'Saint-Petersburg'];
 const hours24 = 86400000;
@@ -316,12 +316,16 @@ export class SyncComponent {
         let demandLocations = demandLine.slice(11, 17);
         let l = locations.filter((location, index) => !!demandLocations[index]);
 
+        let profile = demandLine[4];
+        let pool = demandProfilesMap[profile] || '';
+
         let demand = {
           account,
           status: demandLine[1],
           acknowledgement: demandLine[2],
           role: replaceFromMap(billabilityMap, demandLine[3]),
-          profile: demandLine[4],
+          profile,
+          pool,
           comment: demandLine[5],
           deployment: demandLine[6],
           start,
@@ -332,10 +336,10 @@ export class SyncComponent {
           requestId: demandLine[17]
         };
 
-        let profile = demand.profile.toLowerCase();
+        let lcProfile = profile.toLowerCase();
         if (
           demand.status !== 'active'
-          || (profile.indexOf('ui') < 0 && profile.indexOf('datascientist') < 0)
+          // || (lcProfile.indexOf('ui') < 0 && lcProfile.indexOf('datascientist') < 0)
         ) return;
         // console.log(demand);
         this.addLog('Created demand for ' + demand.account);
