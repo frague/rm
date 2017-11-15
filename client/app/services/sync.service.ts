@@ -4,13 +4,13 @@ import { Observable } from 'rxjs';
 
 
 @Injectable()
-export class BambooService {
+export class SyncService {
 
   constructor(private http: Http) {
   }
 
-  getTimeoffs(): Observable<any> {
-    return this.http.get('/api/bamboo').map(res => res.json());
+  goOn(): Observable<any> {
+    return this.http.post('/api/sync', {}).map(res => res.json());
   }
 
 }

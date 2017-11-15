@@ -7,10 +7,9 @@ import { AssignmentService } from './services/assignment.service';
 import { ResourceService } from './services/resource.service';
 import { InitiativeService } from './services/initiative.service';
 import { DemandService } from './services/demand.service';
-import { PmoService } from './services/pmo.service';
 import { UserService } from './services/user.service';
 import { AuthService } from './services/auth.service';
-import { BambooService } from './services/bamboo.service';
+import { SyncService } from './services/sync.service';
 import { AuthGuardLogin } from './services/auth-guard-login.service';
 import { AuthGuardAdmin } from './services/auth-guard-admin.service';
 import { BusService } from './services/bus.service';
@@ -68,8 +67,7 @@ import { FilterComponent } from './filter/filter.component';
     InitiativeService,
     AssignmentService,
     UserService,
-    PmoService,
-    BambooService,
+    SyncService,
     DemandService,
     BusService,
     FilterService,

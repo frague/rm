@@ -8,6 +8,7 @@ import UserCtrl from './controllers/user';
 import IntegrationsCtrl from './controllers/integrations';
 import DemandCtrl from './controllers/demand';
 import FilterCtrl from './controllers/filter';
+import SyncCtrl from './controllers/sync';
 
 import Resource from './models/resource';
 import User from './models/user';
@@ -23,6 +24,7 @@ export default function setRoutes(app) {
   const integrationsCtrl = new IntegrationsCtrl();
   const demandCtrl = new DemandCtrl();
   const filterCtrl = new FilterCtrl();
+  const syncCtrl = new SyncCtrl();
 
   // Assignments
   router.route('/assignments').get(assignmentCtrl.getAll);
@@ -51,9 +53,6 @@ export default function setRoutes(app) {
   router.route('/initiative/:id').put(initiativeCtrl.update);
   router.route('/initiative/:id').delete(initiativeCtrl.delete);
 
-  // Google Spreadsheet (demand file)
-  router.route('/demands/import').get(integrationsCtrl.googleGetInfo);
-
   // Demands
   router.route('/demands').get(demandCtrl.getAll);
   router.route('/demands').delete(demandCtrl.deleteAll);
@@ -72,7 +71,6 @@ export default function setRoutes(app) {
   router.route('/user/:id').put(userCtrl.update);
   router.route('/user/:id').delete(userCtrl.delete);
 
-
   // Filters
   router.route('/filters').get(filterCtrl.getAll);
   router.route('/filters').delete(filterCtrl.deleteAll);
@@ -81,17 +79,8 @@ export default function setRoutes(app) {
   router.route('/filter/:id').put(filterCtrl.update);
   router.route('/filter/:id').delete(filterCtrl.delete);
 
-  // PMO
-  router.route('/pmo/accounts').get(integrationsCtrl.pmoGetAccounts);
-  router.route('/pmo/people').get(integrationsCtrl.pmoGetPeople);
-  router.route('/pmo').get(integrationsCtrl.pmoLogin);
-
-  // BambooHR
-  router.route('/bamboo').get(integrationsCtrl.bambooTimeoff);
-
-  // Confluence
-  router.route('/confluence/whois').get(integrationsCtrl.confluenceGetWhois);
-  router.route('/confluence/visas').get(integrationsCtrl.confluenceGetVisas);
+  // Sync
+  router.route('/sync').post(syncCtrl.sync);
 
   // Apply the routes to our application with the prefix /api
   app.use('/api', router);

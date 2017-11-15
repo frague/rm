@@ -25,7 +25,7 @@ var makeDate = (dateString: string) => {
 
 export var htmlParse = (html: string) => {
   return html.split(table).reduce((result, part, index, tables) => {
-    console.log(part.substr(0, 5).toLowerCase());
+    // console.log(part.substr(0, 5).toLowerCase());
     if (part.substr(0, 5).toLowerCase() === 'table') {
       tables[index + 1]
         .split(tr)

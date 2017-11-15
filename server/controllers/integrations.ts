@@ -51,7 +51,7 @@ export default class IntegrationsCtrl {
         this._fillRequest(pmo + 'service/account/getAccounts.action'),
         (error, response, body) => {
           res.setHeader('Content-Type', 'application/json');
-          res.send(body);
+          res.json(body);
         });
     });
   }
@@ -62,7 +62,7 @@ export default class IntegrationsCtrl {
         this._fillRequest(pmo + 'service/people'),
         (error, response, body) => {
           res.setHeader('Content-Type', 'application/json');
-          res.send(body);
+          res.json(JSON.parse(body));
         });
     });
   }
@@ -82,8 +82,8 @@ export default class IntegrationsCtrl {
       .on('end', () => {
         let body = parser.toJson(Buffer.concat(data).toString());
         res.setHeader('Content-Type', 'application/json');
-        console.log(body);
-        res.send(body);
+        // console.log(body);
+        res.json(JSON.parse(body));
       });
   };
 
@@ -121,7 +121,7 @@ export default class IntegrationsCtrl {
           if (row[0]) result.push(row);
 
           res.setHeader('Content-Type', 'application/json');
-          res.send(result);
+          res.json(result);
         });
       });
     });
@@ -134,7 +134,7 @@ export default class IntegrationsCtrl {
       let [, , body, ,] = data.results[0].body.storage.value.split(/(var dataSet = |;\s+var newData =)/g);
 
       res.setHeader('Content-Type', 'application/json');
-      res.send(JSON.parse(body.replace(/\t/g, ' ')));
+      res.json(JSON.parse(body.replace(/\t/g, ' ')));
     });
   }
 
@@ -146,7 +146,7 @@ export default class IntegrationsCtrl {
       if (err) return res.setStatus(500);
 
       res.setHeader('Content-Type', 'application/json');
-      res.send(htmlParse(data.body.view.value));
+      res.json(htmlParse(data.body.view.value));
     });
   }
 
