@@ -62,6 +62,8 @@ export class Schedule {
   accountInitiatives = {};
   accountsAssignments = {};
   initiativeAssignments = {};
+  initiativesData = null;
+  resourcesData = null;
 
   visibleAccounts = {};
   visibleInitiatives = {};
@@ -113,7 +115,7 @@ export class Schedule {
     return clean;
   }
 
-  reset() {
+  reset(resetAll=false) {
     this.minDate = '3';
     this.maxDate = '0';
     this.isScrolled = false;
@@ -121,9 +123,14 @@ export class Schedule {
     this.items = [];
 
     this.accountsAssignments = {};
+    this.accountInitiatives = {};
     this.initiativeAssignments = {};
 
     this.visibleInitiatives = {};
+    if (resetAll) {
+      this.initiativesData = null;
+      this.resourcesData = null;
+    }
   }
 
   findVisibleAccounts() {
@@ -134,7 +141,7 @@ export class Schedule {
   }
 
   fetchData(query={}, fetchAll=false) {
-    this.reset();
+    this.reset(fetchAll);
 
     this.assignmentService.getAll(query).subscribe(data => {
       this.items = data;
@@ -168,7 +175,6 @@ export class Schedule {
             name: demand.profile,
             assignments: [{
               _id: demandId,
-              account: 'B',
               start: demand.start,
               end: demand.end,
               initiativeId,
@@ -178,7 +184,7 @@ export class Schedule {
               comment: demand.comment,
               demand
             }],
-            pool: 'A',
+            pool: demand.pool,
             minDate: demand.start,
             maxDate: demand.end,
             isDemand: true
@@ -197,57 +203,59 @@ export class Schedule {
           });
         });
 
-        if (fetchAll) {
-          // Fetch Initiatives
-          this.initiativeService.getAll().subscribe(
-            data => {
-              let demandInitiative = data.find(demand => demand.name === 'Demand');
+        // Fetch Initiatives
+        (this.initiativesData ? Observable.from([this.initiativesData]) : this.initiativeService.getAll()).subscribe(
+          data => {
+            this.initiativesData = Array.from(data);
 
-              Object.keys(demandAccounts).forEach(account => {
-                data.push(Object.assign(
-                  {},
-                  demandInitiative,
-                  {
-                    _id: demandAccounts[account],
-                    isDemand: true,
-                    account
-                  }
-                ));
-              });
+            let demandInitiative = data.find(demand => demand.name === 'Demand');
+            Object.keys(demandAccounts).forEach(account => {
+              data.push(Object.assign(
+                {},
+                demandInitiative,
+                {
+                  _id: demandAccounts[account],
+                  isDemand: true,
+                  account
+                }
+              ));
+            });
 
-              this.initiatives = data.reduce((result, initiative) => {
-                result[initiative._id] = initiative;
+            this.initiatives = data.reduce((result, initiative) => {
+              result[initiative._id] = initiative;
 
-                this._push(this.accountInitiatives, initiative.account, initiative);
+              this._push(this.accountInitiatives, initiative.account, initiative);
 
-                return result;
-              }, {});
-              this.findVisibleAccounts();
-            },
-            error => console.log(error)
-          );
+              return result;
+            }, {});
+            this.findVisibleAccounts();
+          },
+          error => console.log(error)
+        );
 
-          // Fetch resources
-          this.resourceService.getAll().subscribe(
-            data => {
-              demandResources.forEach(demand => data.push({
-                _id: demand._id,
-                name: demandPrefix,
-                isDemand: true
-              }));
+        // Fetch resources
+        (this.resourcesData ? Observable.from([this.resourcesData]) : this.resourceService.getAll()).subscribe(
+          data => {
+            this.resourcesData = data;
 
-              this.resources = data;
-              this.resourcesById = data.reduce((result, person) => {
-                result[person._id] = person;
-                return result;
-              }, {});
-            },
-            error => console.log(error)
-          );
-        } else {
+            demandResources.forEach(demand => data.push({
+              _id: demand._id,
+              name: demandPrefix,
+              isDemand: true
+            }));
+
+            this.resources = data;
+            this.resourcesById = data.reduce((result, person) => {
+              result[person._id] = person;
+              return result;
+            }, {});
+          },
+          error => console.log(error)
+        );
+
+        if (!fetchAll) {
           this.findVisibleAccounts();
         }
-
 
       });
 
