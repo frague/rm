@@ -35,6 +35,7 @@ export class SyncComponent {
   }
 
   sync() {
-    this.syncService.goOn().subscribe();
+    this.loadings['sync'] = true;
+    this.syncService.goOn().subscribe(() => this.loadings['sync'] = false);
   }
 }

@@ -33,6 +33,7 @@ export var demandProfilesMap = {
   'Dev-Services-Node': 'UI',
   'Dev-UI-Angular2': 'UI',
   'Dev-UI-Common': 'UI',
+  'Dev-UI-React': 'UI',
 
   'Architect-BigData': 'BigData',
   'BigDataEng-Dev': 'BigData',

@@ -155,6 +155,7 @@ export class Schedule {
         if (query['demand'] === 'only') {
           // Show demand only
           this.items = [];
+          showDemand = true;
         }
 
         let demandAccounts = {};
