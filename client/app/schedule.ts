@@ -151,8 +151,8 @@ export class Schedule {
           this.demands = demands;
         }
 
-        let showDemand = query['demand'] !== 'false';
-        if (query['demand'] === 'true') {
+        let showDemand = query['demand'] === 'true';
+        if (query['demand'] === 'only') {
           // Show demand only
           this.items = [];
         }

@@ -52,7 +52,7 @@ export class FilterComponent {
     this.selectedFilter = filter;
     this.title = filter.title;
     this.criteria = filter.filter;
-    this.parseCriteria(null, filter.filter);
+    this.parseCriteria(null, true);
   }
 
   reset() {
@@ -61,7 +61,10 @@ export class FilterComponent {
   }
 
   parseCriteria(event: KeyboardEvent, force=false) {
-    event.stopPropagation();
+    if (event) {
+      event.stopPropagation();
+    }
+
     if (force || event.code === 'Enter') {
       this.query = this.criteria.split(',').reduce((result, pair) => {
         let [param, operation, value]: any[] = pair.replace(/([=~])/g, '\n$1\n').split('\n', 3);
