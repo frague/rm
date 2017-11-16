@@ -1,7 +1,5 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
-
 import { SyncService } from '../services/sync.service';
-
 
 @Component({
   selector: 'sync',

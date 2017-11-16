@@ -7,17 +7,17 @@ export default class AssignmentCtrl extends BaseCtrl {
 
   getAll = (req, res) => {
     let assignmentsQuery = {};
-    let query =Object.keys(req.query).reduce((result, key) => {
-      let value = JSON.parse(req.query[key]);
-      if (key.indexOf('assignment') >= 0) {
-        assignmentsQuery[key] = value;
-      } else {
-        result[key] = value;
-      }
-      return result;
-    }, {});
-
-    delete query['demand'];
+    let query =Object.keys(req.query)
+      .filter(key => key.indexOf('demand') < 0)
+      .reduce((result, key) => {
+        let value = JSON.parse(req.query[key]);
+        if (key.indexOf('assignment') >= 0) {
+          assignmentsQuery[key] = value;
+        } else {
+          result[key] = value;
+        }
+        return result;
+      }, {});
 
     console.log(query, assignmentsQuery);
     let now = new Date();

@@ -35,7 +35,8 @@ export default class SyncCtrl {
   };
 
   private _addLog(text, source='') {
-    console.log((source && source + ': ') + text);
+    let message = (source && source + ': ') + text;
+    console.log(message);
   }
 
   private _cleanup(): Promise<any> {
@@ -140,6 +141,7 @@ export default class SyncCtrl {
   private _queryPMO(): Promise<any> {
     this.loadings['pmo'] = true;
     let initiativesIds = {};
+    let profilesCreated = 0;
     let hue = 0;
 
     return new Promise((resolve, reject) => {
@@ -155,7 +157,6 @@ export default class SyncCtrl {
           return result;
         }, {}));
         this._addLog(records + ' records fetched', 'Visas');
-
 
         // Get people from PMO
         return this.integrationsCtrl.pmoGetPeople({}, this._fakeRes((data, err) => {
@@ -195,11 +196,13 @@ export default class SyncCtrl {
               license: visa.license
             });
 
+            profilesCreated++;
+            
             // Save the person
             // TODO: use login as an ID
             return resource.save((err, resource) => {
               if (err) return reject(err);
-              this._addLog('Created profile for ' + resource.name);
+              // this._addLog('Created profile for ' + resource.name);
 
               let name = resource.name.split(' ').reverse().join(' ');
               this._peopleByName[resource.name] = resource;
@@ -256,6 +259,7 @@ export default class SyncCtrl {
               return resolve();
             });
           });
+          this._addLog(profilesCreated + ' profiles created', 'PMO');
         }));
       }));
     });
@@ -279,7 +283,7 @@ export default class SyncCtrl {
     new Initiative({
       name: 'Demand',
       account: 'Griddynamics',
-      color: '#FF3232'
+      color: '#FF5050'
     }).save();
 
     return new Promise((resolve, reject) => {

@@ -151,6 +151,12 @@ export class Schedule {
           this.demands = demands;
         }
 
+        let queryKeys = Object.keys(query).join(',') + ',';
+        if (queryKeys.indexOf('demand.') >= 0 && !query['demand']) {
+          // If there are filters for demand but demands are hidden - make them shown
+          query['demand'] = 'true';
+        }
+
         let showDemand = query['demand'] === 'true';
         if (query['demand'] === 'only') {
           // Show demand only

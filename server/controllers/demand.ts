@@ -1,7 +1,6 @@
 import Demand from '../models/demand';
 import BaseCtrl from './base';
 
-const whiteList = ['pool', 'assignment.account'];
 
 export default class DemandCtrl extends BaseCtrl {
   model = Demand;
@@ -10,18 +9,13 @@ export default class DemandCtrl extends BaseCtrl {
     let query = {};
     try {
       query = Object.keys(req.query)
-        .filter(key => whiteList.indexOf(key) >= 0)
+        .filter(key => !key.indexOf('demand.'))
         .reduce((result, key) => {
           let value = JSON.parse(req.query[key]);
-          if (key.indexOf('assignment') >= 0) {
-            key = key.replace('assignment.', '');
-          }
-          result[key] = value;
+          result[key.replace('demand.', '')] = value;
           return result;
         }, {});
     } catch (e) {}
-
-    delete query['demand'];
 
     console.log(req.query);
     this.model.find(query, (err, docs) => {
