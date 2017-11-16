@@ -34,7 +34,7 @@ export class AssignmentsComponent extends Schedule {
   }
 
   getAssignment(assignment) {
-    let initiative = this.initiatives[assignment.initiativeId] || {};
+    let initiative = this.initiatives[assignment.initiativeId] || {account: '...', name: '...', color: 'FFF'};
     let demand = assignment.demand;
 
     return {

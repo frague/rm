@@ -18,36 +18,36 @@ export var accountsMap = {
 };
 
 export var demandProfilesMap = {
-  'QE-Automation': 'QA',
   'QE-Mobile': 'QA',
   'BSA-Common': 'QA',
+  'QE-Automation': 'QA',
 
-  'Dev-Search-Elastic': 'Custom Dev',
-  'Dev-Search-Solr': 'Custom Dev',
   'Dev-Services-ATG': 'Custom Dev',
-  'Dev-Services-DotNet': 'Custom Dev',
   'Dev-Services-Java': 'Custom Dev',
   'Dev-Services-Other': 'Custom Dev',
   'Dev-Services-Scala': 'Custom Dev',
+  'Dev-Services-DotNet': 'Custom Dev',
 
   'Dev-Services-Node': 'UI',
   'Dev-UI-Angular2': 'UI',
   'Dev-UI-Common': 'UI',
   'Dev-UI-React': 'UI',
 
-  'Architect-BigData': 'BigData',
   'BigDataEng-Dev': 'BigData',
+  'Architect-BigData': 'BigData',
 
+  'DevOps-NOC': 'DevOps',
   'DevOps-CICD': 'DevOps',
   'DevOps-Cloud': 'DevOps',
-  'DevOps-NOC': 'DevOps',
   'DevOps-BigData': 'DevOps',
   'Architect-CICD': 'DevOps',
 
+  'Dev-Search-Solr': 'Search',
   'Architect-Search': 'Search',
+  'Dev-Search-Elastic': 'Search',
 
-  'BigDataEng-DataScientist': 'Machine Learning',
-  'ML Engineer': 'Machine Learning',
+  'ML Engineer': 'ML',
+  'BigDataEng-DataScientist': 'ML',
 
   'Dev-Mobile-Android': 'Mobile'
 };

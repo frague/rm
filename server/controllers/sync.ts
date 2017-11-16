@@ -25,11 +25,13 @@ export default class SyncCtrl {
     this._cleanup().then(() => {
       this._queryConfluence().then(() =>
         this._queryPMO().then(() => {
-          this._queryBamboo();
-          this._queryDemand();
+          Promise.all([
+            this._queryBamboo(),
+            this._queryDemand()
+          ]).then(() => res.sendStatus(200));
         })
       )
-    })
+    }).catch(() => res.sendStatus(500));
   };
 
   private _addLog(text, source='') {
