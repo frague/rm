@@ -329,6 +329,7 @@ export class Schedule {
     this.maxDate = '0';
     let fromDate = this.fromDate.toString();
     let fromTime = this.fromDate.getTime();
+    let today = new Date();
 
     this.items = this.items.sort((a, b) => {
       let ad = !a.isDemand;
@@ -347,6 +348,14 @@ export class Schedule {
     // if (this.minDate < fromDate) {
     //   this.minDate = fromDate;
     // }
+
+    console.log(this.maxDate, today.toISOString());
+
+    if (this.maxDate < today.toISOString()) {
+      let maxDate = new Date();
+      maxDate.setMonth(maxDate.getMonth() + 1);
+      this.maxDate = maxDate.toISOString();
+    }
 
     this.minDate = this.adjustToMonday(this.minDate, false);
     this.maxDate = this.adjustToMonday(this.maxDate);
@@ -380,7 +389,6 @@ export class Schedule {
       return w;
     });
 
-    let today = new Date();
     this.todayOffset = Math.round((today.getTime() - minTime) * dayCoefficient);
     this.todayCaption = this.makeDateCaption(today);
   }
