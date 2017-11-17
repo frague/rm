@@ -345,10 +345,12 @@ export class Schedule {
       if (resource.maxDate && resource.maxDate > this.maxDate) this.maxDate = resource.maxDate;
     });
 
+    // Limiting minimal date shown
     // if (this.minDate < fromDate) {
     //   this.minDate = fromDate;
     // }
 
+    // Cases when assignments don't have end date set
     if (this.maxDate < today.toISOString()) {
       let maxDate = new Date();
       maxDate.setMonth(maxDate.getMonth() + 1);
