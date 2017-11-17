@@ -67,6 +67,8 @@ export class Schedule {
   visibleAccounts = {};
   visibleInitiatives = {};
 
+  postFetch = () => {};
+
   private $query;
 
   constructor(
@@ -138,10 +140,10 @@ export class Schedule {
     );
   }
 
-  fetchData(query={}, fetchAll=false) {
+  fetchData(query={}, fetchAll=false): Subscription {
     this.reset(fetchAll);
 
-    this.assignmentService.getAll(query).subscribe(data => {
+    return this.assignmentService.getAll(query).subscribe(data => {
       this.items = data;
 
       this.demandService.getAll(query).subscribe(demands => {
@@ -256,7 +258,7 @@ export class Schedule {
             }, {});
           },
           error => console.log(error)
-        );
+        ).add(() => this.postFetch());
 
         if (!fetchAll) {
           this.findVisibleAccounts();
