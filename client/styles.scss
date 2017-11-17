@@ -1,6 +1,7 @@
-$primary: #9fdead;
-$danger: #eca98a;
+$primary: #DFD;
+$danger: #FDD;
 $grid: #AAA;
+$yellow: #FFB;
 
 
 body {
@@ -41,7 +42,7 @@ body {
 }
 
 .table thead th {
-  border-bottom: 2px solid #888;
+  border-bottom: 2px solid $grid;
   border-top: none;
 }
 
@@ -155,6 +156,9 @@ i.initiative {
 
   .demands {
     padding-top: 200px;
+    &.lines div.covered {
+      background-color: $primary;
+    }
   }
 
   .candidates {
@@ -176,7 +180,14 @@ i.initiative {
         }
 
         &.billable {
-          background-color: #FDD;
+          background-color: $danger;
+          &.assigned {
+            background-color: $yellow;
+          }
+        }
+
+        &.assigned {
+          background-color: $primary;
         }
 
         img {
@@ -205,17 +216,27 @@ i.initiative {
     }
 
     div.line {
+      padding-top: 0;
       overflow: visible;
-      // border: none;
+
       div {
-        &:first-child {
-          border-left-width: 1px;
-        }
+        text-align: center;
         width: 100px;
-        height: 30px;
+        height: 29px;
         border: solid $grid;
         border-width: 0 1px 0 0;
         display: inline-block;
+
+        &:first-child {
+          border-left-width: 1px;
+        }
+
+        &.matched {
+          background-color: $primary;
+          i.fa {
+            color: $primary - #888;
+          }
+        }
       }
     }
   }

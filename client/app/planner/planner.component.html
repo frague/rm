@@ -15,12 +15,13 @@
   <div class="planner row" *ngIf="items.length">
     <div class="col-md-2 demands lines">
       <div
-        *ngFor="let assignee of demands; let i = index"
+        *ngFor="let demand of demands; let i = index"
         class="line"
-        (click)="showResource(assignee)"
+        (click)="showResource(demand)"
+        [ngClass]="{covered: reserved[demand._id]}"
       >
-        <i class="fa fa-plane" *ngIf="isOnsite(assignee)"></i>
-        {{ makeCaption(assignee) }}
+        <i class="fa fa-plane" *ngIf="isOnsite(demand)"></i>
+        {{ makeCaption(demand) }}
       </div>
     </div>
     <div class="col-md-10 candidates">
@@ -30,7 +31,7 @@
             *ngFor="let candidate of candidates;let x = index"
             [ngStyle]="{left: (100 * x) + 'px'}"
             (click)="showResource(candidate)"
-            [ngClass]="{billable: candidate.billable}"
+            [ngClass]="{billable: candidate.billable, assigned: isAssigned(candidate)}"
           >
             <img class="avatar" src="{{ candidate.login|avatarUrl }}">
             {{ candidate.name }}
@@ -40,8 +41,14 @@
             </span>
           </li>
         </ol>
-        <div *ngFor="let assignee of demands; let i = index" class="line">
-          <div *ngFor="let match of candidatesCount|range">&nbsp;</div>
+        <div *ngFor="let demand of demands; let i = index" class="line">
+          <div
+            *ngFor="let candidate of candidates"
+            (click)="reserve(candidate, demand)"
+            [ngClass]="{matched: getReservation(candidate, demand)}"
+          >
+            <i class="fa fa-check" *ngIf="getReservation(candidate, demand)"></i>&nbsp;
+          </div>
         </div>
       </div>
     </div>

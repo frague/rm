@@ -16,6 +16,9 @@ export class PlannerComponent extends Schedule {
   demands = [];
   candidatesCount = 0;
 
+  reserved = {};
+  deserved = {};
+
   postFetch = () => {
     this.candidates = this.items
       .filter(item => !item.isDemand)
@@ -27,7 +30,6 @@ export class PlannerComponent extends Schedule {
       });
     this.candidatesCount = this.candidates.length;
     this.demands = this.items.filter(item => item.isDemand);
-    console.log(this.candidates);
     this.cd.markForCheck();
   };
 
@@ -61,5 +63,26 @@ export class PlannerComponent extends Schedule {
     }
   }
 
+  reserve(candidate: any, demand: any) {
+    let demandId = this.deserved[candidate._id];
+    let candidateId = this.reserved[demand._id];
+    if (demandId) {
+      this.reserved[demandId] = '';
+    }
+    if (candidateId) {
+      this.deserved[candidateId] = '';
+    }
+    if (candidate._id != candidateId) {
+      this.reserved[demand._id] = candidate._id;
+      this.deserved[candidate._id] = demand._id;
+    }
+  }
 
+  getReservation(candidate: any, demand: any) {
+    return this.reserved[demand._id] === candidate._id;
+  }
+
+  isAssigned(candidate: any) {
+    return Object.values(this.reserved).indexOf(candidate._id) >= 0;
+  }
 }
