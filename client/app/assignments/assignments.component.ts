@@ -52,6 +52,17 @@ export class AssignmentsComponent extends Schedule {
     return (assignee.grade ? assignee.grade + ', ' : '') + assignee.name;
   }
 
+  isOnsite(assignee: any) {
+    if (assignee.isDemand) {
+      let assignments = assignee.assignments;
+      if (assignments) {
+        let demand = assignments[Object.keys(assignments)[0]][0].demand;
+        if (demand.deployment.toLowerCase().indexOf('onsite') >= 0) return true;
+      }
+    }
+    return false;
+  }
+
   showResource(assignee: any) {
     if (assignee.isDemand) {
       let assignments = assignee.assignments;

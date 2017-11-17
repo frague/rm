@@ -401,5 +401,4 @@ export class Schedule {
       this.assignmentModal.show(this.cleanup(assignment))
     }
   };
-
 }

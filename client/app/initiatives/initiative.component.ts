@@ -4,7 +4,7 @@ const billable = ['Billable', 'Funded'];
 
 @Component({
   selector: 'initiative',
-  template: '<i class="initiative" [ngClass]="getClass()" [ngStyle]="getStyle()" [title]="data.account">{{ getTitle() }}</i>'
+  templateUrl: './initiative.component.html'
 })
 export class InitiativeComponent implements OnInit {
   @Input() data: any = {

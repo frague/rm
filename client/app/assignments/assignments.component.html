@@ -19,7 +19,10 @@
         class="line"
         [ngClass]="getAssignmentsCount(i)"
         (click)="showResource(assignee)"
-      >{{ makeCaption(assignee) }}</div>
+      >
+        <i class="fa fa-plane" *ngIf="isOnsite(assignee)"></i>
+        {{ makeCaption(assignee) }}
+      </div>
     </div>
     <div class="col-md-10 schedule" #schedule>
       <div
