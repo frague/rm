@@ -19,3 +19,10 @@ export class AvatarUrlPipe implements PipeTransform {
     return 'https://in.griddynamics.net/service/photos/' + login + '.jpg';
   }
 }
+
+@Pipe({name: 'range'})
+export class RangePipe implements PipeTransform {
+  transform(num: number): any[] {
+    return new Array(num + 1).join(' ').split('');
+  }
+}

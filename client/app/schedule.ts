@@ -1,4 +1,3 @@
-import { ActivatedRoute } from '@angular/router';
 import { ViewChild, ElementRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subscription, Observable } from 'rxjs';
@@ -75,7 +74,6 @@ export class Schedule {
     private resourceService: ResourceService,
     private initiativeService: InitiativeService,
     private demandService: DemandService,
-    private route: ActivatedRoute,
     private bus: BusService
   ) {
     this.fromDate = new Date();
@@ -401,4 +399,15 @@ export class Schedule {
       this.assignmentModal.show(this.cleanup(assignment))
     }
   };
+
+  isOnsite(assignee: any) {
+    if (assignee.isDemand) {
+      let assignments = assignee.assignments;
+      if (assignments) {
+        let demand = assignments[Object.keys(assignments)[0]][0].demand;
+        if (demand.deployment.toLowerCase().indexOf('onsite') >= 0) return true;
+      }
+    }
+    return false;
+  }
 }

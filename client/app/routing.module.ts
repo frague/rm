@@ -12,6 +12,7 @@ import { AdminComponent } from './admin/admin.component';
 import { SyncComponent } from './sync/sync.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { AccountsComponent } from './accounts/accounts.component';
+import { PlannerComponent } from './planner/planner.component';
 
 import { AuthGuardLogin } from './services/auth-guard-login.service';
 import { AuthGuardAdmin } from './services/auth-guard-admin.service';
@@ -19,8 +20,9 @@ import { AuthGuardAdmin } from './services/auth-guard-admin.service';
 const routes: Routes = [
   { path: 'assignments', component: AssignmentsComponent },
   { path: 'accounts', component: AccountsComponent },
-  { path: 'people', component: PeopleComponent },
-  { path: 'initiatives', component: InitiativesComponent },
+  { path: 'planner', component: PlannerComponent },
+  // { path: 'people', component: PeopleComponent },
+  // { path: 'initiatives', component: InitiativesComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
   { path: 'logout', component: LogoutComponent },

@@ -27,10 +27,9 @@ export class AccountsComponent extends Schedule {
     resourceService: ResourceService,
     initiativeService: InitiativeService,
     demandService: DemandService,
-    route: ActivatedRoute,
     bus: BusService
   ) {
-    super(assignmentService, resourceService, initiativeService, demandService, route, bus);
+    super(assignmentService, resourceService, initiativeService, demandService, bus);
   }
 
   getAssignmentsCount(initiative) {

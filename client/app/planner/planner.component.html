@@ -1,0 +1,44 @@
+<div>
+  <h4>Demand Planner Board</h4>
+
+  <assignment-modal [resources]="resourcesById" [initiatives]="initiatives"></assignment-modal>
+
+  <person-modal></person-modal>
+
+  <demand-modal></demand-modal>
+
+  <div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-10"></div>
+  </div>
+
+  <div class="planner row" *ngIf="items.length">
+    <div class="col-md-2 demands lines">
+      <div
+        *ngFor="let assignee of getDemands(); let i = index"
+        class="line"
+        (click)="showResource(assignee)"
+      >
+        <i class="fa fa-plane" *ngIf="isOnsite(assignee)"></i>
+        {{ makeCaption(assignee) }}
+      </div>
+    </div>
+    <div class="col-md-10 candidates">
+      <div class="lines" [ngStyle]="{width: (getCandidates().length * 100) + 'px'}">
+        <ol>
+          <li
+            *ngFor="let candidate of getCandidates();let x = index"
+            [ngStyle]="{left: (100 * x) + 'px'}"
+            (click)="showResource(candidate)"
+          >
+            <img class="avatar" src="{{ candidate.login|avatarUrl }}">
+            {{ candidate.name }}
+          </li>
+        </ol>
+        <div *ngFor="let assignee of getDemands(); let i = index" class="line">
+          <div *ngFor="let match of candidatesCount|range">&nbsp;</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

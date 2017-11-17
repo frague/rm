@@ -6,7 +6,7 @@
     <h4 class="modal-title">{{ person.name }}</h4>
   </div>
   <div class="modal-body with-image">
-    <img class="avatar" src="{{ person.login|avatarUrl }}">
+    <img class="avatar" src="{{ person.login|avatarUrl }}" *ngIf="person.login">
     <dl class="attributes">
       <dt>Location</dt>
       <dd>{{ person.location }}</dd>

@@ -30,8 +30,9 @@ import { PersonComponent } from './people/person.component';
 import { AssignmentComponent } from './assignments/assignment.component';
 import { AccountsComponent } from './accounts/accounts.component';
 import { DemandComponent } from './assignments/demand.component';
-import { PrintableDatePipe, AvatarUrlPipe } from './pipes';
+import { PrintableDatePipe, AvatarUrlPipe, RangePipe } from './pipes';
 import { FilterComponent } from './filter/filter.component';
+import { PlannerComponent } from './planner/planner.component';
 
 @NgModule({
   declarations: [
@@ -51,8 +52,9 @@ import { FilterComponent } from './filter/filter.component';
     AssignmentComponent,
     AccountsComponent,
     DemandComponent,
-    PrintableDatePipe, AvatarUrlPipe,
-    FilterComponent
+    PrintableDatePipe, AvatarUrlPipe, RangePipe,
+    FilterComponent,
+    PlannerComponent
   ],
   imports: [
     RoutingModule,

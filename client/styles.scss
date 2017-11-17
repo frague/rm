@@ -1,5 +1,6 @@
 $primary: #9fdead;
 $danger: #eca98a;
+$grid: #AAA;
 
 
 body {
@@ -45,7 +46,7 @@ body {
 }
 
 .table td {
-  border-top: 1px solid #AAA;
+  border-top: 1px solid $grid;
 }
 
 i.initiative {
@@ -64,9 +65,9 @@ i.initiative {
   }
 }
 
-.assignments, .accounts {
+.assignments, .accounts, .planner {
   max-height: 200px;
-  // border: solid 1px #AAA;
+  // border: solid 1px $grid;
 
   .schedule {
     overflow-x: auto;
@@ -108,12 +109,12 @@ i.initiative {
     }
   }
 
-  .people, .schedule > div {
+  .people, .schedule > div, .candidates, .demands {
     padding-top: 20px;
 
     div.line {
       height: 30px;
-      border-top: solid 1px #AAA;
+      border-top: solid 1px $grid;
       padding-top: 1px;
       white-space: nowrap;
       overflow: hidden;
@@ -138,10 +139,65 @@ i.initiative {
     }
   }
 
-  .people, .schedule {
+  .people, .schedule, .candidates, .demands {
     padding-left: 0;
     padding-right: 0;
   }
+
+  .demands {
+    padding-top: 200px;
+  }
+
+  .candidates {
+    padding-top: 0;
+    overflow-x: auto;
+    white-space: nowrap;
+
+    & ol {
+      margin-bottom: 0;
+      padding-left: 0;
+      height: 200px;
+
+      li {
+        &:first-child {
+          border-left: solid 1px $grid;
+        }
+
+        img {
+          width: 80px;
+          margin: 0;
+          float: initial;
+        }
+
+        border-right: solid 1px $grid;
+        width: 100px;
+        height: 200px;
+        position: absolute;
+        white-space: normal;
+        overflow: hidden;
+        font-size: 90%;
+        font-weight: 500;
+        text-align: center;
+        padding: 5px;
+      }
+    }
+
+    div.line {
+      overflow: visible;
+      // border: none;
+      div {
+        &:first-child {
+          border-left-width: 1px;
+        }
+        width: 100px;
+        height: 30px;
+        border: solid $grid;
+        border-width: 0 1px 0 0;
+        display: inline-block;
+      }
+    }
+  }
+
 
 }
 

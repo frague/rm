@@ -1,7 +1,7 @@
 import { EventEmitter } from '@angular/core';
 
 export class BusService {
-  filterQuery = {};
+  filterQuery = {demand: 'true'};
 
   public filterUpdated: EventEmitter<any> = new EventEmitter();
 

@@ -1,7 +1,4 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { ToastComponent } from '../shared/toast/toast.component';
-
 import { Schedule } from '../schedule';
 
 import { AssignmentService } from '../services/assignment.service';
@@ -10,13 +7,12 @@ import { ResourceService } from '../services/resource.service';
 import { DemandService } from '../services/demand.service';
 import { BusService } from '../services/bus.service';
 
-const emptyItem = {assignments: []};
-
 @Component({
-  selector: 'assignments',
-  templateUrl: './assignments.component.html'
+	selector: 'planner',
+  templateUrl: './planner.component.html'
 })
-export class AssignmentsComponent extends Schedule {
+export class PlannerComponent extends Schedule {
+  candidatesCount = 0;
 
   constructor(
     assignmentService: AssignmentService,
@@ -28,27 +24,18 @@ export class AssignmentsComponent extends Schedule {
     super(assignmentService, resourceService, initiativeService, demandService, bus);
   }
 
-  getAssignmentsCount(index) {
-    return 'an' + Object.keys((this.items[index] || emptyItem).assignments).length;
+  getDemands() {
+    return this.items.filter(item => item.isDemand);
   }
 
-  getAssignment(assignment) {
-    let initiative = this.initiatives[assignment.initiativeId] || {account: '...', name: '...', color: 'FFF'};
-    let demand = assignment.demand;
-
-    return {
-      name: (demand ? (initiative.account + ': ' + demand.comment) : initiative.name),
-      account: initiative.account,
-      color: initiative.color,
-      billability: assignment.billability,
-      involvement: assignment.involvement,
-      offset: assignment.offset,
-      width: assignment.width
-    };
+  getCandidates() {
+    let candidates = this.items.filter(item => !item.isDemand).slice(0, 16).map(item => this.resourcesById[item._id] || {});
+    this.candidatesCount = candidates.length;
+    return candidates;
   }
 
-  makeCaption(assignee) {
-    return (assignee.grade ? assignee.grade + ', ' : '') + assignee.name;
+  makeCaption(demand) {
+    return demand.name;
   }
 
   showResource(assignee: any) {
@@ -61,5 +48,6 @@ export class AssignmentsComponent extends Schedule {
       return this.personModal.show(this.resourcesById[assignee._id])
     }
   }
+
 
 }
