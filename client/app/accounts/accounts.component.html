@@ -15,7 +15,7 @@
   <div class="accounts row" *ngIf="getAccounts().length">
     <div class="people col-md-2">
       <div class="account" *ngFor="let account of getAccounts()">
-        <span>{{ account }}</span>
+        <h3>{{ account }}</h3>
         <div class="lines">
           <div
             *ngFor="let initiative of getAccountInitiatives(account); let i = index"

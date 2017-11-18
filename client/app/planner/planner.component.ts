@@ -72,14 +72,11 @@ export class PlannerComponent extends Schedule {
     return demand.name;
   }
 
-  showResource(assignee: any) {
-    if (assignee.isDemand) {
-      let assignments = assignee.assignments;
-      if (assignments) {
-        return this.demandModal.show(assignments[Object.keys(assignments)[0]][0].demand);
-      }
+  showResource(resource: any, isDemand=false) {
+    if (isDemand) {
+      return this.demandModal.show(resource);
     } else {
-      return this.personModal.show(this.resourcesById[assignee._id])
+      return this.personModal.show(this.resourcesById[resource._id])
     }
   }
 
@@ -100,6 +97,10 @@ export class PlannerComponent extends Schedule {
 
   getReservation(candidate: any, demand: any) {
     return this.reserved[demand._id] === candidate._id;
+  }
+
+  getDemandAttrs(demand) {
+    return (demand.grades || []).join(', ') + ' (' + (demand.locations || []).join(', ') + ')';
   }
 
   isAssigned(candidate: any) {

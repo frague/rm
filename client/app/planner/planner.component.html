@@ -15,15 +15,17 @@
   <div class="planner row" *ngIf="items.length">
     <div class="col-md-2 demands lines">
       <div class="account" *ngFor="let account of getAccounts()">
-        <span>{{ account }}</span>
+        <h3>{{ account }}</h3>
         <div
           *ngFor="let demand of accountsDemand[account]"
           class="line"
-          (click)="showResource(demand)"
+          (click)="showResource(demand, true)"
           [ngClass]="{covered: reserved[demand._id]}"
         >
           <i class="fa fa-plane" *ngIf="isOnsite(demand)"></i>
           {{ demand.profile }}
+          <span>{{ getDemandAttrs(demand) }}</span>
+          <span [title]="demand.comment">{{ demand.comment }}</span>
         </div>
       </div>
     </div>

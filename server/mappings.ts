@@ -29,6 +29,7 @@ export var demandProfilesMap = {
   'Dev-Services-DotNet': 'Custom Dev',
 
   'Dev-Services-Node': 'UI',
+  'Dev-UI-FullStack': 'UI',
   'Dev-UI-Angular2': 'UI',
   'Dev-UI-Common': 'UI',
   'Dev-UI-React': 'UI',

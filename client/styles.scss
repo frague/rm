@@ -5,6 +5,9 @@ $yellow: #FFB;
 
 $demandCardHeight: 170px;
 
+$lineHeight: 30px;
+$plannerLineHeight: 60px;
+
 body {
   background-color: #f5feff;
   margin-top: 15px;
@@ -115,7 +118,7 @@ i.initiative {
     padding-top: 20px;
 
     div.line {
-      height: 30px;
+      height: $lineHeight;
       border-top: solid 1px $grid;
       padding-top: 1px;
       white-space: nowrap;
@@ -123,10 +126,10 @@ i.initiative {
 
       @for $i from 0 through 100 {
         &.an#{$i+1} {
-          height: 30px + ($i * 28);
+          height: $lineHeight + ($i * ($lineHeight - 2));
         }
         span:nth-child(#{$i + 1}) i {
-          margin-top: ($i * 28px);
+          margin-top: ($i * ($lineHeight - 2));
         }
       }
       .nb {
@@ -157,6 +160,11 @@ i.initiative {
 
   .demands {
     padding-top: $demandCardHeight;
+
+    div.line {
+      height: $plannerLineHeight;
+    }
+
     &.lines div.covered {
       background-color: $primary;
     }
@@ -166,6 +174,7 @@ i.initiative {
     padding-top: 0;
     overflow-x: auto;
     white-space: nowrap;
+
     i.fa {
       font-size: 100%;
     }
@@ -217,16 +226,19 @@ i.initiative {
     }
 
     div.line {
+      height: $plannerLineHeight;
       padding-top: 0;
       overflow: visible;
 
       div {
         text-align: center;
         width: 100px;
-        height: 29px;
+        height: ($plannerLineHeight - 1);
         border: solid $grid;
         border-width: 0 1px 0 0;
         display: inline-block;
+        font-size: 24px;
+        padding-top: 12px;
 
         &:first-child {
           border-left-width: 1px;
@@ -316,12 +328,24 @@ ul.sync {
     .account {
       border-top: solid 2px $grid;
 
-      span {
+      h3 {
         font-size: 24px;
         white-space: nowrap;
         height: 40px;
         font-weight: 600;
         display: block;
+        margin: 0;
+        padding-top: 6px;
+      }
+
+      span {
+        display: block;
+        font-size: 64%;
+        font-weight: 600;
+
+        &:nth-child(2) {
+          font-weight: 400;
+        }
       }
     }
   }
