@@ -14,6 +14,23 @@ body {
   margin-bottom: 10px;
 }
 
+h1 {
+  font-size: 32px;
+
+  span {
+    font-size: 16px;
+    font-weight: normal;
+    display: block;
+    float: right;
+    padding-top: 10px;
+  }
+}
+
+h2 {
+  font-size: 28px;
+  margin-top: 20px;
+  font-weight: 300;
+}
 
 .btn {
   outline-width: 0px !important;
@@ -379,5 +396,35 @@ img.avatar {
   }
   .dropdown-toggle::after {
     margin-left: 0px;
+  }
+}
+
+.report {
+  table, td, th {
+    font-size: 14px;
+    border: solid $grid;
+  }
+
+  table {
+    border-width: 0 1px 1px 0;
+
+    td {
+      font-weight: 100;
+      text-align: center;
+    }
+
+    th {
+      font-weight: 400;
+      background-color: #EEE;
+
+      &:nth-child(n+2) {
+        text-align: center;
+      }
+    }
+
+    td, th {
+      padding: 4px;
+      border-width: 1px 0 0 1px;
+    }
   }
 }

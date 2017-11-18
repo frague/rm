@@ -1,11 +1,13 @@
 <div>
-  <h4>Demand Planner Board</h4>
+  <h1><span (click)="showReport()">Show Report</span>Demand Planner Board</h1>
 
   <assignment-modal [resources]="resourcesById" [initiatives]="initiatives"></assignment-modal>
 
   <person-modal></person-modal>
 
   <demand-modal></demand-modal>
+
+  <report-modal [accountsDemand]="accountsDemand" [candidates]="candidates"></report-modal>
 
   <div class="row">
     <div class="col-md-2"></div>

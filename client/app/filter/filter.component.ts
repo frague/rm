@@ -63,14 +63,16 @@ export class FilterComponent {
   parseCriteria(event: KeyboardEvent, force=false) {
     if (event) {
       event.stopPropagation();
+      if (event.code === 'Escape') {
+        this.criteria = '';
+        return;
+      }
+      if (event.code === 'Enter') {
+        force = true;
+      }
     }
 
-    if (event.code === 'Escape') {
-      this.criteria = '';
-      return;
-    }
-
-    if (force || event.code === 'Enter') {
+    if (force) {
       this.query = this.criteria.split(',').reduce((result, pair) => {
         let [param, operation, value]: any[] = pair.replace(/([=~])/g, '\n$1\n').split('\n', 3);
 

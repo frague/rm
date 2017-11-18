@@ -33,6 +33,7 @@ import { DemandComponent } from './assignments/demand.component';
 import { PrintableDatePipe, AvatarUrlPipe, RangePipe } from './pipes';
 import { FilterComponent } from './filter/filter.component';
 import { PlannerComponent } from './planner/planner.component';
+import { ReportComponent } from './planner/report.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,7 @@ import { PlannerComponent } from './planner/planner.component';
     DemandComponent,
     PrintableDatePipe, AvatarUrlPipe, RangePipe,
     FilterComponent,
-    PlannerComponent
+    PlannerComponent, ReportComponent
   ],
   imports: [
     RoutingModule,

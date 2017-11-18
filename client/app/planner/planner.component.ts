@@ -1,5 +1,7 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { Schedule } from '../schedule';
+
+import { ReportComponent } from './report.component';
 
 import { AssignmentService } from '../services/assignment.service';
 import { InitiativeService } from '../services/initiative.service';
@@ -12,8 +14,9 @@ import { BusService } from '../services/bus.service';
   templateUrl: './planner.component.html'
 })
 export class PlannerComponent extends Schedule {
+  @ViewChild(ReportComponent) reportModal: ReportComponent;
+
   candidates = [];
-  demands = [];
   candidatesCount = 0;
 
   reserved = {};
@@ -33,13 +36,13 @@ export class PlannerComponent extends Schedule {
         return result;
       });
     this.candidatesCount = this.candidates.length;
-    this.demands = this.items
+    let demands = this.items
       .filter(item => item.isDemand)
       .map(item => {
         let assignments = item.assignments;
         return assignments[Object.keys(assignments)[0]][0].demand;
       });
-    this.demands.forEach(demand => {
+    demands.forEach(demand => {
       let account = demand.account;
       if (!this.accountsDemand[account]) {
         this.accountsDemand[account] = [];
@@ -78,6 +81,10 @@ export class PlannerComponent extends Schedule {
     } else {
       return this.personModal.show(this.resourcesById[resource._id])
     }
+  }
+
+  showReport() {
+    this.reportModal.show(this.reserved);
   }
 
   reserve(candidate: any, demand: any) {

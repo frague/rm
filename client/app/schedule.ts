@@ -349,8 +349,6 @@ export class Schedule {
     //   this.minDate = fromDate;
     // }
 
-    console.log(this.maxDate, today.toISOString());
-
     if (this.maxDate < today.toISOString()) {
       let maxDate = new Date();
       maxDate.setMonth(maxDate.getMonth() + 1);
