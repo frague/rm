@@ -14,14 +14,17 @@
 
   <div class="planner row" *ngIf="items.length">
     <div class="col-md-2 demands lines">
-      <div
-        *ngFor="let demand of demands; let i = index"
-        class="line"
-        (click)="showResource(demand)"
-        [ngClass]="{covered: reserved[demand._id]}"
-      >
-        <i class="fa fa-plane" *ngIf="isOnsite(demand)"></i>
-        {{ makeCaption(demand) }}
+      <div class="account" *ngFor="let account of getAccounts()">
+        <span>{{ account }}</span>
+        <div
+          *ngFor="let demand of accountsDemand[account]"
+          class="line"
+          (click)="showResource(demand)"
+          [ngClass]="{covered: reserved[demand._id]}"
+        >
+          <i class="fa fa-plane" *ngIf="isOnsite(demand)"></i>
+          {{ demand.profile }}
+        </div>
       </div>
     </div>
     <div class="col-md-10 candidates">
@@ -41,13 +44,15 @@
             </span>
           </li>
         </ol>
-        <div *ngFor="let demand of demands; let i = index" class="line">
-          <div
-            *ngFor="let candidate of candidates"
-            (click)="reserve(candidate, demand)"
-            [ngClass]="{matched: getReservation(candidate, demand)}"
-          >
-            <i class="fa fa-check" *ngIf="getReservation(candidate, demand)"></i>&nbsp;
+        <div class="account" *ngFor="let account of getAccounts()">
+          <div *ngFor="let demand of accountsDemand[account]" class="line">
+            <div
+              *ngFor="let candidate of candidates"
+              (click)="reserve(candidate, demand)"
+              [ngClass]="{matched: getReservation(candidate, demand)}"
+            >
+              <i class="fa fa-check" *ngIf="getReservation(candidate, demand)"></i>&nbsp;
+            </div>
           </div>
         </div>
       </div>

@@ -19,7 +19,11 @@ export class PlannerComponent extends Schedule {
   reserved = {};
   deserved = {};
 
+  accountsDemand = {};
+
   postFetch = () => {
+    this.accountsDemand = {};
+
     this.candidates = this.items
       .filter(item => !item.isDemand)
       .slice(0, 16)
@@ -29,8 +33,20 @@ export class PlannerComponent extends Schedule {
         return result;
       });
     this.candidatesCount = this.candidates.length;
-    this.demands = this.items.filter(item => item.isDemand);
-    this.cd.markForCheck();
+    this.demands = this.items
+      .filter(item => item.isDemand)
+      .map(item => {
+        let assignments = item.assignments;
+        return assignments[Object.keys(assignments)[0]][0].demand;
+      });
+    this.demands.forEach(demand => {
+      let account = demand.account;
+      if (!this.accountsDemand[account]) {
+        this.accountsDemand[account] = [];
+      }
+      this.accountsDemand[account].push(demand);
+    });
+    // this.cd.markForCheck();
   };
 
   constructor(
@@ -42,6 +58,10 @@ export class PlannerComponent extends Schedule {
     private cd: ChangeDetectorRef
   ) {
     super(assignmentService, resourceService, initiativeService, demandService, bus);
+  }
+
+  getAccounts() {
+    return Object.keys(this.accountsDemand).sort();
   }
 
   getCandidates() {
@@ -84,5 +104,9 @@ export class PlannerComponent extends Schedule {
 
   isAssigned(candidate: any) {
     return Object.values(this.reserved).indexOf(candidate._id) >= 0;
+  }
+
+  isOnsite(demand) {
+    return demand.deployment.toLowerCase().indexOf('onsite') >= 0;
   }
 }

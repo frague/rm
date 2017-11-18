@@ -3,6 +3,7 @@ $danger: #FDD;
 $grid: #AAA;
 $yellow: #FFB;
 
+$demandCardHeight: 170px;
 
 body {
   background-color: #f5feff;
@@ -155,7 +156,7 @@ i.initiative {
   }
 
   .demands {
-    padding-top: 200px;
+    padding-top: $demandCardHeight;
     &.lines div.covered {
       background-color: $primary;
     }
@@ -172,7 +173,7 @@ i.initiative {
     & ol {
       margin-bottom: 0;
       padding-left: 0;
-      height: 200px;
+      height: $demandCardHeight;
 
       li {
         &:first-child {
@@ -198,7 +199,7 @@ i.initiative {
 
         border-right: solid 1px $grid;
         width: 100px;
-        height: 200px;
+        height: $demandCardHeight;
         position: absolute;
         white-space: normal;
         overflow: hidden;
@@ -310,22 +311,23 @@ ul.sync {
   }
 }
 
-.accounts {
+.accounts, .planner {
+  .people, .demands {
+    .account {
+      border-top: solid 2px $grid;
 
-  .initiative-item {
-    border-top: solid 2px #888;
-
-    span {
-      font-size: 24px;
-      white-space: nowrap;
-      height: 40px;
-      font-weight: 600;
-      display: block;
+      span {
+        font-size: 24px;
+        white-space: nowrap;
+        height: 40px;
+        font-weight: 600;
+        display: block;
+      }
     }
   }
-  .schedule {
+  .schedule, .candidates {
     .account {
-      border-top: solid 2px #888;
+      border-top: solid 2px $grid;
       padding-top: 40px;
     }
   }
