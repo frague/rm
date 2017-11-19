@@ -1,5 +1,7 @@
 import { Component, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { Schedule } from '../schedule';
+import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
+
 
 import { ReportComponent } from './report.component';
 
@@ -15,6 +17,8 @@ import { BusService } from '../services/bus.service';
 })
 export class PlannerComponent extends Schedule {
   @ViewChild(ReportComponent) reportModal: ReportComponent;
+
+  get cardWidth() {return 120};
 
   candidates = [];
   candidatesCount = 0;

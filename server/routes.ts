@@ -9,6 +9,7 @@ import IntegrationsCtrl from './controllers/integrations';
 import DemandCtrl from './controllers/demand';
 import FilterCtrl from './controllers/filter';
 import SyncCtrl from './controllers/sync';
+import CommentCtrl from './controllers/comment';
 
 import Resource from './models/resource';
 import User from './models/user';
@@ -25,6 +26,7 @@ export default function setRoutes(app) {
   const demandCtrl = new DemandCtrl();
   const filterCtrl = new FilterCtrl();
   const syncCtrl = new SyncCtrl();
+  const commentCtrl = new CommentCtrl();
 
   // Assignments
   router.route('/assignments').get(assignmentCtrl.getAll);
@@ -52,6 +54,15 @@ export default function setRoutes(app) {
   router.route('/initiative/:id').get(initiativeCtrl.get);
   router.route('/initiative/:id').put(initiativeCtrl.update);
   router.route('/initiative/:id').delete(initiativeCtrl.delete);
+
+  // Comments
+  router.route('/comments').get(commentCtrl.getAll);
+  router.route('/comments').delete(commentCtrl.deleteAll);
+  router.route('/comments/count').get(commentCtrl.count);
+  router.route('/comment').post(commentCtrl.insert);
+  router.route('/comment/:id').get(commentCtrl.get);
+  router.route('/comment/:id').put(commentCtrl.update);
+  router.route('/comment/:id').delete(commentCtrl.delete);
 
   // Demands
   router.route('/demands').get(demandCtrl.getAll);

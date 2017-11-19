@@ -32,11 +32,10 @@
       </div>
     </div>
     <div class="col-md-10 candidates">
-      <div class="lines" [ngStyle]="{width: (candidatesCount * 100) + 'px'}">
+      <div class="lines" [ngStyle]="{width: (candidatesCount * cardWidth) + 'px'}">
         <ol>
           <li
             *ngFor="let candidate of candidates;let x = index"
-            [ngStyle]="{left: (100 * x) + 'px'}"
             (click)="showResource(candidate)"
             [ngClass]="{billable: candidate.billable, assigned: isAssigned(candidate)}"
           >
@@ -46,6 +45,7 @@
               <i class="fa fa-plane" *ngIf="candidate.canTravel"></i> 
               {{ candidate.grade }}, {{ candidate.location }}
             </span>
+            <div class="comments" container="body" placement="top-right" ngbTooltip="Candidate comments multiline"></div>
           </li>
         </ol>
         <div class="account" *ngFor="let account of getAccounts()">
