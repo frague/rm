@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { Component, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { Schedule } from '../schedule';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 
@@ -17,6 +17,8 @@ import { BusService } from '../services/bus.service';
 })
 export class PlannerComponent extends Schedule {
   @ViewChild(ReportComponent) reportModal: ReportComponent;
+  @ViewChild('sticky') boardOfFame: ElementRef;
+  bofOffset: any = 'auto';
 
   get cardWidth() {return 120};
 
@@ -66,6 +68,28 @@ export class PlannerComponent extends Schedule {
   ) {
     super(assignmentService, resourceService, initiativeService, demandService, bus);
   }
+
+  ngOnInit() {
+    super.ngOnInit();
+    window.addEventListener('scroll', this.scroll, true);
+  }
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    window.removeEventListener('scroll', this.scroll, true);
+  }
+
+  scroll = (event: Event) => {
+    if (this.boardOfFame && this.boardOfFame.nativeElement) {
+      let windowOffset = window.pageYOffset;
+      let parentEl = this.boardOfFame.nativeElement.offsetParent.offsetTop;
+      if (windowOffset > parentEl) {
+        this.bofOffset = (windowOffset - 30 ) + 'px';
+        return;
+      }
+    }
+    this.bofOffset = 'auto';
+  };
 
   getAccounts() {
     return Object.keys(this.accountsDemand).sort();

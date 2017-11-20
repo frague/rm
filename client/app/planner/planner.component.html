@@ -33,7 +33,7 @@
     </div>
     <div class="col-md-10 candidates">
       <div class="lines" [ngStyle]="{width: (candidatesCount * cardWidth) + 'px'}">
-        <ol>
+        <ol #sticky [ngStyle]="{top: bofOffset}" [ngClass]="{sticky: bofOffset !== 'auto'}">
           <li
             *ngFor="let candidate of candidates;let x = index"
             (click)="showResource(candidate)"
@@ -42,7 +42,7 @@
             <img class="avatar" src="{{ candidate.login|avatarUrl }}">
             {{ candidate.name }}
             <span>
-              <i class="fa fa-plane" *ngIf="candidate.canTravel"></i> 
+              <i class="fa fa-plane" *ngIf="candidate.canTravel"></i>
               {{ candidate.grade }}, {{ candidate.location }}
             </span>
             <div class="comments" container="body" placement="top-right" ngbTooltip="Candidate comments multiline"></div>

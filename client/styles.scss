@@ -1,3 +1,5 @@
+$body: #f5feff;
+
 $primary: #DFD;
 $danger: #FDD;
 $grid: #AAA;
@@ -10,7 +12,7 @@ $lineHeight: 30px;
 $plannerLineHeight: 60px;
 
 body {
-  background-color: #f5feff;
+  background-color: $body;
   margin-top: 15px;
   margin-bottom: 10px;
 }
@@ -193,100 +195,113 @@ i.initiative {
     overflow-x: auto;
     white-space: nowrap;
 
-    i.fa {
-      font-size: 100%;
-    }
+    .lines {
+      margin-top: $demandCardHeight;
 
-    & ol {
-      margin-bottom: 0;
-      padding-left: 0;
-      height: $demandCardHeight;
+      i.fa {
+        font-size: 100%;
+      }
 
-      li {
-        &:first-child {
-          border-left: solid 1px $grid;
-        }
-
-        @for $i from 0 through 30 {
-          &:nth-child(#{$i + 1}) {
-            left: ($demandCardWidth * $i);
-          }
-        }
-
-        &.billable {
-          background-color: $danger;
-          &.assigned {
-            background-color: $yellow;
-          }
-        }
-
-        &.assigned {
-          background-color: $primary;
-        }
-
-        img {
-          width: 90%;
-          margin: 0;
-          float: initial;
-        }
-
-        border-right: solid 1px $grid;
-        width: $demandCardWidth;
+      & ol {
+        margin-bottom: 0;
+        padding-left: 0;
         height: $demandCardHeight;
+        margin-top: -$demandCardHeight;
         position: absolute;
-        white-space: normal;
-        overflow: hidden;
-        font-size: 90%;
-        font-weight: 500;
-        text-align: center;
-        padding: 5px;
-        list-style: none;
+        z-index: 100;
 
-        span {
-          display: block;
-          font-size: 80%;
-          font-weight: 200;
+        &.sticky li {
+          box-shadow: 2px 2px 2px rgba(0,0,0,0.5);
         }
 
-        div.comments {
+        li {
+          &:first-child {
+            border-left: solid 1px $grid;
+          }
+
+          @for $i from 0 through 30 {
+            &:nth-child(#{$i + 1}) {
+              left: ($demandCardWidth * $i);
+            }
+          }
+
+          &.billable {
+            background-color: $danger;
+            &.assigned {
+              background-color: $yellow;
+            }
+          }
+
+          &.assigned {
+            background-color: $primary;
+          }
+
+          img {
+            width: 90%;
+            margin: 0;
+            float: initial;
+          }
+
+          background-color: $body;
+          border-right: solid 1px $grid;
+          width: $demandCardWidth;
+          height: $demandCardHeight;
           position: absolute;
-          width: 0;
-          height: 0;
-          border-bottom: 15px solid $grid;
-          border-left: 15px solid transparent;
-          bottom: 0;
-          right: 0;
+          white-space: normal;
+          overflow: hidden;
+          font-size: 90%;
+          font-weight: 500;
+          text-align: center;
+          padding: 5px;
+          list-style: none;
+
+          span {
+            display: block;
+            font-size: 80%;
+            font-weight: 200;
+          }
+
+          div.comments {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-bottom: 15px solid $grid;
+            border-left: 15px solid transparent;
+            bottom: 0;
+            right: 0;
+          }
         }
       }
-    }
 
-    div.line {
-      height: $plannerLineHeight;
-      padding-top: 0;
-      overflow: visible;
+      div.line {
+        height: $plannerLineHeight;
+        padding-top: 0;
+        overflow: visible;
 
-      div {
-        text-align: center;
-        width: $demandCardWidth;
-        height: ($plannerLineHeight - 1);
-        border: solid $grid;
-        border-width: 0 1px 0 0;
-        display: inline-block;
-        font-size: 24px;
-        padding-top: 12px;
+        div {
+          text-align: center;
+          width: $demandCardWidth;
+          height: ($plannerLineHeight - 1);
+          border: solid $grid;
+          border-width: 0 1px 0 0;
+          display: inline-block;
+          font-size: 24px;
+          padding-top: 12px;
 
-        &:first-child {
-          border-left-width: 1px;
-        }
+          &:first-child {
+            border-left-width: 1px;
+          }
 
-        &.matched {
-          background-color: $primary;
-          i.fa {
-            color: $primary - #888;
+          &.matched {
+            background-color: $primary;
+            i.fa {
+              color: $primary - #888;
+            }
           }
         }
       }
     }
+
   }
 
 
@@ -345,7 +360,6 @@ dl.attributes {
           display: none;
         }
       }
-      
     }
   }
   hr {
