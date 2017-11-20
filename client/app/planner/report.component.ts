@@ -11,7 +11,7 @@ export class ReportComponent {
   @ViewChild('content') content;
   @Input() accountsDemand: any[] = [];
   @Input() candidates: any[] = [];
-  
+
   matches: any = {};
   candidatesById: any = {};
 

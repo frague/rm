@@ -22,13 +22,17 @@ export default class SyncCtrl {
   integrationsCtrl = new IntegrationsCtrl();
 
   sync = (req, res) => {
+    this.logs = [];
     this._cleanup().then(() => {
       this._queryConfluence().then(() =>
         this._queryPMO().then(() => {
           Promise.all([
             this._queryBamboo(),
             this._queryDemand()
-          ]).then(() => res.sendStatus(200));
+          ]).then(() => {
+            res.setHeader('Content-Type', 'application/json');
+            res.json(this.logs);
+          });
         })
       )
     }).catch(() => res.sendStatus(500));
@@ -36,6 +40,7 @@ export default class SyncCtrl {
 
   private _addLog(text, source='') {
     let message = (source && source + ': ') + text;
+    this.logs.push(message);
     console.log(message);
   }
 
@@ -59,11 +64,11 @@ export default class SyncCtrl {
 
   private _fakeRes(callback: Function) {
     return {
-      setHeader: () => {}, 
+      setHeader: () => {},
       send: (data, err) => {
         // console.log('Text', data);
         callback(JSON.parse(data), err);
-      }, 
+      },
       json: (data, err) => {
         // console.log('JSON', data);
         callback(data, err);

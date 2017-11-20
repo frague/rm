@@ -1,9 +1,10 @@
-import { Component, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { Schedule } from '../schedule';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 
 
 import { ReportComponent } from './report.component';
+import { CommentsComponent } from './comments.component';
 
 import { AssignmentService } from '../services/assignment.service';
 import { InitiativeService } from '../services/initiative.service';
@@ -17,6 +18,7 @@ import { BusService } from '../services/bus.service';
 })
 export class PlannerComponent extends Schedule {
   @ViewChild(ReportComponent) reportModal: ReportComponent;
+  @ViewChild(CommentsComponent) commentsModal: CommentsComponent;
   @ViewChild('sticky') boardOfFame: ElementRef;
   bofOffset: any = 'auto';
 
@@ -55,7 +57,6 @@ export class PlannerComponent extends Schedule {
       }
       this.accountsDemand[account].push(demand);
     });
-    // this.cd.markForCheck();
   };
 
   constructor(
@@ -63,8 +64,7 @@ export class PlannerComponent extends Schedule {
     resourceService: ResourceService,
     initiativeService: InitiativeService,
     demandService: DemandService,
-    bus: BusService,
-    private cd: ChangeDetectorRef
+    bus: BusService
   ) {
     super(assignmentService, resourceService, initiativeService, demandService, bus);
   }
@@ -113,6 +113,11 @@ export class PlannerComponent extends Schedule {
 
   showReport() {
     this.reportModal.show(this.reserved);
+  }
+
+  showComments(candidate, event: MouseEvent) {
+    event.stopPropagation();
+    this.commentsModal.show(candidate);
   }
 
   reserve(candidate: any, demand: any) {

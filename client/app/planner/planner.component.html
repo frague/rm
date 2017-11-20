@@ -7,6 +7,8 @@
 
   <demand-modal></demand-modal>
 
+  <comments-modal></comments-modal>
+
   <report-modal [accountsDemand]="accountsDemand" [candidates]="candidates"></report-modal>
 
   <div class="row">
@@ -45,7 +47,7 @@
               <i class="fa fa-plane" *ngIf="candidate.canTravel"></i>
               {{ candidate.grade }}, {{ candidate.location }}
             </span>
-            <div class="comments" container="body" placement="top-right" ngbTooltip="Candidate comments multiline"></div>
+            <div class="comments" container="body" placement="top-right" ngbTooltip="Candidate comments multiline" (click)="showComments(candidate, $event)"></div>
           </li>
         </ol>
         <div class="account" *ngFor="let account of getAccounts()">

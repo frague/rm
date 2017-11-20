@@ -211,6 +211,7 @@ i.initiative {
         z-index: 100;
 
         &.sticky li {
+          border-bottom: solid 1px $grid;
           box-shadow: 2px 2px 2px rgba(0,0,0,0.5);
         }
 
@@ -242,7 +243,7 @@ i.initiative {
             float: initial;
           }
 
-          background-color: $body;
+          background-color: $body - #111;
           border-right: solid 1px $grid;
           width: $demandCardWidth;
           height: $demandCardHeight;
