@@ -3,6 +3,8 @@ import * as mongoose from 'mongoose';
 const commentSchema = new mongoose.Schema({
   login: String,
   date: Date,
+  isStatus: Boolean,
+  source: String,
   text: String
 });
 

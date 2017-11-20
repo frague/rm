@@ -38,6 +38,10 @@ h2 {
 .btn {
   outline-width: 0px !important;
 
+  &, &:hover, &:active, &:visited, &:focus, &:focus:active {
+    color: #000;
+  }
+
   &.btn-primary {
     background-color: $primary;
     border-color: $primary - #111;
@@ -73,6 +77,57 @@ h2 {
 .table td {
   border-top: 1px solid $grid;
 }
+
+.fade {
+  opacity: 1;
+}
+
+.modal-body {
+  .with-image {
+    min-height: 180px;
+  }
+  nav {
+    margin: 5px 0 20px 0;
+    a {
+      padding: 4px 10px;
+      margin-right: 4px;
+      background-color: $body - #111;
+
+      &.active {
+        background-color: $body - #444;
+      }
+    }
+  }
+}
+
+.modal-backdrop.fade {
+    opacity: 0.2;
+}
+
+.modal-dialog {
+  top: 100px;
+}
+
+.tooltip {
+  opacity: 1;
+
+  .tooltip-inner {
+    margin-right: 4px;
+    min-width: 200px;
+    max-width: 500px;
+    font-size: 12px;
+    font-weight: 200;
+    border: solid 1px $grid;
+    background-color: #FFF;
+    color: #000;
+    box-shadow: 2px 2px 2px rgba(0,0,0,0.5);
+  }
+}
+
+
+
+
+
 
 i.initiative {
   font-style: normal;
@@ -308,38 +363,6 @@ i.initiative {
 
 }
 
-.fade {
-  opacity: 1;
-}
-
-.modal-body.with-image {
-  min-height: 180px;
-}
-
-.modal-backdrop.fade {
-    opacity: 0.2;
-}
-
-.modal-dialog {
-  top: 100px;
-}
-
-.tooltip {
-  opacity: 1;
-
-  .tooltip-inner {
-    margin-right: 4px;
-    min-width: 200px;
-    max-width: 500px;
-    font-size: 12px;
-    font-weight: 200;
-    border: solid 1px $grid;
-    background-color: #FFF;
-    color: #000;
-    box-shadow: 2px 2px 2px rgba(0,0,0,0.5);
-  }
-}
-
 dl.attributes {
   dt {
     float: left;
@@ -474,6 +497,46 @@ img.avatar {
     td, th {
       padding: 4px;
       border-width: 1px 0 0 1px;
+    }
+  }
+}
+
+.comments {
+  max-height: 400px;
+  overflow-y: auto;
+
+  ol {
+    padding-left: 0;
+
+    li {
+      list-style: none;
+      padding: 10px 0 10px 100px;
+      margin: 0;
+
+      &.status {
+        background-color: $primary;
+      }
+
+      &:nth-child(n+2) {
+        border-top: solid 1px $grid;
+      }
+
+      div.date {
+        // position: absolute;
+        float: left;
+        margin-left: -90px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      p {
+        margin-bottom: 4px;
+
+        &.source {
+          font-weight: 600;
+          font-size: 12px;
+        }
+      }
     }
   }
 }

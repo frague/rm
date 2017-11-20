@@ -59,9 +59,9 @@ export default function setRoutes(app) {
   router.route('/comments').get(commentCtrl.getAll);
   router.route('/comments').delete(commentCtrl.deleteAll);
   router.route('/comments/count').get(commentCtrl.count);
-  router.route('/comment').post(commentCtrl.insert);
+  router.route('/comment').post(commentCtrl.insertChecked);
   router.route('/comment/:id').get(commentCtrl.get);
-  router.route('/comment/:id').put(commentCtrl.update);
+  router.route('/comment/:id').put(commentCtrl.updateChecked);
   router.route('/comment/:id').delete(commentCtrl.delete);
 
   // Demands

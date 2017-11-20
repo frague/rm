@@ -40,7 +40,6 @@ export abstract class BaseComponent {
   add(item) {
     return this.apiService.add(item).subscribe(
       res => {
-        this.getAll();
         this.form.reset();
       },
       error => console.log(error)
@@ -63,11 +62,15 @@ export abstract class BaseComponent {
 
   cancelEditing() {
     this.item = {};
-    // this.toast.setMessage('item editing cancelled.', 'warning');
   }
 
-  save() {
-    let updatedItem = this.form.value;
+  getEditedValue() {
+    // Needed for presubmit customizations
+    return this.form.value;
+  }
+
+  save(): Subscription {
+    let updatedItem = this.getEditedValue();
     if (this.item && this.item._id) {
       updatedItem._id = this.item._id;
       return this.edit(updatedItem);
@@ -82,7 +85,6 @@ export abstract class BaseComponent {
       res => {
         this.item = {};
         this.form.reset();
-        // this.toast.setMessage('item edited successfully.', 'success');
         this.getAll();
       },
       error => console.log(error)
@@ -95,7 +97,6 @@ export abstract class BaseComponent {
         res => {
           const pos = this.items.map(elem => elem._id).indexOf(item._id);
           this.items.splice(pos, 1);
-          // this.toast.setMessage('item deleted successfully.', 'success');
         },
         error => console.log(error)
       );

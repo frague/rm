@@ -6,10 +6,18 @@ abstract class BaseCtrl {
 
   cleanup = (req, res) => res.sendStatus(200);
 
+  reduceQuery(query: any) {
+    return Object.keys(query).reduce((result, param) => {
+      result[param] = JSON.parse(query[param]);
+      return result;
+    }, {});
+  }
+
   // Get all
   getAll = (req, res) => {
-    console.log('Finding all', req.query);
-    this.model.find(req.query, (err, docs) => {
+    let query = this.reduceQuery(req.query);
+    console.log('Finding all', query);
+    this.model.find(query, (err, docs) => {
       if (err) { return console.error(err); }
       res.json(docs);
     });
