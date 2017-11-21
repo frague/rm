@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ToastComponent } from '../shared/toast/toast.component';
 
 import { Schedule } from '../schedule';
+import { CommentsComponent } from '../planner/comments.component';
 
 import { AssignmentService } from '../services/assignment.service';
 import { InitiativeService } from '../services/initiative.service';
@@ -17,6 +18,7 @@ const emptyItem = {assignments: []};
   templateUrl: './assignments.component.html'
 })
 export class AssignmentsComponent extends Schedule {
+  @ViewChild(CommentsComponent) commentsModal: CommentsComponent;
 
   constructor(
     assignmentService: AssignmentService,
@@ -49,6 +51,12 @@ export class AssignmentsComponent extends Schedule {
 
   makeCaption(assignee) {
     return (assignee.grade ? assignee.grade + ', ' : '') + assignee.name;
+  }
+
+  showComments(candidate, event: MouseEvent) {
+    event.stopPropagation();
+    console.log(candidate);
+    this.commentsModal.show(candidate);
   }
 
   showResource(assignee: any) {

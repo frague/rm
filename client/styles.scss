@@ -4,6 +4,8 @@ $primary: #DFD;
 $danger: #FDD;
 $grid: #AAA;
 $yellow: #FFB;
+$blue: #1CA1C0;
+$red: #FF6E27;
 
 $demandCardHeight: 200px;
 $demandCardWidth: 120px;
@@ -456,10 +458,14 @@ div.corner {
   position: absolute;
   width: 0;
   height: 0;
-  border-bottom: 10px solid $grid;
+  border-top: 10px solid #AAA;
   border-left: 10px solid transparent;
-  bottom: 0;
+  margin-top: -1px;
   right: 0;
+
+  &.has-status {
+    border-top-color: $red;
+  }
 }
 
 img.avatar {
@@ -528,6 +534,7 @@ img.avatar {
       list-style: none;
       padding: 10px 0 10px 100px;
       margin: 0;
+      min-height: 52px;
 
       &.status {
         background-color: $primary;
@@ -548,8 +555,17 @@ img.avatar {
         }
       }
 
+      h6 {
+
+      }
+
       p {
-        margin-bottom: 4px;
+        margin-bottom: 0px;
+        font-size: 14px;
+
+        &:empty {
+          margin-bottom: 12px;
+        }
 
         &.source {
           font-weight: 600;

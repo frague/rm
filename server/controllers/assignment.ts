@@ -116,6 +116,7 @@ export default class AssignmentCtrl extends BaseCtrl {
             '$max': '$assignment.billable'
           },
           canTravel: { '$first': '$canTravel' },
+          login: { '$first': '$login' },
           status: { '$first': '$status' }
         }
       },

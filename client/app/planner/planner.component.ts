@@ -120,10 +120,6 @@ export class PlannerComponent extends Schedule {
     this.commentsModal.show(candidate);
   }
 
-  getCurrentStatus(candidate: any): string {
-    return candidate.status ? candidate.status.text : '';
-  }
-
   reserve(candidate: any, demand: any) {
     let demandId = this.deserved[candidate._id];
     let candidateId = this.reserved[demand._id];

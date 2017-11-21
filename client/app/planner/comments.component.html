@@ -25,7 +25,7 @@
               <a (click)="startEditing(comment)"><i class="fa fa-pencil"></i></a>
             </span>
           </div>
-          <p class="source" *ngIf="comment.source">{{ comment.source }}</p>
+          <h6 *ngIf="comment.source">{{ comment.source }}</h6>
           <p *ngFor="let paragraph of getLines(comment.text)">{{ paragraph }}</p>
         </li>
       </ol>

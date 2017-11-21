@@ -7,6 +7,8 @@
 
   <demand-modal></demand-modal>
 
+  <comments-modal></comments-modal>
+
   <div class="row">
     <div class="col-md-2"></div>
     <div class="col-md-10"></div>
@@ -20,6 +22,14 @@
         [ngClass]="getAssignmentsCount(i)"
         (click)="showResource(assignee)"
       >
+        <div
+          class="corner"
+          (click)="showComments(assignee, $event)"
+          [ngClass]="{'has-status': assignee.status}"
+          container="body"
+          placement="top-left"
+          [ngbTooltip]="getCurrentStatus(assignee)"
+        ></div>
         <i class="fa fa-plane" *ngIf="isOnsite(assignee)"></i>
         {{ makeCaption(assignee) }}
       </div>

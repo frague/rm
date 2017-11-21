@@ -14,6 +14,7 @@ export class CommentsComponent extends BaseComponent {
   comments: any[] = [];
   status: any = '';
   aggregated: any[] = [];
+  modalRef: any;
 
   showComments = true;
 
@@ -21,7 +22,7 @@ export class CommentsComponent extends BaseComponent {
     _id: new FormControl(''),
     login: new FormControl(''),
     date: new FormControl(''),
-    isStatus: new FormControl(true),
+    isStatus: new FormControl(),
     source: new FormControl(''),
     text: new FormControl('', Validators.required)
   })
@@ -51,12 +52,10 @@ export class CommentsComponent extends BaseComponent {
     let newStatus = newValue.isStatus ? newValue.text : '';
     let doChange = newValue.isStatus || this.item.isStatus;
     return super.save().add(() => {
-      this.fetchData();
-      this.switchTab();
       if (doChange) {
-        this.person.status.text = newStatus;
-        console.log(newStatus, this.person);
+        this.person.status = newValue.isStatus ? newValue : {};
       }
+      this.modalRef.close();
     });
   }
 
@@ -91,14 +90,15 @@ export class CommentsComponent extends BaseComponent {
       if (this.status) {
         this.aggregated.unshift(this.status);
       }
+      this.showComments = this.aggregated.length > 0;
+      this.form.reset({isStatus: !this.status});
     });
   }
 
   show(person: any) {
     this.items = [];
-    this.form.reset({isStatus: true});
     this.person = person;
-    this.modalService.open(this.content);
+    this.modalRef = this.modalService.open(this.content);
     this.fetchData();
   }
 

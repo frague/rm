@@ -317,6 +317,10 @@ export class Schedule {
     return Object.keys(this.initiativeAssignments[initiative._id] || {})
   }
 
+  getCurrentStatus(candidate: any): string {
+    return (candidate && candidate.status) ? candidate.status.text : '';
+  }
+
   adjustToMonday(dateString: string, doIncrease=true): Date {
     let date = new Date(dateString && dateString.length > 1 ? dateString : null);
     let dow = (date.getDay() + 6) % 7;
