@@ -5,7 +5,7 @@ $danger: #FDD;
 $grid: #AAA;
 $yellow: #FFB;
 
-$demandCardHeight: 170px;
+$demandCardHeight: 200px;
 $demandCardWidth: 120px;
 
 $lineHeight: 30px;
@@ -88,10 +88,12 @@ h2 {
   }
   nav {
     margin: 5px 0 20px 0;
+
     a {
       padding: 4px 10px;
       margin-right: 4px;
-      background-color: $body - #111;
+      border: solid 1px $grid;
+      cursor: pointer;
 
       &.active {
         background-color: $body - #444;
@@ -293,7 +295,7 @@ i.initiative {
           }
 
           img {
-            width: 90%;
+            width: $demandCardWidth - 10px;
             margin: 0;
             float: initial;
           }
@@ -305,7 +307,8 @@ i.initiative {
           position: absolute;
           white-space: normal;
           overflow: hidden;
-          font-size: 90%;
+          font-size: 14px;
+          line-height: 1.4;
           font-weight: 500;
           text-align: center;
           padding: 5px;
@@ -317,14 +320,17 @@ i.initiative {
             font-weight: 200;
           }
 
-          div.comments {
+          div.status {
             position: absolute;
-            width: 0;
-            height: 0;
-            border-bottom: 15px solid $grid;
-            border-left: 15px solid transparent;
             bottom: 0;
-            right: 0;
+            border-top: solid 1px $grid;
+            width: $demandCardWidth - 10px;
+            height: 30px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            font-size: 10px;
+            font-weight: 200;
+            text-align: left;
           }
         }
       }
@@ -446,6 +452,16 @@ ul.sync {
   }
 }
 
+div.corner {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-bottom: 10px solid $grid;
+  border-left: 10px solid transparent;
+  bottom: 0;
+  right: 0;
+}
+
 img.avatar {
   float: right;
   margin: 0 0 10px 10px;
@@ -522,11 +538,14 @@ img.avatar {
       }
 
       div.date {
-        // position: absolute;
         float: left;
         margin-left: -90px;
         font-size: 12px;
         font-weight: 600;
+        span {
+          display: block;
+          text-align: center;
+        }
       }
 
       p {

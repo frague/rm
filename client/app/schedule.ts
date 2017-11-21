@@ -200,8 +200,11 @@ export class Schedule {
         });
 
         this.calculate();
+        let personStati = {};
 
         this.items.forEach(resource => {
+          personStati[resource._id] = resource.status;
+
           Object.keys(resource.assignments).forEach(initiativeId => {
             this.initiativeAssignments[initiativeId] = (this.initiativeAssignments[initiativeId] || {});
             this.initiativeAssignments[initiativeId][resource._id] = resource.assignments[initiativeId];
@@ -253,6 +256,7 @@ export class Schedule {
 
             this.resources = data;
             this.resourcesById = data.reduce((result, person) => {
+              person.status = personStati[person._id];
               result[person._id] = person;
               return result;
             }, {});

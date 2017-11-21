@@ -14,32 +14,36 @@
 
     <div class="comments" *ngIf="showComments">
       <ol>
-        <li class="status" *ngIf="status">
-          <div class="date">{{ status.date|date }}</div>
-          <p class="source" *ngIf="status.source">{{ status.source }}</p>
-          <p *ngFor="let paragraph of getLines(status.text)">{{ paragraph }}</p>
-        </li>
-        <li *ngFor="let comment of comments">
-          <div class="date">{{ comment.date|date }}</div>
+        <li
+          *ngFor="let comment of aggregated"
+          [ngClass]="{status: comment.isStatus}"
+        >
+          <div class="date">
+            {{ comment.date|date }}
+            <span>
+              <a (click)="delete(comment)"><i class="fa fa-trash"></i></a>
+              <a (click)="startEditing(comment)"><i class="fa fa-pencil"></i></a>
+            </span>
+          </div>
           <p class="source" *ngIf="comment.source">{{ comment.source }}</p>
           <p *ngFor="let paragraph of getLines(comment.text)">{{ paragraph }}</p>
         </li>
       </ol>
-      
+
     </div>
 
   	<form class="form" [formGroup]="form" (ngSubmit)="save()" *ngIf="!showComments">
-      <div class="form-check">
-        <label class="form-check-label">
-          <input class="form-check-input" type="checkbox" formControlName="isStatus">
-          This should be considered as a current status
-        </label>
-      </div>
       <div class="form-group">
           <input class="form-control" type="text" name="source" formControlName="source" placeholder="Source">
       </div>
       <div class="form-group">
         <textarea class="form-control" name="text" formControlName="text" placeholder="Comment" required rows="7"></textarea>
+      </div>
+      <div class="form-check">
+        <label class="form-check-label">
+          <input class="form-check-input" type="checkbox" formControlName="isStatus">
+          This should be considered as a current status
+        </label>
       </div>
       <button class="btn btn-primary" type="submit" [disabled]="!form.valid"><i class="fa fa-floppy-o"></i> Save</button>
     </form>

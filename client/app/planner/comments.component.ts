@@ -13,13 +13,15 @@ export class CommentsComponent extends BaseComponent {
   person: any = {};
   comments: any[] = [];
   status: any = '';
+  aggregated: any[] = [];
 
   showComments = true;
 
   form = new FormGroup({
     _id: new FormControl(''),
-    login: new FormControl(),
-    isStatus: new FormControl(''),
+    login: new FormControl(''),
+    date: new FormControl(''),
+    isStatus: new FormControl(true),
     source: new FormControl(''),
     text: new FormControl('', Validators.required)
   })
@@ -30,6 +32,8 @@ export class CommentsComponent extends BaseComponent {
   ) {
     super(commentService);
   }
+
+  ngOnInit() {}
 
   getEditedValue() {
     let comment = super.getEditedValue();
@@ -43,10 +47,32 @@ export class CommentsComponent extends BaseComponent {
   }
 
   save() {
+    let newValue = this.getEditedValue();
+    let newStatus = newValue.isStatus ? newValue.text : '';
+    let doChange = newValue.isStatus || this.item.isStatus;
     return super.save().add(() => {
       this.fetchData();
       this.switchTab();
+      if (doChange) {
+        this.person.status.text = newStatus;
+        console.log(newStatus, this.person);
+      }
     });
+  }
+
+  delete(item: any) {
+    let isStatus = item.isStatus;
+    return super.delete(item).add(() => {
+      if (isStatus) {
+        this.person.status = null;
+      }
+      this.fetchData();
+    });
+  }
+
+  startEditing(item: any) {
+    this.enableEditing(item);
+    this.switchTab(false);
   }
 
   fetchData() {
@@ -61,10 +87,16 @@ export class CommentsComponent extends BaseComponent {
             }
             return result;
           }, []);
+      this.aggregated = Array.from(this.comments);
+      if (this.status) {
+        this.aggregated.unshift(this.status);
+      }
     });
   }
 
   show(person: any) {
+    this.items = [];
+    this.form.reset({isStatus: true});
     this.person = person;
     this.modalService.open(this.content);
     this.fetchData();

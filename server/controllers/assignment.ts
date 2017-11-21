@@ -24,6 +24,14 @@ export default class AssignmentCtrl extends BaseCtrl {
     Resource.aggregate([
       {
         '$lookup': {
+          from: 'comments',
+          localField: 'login',
+          foreignField: 'login',
+          as: 'status'
+        }
+      },
+      {
+        '$lookup': {
           from: 'assignments',
           localField: '_id',
           foreignField: 'resourceId',
@@ -67,6 +75,20 @@ export default class AssignmentCtrl extends BaseCtrl {
               else: 'false'
             }
           },
+          status: {
+            '$arrayElemAt': [
+              {
+                '$filter': {
+                  input: '$status',
+                  as: 'status',
+                  cond: {
+                    '$eq': ['$$status.isStatus', true]
+                  }
+                }
+              },
+              0
+            ]
+          }
         }
       },
       {
@@ -93,7 +115,8 @@ export default class AssignmentCtrl extends BaseCtrl {
           billable: {
             '$max': '$assignment.billable'
           },
-          canTravel: { '$first': '$canTravel' }
+          canTravel: { '$first': '$canTravel' },
+          status: { '$first': '$status' }
         }
       },
       {

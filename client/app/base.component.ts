@@ -37,15 +37,6 @@ export abstract class BaseComponent {
     );
   }
 
-  add(item) {
-    return this.apiService.add(item).subscribe(
-      res => {
-        this.form.reset();
-      },
-      error => console.log(error)
-    );
-  }
-
   enableEditing(item) {
     this.item = item;
     let o: any = Object.assign({}, item);
@@ -56,7 +47,6 @@ export abstract class BaseComponent {
         o[key] = v.substr(0, 10);
       }
     });
-    console.log(o);
     this.form.setValue(o);
   }
 
@@ -80,12 +70,22 @@ export abstract class BaseComponent {
     }
   }
 
+  add(item) {
+    return this.apiService.add(item).subscribe(
+      res => {
+        this.form.reset();
+        return res;
+      },
+      error => console.log(error)
+    );
+  }
+
   edit(item) {
     return this.apiService.edit(item).subscribe(
       res => {
         this.item = {};
         this.form.reset();
-        this.getAll();
+        return res;
       },
       error => console.log(error)
     );
@@ -93,13 +93,15 @@ export abstract class BaseComponent {
 
   delete(item) {
     if (window.confirm('Are you sure you want to permanently delete this item?')) {
-      this.apiService.delete(item).subscribe(
+      return this.apiService.delete(item).subscribe(
         res => {
           const pos = this.items.map(elem => elem._id).indexOf(item._id);
           this.items.splice(pos, 1);
         },
         error => console.log(error)
       );
+    } else {
+      return new Subscription();
     }
   }
 }

@@ -1,5 +1,5 @@
 <div>
-  <h1><span (click)="showReport()">Show Report</span>Demand Planner Board</h1>
+  <h1><span (click)="showReport()">Show Report</span>Demand Planning Board</h1>
 
   <assignment-modal [resources]="resourcesById" [initiatives]="initiatives"></assignment-modal>
 
@@ -47,7 +47,15 @@
               <i class="fa fa-plane" *ngIf="candidate.canTravel"></i>
               {{ candidate.grade }}, {{ candidate.location }}
             </span>
-            <div class="comments" container="body" placement="top-right" ngbTooltip="Candidate comments multiline" (click)="showComments(candidate, $event)"></div>
+            <div
+              class="status"
+              container="body"
+              placement="top-right"
+              [ngbTooltip]="getCurrentStatus(candidate)"
+              (click)="showComments(candidate, $event)"
+            >
+              {{ getCurrentStatus(candidate) }}
+            </div>
           </li>
         </ol>
         <div class="account" *ngFor="let account of getAccounts()">
