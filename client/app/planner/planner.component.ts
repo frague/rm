@@ -84,7 +84,7 @@ export class PlannerComponent extends Schedule {
       let windowOffset = window.pageYOffset;
       let parentEl = this.boardOfFame.nativeElement.offsetParent.offsetTop;
       if (windowOffset > parentEl) {
-        this.bofOffset = (windowOffset - 30 ) + 'px';
+        this.bofOffset = windowOffset + 'px';
         return;
       }
     }
