@@ -299,8 +299,8 @@ export default class SyncCtrl {
         // For each line of demand file
         data.forEach(demandLine => {
           // ... parse its cells
-          let start = this._parseDate(demandLine[7]);
-          let duration = this._parseDuration(demandLine[9]);
+          let start = this._parseDate(demandLine[8]);
+          let duration = this._parseDuration(demandLine[10]);
           let end;
           if (start) {
             if (!duration) {
@@ -312,7 +312,7 @@ export default class SyncCtrl {
             end = start;
           }
 
-          let account = demandLine[0];
+          let account = demandLine[1];
           if (!this._accounts[account]) {
             if (accountsMap[account]) {
               account = accountsMap[account];
@@ -321,27 +321,28 @@ export default class SyncCtrl {
             }
           }
 
-          let demandLocations = demandLine.slice(11, 17);
+          let demandLocations = demandLine.slice(12, 18);
           let l = locations.filter((location, index) => !!demandLocations[index]);
 
-          let profile = demandLine[4];
+          let profile = demandLine[5];
           let pool = demandProfilesMap[profile] || '';
 
           let demand = {
+            row: demandLine[0],
             account,
-            status: demandLine[1],
-            acknowledgement: demandLine[2],
-            role: replaceFromMap(billabilityMap, demandLine[3]),
+            status: demandLine[2],
+            acknowledgement: demandLine[3],
+            role: replaceFromMap(billabilityMap, demandLine[4]),
             profile,
             pool,
-            comment: demandLine[5],
-            deployment: demandLine[6],
+            comment: demandLine[6],
+            deployment: demandLine[7],
             start,
             end,
-            stage: demandLine[8],
-            grades: demandLine[10].split(/[,-]/g),
+            stage: demandLine[9],
+            grades: demandLine[11].split(/[,-]/g),
             locations: l,
-            requestId: demandLine[17]
+            requestId: demandLine[18]
           };
 
           let lcProfile = profile.toLowerCase();

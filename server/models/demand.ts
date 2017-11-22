@@ -17,7 +17,8 @@ const demandSchema = new mongoose.Schema({
   grades: [String],
   locations: [String],
   requestId: String,
-  comment: String
+  comment: String,
+  row: Number
 });
 
 const Demand = mongoose.model('Demand', demandSchema);

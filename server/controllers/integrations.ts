@@ -91,10 +91,6 @@ export default class IntegrationsCtrl {
     doc.useServiceAccountAuth(creds, callback);
   }
 
-  _filterRow(row: any) {
-
-  }
-
   googleGetInfo = (req, res) => {
     this._googleAuth(() => {
       doc.getInfo(function(err, info) {
@@ -113,8 +109,8 @@ export default class IntegrationsCtrl {
           let row = [];
           cells.forEach(cell => {
             if (cell.col == 1 && cell.row) {
-              if (row[0]) result.push(row);
-              row = [];
+              if (row[1]) result.push(row);
+              row = [cell.row];
             }
             row.push(cell.value);
           });
