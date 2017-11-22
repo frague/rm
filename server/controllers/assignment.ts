@@ -5,21 +5,62 @@ import Resource from '../models/resource';
 export default class AssignmentCtrl extends BaseCtrl {
   model = Assignment;
 
-  getAll = (req, res) => {
-    let assignmentsQuery = {};
-    let query =Object.keys(req.query)
-      .filter(key => key.indexOf('demand') < 0)
-      .reduce((result, key) => {
-        let value = JSON.parse(req.query[key]);
-        if (key.indexOf('assignment') >= 0) {
-          assignmentsQuery[key] = value;
-        } else {
-          result[key] = value;
-        }
+  extractCriteria = (source: any[], needle: string, destination: any[], condition: string) => {
+    let result = source.reduce((result, criterion) => {
+      console.log('Criterion', criterion);
+      let key = Object.keys(criterion)[0];
+      if (key.indexOf('$') === 0 || key.indexOf('demand') === 0) {
+        // ignore demand queries and stricts
         return result;
-      }, {});
+      } else if (key.indexOf(needle) >= 0) {
+        destination.push(criterion);
+      } else {
+        result.push(criterion);
+      }
+      return result;
+    }, []);
+    return result.length ? {[condition]: result} : {};
+  };
 
-    console.log(query, assignmentsQuery);
+  getAll = (req, res) => {
+    let query = {};
+    let assignmentsQuery = {};
+
+    let or = req.query.or;
+    if (or) {
+      or = JSON.parse(or);
+      let assignmentsOr = [];
+      let queryOr = this.extractCriteria(or, 'assignment', assignmentsOr, '$or');
+
+      let and = or.filter(criterion => !!criterion['$and']);
+      let assignmentsAnd = [];
+      if (and.length) {
+        let queryAnd = this.extractCriteria(and[0]['$and'], 'assignment', assignmentsAnd, '$and');
+        if (queryAnd['$and']) {
+          if (queryOr['$or']) {
+            queryOr['$or'].push(queryAnd);
+          } else {
+            queryOr = queryAnd;
+          }
+        }
+      }
+
+      query = Object.keys(queryOr).length > 0 ? queryOr : {};
+
+      if (assignmentsAnd['$and']) {
+        if (assignmentsOr['$or']) {
+          assignmentsOr['$or'].push(assignmentsAnd);
+        } else {
+          assignmentsOr = assignmentsAnd;
+        }
+      }
+      assignmentsQuery = Object.keys(assignmentsOr).length > 0 ? assignmentsOr : {};
+
+      console.log('------------------------------------------------------');
+      console.log(JSON.stringify(or));
+      console.log(JSON.stringify(query), JSON.stringify(assignmentsQuery));
+    }
+
     let now = new Date();
     Resource.aggregate([
       {

@@ -73,27 +73,48 @@ export class FilterComponent {
     }
 
     if (force) {
-      this.query = this.criteria.split(',').reduce((result, pair) => {
-        let [param, operation, value]: any[] = pair.replace(/([=~])/g, '\n$1\n').split('\n', 3);
+      let andOperator = [];
+      let orOperator = [];
+      let inOperator = {};
+      if (this.criteria) {
+        this.criteria.split(',').forEach(pair => {
+          let [param, operation, value]: any[] = pair.replace(/(\+{0,1}[=~])/g, '\n$1\n').split('\n', 3);
 
-        switch (operation) {
-          case '~':
-            value = {'$regex': value};
-            break;
-        }
-
-        let qp = result[param];
-        if (qp) {
-          if (qp['$in']) {
-            qp['$in'].push(value);
-          } else {
-            result[param] = {'$in': [qp, value]};
+          let addition = false;
+          switch (operation) {
+            case '+~':
+              addition = true;
+            case '~':
+              value = {[param]: {'$regex': value}};
+              break;
+            case '+=':
+              addition = true;
+              value = {[param]: value};
+              return;
+            case '=':
+              if (!inOperator[param]) {
+                inOperator[param] = [];
+              }
+              inOperator[param].push(value);
+              return;
           }
-        } else {
-          result[param] = value;
-        }
-        return result;
-      }, {});
+          (addition ? orOperator : andOperator).push(value);
+        });
+
+        Object.keys(inOperator).forEach(key => {
+          let values = inOperator[key];
+          if (values.length > 1) {
+            andOperator.push({[key]: {'$in': inOperator[key]}});
+          } else {
+            andOperator.push({[key]: values[0]});
+          }
+        });
+
+        orOperator.push({'$and': andOperator});
+        this.query = orOperator.length ? {'or': orOperator} : {};
+      } else {
+        this.query = {or: []};
+      }
 
       this.bus.updateQuery(this.query);
       return false;

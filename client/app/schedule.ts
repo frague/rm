@@ -22,6 +22,7 @@ const dayWidth = weekWidth / 7;
 const dayCoefficient = dayWidth / day;
 const transparent = 'rgba(0,0,0,0)';
 const demandPrefix = 'Demand';
+const demandCriteria = new RegExp(/\{['"]{0,1}(demand[.a-z]*)['"]{0,1}:['"]{0,1}([^'"]+)['"]{0,1}/, 'ig');
 
 export class Schedule {
 
@@ -151,18 +152,15 @@ export class Schedule {
           this.demands = demands;
         }
 
-        let queryKeys = Object.keys(query).join(',') + ',';
-        if (queryKeys.indexOf('demand.') >= 0 && !query['demand']) {
-          // If there are filters for demand but demands are hidden - make them shown
-          query['demand'] = 'true';
-        }
-
-        let showDemand = query['demand'] === 'true';
-        if (query['demand'] === 'only') {
-          // Show demand only
-          this.items = [];
+        let showDemand = false;
+        (JSON.stringify(query).match(demandCriteria) || []).forEach(criterion => {
           showDemand = true;
-        }
+          let [key, value] = criterion.split(':');
+          key = key.slice(2, -1);
+          if (key === 'demand' && value === '"only"') {
+            this.items = [];
+          }
+        });
 
         let demandAccounts = {};
         let demandResources = [];
