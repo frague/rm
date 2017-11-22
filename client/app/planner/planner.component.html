@@ -24,7 +24,7 @@
           *ngFor="let demand of accountsDemand[account]"
           class="line"
           (click)="showResource(demand, true)"
-          [ngClass]="{covered: reserved[demand._id]}"
+          [ngClass]="{covered: reserved[demand.row]}"
         >
           <i class="fa fa-plane" *ngIf="isOnsite(demand)"></i>
           {{ demand.profile }}

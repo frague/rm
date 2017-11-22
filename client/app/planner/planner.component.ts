@@ -121,22 +121,22 @@ export class PlannerComponent extends Schedule {
   }
 
   reserve(candidate: any, demand: any) {
-    let demandId = this.deserved[candidate._id];
-    let candidateId = this.reserved[demand._id];
-    if (demandId) {
-      this.reserved[demandId] = '';
+    let demandRow = this.deserved[candidate._id];
+    let candidateId = this.reserved[demand.row];
+    if (demandRow) {
+      this.reserved[demandRow] = '';
     }
     if (candidateId) {
       this.deserved[candidateId] = '';
     }
     if (candidate._id != candidateId) {
-      this.reserved[demand._id] = candidate._id;
-      this.deserved[candidate._id] = demand._id;
+      this.reserved[demand.row] = candidate._id;
+      this.deserved[candidate._id] = demand.row;
     }
   }
 
   getReservation(candidate: any, demand: any) {
-    return this.reserved[demand._id] === candidate._id;
+    return this.reserved[demand.row] === candidate._id;
   }
 
   getDemandAttrs(demand) {
