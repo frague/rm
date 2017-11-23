@@ -11,6 +11,8 @@
 
   <report-modal [accountsDemand]="accountsDemand" [candidates]="candidates"></report-modal>
 
+  <demand-plan [rowsLogins]="reserved" (planHasChanged)="setReservations($event)"></demand-plan>
+
   <div class="row">
     <div class="col-md-2"></div>
     <div class="col-md-10"></div>

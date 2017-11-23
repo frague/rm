@@ -12,6 +12,7 @@ export class FilterComponent {
   selectedFilter: any = {};
   filters = {};
   title = '';
+  $externalCriteria;
 
   constructor(
     private bus: BusService,
@@ -23,6 +24,14 @@ export class FilterComponent {
       result[filter._id] = filter;
       return result;
     }, {}));
+    this.$externalCriteria = this.bus.criteriaUpdated.subscribe(criteria => {
+      this.criteria = criteria;
+      this.parseCriteria(null, true);
+    });
+  }
+
+  ngOnDestroy() {
+    this.$externalCriteria.unsubscribe();
   }
 
   getFilters() {
@@ -116,7 +125,7 @@ export class FilterComponent {
         this.query = {or: []};
       }
 
-      this.bus.updateQuery(this.query);
+      this.bus.updateQuery(this.query, this.criteria);
       return false;
     };
   }

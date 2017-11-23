@@ -11,6 +11,7 @@ import { UserService } from './services/user.service';
 import { AuthService } from './services/auth.service';
 import { SyncService } from './services/sync.service';
 import { CommentService } from './services/comments.service';
+import { DemandPlanService } from './services/demandplan.service';
 import { AuthGuardLogin } from './services/auth-guard-login.service';
 import { AuthGuardAdmin } from './services/auth-guard-admin.service';
 import { BusService } from './services/bus.service';
@@ -36,6 +37,7 @@ import { FilterComponent } from './filter/filter.component';
 import { PlannerComponent } from './planner/planner.component';
 import { ReportComponent } from './planner/report.component';
 import { CommentsComponent } from './planner/comments.component';
+import { DemandPlanComponent } from './planner/demandplan.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +59,7 @@ import { CommentsComponent } from './planner/comments.component';
     DemandComponent,
     PrintableDatePipe, AvatarUrlPipe, RangePipe,
     FilterComponent,
-    PlannerComponent, ReportComponent, CommentsComponent
+    PlannerComponent, ReportComponent, CommentsComponent, DemandPlanComponent
   ],
   imports: [
     RoutingModule,
@@ -77,6 +79,7 @@ import { CommentsComponent } from './planner/comments.component';
     BusService,
     FilterService,
     CommentService,
+    DemandPlanService,
     PrintableDatePipe, AvatarUrlPipe
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

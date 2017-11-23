@@ -10,6 +10,7 @@ import DemandCtrl from './controllers/demand';
 import FilterCtrl from './controllers/filter';
 import SyncCtrl from './controllers/sync';
 import CommentCtrl from './controllers/comment';
+import DemandPlanCtrl from './controllers/demandplan';
 
 import Resource from './models/resource';
 import User from './models/user';
@@ -27,6 +28,7 @@ export default function setRoutes(app) {
   const filterCtrl = new FilterCtrl();
   const syncCtrl = new SyncCtrl();
   const commentCtrl = new CommentCtrl();
+  const demandPlanCtrl = new DemandPlanCtrl();
 
   // Assignments
   router.route('/assignments').get(assignmentCtrl.getAll);
@@ -63,6 +65,15 @@ export default function setRoutes(app) {
   router.route('/comment/:id').get(commentCtrl.get);
   router.route('/comment/:id').put(commentCtrl.updateChecked);
   router.route('/comment/:id').delete(commentCtrl.delete);
+
+  // Demand plans
+  router.route('/plans').get(demandPlanCtrl.getAll);
+  router.route('/plans').delete(demandPlanCtrl.deleteAll);
+  router.route('/plans/count').get(demandPlanCtrl.count);
+  router.route('/plan').post(demandPlanCtrl.insert);
+  router.route('/plan/:id').get(demandPlanCtrl.get);
+  router.route('/plan/:id').put(demandPlanCtrl.update);
+  router.route('/plan/:id').delete(demandPlanCtrl.delete);
 
   // Demands
   router.route('/demands').get(demandCtrl.getAll);

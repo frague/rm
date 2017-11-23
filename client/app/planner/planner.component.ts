@@ -5,6 +5,7 @@ import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 
 import { ReportComponent } from './report.component';
 import { CommentsComponent } from './comments.component';
+import { DemandPlanComponent } from './demandplan.component';
 
 import { AssignmentService } from '../services/assignment.service';
 import { InitiativeService } from '../services/initiative.service';
@@ -19,6 +20,7 @@ import { BusService } from '../services/bus.service';
 export class PlannerComponent extends Schedule {
   @ViewChild(ReportComponent) reportModal: ReportComponent;
   @ViewChild(CommentsComponent) commentsModal: CommentsComponent;
+  @ViewChild(DemandPlanComponent) demandPlan: CommentsComponent;
   @ViewChild('sticky') boardOfFame: ElementRef;
   bofOffset: any = 'auto';
 
@@ -121,7 +123,8 @@ export class PlannerComponent extends Schedule {
   }
 
   reserve(candidate: any, demand: any) {
-    let demandRow = this.deserved[candidate._id];
+    console.log(candidate);
+    let demandRow = this.deserved[candidate.login];
     let candidateId = this.reserved[demand.row];
     if (demandRow) {
       this.reserved[demandRow] = '';
@@ -129,14 +132,25 @@ export class PlannerComponent extends Schedule {
     if (candidateId) {
       this.deserved[candidateId] = '';
     }
-    if (candidate._id != candidateId) {
-      this.reserved[demand.row] = candidate._id;
-      this.deserved[candidate._id] = demand.row;
+    if (candidate.login != candidateId) {
+      this.reserved[demand.row] = candidate.login;
+      this.deserved[candidate.login] = demand.row;
     }
   }
 
+  setReservations(data: {rows: Number[], logins: string[]}) {
+    this.reserved = {};
+    this.deserved = {};
+    data.rows.forEach((row, index) => {
+      let srow = row.toString();
+      let login = data.logins[index];
+      this.reserved[srow] = login;
+      this.deserved[login] = srow;
+    });
+  }
+
   getReservation(candidate: any, demand: any) {
-    return this.reserved[demand.row] === candidate._id;
+    return this.reserved[demand.row] === candidate.login;
   }
 
   getDemandAttrs(demand) {
@@ -144,7 +158,7 @@ export class PlannerComponent extends Schedule {
   }
 
   isAssigned(candidate: any) {
-    return Object.values(this.reserved).indexOf(candidate._id) >= 0;
+    return Object.values(this.reserved).indexOf(candidate.login) >= 0;
   }
 
   isOnsite(demand) {
