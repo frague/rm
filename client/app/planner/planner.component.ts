@@ -84,9 +84,11 @@ export class PlannerComponent extends Schedule {
   scroll = (event: Event) => {
     if (this.boardOfFame && this.boardOfFame.nativeElement) {
       let windowOffset = window.pageYOffset;
-      let parentEl = this.boardOfFame.nativeElement.offsetParent.offsetTop;
-      if (windowOffset > parentEl) {
-        this.bofOffset = windowOffset + 'px';
+      let element = this.boardOfFame.nativeElement;
+      let offset = element.offsetParent.offsetTop;
+      let cardsHeight = element.clientHeight;
+      if (windowOffset > offset) {
+        this.bofOffset = (windowOffset - offset + cardsHeight) + 'px';
         return;
       }
     }
@@ -123,7 +125,6 @@ export class PlannerComponent extends Schedule {
   }
 
   reserve(candidate: any, demand: any) {
-    console.log(candidate);
     let demandRow = this.deserved[candidate.login];
     let candidateId = this.reserved[demand.row];
     if (demandRow) {
