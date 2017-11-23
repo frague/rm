@@ -13,18 +13,19 @@
         <thead>
           <tr>
             <th>Position</th>
+            <th>Description</th>
             <th>Candidate</th>
             <th>Grade</th>
             <th>Location</th>
             <th>Has visa?</th>
-            <th>Comment</th>
+            <th>Status</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let demand of getAccountDemand(account)">
             <th>{{ demand.profile }}{{ getDetails(demand) }}</th>
+            <th>{{ demand.comment || '-' }}</th>
             <td *ngFor="let value of getCandidate(demand)">{{ value }}</td>
-            <td>{{ demand.comment || '-' }}</td>
           </tr>
         </tbody>
       </table>

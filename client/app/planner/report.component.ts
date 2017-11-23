@@ -1,7 +1,7 @@
 import { Component, ViewChild, Input } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 
-const emptyCandidate = new Array(5).join('-').split('');
+const emptyCandidate = new Array(5).join('-').split('-');
 
 @Component({
   selector: 'report-modal',
@@ -13,13 +13,13 @@ export class ReportComponent {
   @Input() candidates: any[] = [];
 
   matches: any = {};
-  candidatesById: any = {};
+  candidatesByLogin: any = {};
 
   constructor(private modalService: NgbModal) {}
 
   updateCandidates() {
-    this.candidatesById = this.candidates.reduce((result, candidate) => {
-      result[candidate._id] = candidate;
+    this.candidatesByLogin = this.candidates.reduce((result, candidate) => {
+      result[candidate.login] = candidate;
       return result;
     }, {});
   }
@@ -33,7 +33,7 @@ export class ReportComponent {
   }
 
   getCandidate(demand: any) {
-    let candidate = this.candidatesById[this.matches[demand.row]];
+    let candidate = this.candidatesByLogin[this.matches[demand.row]];
     if (!candidate) {
       return emptyCandidate;
     } else {
@@ -41,7 +41,8 @@ export class ReportComponent {
         candidate.name,
         candidate.grade,
         candidate.location,
-        candidate.canTravel ? '+' : '-'
+        candidate.canTravel ? '+' : '',
+        (candidate.status || {}).text
       ];
     }
   }
