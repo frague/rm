@@ -202,7 +202,7 @@ export default class SyncCtrl {
             });
 
             profilesCreated++;
-            
+
             // Save the person
             // TODO: use login as an ID
             return resource.save((err, resource) => {

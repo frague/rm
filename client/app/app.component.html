@@ -24,14 +24,14 @@
         Planner
       </a>
       <a
-        routerLink="/sync"
+        [routerLink]="['sync']"
         class="nav-item nav-link"
         routerLinkActive="active"
       >
         Sync
       </a>
       <a
-        routerLink="/login"
+        [routerLink]="['login']"
         class="nav-item nav-link"
         routerLinkActive="active"
         *ngIf="!auth.loggedIn"
@@ -39,7 +39,7 @@
         Login
       </a>
       <a
-        routerLink="/register"
+        [routerLink]="['register']"
         class="nav-item nav-link"
         routerLinkActive="active"
         *ngIf="!auth.loggedIn"
@@ -48,20 +48,18 @@
       </a>
 
       <div class="pull-right">
-        <a routerLink="/account" class="nav-item nav-link" routerLinkActive="active" *ngIf="auth.loggedIn">
+        <a [routerLink]="['account']" class="nav-item nav-link" routerLinkActive="active" *ngIf="auth.loggedIn">
           <i class="fa fa-user-circle-o"></i> Account ({{auth.currentUser.username}})
         </a>
-        <a routerLink="/admin" class="nav-item nav-link" routerLinkActive="active" *ngIf="auth.loggedIn && auth.isAdmin">
+        <a [routerLink]="['admin']" class="nav-item nav-link" routerLinkActive="active" *ngIf="auth.loggedIn && auth.isAdmin">
           Admin
         </a>
-        <a routerLink="/logout" class="nav-item nav-link" routerLinkActive="active" *ngIf="auth.loggedIn">
+        <a [routerLink]="['logout']" class="nav-item nav-link" routerLinkActive="active" *ngIf="auth.loggedIn">
           Logout
         </a>
       </div>
     </div>
   </nav>
-
-  <filter></filter>
 
   <router-outlet></router-outlet>
 

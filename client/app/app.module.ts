@@ -34,6 +34,7 @@ import { AccountsComponent } from './accounts/accounts.component';
 import { DemandComponent } from './assignments/demand.component';
 import { PrintableDatePipe, AvatarUrlPipe, RangePipe } from './pipes';
 import { FilterComponent } from './filter/filter.component';
+import { FilteringPanelComponent } from './filter/filteringpanel.component';
 import { PlannerComponent } from './planner/planner.component';
 import { ReportComponent } from './planner/report.component';
 import { CommentsComponent } from './planner/comments.component';
@@ -58,7 +59,7 @@ import { DemandPlanComponent } from './planner/demandplan.component';
     AccountsComponent,
     DemandComponent,
     PrintableDatePipe, AvatarUrlPipe, RangePipe,
-    FilterComponent,
+    FilterComponent, FilteringPanelComponent,
     PlannerComponent, ReportComponent, CommentsComponent, DemandPlanComponent
   ],
   imports: [
