@@ -17,7 +17,6 @@ export class PersonComponent {
 
   show(person: any) {
     this.person = person;
-    console.log(person);
     this.modalService.open(this.content);
   }
 

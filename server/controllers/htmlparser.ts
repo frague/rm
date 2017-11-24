@@ -1,10 +1,16 @@
+import { visasCols } from '../mappings';
+
 const tag = new RegExp(/<[\/a-z]+[^>]*>/, 'gi');
+
+
 const amp = new RegExp(/&[a-z]+;/, 'gi');
 const whiteSpace = new RegExp(/\s+/, 'gi');
+const h3 = new RegExp(/<([/]?h3)[^>]*>/, 'gi');
 const table = new RegExp(/<([/]?table)[^>]*>/, 'gi');
 const tr = new RegExp(/(<[/]?tr[^>]*>){1,2}/, 'gi');
 const tick = new RegExp(/<img[^>]+check\.png[^>]*>/, 'gi');
 const date = new RegExp(/(\d{1,2}\s*[a-z]{3}\s*\d{4})/, 'i');
+const name = new RegExp(/^[a-z]+ [a-z]+$/, 'i');
 
 var stripTags = (html: string) => {
   return html
@@ -23,51 +29,44 @@ var makeDate = (dateString: string) => {
   }
 }
 
+var matchDate = (haystack: string) => {
+  if (!haystack) return '';
+  return makeDate((haystack.match(date) || ['', ''])[1]);
+}
+
 export var htmlParse = (html: string) => {
-  return html.split(table).reduce((result, part, index, tables) => {
-    // console.log(part.substr(0, 5).toLowerCase());
-    if (part.substr(0, 5).toLowerCase() === 'table') {
-      tables[index + 1]
-        .split(tr)
-        .map(line => stripTags(line.replace(/<\/td>/g, '|')))
-        .forEach(line => {
-          let cols = line.replace(/\s*\|\s*/g, '|').split('|');
-          if (cols.length >= 4) {
-            if (cols[0] == (+cols[0]).toString()) {
-              cols.splice(0, 1);
-            }
-            let name = cols.shift().trim();
-            if (name.indexOf(' ') < 0) return;
-
-            let license = !!cols[cols.length - 2];
-
-            cols.shift();
-            let passport = makeDate(cols.shift());
-
-            let visaB: any = cols.shift().match(date);
-            if (visaB) {
-              visaB = visaB[1];
-            } else {
-              visaB = (cols.shift().match(date) || ['', ''])[1];
-            }
-
-            let visaL: any = cols.shift().match(date);
-            if (visaL) {
-              visaL = visaL[1];
-            } else {
-              visaL = (cols.shift().match(date) || ['', ''])[1];
-            }
-
-            let data = {
-              passport,
-              license,
-              visaB: makeDate(visaB),
-              visaL: makeDate(visaL)
-            };
-            result[name] = data;
-          }
-        });
+  let headers = html.split(h3);
+  let locations = {};
+  for (var i = 0,l = headers.length; i < l; i++) {
+    if (headers[i] === 'h3') {
+      let title = stripTags(headers[i + 1]) || 'Saratov';
+      locations[title] = headers[i + 3];
     }
-    return result;
+  }
+  return Object.keys(locations).reduce((visas, location) => {
+    let tableMarkup = locations[location].split(table)[2];
+    let colMap = visasCols[location];
+    tableMarkup
+      .split(tr)
+      .map(line => stripTags(line.replace(/<\/td>/g, '|')))
+      .forEach(line => {
+        let cols = line.replace(/\s*\|\s*/g, '|').split('|');
+        if (cols.length >= 4) {
+          let visa: any = {};
+          colMap.forEach((colName, index) => visa[colName] = cols[index]);
+          visa.name = visa.name.trim();
+          visa.passport = makeDate(visa.passport);
+          visa.visaB = matchDate(visa.visaB);
+          visa.visaL = matchDate(visa.visaL);
+          delete visa[''];
+
+          if (visa.name.match(name)) {
+            visas[visa.name] = visa;
+          }
+        }
+      });
+
+    return visas;
   }, {});
+
 }

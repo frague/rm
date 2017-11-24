@@ -55,7 +55,6 @@ export class AssignmentsComponent extends Schedule {
 
   showComments(candidate, event: MouseEvent) {
     event.stopPropagation();
-    console.log(candidate);
     this.commentsModal.show(candidate);
   }
 

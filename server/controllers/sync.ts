@@ -176,9 +176,13 @@ export default class SyncCtrl {
           // For every person
           peopleSorted.forEach(person => {
             // ... determine the pool they belong to
-            if (!profilesInvertedMap[person.workProfile]) return;
-            let pool = profilesInvertedMap[person.workProfile][person.specialization];
-            if (!pool) return;
+            let pool;
+            if (profilesInvertedMap[person.workProfile]) {
+              pool = profilesInvertedMap[person.workProfile][person.specialization];
+            }
+            if (!pool) {
+              pool = '';
+            }
 
             let who = this._whois[person.employeeId] || {};
             let visa = visas[person.fullName] || {};
@@ -297,7 +301,7 @@ export default class SyncCtrl {
         this._addLog(data.length + ' records received', 'Demand');
 
         // For each line of demand file
-        data.forEach(demandLine => {
+        data.forEach((demandLine, index) => {
           // ... parse its cells
           let start = this._parseDate(demandLine[8]);
           let duration = this._parseDuration(demandLine[10]);
@@ -352,7 +356,7 @@ export default class SyncCtrl {
           ) return;
           // this.addLog('Created demand for ' + demand.account);
 
-          new Demand(demand).save((err, data) => reject(err));
+          setTimeout(() => new Demand(demand).save((err, data) => reject(err)), index);
         });
         this.loadings['demands'] = false;
         return resolve();

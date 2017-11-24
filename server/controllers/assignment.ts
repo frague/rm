@@ -5,7 +5,7 @@ import Resource from '../models/resource';
 export default class AssignmentCtrl extends BaseCtrl {
   model = Assignment;
 
-  extractCriteria = (source: any[], needle: string, destination: any[], condition: string) => {
+  extractCriteria = (source: any[], needle: string, destination: any[]|any, condition: string) => {
     let result = source.reduce((result, criterion) => {
       console.log('Criterion', criterion);
       let key = Object.keys(criterion)[0];
@@ -29,13 +29,16 @@ export default class AssignmentCtrl extends BaseCtrl {
     let or = req.query.or;
     if (or) {
       or = JSON.parse(or);
-      let assignmentsOr = [];
+      let assignmentsOr: any = [];
       let queryOr = this.extractCriteria(or, 'assignment', assignmentsOr, '$or');
+      assignmentsOr = assignmentsOr.length ? {'$or': assignmentsOr} : [];
 
       let and = or.filter(criterion => !!criterion['$and']);
-      let assignmentsAnd = [];
+      let assignmentsAnd: any = [];
       if (and.length) {
         let queryAnd = this.extractCriteria(and[0]['$and'], 'assignment', assignmentsAnd, '$and');
+        assignmentsAnd = assignmentsAnd.length ? {'$and': assignmentsAnd} : [];
+
         if (queryAnd['$and']) {
           if (queryOr['$or']) {
             queryOr['$or'].push(queryAnd);

@@ -119,3 +119,11 @@ export var locationsMap = {
 export var locations = [
   'SPB', 'SAR', 'KHA', 'LV', 'KR', 'US'
 ];
+
+export var visasCols = {
+  'Moscow': ['name', '', 'passport', '', 'visaB', '', 'license'],
+  'Kharkiv': ['', 'name', '', 'passport', '', 'visaB', '', 'visaL', 'license'], 
+  'Saratov': ['name', '', 'passport', 'visaB', 'visaL', '', 'license'], 
+  'Saint-Petersburg': ['name', '', 'passport', 'visaB', 'visaL', '', 'license'], 
+  'LVIV': ['', 'name', '', 'passport', '', 'visaB', '', 'visaL', 'license']
+};
