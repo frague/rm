@@ -104,8 +104,6 @@ export default function setRoutes(app) {
   // Sync
   router.route('/sync').post(syncCtrl.sync);
   
-  router.route('/visas').get(integrationsCtrl.confluenceGetVisas);
-
   // Apply the routes to our application with the prefix /api
   app.use('/api', router);
 
