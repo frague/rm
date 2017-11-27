@@ -17,7 +17,9 @@ export class FilterComponent {
   constructor(
     private bus: BusService,
     private filter: FilterService
-  ) {}
+  ) {
+    this.criteria = this.bus.criteria;
+  }
 
   ngOnInit() {
     this.filter.getAll().subscribe(data => this.filters = data.reduce((result, filter) => {
