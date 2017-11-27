@@ -128,10 +128,18 @@ h2 {
   }
 }
 
+i.deadpool {
+  width: 18px;
+  height: 30px;
+  display: inline-block;
+  background: url(assets/deadpool.png) no-repeat ;
+  background-size: contain;
+  opacity: 0.5;
 
-
-
-
+  .active & {
+    opacity: 1;
+  }
+}
 
 i.initiative {
   font-style: normal;
