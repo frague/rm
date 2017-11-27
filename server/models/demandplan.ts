@@ -5,7 +5,7 @@ const demandPlanSchema = new mongoose.Schema({
   date: Date,
   title: String,
   filter: String,
-  rows: [Number],
+  rows: [String],
   logins: [String]
 });
 
