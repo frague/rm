@@ -299,6 +299,7 @@ export default class SyncCtrl {
       // Query Demand file
       return this.integrationsCtrl.googleGetInfo({}, this._fakeRes((data, err) => {
         this._addLog(data.length + ' records received', 'Demand');
+        let demandAccountIndex = {};
 
         // For each line of demand file
         data.forEach((demandLine, index) => {
@@ -324,6 +325,7 @@ export default class SyncCtrl {
               this._addLog('Unknown account - ' + account, 'Demand');
             }
           }
+          demandAccountIndex[account] = (demandAccountIndex[account] || 0) + 1;
 
           let demandLocations = demandLine.slice(12, 18);
           let l = locations.filter((location, index) => !!demandLocations[index]);
@@ -332,7 +334,7 @@ export default class SyncCtrl {
           let pool = demandProfilesMap[profile] || '';
 
           let demand = {
-            row: demandLine[0],
+            row: account + demandAccountIndex[account],
             account,
             status: demandLine[2],
             acknowledgement: demandLine[3],
@@ -350,10 +352,7 @@ export default class SyncCtrl {
           };
 
           let lcProfile = profile.toLowerCase();
-          if (
-            demand.status !== 'active'
-            // || (lcProfile.indexOf('ui') < 0 && lcProfile.indexOf('datascientist') < 0)
-          ) return;
+          if (demand.status !== 'active') return;
           // this.addLog('Created demand for ' + demand.account);
 
           setTimeout(() => new Demand(demand).save((err, data) => reject(err)), index);

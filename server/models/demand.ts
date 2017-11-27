@@ -18,7 +18,7 @@ const demandSchema = new mongoose.Schema({
   locations: [String],
   requestId: String,
   comment: String,
-  row: Number
+  row: String
 });
 
 const Demand = mongoose.model('Demand', demandSchema);

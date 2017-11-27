@@ -139,14 +139,13 @@ export class PlannerComponent extends Schedule {
     }
   }
 
-  setReservations(data: {rows: Number[], logins: string[]}) {
+  setReservations(data: {rows: string[], logins: string[]}) {
     this.reserved = {};
     this.deserved = {};
     data.rows.forEach((row, index) => {
-      let srow = row.toString();
       let login = data.logins[index];
-      this.reserved[srow] = login;
-      this.deserved[login] = srow;
+      this.reserved[row] = login;
+      this.deserved[login] = row;
     });
   }
 
