@@ -27,7 +27,7 @@
       <dd>{{ person.manager }}</dd>
 
       <dt>Skype</dt>
-      <dd><a [href]="'skype:' + person.skype + '?chat'" *ngIf="person.skype">{{ person.skype }}</a></dd>
+      <dd><a [href]="getSkype(person.skype)" *ngIf="person.skype">{{ person.skype }}</a></dd>
 
       <dt>Room</dt>
       <dd>{{ person.room }}</dd>

@@ -1,6 +1,7 @@
 import { Component, ViewChild, Input } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { PrintableDatePipe } from '../pipes';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'person-modal',
@@ -12,7 +13,8 @@ export class PersonComponent {
 
   constructor(
     private modalService: NgbModal,
-    private makeDate: PrintableDatePipe
+    private makeDate: PrintableDatePipe,
+    public sanitizer: DomSanitizer
   ) {}
 
   show(person: any) {
@@ -30,6 +32,10 @@ export class PersonComponent {
       return title + ' till ' + this.makeDate.transform(till);
     }
     return '';
+  }
+
+  getSkype(skypeId: string) {
+    return this.sanitizer.bypassSecurityTrustUrl('skype:' + skypeId + '?chat');
   }
 
 }
