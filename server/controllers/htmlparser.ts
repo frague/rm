@@ -1,4 +1,4 @@
-import { visasCols } from '../mappings';
+import { visasCols, dePolish } from '../mappings';
 
 const tag = new RegExp(/<[\/a-z]+[^>]*>/, 'gi');
 
@@ -11,6 +11,8 @@ const tr = new RegExp(/(<[/]?tr[^>]*>){1,2}/, 'gi');
 const tick = new RegExp(/<img[^>]+check\.png[^>]*>/, 'gi');
 const date = new RegExp(/(\d{1,2}\s*[a-z]{3}\s*\d{4})/, 'i');
 const name = new RegExp(/^[a-z]+ [a-z]+$/, 'i');
+const types = new RegExp(/(B1\/B2|L1)/, 'ig');
+const typesMap = {'L1': 'visaL', 'B1/B2': 'visaB'};
 
 var stripTags = (html: string) => {
   return html
@@ -23,6 +25,7 @@ var stripTags = (html: string) => {
 var makeDate = (dateString: string) => {
   try {
     let date = new Date(dateString);
+    date.setDate(1 + date.getDate());
     return date.toISOString().substr(0, 10);
   } catch (e) {
     return '';
@@ -46,6 +49,7 @@ export var htmlParse = (html: string) => {
   return Object.keys(locations).reduce((visas, location) => {
     let tableMarkup = locations[location].split(table)[2];
     let colMap = visasCols[location];
+    let isPoland = location === 'Krakw';
     tableMarkup
       .split(tr)
       .map(line => stripTags(line.replace(/<\/td>/g, '|')))
@@ -58,6 +62,17 @@ export var htmlParse = (html: string) => {
           visa.passport = makeDate(visa.passport);
           visa.visaB = matchDate(visa.visaB);
           visa.visaL = matchDate(visa.visaL);
+
+          if (isPoland) {
+            visa.name = visa.name.replace(/[^\w ]/g, char => dePolish[char] || char);
+            if (visa.visasType) {
+              (visa.visasType.match(types) || []).forEach((type, index) =>
+                visa[typesMap[type]] = matchDate(visa.visasExpirations.substr(index * 11, 11))
+              );
+            }
+            delete visa['visasType'];
+            delete visa['visasExpirations'];
+          }
           delete visa[''];
 
           if (visa.name.match(name)) {

@@ -122,8 +122,30 @@ export var locations = [
 
 export var visasCols = {
   'Moscow': ['name', '', 'passport', '', 'visaB', '', 'license'],
-  'Kharkiv': ['', 'name', '', 'passport', '', 'visaB', '', 'visaL', 'license'], 
-  'Saratov': ['name', '', 'passport', 'visaB', 'visaL', '', 'license'], 
-  'Saint-Petersburg': ['name', '', 'passport', 'visaB', 'visaL', '', 'license'], 
-  'LVIV': ['', 'name', '', 'passport', '', 'visaB', '', 'visaL', 'license']
+  'Kharkiv': ['', 'name', '', 'passport', '', 'visaB', '', 'visaL', 'license'],
+  'Saratov': ['name', '', 'passport', 'visaB', 'visaL', '', 'license'],
+  'Saint-Petersburg': ['name', '', 'passport', 'visaB', 'visaL', '', 'license'],
+  'LVIV': ['', 'name', '', 'passport', '', 'visaB', '', 'visaL', 'license'],
+  'Krakw': ['', 'name', '', 'passport', 'visasType', 'visasExpirations', 'license']
+};
+
+export var dePolish = {
+  'Ą': 'A',
+  'ą': 'a',
+  'Ć': 'C',
+  'ć': 'c',
+  'Ę': 'E',
+  'ę': 'e',
+  'Ł': 'L',
+  'ł': 'l',
+  'Ń': 'N',
+  'ń': 'n',
+  'Ó': 'O',
+  'ó': 'o',
+  'Ś': 'S',
+  'ś': 's',
+  'Ź': 'Z',
+  'ź': 'z',
+  'Ż': 'Z',
+  'ż': 'z'
 };

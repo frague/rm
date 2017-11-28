@@ -578,19 +578,7 @@ img.avatar {
       }
     }
 
-    h6 {
-
-    }
-
-    p {
-      &.source {
-        font-weight: 600;
-        font-size: 12px;
-
-        &:empty {
-          display: none;
-        }
-      }
+    h6:empty {
     }
   }
 }

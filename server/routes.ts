@@ -103,7 +103,7 @@ export default function setRoutes(app) {
 
   // Sync
   router.route('/sync').post(syncCtrl.sync);
-  
+
   // Apply the routes to our application with the prefix /api
   app.use('/api', router);
 
