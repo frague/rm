@@ -13,22 +13,20 @@
     </nav>
 
     <div class="comments" *ngIf="showComments">
-      <ol>
-        <li
-          *ngFor="let comment of aggregated"
-          [ngClass]="{status: comment.isStatus}"
-        >
-          <div class="date">
-            {{ comment.date|date }}
-            <span>
-              <a (click)="delete(comment)"><i class="fa fa-trash"></i></a>
-              <a (click)="startEditing(comment)"><i class="fa fa-pencil"></i></a>
-            </span>
-          </div>
-          <h6 *ngIf="comment.source">{{ comment.source }}</h6>
-          <p *ngFor="let paragraph of getLines(comment.text)">{{ paragraph }}</p>
-        </li>
-      </ol>
+      <div
+        *ngFor="let comment of aggregated"
+        [ngClass]="{status: comment.isStatus}"
+      >
+        <div class="date">
+          {{ comment.date|date }}
+          <span>
+            <a (click)="delete(comment)"><i class="fa fa-trash"></i></a>
+            <a (click)="startEditing(comment)"><i class="fa fa-pencil"></i></a>
+          </span>
+        </div>
+        <h6 *ngIf="comment.source">{{ comment.source }}</h6>
+        <div [innerHTML]="comment.text|MarkdownToHtml"></div>
+      </div>
 
     </div>
 

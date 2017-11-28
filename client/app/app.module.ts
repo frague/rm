@@ -1,8 +1,9 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-
 import { RoutingModule } from './routing.module';
 import { SharedModule } from './shared/shared.module';
+import { MarkdownToHtmlModule } from 'markdown-to-html-pipe';
+
 import { AssignmentService } from './services/assignment.service';
 import { ResourceService } from './services/resource.service';
 import { InitiativeService } from './services/initiative.service';
@@ -65,6 +66,7 @@ import { DemandPlanComponent } from './planner/demandplan.component';
   imports: [
     RoutingModule,
     SharedModule,
+    MarkdownToHtmlModule,
     NgbModule.forRoot()
   ],
   providers: [

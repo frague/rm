@@ -508,31 +508,44 @@ img.avatar {
   }
 
   table {
-    border-width: 0 1px 1px 0;
-
-    td {
-      font-weight: 100;
-      text-align: left;
-
-      &:nth-child(4), &:nth-child(5), &:nth-child(6) {
-        text-align: center;
-      }
-    }
+    border-width: 0;
 
     thead {
       th:nth-child(n+2) {
         text-align: center;
       }
+      th:last-child {
+        border-right-width: 1px;
+      }
     }
 
-    th {
-      font-weight: 400;
-      background-color: #EEE;
-    }
+    tr {
+      &:last-child td, &:last-child th {
+        border-bottom-width: 1px;
+      }
 
-    td, th {
-      padding: 4px;
-      border-width: 1px 0 0 1px;
+      td {
+        font-weight: 100;
+        text-align: left;
+
+        &:nth-child(4), &:nth-child(5), &:nth-child(6) {
+          text-align: center;
+        }
+
+        &:last-child {
+          border-right-width: 1px;
+        }
+      }
+
+      th {
+        font-weight: 400;
+        background-color: #EEE;
+      }
+
+      td, th {
+        padding: 4px;
+        border-width: 1px 0 0 1px;
+      }
     }
   }
 }
@@ -541,49 +554,41 @@ img.avatar {
   max-height: 400px;
   overflow-y: auto;
 
-  ol {
-    padding-left: 0;
+  & > div {
+    padding: 10px 0 10px 100px;
+    margin: 0;
+    min-height: 52px;
 
-    li {
-      list-style: none;
-      padding: 10px 0 10px 100px;
-      margin: 0;
-      min-height: 52px;
+    &.status {
+      background-color: $primary;
+    }
 
-      &.status {
-        background-color: $primary;
+    &:nth-child(n+2) {
+      border-top: solid 1px $grid;
+    }
+
+    div.date {
+      float: left;
+      margin-left: -90px;
+      font-size: 12px;
+      font-weight: 600;
+      span {
+        display: block;
+        text-align: center;
       }
+    }
 
-      &:nth-child(n+2) {
-        border-top: solid 1px $grid;
-      }
+    h6 {
 
-      div.date {
-        float: left;
-        margin-left: -90px;
-        font-size: 12px;
+    }
+
+    p {
+      &.source {
         font-weight: 600;
-        span {
-          display: block;
-          text-align: center;
-        }
-      }
-
-      h6 {
-
-      }
-
-      p {
-        margin-bottom: 0px;
-        font-size: 14px;
+        font-size: 12px;
 
         &:empty {
-          margin-bottom: 12px;
-        }
-
-        &.source {
-          font-weight: 600;
-          font-size: 12px;
+          display: none;
         }
       }
     }

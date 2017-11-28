@@ -98,7 +98,7 @@ export class CommentsComponent extends BaseComponent {
   show(person: any) {
     this.items = [];
     this.person = person;
-    this.modalRef = this.modalService.open(this.content);
+    this.modalRef = this.modalService.open(this.content, {size: 'lg'});
     this.fetchData();
   }
 
