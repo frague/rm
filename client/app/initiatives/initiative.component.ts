@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 
-const billable = ['Billable', 'Funded'];
+const billable = ['Billable', 'Soft booked', 'PTO Coverage'];
 
 @Component({
   selector: 'initiative',
