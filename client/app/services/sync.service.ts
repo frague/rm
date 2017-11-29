@@ -13,4 +13,13 @@ export class SyncService {
     return this.http.post('/api/sync', {}).map(res => res.json());
   }
 
+  backup(): Observable<any> {
+    return this.http.get('/api/backup', {}).map(res => res.json());
+  }
+
+  restore(data: any): Observable<any> {
+    console.log(data);
+    return this.http.post('/api/restore', data);
+  }
+
 }

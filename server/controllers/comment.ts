@@ -41,5 +41,35 @@ export default class CommentCtrl extends BaseCtrl {
     }
   }
 
+  download = (req, res) => {
+    this.model.find({}, (err, data) => {
+      if (err) {
+        return console.error(err);
+      }
+      res.attachment('em_comments_' + (new Date()).toISOString().substr(0, 10) + '.json');
+      res.setHeader('Content-type', 'application/json');
+      res.json(data)
+    });
+  }
+
+  restore = (req, res) => {
+    if (req.body && req.body.backup && req.body.backup.value) {
+      let comments: any[];
+      try {
+        comments = JSON.parse(new Buffer(req.body.backup.value, 'base64').toString());
+      } catch (e) {
+        return res.sendStatus(500);
+      }
+      this.model.deleteMany({}, (err) => {
+        comments.forEach(commentData => {
+          delete commentData['__v'];
+          new this.model(commentData).save();
+        });
+        return res.send(comments.length + ' comments were successfully restored from backup');
+      });
+    } else {
+      return res.sendStatus(500);
+    }
+  }
 
 }

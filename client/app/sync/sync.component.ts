@@ -1,4 +1,5 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SyncService } from '../services/sync.service';
 
 @Component({
@@ -8,21 +9,19 @@ import { SyncService } from '../services/sync.service';
 export class SyncComponent {
 
   @ViewChild('log') logWindow: ElementRef;
+  @ViewChild('fileInput') fileInput: ElementRef;
 
+  form: FormGroup;
   logs = [];
-  loadings = {};
+  isLoading = false;
 
   constructor(
-    private syncService: SyncService
+    private syncService: SyncService,
+    private builder: FormBuilder
  ) {
-  }
-
-  get isLoading(): boolean {
-    return Object.values(this.loadings).some(value => !!value);
-  }
-
-  getProgress() {
-    return Object.keys(this.loadings);
+    this.form = this.builder.group({
+      backup: null
+    });
   }
 
   private addLog(text: string, source='') {
@@ -33,10 +32,37 @@ export class SyncComponent {
   }
 
   sync() {
-    this.loadings['sync'] = true;
+    this.isLoading = true;
     this.syncService.goOn().subscribe(logs => {
-      this.loadings['sync'] = false;
+      this.isLoading = false;
       this.logs = logs;
+    });
+  }
+
+  backup() {
+    this.syncService.backup().subscribe();
+  }
+
+  onFileChange(event) {
+    let reader = new FileReader();
+    if (event.target.files && event.target.files.length > 0) {
+      let file = event.target.files[0];
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        this.form.get('backup').setValue({
+          filename: file.name,
+          filetype: file.type,
+          value: reader.result.split(',')[1]
+        })
+      };
+    }
+  }
+
+  onSubmit() {
+    const formModel = this.form.value;
+    this.isLoading = true;
+    this.syncService.restore(formModel).subscribe(() => {
+      this.isLoading = false;
     });
   }
 }

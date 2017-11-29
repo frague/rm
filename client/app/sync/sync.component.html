@@ -1,20 +1,34 @@
-<button
-  (click)="sync()"
-  class="btn btn-danger"
-  [disabled]="isLoading"
->
-  Sync!
-</button>
-
 <div class="row">
-	<div class="col-md-2">
-		<ul class="sync">
-		  <li *ngFor="let item of getProgress()">{{ item }} <i *ngIf="loadings[item]" class="fa fa-cog fa-spin fa-fw"></i></li>
-		</ul>
+  <div class="col-md-6">
+    <h1>Synchronize</h1>
+    <button
+      (click)="sync()"
+      class="btn btn-danger"
+      [disabled]="isLoading"
+    >
+      <i *ngIf="isLoading" class="fa fa-cog fa-spin fa-fw"></i>
+      Sync
+    </button>
+    <div class="log" #log>
+      <ol>
+        <li *ngFor="let log of logs">{{ log }}</li>
+      </ol>
+    </div>
   </div>
-  <div class="col-md-10 log" #log>
-    <ol>
-      <li *ngFor="let log of logs">{{ log }}</li>
-    </ol>
+  <div class="col-md-6 backup">
+    <h1>Backup & Restore</h1>
+    <a href="/api/backup" target="blank">Download users comments backup file</a>
+
+    <form class="form" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="backup">Restore users comments from backup file:</label>
+        <input type="file" class="form-control-file" id="backup" name="backup"  (change)="onFileChange($event)" #fileInput required>
+      </div>
+      <button type="submit" [disabled]="form.invalid || isLoading" class="btn btn-primary">
+        <i *ngIf="isLoading" class="fa fa-cog fa-spin fa-fw"></i>
+        Restore
+      </button>
+    </form>
   </div>
+
 </div>
