@@ -2,67 +2,60 @@ import BaseCtrl from './base';
 import Assignment from '../models/assignment';
 import Resource from '../models/resource';
 
+const andKey = '$and';
+const orKey = '$or';
+
 export default class AssignmentCtrl extends BaseCtrl {
   model = Assignment;
 
-  extractCriteria = (source: any[], needle: string, destination: any[]|any, condition: string) => {
-    let result = source.reduce((result, criterion) => {
-      console.log('Criterion', criterion);
-      let key = Object.keys(criterion)[0];
-      if (key.indexOf('$') === 0 || key.indexOf('demand') === 0) {
-        // ignore demand queries and stricts
-        return result;
-      } else if (key.indexOf(needle) >= 0) {
-        destination.push(criterion);
-      } else {
-        result.push(criterion);
+  filterCriteria = (source: any[], filterExpression: RegExp, condition = orKey, transform: Function = (key, value) => ({[key]: value})): any => {
+    let result = [];
+    source.forEach(item => {
+      let key = Object.keys(item)[0];
+      if (key === andKey) {
+        let and = this.filterCriteria(item[key], filterExpression, andKey, transform);
+        if (and) {
+          result.push(and);
+        }
+      } else if (filterExpression.test(key)) {
+        result.push(transform(key, item[key]));
       }
-      return result;
-    }, []);
-    return result.length ? {[condition]: result} : {};
+    });
+    return result.length ? (result.length === 1 ? result[0]: {[condition]: result}) : null;
   };
+
+  commentTransform = (key, value) => {
+    if (key.indexOf('.') >= 0) {
+      let [comment, source] = key.split('.', 2);
+      return {[andKey]: [{'comment.source': source}, {'comment.text': value}]};
+    } else {
+      key += '.text';
+    }
+    return {[key]: value};
+  }
 
   getAll = (req, res) => {
     let query = {};
     let assignmentsQuery = {};
+    let commentsQuery = {};
+    let or;
 
-    let or = req.query.or;
-    if (or) {
-      or = JSON.parse(or);
-      let assignmentsOr: any = [];
-      let queryOr = this.extractCriteria(or, 'assignment', assignmentsOr, '$or');
-      assignmentsOr = assignmentsOr.length ? {'$or': assignmentsOr} : [];
-
-      let and = or.filter(criterion => !!criterion['$and']);
-      let assignmentsAnd: any = [];
-      if (and.length) {
-        let queryAnd = this.extractCriteria(and[0]['$and'], 'assignment', assignmentsAnd, '$and');
-        assignmentsAnd = assignmentsAnd.length ? {'$and': assignmentsAnd} : [];
-
-        if (queryAnd['$and']) {
-          if (queryOr['$or']) {
-            queryOr['$or'].push(queryAnd);
-          } else {
-            queryOr = queryAnd;
-          }
-        }
-      }
-
-      query = Object.keys(queryOr).length > 0 ? queryOr : {};
-
-      if (assignmentsAnd['$and']) {
-        if (assignmentsOr['$or']) {
-          assignmentsOr['$or'].push(assignmentsAnd);
-        } else {
-          assignmentsOr = assignmentsAnd;
-        }
-      }
-      assignmentsQuery = Object.keys(assignmentsOr).length > 0 ? assignmentsOr : {};
-
-      console.log('------------------------------------------------------');
-      console.log(JSON.stringify(or));
-      console.log(JSON.stringify(query), JSON.stringify(assignmentsQuery));
+    try {
+      or = req.query.or ? JSON.parse(req.query.or) : [];
+    } catch (e) {
+      console.error('Error parsing search query: ' + req.query.or);
+      return res.status(500);
     }
+
+    query = this.filterCriteria(or, new RegExp(/^[^c][^.]+$/)) || {};
+    assignmentsQuery = this.filterCriteria(or, new RegExp(/^assignment\./)) || {};
+    commentsQuery = this.filterCriteria( or, new RegExp(/^comment/), orKey, this.commentTransform) || {};
+
+    // console.log('------------------------------------------------------');
+    // console.log('Initial:', JSON.stringify(or));
+    // console.log('Assignment:', JSON.stringify(assignmentsQuery));
+    // console.log('Comment:', JSON.stringify(commentsQuery));
+    // console.log('The rest:', JSON.stringify(query));
 
     let now = new Date();
     Resource.aggregate([
@@ -71,8 +64,11 @@ export default class AssignmentCtrl extends BaseCtrl {
           from: 'comments',
           localField: 'login',
           foreignField: 'login',
-          as: 'status'
+          as: 'comment'
         }
+      },
+      {
+        '$match': commentsQuery
       },
       {
         '$lookup': {
@@ -123,7 +119,7 @@ export default class AssignmentCtrl extends BaseCtrl {
             '$arrayElemAt': [
               {
                 '$filter': {
-                  input: '$status',
+                  input: '$comment',
                   as: 'status',
                   cond: {
                     '$eq': ['$$status.isStatus', true]
