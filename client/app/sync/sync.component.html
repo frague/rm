@@ -6,7 +6,6 @@
       class="btn btn-danger"
       [disabled]="isLoading"
     >
-      <i *ngIf="isLoading" class="fa fa-cog fa-spin fa-fw"></i>
       Sync
     </button>
     <div class="log" #log>
@@ -25,7 +24,6 @@
         <input type="file" class="form-control-file" id="backup" name="backup"  (change)="onFileChange($event)" #fileInput required>
       </div>
       <button type="submit" [disabled]="form.invalid || isLoading" class="btn btn-primary">
-        <i *ngIf="isLoading" class="fa fa-cog fa-spin fa-fw"></i>
         Restore
       </button>
     </form>

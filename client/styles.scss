@@ -340,6 +340,7 @@ i.initiative {
 
           div.status {
             position: absolute;
+            cursor: pointer;
             bottom: 0;
             border-top: solid 1px $grid;
             width: $demandCardWidth - 10px;
