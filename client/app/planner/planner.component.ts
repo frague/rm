@@ -39,7 +39,13 @@ export class PlannerComponent extends Schedule {
 
     this.candidates = this.items
       .filter(item => !item.isDemand)
-      .slice(0, 16)
+      .sort((a, b) => {
+        let [aChosen, bChosen] = [this.deserved[a.login], this.deserved[b.login]];
+        if (aChosen && !bChosen) return -1
+        else if (!aChosen && bChosen) return 1;
+        return a.name < b.name ? -1 : 1;
+      })
+      .slice(0, 30)
       .map(item => {
         let result = this.resourcesById[item._id] || {};
         ['canTravel', 'billable'].forEach(key => result[key] = item[key] === 'true');
@@ -48,6 +54,12 @@ export class PlannerComponent extends Schedule {
     this.candidatesCount = this.candidates.length;
     let demands = this.items
       .filter(item => item.isDemand)
+      .map(item => {
+        let assignments = item.assignments;
+        item.row = assignments[Object.keys(assignments)[0]][0].demand.row;
+        return item;
+      })
+      .sort((a, b) => a.row < b.row ? -1 : 1)
       .map(item => {
         let assignments = item.assignments;
         return assignments[Object.keys(assignments)[0]][0].demand;
