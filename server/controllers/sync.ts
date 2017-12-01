@@ -302,6 +302,10 @@ export default class SyncCtrl {
     return duration ? parseInt(duration) : 6;
   }
 
+  private _leadingZero(index: number): string {
+    return (index > 9 ? '' : '0') + index;
+  }
+
   private _queryDemand(): Promise<any> {
     this.loadings['demands'] = true;
 
@@ -351,7 +355,7 @@ export default class SyncCtrl {
           let pool = demandProfilesMap[profile] || '';
 
           let demand = {
-            row: account + demandAccountIndex[account],
+            row: account + this._leadingZero(demandAccountIndex[account]),
             account,
             status: demandLine[2],
             acknowledgement: demandLine[3],
