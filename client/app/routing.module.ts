@@ -14,6 +14,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
 import { AccountsComponent } from './accounts/accounts.component';
 import { PlannerComponent } from './planner/planner.component';
 import { FilteringPanelComponent } from './filter/filteringpanel.component';
+import { DpComponent } from './deadpool/dp.component';
 
 import { AuthGuardLogin } from './services/auth-guard-login.service';
 import { AuthGuardAdmin } from './services/auth-guard-admin.service';
@@ -30,12 +31,14 @@ const routes: Routes = [
       {path: '', redirectTo: '/assignments', pathMatch: 'full'}
     ]
   },
+  {path: 'dp', component: DpComponent},
+  {path: 'sync', component: SyncComponent, canActivate: [AuthGuardAdmin]},
+
   {path: 'register', component: RegisterComponent},
   {path: 'login', component: LoginComponent},
   {path: 'logout', component: LogoutComponent},
   {path: 'account', component: AccountComponent, canActivate: [AuthGuardLogin]},
   {path: 'admin', component: AdminComponent, canActivate: [AuthGuardAdmin]},
-  {path: 'sync', component: SyncComponent, canActivate: [AuthGuardAdmin]},
   {path: '**', component: NotFoundComponent},
 ];
 

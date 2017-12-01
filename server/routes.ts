@@ -11,6 +11,7 @@ import FilterCtrl from './controllers/filter';
 import SyncCtrl from './controllers/sync';
 import CommentCtrl from './controllers/comment';
 import DemandPlanCtrl from './controllers/demandplan';
+import DiffCtrl from './controllers/diff';
 
 import Resource from './models/resource';
 import User from './models/user';
@@ -32,6 +33,7 @@ export default function setRoutes(app) {
   const syncCtrl = new SyncCtrl();
   const commentCtrl = new CommentCtrl();
   const demandPlanCtrl = new DemandPlanCtrl();
+  const diffCtrl = new DiffCtrl();
 
   // Assignments
   router.route('/assignment/:id').get(assignmentCtrl.get);
@@ -110,6 +112,9 @@ export default function setRoutes(app) {
   // Backup and restore
   router.route('/backup').get(commentCtrl.download);
   router.route('/restore').post(upload.single('backup'), commentCtrl.restore);
+
+  // Deadpool
+  router.route('/dps').get(diffCtrl.getAll);
 
   // Apply the routes to our application with the prefix /api
   app.use('/api', router);

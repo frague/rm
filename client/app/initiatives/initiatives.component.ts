@@ -31,8 +31,4 @@ export class InitiativesComponent extends BaseComponent implements OnInit {
   ) {
     super(initiativeService);
   }
-
-  ngOnInit() {
-    this.getAll();
-  }
 }
