@@ -13,7 +13,7 @@ export default class SnapshotCtrl extends BaseCtrl {
   areEqual(a, b): any {
     return keys.reduce((result, key) => {
       let [c, d] = [a[key], b[key]];
-      if (dateKeys.indexOf(key) >= 0) {
+      if (dateKeys.includes(key)) {
         [c, d] = [
           c ? c.toISOString().substr(0, 10) : '',
           d ? d.toISOString().substr(0, 10) : ''
@@ -26,23 +26,38 @@ export default class SnapshotCtrl extends BaseCtrl {
     }, {});
   }
 
+  saveDiffDelayed(diff: any) {
+    new Diff(diff).save();
+  }
+
   makeDiff = snapshot => {
     this.model.find({}).sort({date: 1}).limit(1).exec((err, docs) => {
       if (docs.length) {
         let prev = docs[0].snapshot;
         let today = new Date();
 
-        Object.keys(prev).forEach(login => {
+        var keys = Object.keys(Object.assign({}, snapshot, prev));
+
+        keys.forEach(login => {
           let state = prev[login] || {};
           let updated = snapshot[login] || {};
           let diff: any = {
             date: today,
             subject: login
           };
-          let fields = this.areEqual(state, updated);
-          if (Object.keys(fields).length) {
-            diff.diff = fields;
-            new Diff(diff).save();
+
+          if (!state) {
+            diff.diff = 1;
+            this.saveDiffDelayed(diff);
+          } else if (!updated) {
+            diff.diff = -1;
+            this.saveDiffDelayed(diff);
+          } else {
+            let fields = this.areEqual(state, updated);
+            if (Object.keys(fields).length) {
+              diff.diff = fields;
+              this.saveDiffDelayed(diff);
+            }
           }
         });
       }

@@ -285,7 +285,7 @@ export default class SyncCtrl {
             });
           });
           this._addLog(profilesCreated + ' profiles created', 'PMO');
-          this.snapshotCtrl.makeDiff(this.snapshot);
+          setTimeout(() => this.snapshotCtrl.makeDiff(this.snapshot), 10000);
         }));
       }));
     });
