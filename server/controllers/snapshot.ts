@@ -1,4 +1,5 @@
 import Snapshot from '../models/snapshot';
+import Resource from '../models/resource';
 import Diff from '../models/diff';
 import DiffCtrl from '../controllers/diff';
 import BaseCtrl from './base';
@@ -30,20 +31,21 @@ export default class SnapshotCtrl extends BaseCtrl {
     new Diff(diff).save();
   }
 
-  makeDiff = snapshot => {
+  makeDiff = (current, res) => {
     this.model.find({}).sort({date: 1}).limit(1).exec((err, docs) => {
       if (docs.length) {
         let prev = docs[0].snapshot;
         let today = new Date();
 
-        var keys = Object.keys(Object.assign({}, snapshot, prev));
+        var keys = Object.keys(Object.assign({}, current, prev));
 
         keys.forEach(login => {
           let state = prev[login] || {};
-          let updated = snapshot[login] || {};
+          let updated = current[login] || {};
           let diff: any = {
             date: today,
-            subject: login
+            subject: login,
+            title: current['name'] || prev['name'] || login
           };
 
           if (!state) {
@@ -64,9 +66,20 @@ export default class SnapshotCtrl extends BaseCtrl {
       this.model.deleteMany({}, (err) => {
         new this.model({
           date: new Date(),
-          snapshot
+          current
         }).save();
+        return res.sendStatus(200);
       })
+    });
+  }
+
+  saveDiffs = (req, res) => {
+    Resource.find({}, (err, docs) => {
+      let updated = docs.reduce((result, resource) => {
+        result[resource.login] = resource;
+        return result;
+      }, {});
+      this.makeDiff(updated, res);
     });
   }
 }

@@ -18,7 +18,6 @@ export class SyncService {
   }
 
   restore(data: any): Observable<any> {
-    console.log(data);
     return this.http.post('/api/restore', data);
   }
 

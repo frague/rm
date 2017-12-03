@@ -1,6 +1,7 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SyncService } from '../services/sync.service';
+import { DpService } from '../services/dp.service';
 
 @Component({
   selector: 'sync',
@@ -17,6 +18,7 @@ export class SyncComponent {
 
   constructor(
     private syncService: SyncService,
+    private dpService: DpService,
     private builder: FormBuilder
  ) {
     this.form = this.builder.group({
@@ -36,6 +38,7 @@ export class SyncComponent {
     this.syncService.goOn().subscribe(logs => {
       this.isLoading = false;
       this.logs = logs;
+      this.dpService.saveDiff().subscribe();
     });
   }
 

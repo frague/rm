@@ -42,7 +42,7 @@ export default class IntegrationsCtrl {
   }
 
   pmoLogin = (req, res) => {
-    this._login().then(() => res.setStatus(200));
+    this._login().then(() => res.sendStatus(200));
   }
 
   pmoGetAccounts = (req, res) => {
@@ -94,7 +94,7 @@ export default class IntegrationsCtrl {
   googleGetInfo = (req, res) => {
     this._googleAuth(() => {
       doc.getInfo(function(err, info) {
-        if (err) return res.setStatus(500);
+        if (err) return res.sendStatus(500);
 
         let result = [];
 
@@ -104,7 +104,7 @@ export default class IntegrationsCtrl {
           'min-row': 8,
           'return-empty': true
         }, (err, cells) => {
-          if (err) return res.setStatus(500);
+          if (err) return res.sendStatus(500);
 
           let row = [];
           cells.forEach(cell => {
@@ -125,7 +125,7 @@ export default class IntegrationsCtrl {
 
   confluenceGetWhois = (req, res) => {
     confluence.getContentByPageTitle('HQ', 'New WhoIs', function(err, data) {
-      if (err) return res.setStatus(500);
+      if (err) return res.sendStatus(500);
 
       let [, , body, ,] = data.results[0].body.storage.value.split(/(var dataSet = |;\s+var newData =)/g);
 
@@ -139,7 +139,7 @@ export default class IntegrationsCtrl {
       id: '1802301',
       expanders: ['body.view']
     }, function(err, data) {
-      if (err) return res.setStatus(500);
+      if (err) return res.sendStatus(500);
 
       res.setHeader('Content-Type', 'application/json');
       res.json(htmlParse(data.body.view.value));

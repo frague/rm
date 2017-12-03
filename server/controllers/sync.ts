@@ -4,7 +4,6 @@ import Assignment from '../models/assignment';
 import Demand from '../models/demand';
 
 import IntegrationsCtrl from './integrations';
-import SnapshotCtrl from './snapshot';
 import DiffCtrl from './diff';
 
 import * as convert from 'color-convert';
@@ -25,14 +24,11 @@ export default class SyncCtrl {
   logs = [];
   loadings = {};
 
-  snapshot = {};
-
   private _peopleByName = {};
   private _accounts = {};
   private _whois = {};
 
   integrationsCtrl = new IntegrationsCtrl();
-  snapshotCtrl = new SnapshotCtrl();
   diffCtrl = new DiffCtrl();
 
   sync = (req, res) => {
@@ -221,8 +217,6 @@ export default class SyncCtrl {
 
             profilesCreated++;
 
-            this.snapshot[resource.login] = resource;
-
             // Save the person
             // TODO: use login as an ID
             return resource.save((err, resource) => {
@@ -285,7 +279,6 @@ export default class SyncCtrl {
             });
           });
           this._addLog(profilesCreated + ' profiles created', 'PMO');
-          setTimeout(() => this.snapshotCtrl.makeDiff(this.snapshot), 10000);
         }));
       }));
     });

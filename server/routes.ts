@@ -12,6 +12,7 @@ import SyncCtrl from './controllers/sync';
 import CommentCtrl from './controllers/comment';
 import DemandPlanCtrl from './controllers/demandplan';
 import DiffCtrl from './controllers/diff';
+import SnapshotCtrl from './controllers/snapshot';
 
 import Resource from './models/resource';
 import User from './models/user';
@@ -34,6 +35,7 @@ export default function setRoutes(app) {
   const commentCtrl = new CommentCtrl();
   const demandPlanCtrl = new DemandPlanCtrl();
   const diffCtrl = new DiffCtrl();
+  const snapshotCtrl = new SnapshotCtrl();
 
   // Assignments
   router.route('/assignment/:id').get(assignmentCtrl.get);
@@ -115,6 +117,7 @@ export default function setRoutes(app) {
 
   // Deadpool
   router.route('/dps').get(diffCtrl.getAll);
+  router.route('/dps').post(snapshotCtrl.saveDiffs);
 
   // Apply the routes to our application with the prefix /api
   app.use('/api', router);

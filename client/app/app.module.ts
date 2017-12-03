@@ -34,7 +34,7 @@ import { PersonComponent } from './people/person.component';
 import { AssignmentComponent } from './assignments/assignment.component';
 import { AccountsComponent } from './accounts/accounts.component';
 import { DemandComponent } from './assignments/demand.component';
-import { PrintableDatePipe, AvatarUrlPipe, RangePipe } from './pipes';
+import { PrintableDatePipe, AvatarUrlPipe, RangePipe, KeysPipe, EllipsisPipe } from './pipes';
 import { FilterComponent } from './filter/filter.component';
 import { FilteringPanelComponent } from './filter/filteringpanel.component';
 import { PlannerComponent } from './planner/planner.component';
@@ -61,7 +61,7 @@ import { DpComponent } from './deadpool/dp.component';
     AssignmentComponent,
     AccountsComponent,
     DemandComponent,
-    PrintableDatePipe, AvatarUrlPipe, RangePipe,
+    PrintableDatePipe, AvatarUrlPipe, RangePipe, KeysPipe, EllipsisPipe,
     FilterComponent, FilteringPanelComponent,
     PlannerComponent, ReportComponent, CommentsComponent, DemandPlanComponent,
     DpComponent

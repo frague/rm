@@ -2,7 +2,8 @@ import * as mongoose from 'mongoose';
 
 const diffSchema = new mongoose.Schema({
   date: Date,
-  subject: Object,
+  subject: String,
+  title: String,
   diff: Object
 });
 
