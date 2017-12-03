@@ -1,6 +1,8 @@
 <div *ngFor="let diff of items">
-	{{ diff.date|date }}, {{ diff.title }}
+	{{ diff.date|date }}, {{ diff.title|ellipsis:diff.subject }}
 	<ul>
-		<li *ngFor="let key of diff.diff|keys"> <b>{{ key }}:</b> {{ diff.diff[key][0]|ellipsis:'...' }} &rarr; {{ diff.diff[key][1]|ellipsis:'...' }}</li>
+		<li *ngFor="let key of diff.diff|keys">
+			<b>{{ key }}:</b> 
+			{{ diff.diff[key][0]|ellipsis:'...' }} &rarr; {{ diff.diff[key][1]|ellipsis:'...' }}</li>
 	</ul>
 </div>
