@@ -25,7 +25,10 @@
           <tr *ngFor="let demand of getAccountDemand(account)">
             <th>{{ demand.profile }}{{ getDetails(demand) }}</th>
             <th>{{ demand.comment || '-' }}</th>
-            <td *ngFor="let value of getCandidate(demand)">{{ value }}</td>
+            <td
+              *ngFor="let value of getCandidate(demand)"
+              [innerHTML]="value|MarkdownToHtml"
+            ></td>
           </tr>
         </tbody>
       </table>
