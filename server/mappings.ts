@@ -72,7 +72,7 @@ export var profilesMap = {
     'Developer': ['Search'],
     'Delivery Manager': ['Search'],
   },
-  'Machine Learning': {
+  'ML': {
     'Data Scientist': [''],
   },
   'UI': {
