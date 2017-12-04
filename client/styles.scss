@@ -605,5 +605,13 @@ img.avatar {
     border-top: solid 1px $grid;
     padding-top: 20px;
   }
+}
 
+.deadpool {
+  .joined {
+    color: $primary - #444;
+  }
+  .left {
+    color: $red;
+  }
 }

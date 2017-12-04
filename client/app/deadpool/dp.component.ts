@@ -15,4 +15,8 @@ export class DpComponent extends BaseComponent {
   constructor(private dp: DpService) {
     super(dp);
   }
+
+  hasDiff(diff: any) {
+    return diff.diff !== 1 && diff.diff !== 1;
+  }
 }

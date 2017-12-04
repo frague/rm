@@ -1,8 +1,12 @@
-<div *ngFor="let diff of items">
-	{{ diff.date|date }}, {{ diff.title|ellipsis:diff.subject }}
-	<ul>
-		<li *ngFor="let key of diff.diff|keys">
-			<b>{{ key }}:</b> 
-			{{ diff.diff[key][0]|ellipsis:'...' }} &rarr; {{ diff.diff[key][1]|ellipsis:'...' }}</li>
-	</ul>
+<div class="deadpool">
+  <div *ngFor="let diff of items">
+  	{{ diff.date|date }}, {{ diff.title|ellipsis:diff.subject }}
+  	<ul *ngIf="hasDiff(diff)">
+  		<li *ngFor="let key of diff.diff|keys">
+  			<b>{{ key }}:</b> 
+  			{{ diff.diff[key][0]|ellipsis:'...' }} &rarr; {{ diff.diff[key][1]|ellipsis:'...' }}</li>
+  	</ul>
+    <span *ngIf="diff.diff === 1" class="joined">has joined</span>
+    <span *ngIf="diff.diff === -1" class="left">has left</span>
+  </div>
 </div>

@@ -34,7 +34,7 @@ export default class SnapshotCtrl extends BaseCtrl {
   makeDiff = (current, res) => {
     this.model.find({}).sort({date: 1}).limit(1).exec((err, docs) => {
       if (docs.length) {
-        let prev = docs[0].snapshot;
+        let prev = docs[0].snapshot || {};
         let today = new Date();
 
         var keys = Object.keys(Object.assign({}, current, prev));
@@ -45,13 +45,13 @@ export default class SnapshotCtrl extends BaseCtrl {
           let diff: any = {
             date: today,
             subject: login,
-            title: current['name'] || prev['name'] || login
+            title: updated['name'] || state['name'] || login
           };
 
-          if (!state) {
+          if (!state['_id']) {
             diff.diff = 1;
             this.saveDiffDelayed(diff);
-          } else if (!updated) {
+          } else if (!updated['_id']) {
             diff.diff = -1;
             this.saveDiffDelayed(diff);
           } else {
@@ -66,7 +66,7 @@ export default class SnapshotCtrl extends BaseCtrl {
       this.model.deleteMany({}, (err) => {
         new this.model({
           date: new Date(),
-          current
+          snapshot: current
         }).save();
         return res.sendStatus(200);
       })
