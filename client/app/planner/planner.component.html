@@ -55,8 +55,8 @@
               placement="top-right"
               [ngbTooltip]="getCurrentStatus(candidate)"
               (click)="showComments(candidate, $event)"
+              [innerHTML]="getCurrentStatus(candidate)|MarkdownToHtml"
             >
-              {{ getCurrentStatus(candidate) }}
             </div>
           </li>
         </ol>

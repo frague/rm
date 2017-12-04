@@ -16,6 +16,7 @@ export class CommentsComponent extends BaseComponent {
   aggregated: any[] = [];
   modalRef: any;
 
+  showPreview = true;
   showComments = true;
 
   form = new FormGroup({

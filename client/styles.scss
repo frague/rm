@@ -599,6 +599,17 @@ img.avatar {
   }
 }
 
+.comment {
+  .preview {
+    overflow: auto;
+    max-height: 250px;
+
+    background-color: #F8F8F8;
+    font-size: 12px;
+    padding: 4px;
+  }
+}
+
 .backup {
   form {
     margin-top: 20px;

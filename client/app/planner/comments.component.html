@@ -30,21 +30,28 @@
 
     </div>
 
-  	<form class="form" [formGroup]="form" (ngSubmit)="save()" *ngIf="!showComments">
-      <div class="form-group">
-          <input class="form-control" type="text" name="source" formControlName="source" placeholder="Source">
+  	<div class="comment row" *ngIf="!showComments">
+      <div [ngClass]="{'col-md-8': showPreview}">
+        <form class="form" [formGroup]="form" (ngSubmit)="save()">
+          <div class="form-group">
+              <input class="form-control" type="text" name="source" formControlName="source" placeholder="Source">
+          </div>
+          <div class="form-group" [ngClass]="{'co-md-8': showPreview}">
+            <textarea class="form-control" name="text" formControlName="text" placeholder="Comment" required rows="7"></textarea>
+          </div>
+          <div class="form-check">
+            <label class="form-check-label">
+              <input class="form-check-input" type="checkbox" formControlName="isStatus">
+              This should be considered as a current status
+            </label>
+          </div>
+          <button class="btn btn-primary" type="submit" [disabled]="!form.valid"><i class="fa fa-floppy-o"></i> Save</button>
+        </form>
       </div>
-      <div class="form-group">
-        <textarea class="form-control" name="text" formControlName="text" placeholder="Comment" required rows="7"></textarea>
+      <div class="col-md-4" *ngIf="showPreview">
+        Preview:
+        <div class="preview" [innerHTML]="form.value.text|MarkdownToHtml"></div>
       </div>
-      <div class="form-check">
-        <label class="form-check-label">
-          <input class="form-check-input" type="checkbox" formControlName="isStatus">
-          This should be considered as a current status
-        </label>
-      </div>
-      <button class="btn btn-primary" type="submit" [disabled]="!form.valid"><i class="fa fa-floppy-o"></i> Save</button>
-    </form>
-
+    </div>
   </div>
 </ng-template>
