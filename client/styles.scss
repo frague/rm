@@ -518,20 +518,38 @@ img.avatar {
 }
 
 .report {
+  max-height: 450px;
+  overflow: auto;
+
   table, td, th {
     font-size: 14px;
     border: solid $grid;
   }
 
   table {
+    width: 100%;
     border-width: 0;
 
     thead {
-      th:nth-child(n+2) {
-        text-align: center;
-      }
-      th:last-child {
-        border-right-width: 1px;
+      th {
+        &:nth-child(n+2) {
+          text-align: center;
+        }
+        &:nth-child(1) {
+          width: 16%;
+        }
+        &:nth-child(2) {
+          width: 30%;
+        }
+        &:nth-child(3) {
+          width: 15%;
+        }
+        &:nth-child(4), &:nth-child(5), &:nth-child(6) {
+          width: 1%;
+        }
+        &:last-child {
+          border-right-width: 1px;
+        }
       }
     }
 
