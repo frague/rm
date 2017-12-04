@@ -608,6 +608,11 @@ img.avatar {
 }
 
 .deadpool {
+  ul {
+    li {
+      list-style: none;
+    }
+  }
   .joined {
     color: $primary - #444;
   }
