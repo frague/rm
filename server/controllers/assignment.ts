@@ -47,15 +47,15 @@ export default class AssignmentCtrl extends BaseCtrl {
       return res.status(500);
     }
 
-    query = this.filterCriteria(or, new RegExp(/^[^c][^.]+$/)) || {};
+    query = this.filterCriteria(or, new RegExp(/^([^c]|c[^o])[^.]+$/)) || {};
     assignmentsQuery = this.filterCriteria(or, new RegExp(/^assignment\./)) || {};
     commentsQuery = this.filterCriteria( or, new RegExp(/^comment/), orKey, this.commentTransform) || {};
 
-    // console.log('------------------------------------------------------');
-    // console.log('Initial:', JSON.stringify(or));
-    // console.log('Assignment:', JSON.stringify(assignmentsQuery));
-    // console.log('Comment:', JSON.stringify(commentsQuery));
-    // console.log('The rest:', JSON.stringify(query));
+    console.log('------------------------------------------------------');
+    console.log('Initial:', JSON.stringify(or));
+    console.log('Assignment:', JSON.stringify(assignmentsQuery));
+    console.log('Comment:', JSON.stringify(commentsQuery));
+    console.log('The rest:', JSON.stringify(query));
 
     let now = new Date();
     Resource.aggregate([
