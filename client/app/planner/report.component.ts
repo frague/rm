@@ -42,7 +42,7 @@ export class ReportComponent {
         candidate.grade,
         candidate.location,
         candidate.canTravel ? '+' : '',
-        (candidate.status || {}).text
+        (candidate.status || {}).text + (demand.request ? ' (Jobvite: ' + demand.request + ')' : '')
       ];
     }
   }

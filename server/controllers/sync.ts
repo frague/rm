@@ -347,6 +347,9 @@ export default class SyncCtrl {
           let profile = demandLine[5];
           let pool = demandProfilesMap[profile] || '';
 
+          let requestId = demandLine[18];
+          requestId = !requestId.indexOf('GD') ? requestId : '';
+
           let demand = {
             row: account + this._leadingZero(demandAccountIndex[account]),
             account,
@@ -362,7 +365,7 @@ export default class SyncCtrl {
             stage: demandLine[9],
             grades: demandLine[11].split(/[,-]/g),
             locations: l,
-            requestId: demandLine[18]
+            requestId
           };
 
           let lcProfile = profile.toLowerCase();
