@@ -13,7 +13,6 @@
         <thead>
           <tr>
             <th>Position</th>
-            <th>Summary</th>
             <th>Candidate</th>
             <th>Gr.</th>
             <th>Loc.</th>
@@ -23,8 +22,8 @@
         </thead>
         <tbody>
           <tr *ngFor="let demand of getAccountDemand(account)">
-            <th>{{ demand.profile }}{{ getDetails(demand) }}</th>
             <th>
+              <strong>{{ demand.profile }}{{ getDetails(demand) }}</strong>
               <p *ngIf="demand.comment">{{ demand.comment }}</p>
               <p *ngIf="demand.requestId">Jobvite requisition: <b>{{ demand.requestId }}</b></p>
             </th>

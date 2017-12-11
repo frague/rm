@@ -522,7 +522,7 @@ img.avatar {
   overflow: auto;
 
   table, td, th {
-    font-size: 14px;
+    font-size: 10px;
     border: solid $grid;
   }
 
@@ -536,15 +536,12 @@ img.avatar {
           text-align: center;
         }
         &:nth-child(1) {
-          width: 16%;
+          width: 40%;
         }
         &:nth-child(2) {
-          width: 30%;
-        }
-        &:nth-child(3) {
           width: 15%;
         }
-        &:nth-child(4), &:nth-child(5), &:nth-child(6) {
+        &:nth-child(3), &:nth-child(4), &:nth-child(5) {
           width: 1%;
         }
         &:last-child {
@@ -562,7 +559,7 @@ img.avatar {
         font-weight: 100;
         text-align: left;
 
-        &:nth-child(4), &:nth-child(5), &:nth-child(6) {
+        &:nth-child(3), &:nth-child(4), &:nth-child(5) {
           text-align: center;
         }
 
@@ -574,15 +571,20 @@ img.avatar {
       th {
         font-weight: 400;
         background-color: #EEE;
-
-        p {
-          margin-bottom: 4px;
-        }
       }
 
       td, th {
         padding: 4px;
         border-width: 1px 0 0 1px;
+
+        strong {
+          display: inline-block;
+          font-weight: 600;
+        }
+
+        strong, p {
+          margin-bottom: 4px;
+        }
       }
     }
   }
