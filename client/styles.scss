@@ -648,18 +648,27 @@ img.avatar {
 
 .deadpool {
   div {
-    margin-bottom: 10px;
-    ul {
-      margin-bottom: 0;
-      li {
-        list-style: none;
+    margin-bottom: 20px;
+
+    h4 {
+      font-weight: 200;
+      border-bottom: solid 1px $grid;
+    }
+
+    div {
+      margin-bottom: 10px;
+      ul {
+        margin-bottom: 0;
+        li {
+          list-style: none;
+        }
       }
-    }
-    .joined {
-      color: $primary - #444;
-    }
-    .left {
-      color: $red;
+      .joined {
+        color: $primary - #444;
+      }
+      .left {
+        color: $red;
+      }
     }
   }
 }
