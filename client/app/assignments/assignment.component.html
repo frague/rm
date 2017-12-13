@@ -5,9 +5,8 @@
     </button>
     <h4 class="modal-title">Assignment Details</h4>
   </div>
-  <div class="modal-body">
-    <img class="avatar" src="{{ assignee.login|avatarUrl }}">
-
+  <div class="modal-body assignment with-image">
+    <avatar [login]="assignee.login"></avatar>
     <dl class="attributes">
       <dt>Assignee</dt>
       <dd>{{ getAssigneeName() }}</dd>

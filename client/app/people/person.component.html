@@ -1,12 +1,12 @@
 <ng-template #content let-c="close" let-d="dismiss">
-  <div class="modal-header">
+  <div class="modal-header" *ngIf="person">
     <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
     <h4 class="modal-title">{{ person.name }}</h4>
   </div>
-  <div class="modal-body with-image">
-    <img class="avatar" src="{{ person.login|avatarUrl }}" *ngIf="person.login">
+  <div class="modal-body person with-image" *ngIf="person">
+    <avatar [login]="person.login"></avatar>
     <dl class="attributes">
       <dt>Location</dt>
       <dd>{{ person.location }}</dd>

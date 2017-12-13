@@ -84,9 +84,30 @@ h2 {
   opacity: 1;
 }
 
+.avatar {
+  background-size: cover;
+  border: solid 1px $grid;
+}
+
 .modal-body {
-  .with-image {
+  &.with-image {
     min-height: 180px;
+  }
+  &.person {
+    .avatar {
+      width: 150px;
+      height: 150px;
+      float: right;
+      margin: 0 0 10px 10px;
+    }
+  }
+  &.assignment {
+    .avatar {
+      width: 60px;
+      height: 60px;
+      float: right;
+      margin: 0 0 10px 10px;
+    }
   }
   nav {
     margin: 5px 0 20px 0;
@@ -312,8 +333,9 @@ i.initiative {
             background-color: $primary;
           }
 
-          img {
+          .avatar {
             width: $demandCardWidth - 10px;
+            height: $demandCardWidth - 10px;
             margin: 0;
             float: initial;
           }
@@ -382,10 +404,7 @@ i.initiative {
         }
       }
     }
-
   }
-
-
 }
 
 dl.attributes {
@@ -485,11 +504,6 @@ div.corner {
   }
 }
 
-img.avatar {
-  float: right;
-  margin: 0 0 10px 10px;
-}
-
 .log {
   height: 200px;
   overflow-y: auto;
@@ -522,7 +536,7 @@ img.avatar {
   overflow: auto;
 
   table, td, th {
-    font-size: 10px;
+    font-size: 12px;
     border: solid $grid;
   }
 

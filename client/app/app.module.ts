@@ -42,6 +42,7 @@ import { ReportComponent } from './planner/report.component';
 import { CommentsComponent } from './planner/comments.component';
 import { DemandPlanComponent } from './planner/demandplan.component';
 import { DpComponent } from './deadpool/dp.component';
+import { AvatarComponent } from './people/avatar.component';
 
 @NgModule({
   declarations: [
@@ -64,7 +65,8 @@ import { DpComponent } from './deadpool/dp.component';
     PrintableDatePipe, AvatarUrlPipe, RangePipe, KeysPipe, EllipsisPipe,
     FilterComponent, FilteringPanelComponent,
     PlannerComponent, ReportComponent, CommentsComponent, DemandPlanComponent,
-    DpComponent
+    DpComponent,
+    AvatarComponent
   ],
   imports: [
     RoutingModule,

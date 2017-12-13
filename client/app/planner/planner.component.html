@@ -43,7 +43,7 @@
             (click)="showResource(candidate)"
             [ngClass]="{billable: candidate.billable, assigned: isAssigned(candidate)}"
           >
-            <img class="avatar" src="{{ candidate.login|avatarUrl }}">
+            <avatar [login]="candidate.login"></avatar>
             {{ candidate.name }}
             <span>
               <i class="fa fa-plane" *ngIf="candidate.canTravel"></i>
