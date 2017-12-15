@@ -1,7 +1,7 @@
 import { Component, ViewChild, Input } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 
-const billables = ['Billable', 'Funded', 'PTO Coverage'];
+const billables = ['Billable', 'Funded', 'PTO Coverage', 'Soft booked'];
 
 @Component({
   selector: 'assignments-report-modal',
@@ -22,7 +22,7 @@ export class AssignmentsReportComponent {
   }
 
   getClass(assignment: any) {
-    let isBillable = billables.indexOf(assignment.billability) >= 0;
+    let isBillable = billables.indexOf(assignment.billability) >= 0 && assignment.involvement > 0;
     return {
       'billable': isBillable,
       'non': !isBillable
@@ -34,7 +34,7 @@ export class AssignmentsReportComponent {
     this.assignments = assignments.map(resource => {
       resource.assignmentsArray = [].concat(...Object.values(resource.assignments)).reduce((result, assignment) => {
         let end = assignment.end ? new Date(assignment.end).getTime() : Infinity;
-        if (!assignment.isDemand && today < end) {
+        if (!assignment.demand && today < end) {
           result.push(assignment);
         }
         return result;
