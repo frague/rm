@@ -52,6 +52,10 @@ export class FilterComponent {
     });
   }
 
+  clear() {
+    this.criteria = '';
+  }
+
   delete() {
     this.filter.delete(this.selectedFilter).subscribe(() => {
       delete this.filters[this.selectedFilter._id];

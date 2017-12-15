@@ -1,12 +1,19 @@
 <div class="filter form-row">
 	<div class="form-group col-md-7">
-	  <input
-      (keyup)="parseCriteria($event)"
-      type="text"
-      class="form-control"
-      placeholder="key1=value1,key2=value2,..."
-      [(ngModel)]="criteria"
-    >
+    <div class="input-group">
+      <div class="input-group-btn">
+        <button type="button" class="btn btn-secondary" (click)="clear()" [disabled]="!criteria">
+          <i class="fa fa-times"></i>
+        </button>
+      </div>
+  	  <input
+        (keyup)="parseCriteria($event)"
+        type="text"
+        class="form-control"
+        placeholder="key1=value1,key2=value2,..."
+        [(ngModel)]="criteria"
+      >
+    </div>
 	  <small class="form-text text-muted">Filtering query</small>
 	</div>
   <div class="form-group col-md-5">
