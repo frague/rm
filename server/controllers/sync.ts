@@ -119,7 +119,7 @@ export default class SyncCtrl {
               resourceId,
               start: startDate,
               end: endDate,
-              billability: 'non-billable',
+              billability: 'Non-billable',
               involvement: 100
             });
             vac.save(err => reject(err));

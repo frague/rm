@@ -61,7 +61,7 @@ export var profilesMap = {
     'DevOps': ['', 'BigData', 'CICD', 'Cloud', 'NOC']
   },
   'Custom Dev': {
-    'Developer': ['Java', '.NET', 'Python', 'Oracle ODI', 'Ruby']
+    'Developer': ['Java', '.NET', 'Python', 'Oracle ODI', 'Ruby', 'Scala']
   },
   'BigData': {
     'Developer': ['BigData'],

@@ -43,6 +43,7 @@ import { CommentsComponent } from './planner/comments.component';
 import { DemandPlanComponent } from './planner/demandplan.component';
 import { DpComponent } from './deadpool/dp.component';
 import { AvatarComponent } from './people/avatar.component';
+import { AssignmentsReportComponent } from './assignments/report.component';
 
 @NgModule({
   declarations: [
@@ -66,7 +67,8 @@ import { AvatarComponent } from './people/avatar.component';
     FilterComponent, FilteringPanelComponent,
     PlannerComponent, ReportComponent, CommentsComponent, DemandPlanComponent,
     DpComponent,
-    AvatarComponent
+    AvatarComponent,
+    AssignmentsReportComponent
   ],
   imports: [
     RoutingModule,

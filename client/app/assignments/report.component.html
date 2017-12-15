@@ -1,0 +1,37 @@
+<ng-template #content let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <h4 class="modal-title">Assignments Report</h4>
+  </div>
+  <div class="modal-body assignments report">
+
+    <table>
+      <thead>
+        <tr>
+          <th>Person</th>
+          <th>Account/Initiative</th>
+          <th>Start</th>
+          <th>End</th>
+          <th>Billable</th>
+          <th>Involvement</th>
+        </tr>
+      </thead>
+      <tbody *ngFor="let person of assignments">
+        <tr
+          *ngFor="let assignment of person.assignmentsArray;let i = index" 
+          [ngClass]="getClass(assignment)"
+        >
+          <th [rowSpan]="person.assignmentsCount" *ngIf="!i">{{ person.name }}</th>
+          <td>{{ assignment.account }}/{{ assignment.initiative }}</td>
+          <td>{{ assignment.start|date }}</td>
+          <td>{{ assignment.end|date }}</td>
+          <td>{{ assignment.billability }}</td>
+          <td>{{ assignment.involvement }}%</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+</ng-template>

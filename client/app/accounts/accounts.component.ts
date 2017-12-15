@@ -1,6 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ToastComponent } from '../shared/toast/toast.component';
 
 import { BaseComponent } from '../base.component';
 

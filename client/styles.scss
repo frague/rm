@@ -3,6 +3,8 @@ $body: #f5feff;
 $primary: #DFD;
 $danger: #FDD;
 $grid: #AAA;
+
+$green: #DFD;
 $yellow: #FFB;
 $blue: #1CA1C0;
 $red: #FF6E27;
@@ -544,6 +546,29 @@ div.corner {
     width: 100%;
     border-width: 0;
 
+    tr {
+      th {
+        font-weight: 400;
+        background-color: #EEE;
+      }
+
+      td, th {
+        padding: 4px;
+        border-width: 1px 0 0 1px;
+
+        strong {
+          display: inline-block;
+          font-weight: 600;
+        }
+
+        strong, p {
+          margin-bottom: 4px;
+        }
+      }
+    }
+  }
+
+  &.demand table {
     thead {
       th {
         &:nth-child(n+2) {
@@ -581,25 +606,54 @@ div.corner {
           border-right-width: 1px;
         }
       }
+    }
+  }
 
+  &.assignments table {
+    thead {
       th {
-        font-weight: 400;
-        background-color: #EEE;
-      }
-
-      td, th {
-        padding: 4px;
-        border-width: 1px 0 0 1px;
-
-        strong {
-          display: inline-block;
-          font-weight: 600;
+        &:nth-child(1) {
+          width: 20%;
         }
-
-        strong, p {
-          margin-bottom: 4px;
+        &:nth-last-child(-n+4) {
+          width: 100px;
+        }
+        &:nth-last-child(-n+5) {
+          text-align: center;
+        }
+        &:last-child {
+          border-right-width: 1px;
         }
       }
+    }
+
+    tr {
+      &.billable td {
+        background-color: $green;
+      }
+      &.non td {
+        background-color: #FED;
+      }
+
+      &:last-child td, &:last-child th {
+        border-bottom-width: 1px;
+      }
+
+      td {
+        font-weight: 100;
+
+        &:nth-last-child(-n+4) {
+          text-align: center;
+        }
+
+        &:last-child {
+          border-right-width: 1px;
+        }
+      }
+    }
+
+    tbody:last-child th {
+      border-bottom-width: 1px;
     }
   }
 }

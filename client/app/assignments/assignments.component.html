@@ -1,5 +1,5 @@
 <div>
-  <h1>Assignments ({{ items.length }})</h1>
+  <h1><span (click)="showReport()">Show Report</span>Assignments ({{ items.length }})</h1>
 
   <assignment-modal [resources]="resourcesById" [initiatives]="initiatives"></assignment-modal>
 
@@ -8,6 +8,8 @@
   <demand-modal></demand-modal>
 
   <comments-modal></comments-modal>
+
+  <assignments-report-modal></assignments-report-modal>
 
   <div class="row">
     <div class="col-md-2"></div>
