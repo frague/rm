@@ -8,8 +8,9 @@ const orKey = '$or';
 export default class AssignmentCtrl extends BaseCtrl {
   model = Assignment;
 
-  filterCriteria = (source: any[], filterExpression: RegExp, condition = orKey, transform: Function = (key, value) => ({[key]: value})): any => {
+  filterCriteria = (source: any[], filterExpression: RegExp|Function, condition = orKey, transform: Function = (key, value) => ({[key]: value})): any => {
     let result = [];
+    let filter = filterExpression instanceof RegExp ? key => filterExpression.test(key) : filterExpression;
     source.forEach(item => {
       let key = Object.keys(item)[0];
       if (key === andKey) {
@@ -17,12 +18,16 @@ export default class AssignmentCtrl extends BaseCtrl {
         if (and) {
           result.push(and);
         }
-      } else if (filterExpression.test(key)) {
+      } else if (filter(key)) {
         result.push(transform(key, item[key]));
       }
     });
     return result.length ? (result.length === 1 ? result[0]: {[condition]: result}) : null;
   };
+
+  cutDemand = key => {
+    return key.indexOf('demand') && key.indexOf('comment');
+  }
 
   commentTransform = (key, value) => {
     if (key.indexOf('.') >= 0) {
@@ -47,7 +52,7 @@ export default class AssignmentCtrl extends BaseCtrl {
       return res.status(500);
     }
 
-    query = this.filterCriteria(or, new RegExp(/^([^c]|c[^o])[^.]+$/)) || {};
+    query = this.filterCriteria(or, this.cutDemand) || {};
     assignmentsQuery = this.filterCriteria(or, new RegExp(/^assignment\./)) || {};
     commentsQuery = this.filterCriteria( or, new RegExp(/^comment/), orKey, this.commentTransform) || {};
 
