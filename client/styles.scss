@@ -30,6 +30,7 @@ h1 {
     display: block;
     float: right;
     padding-top: 10px;
+    cursor: pointer;
   }
 }
 
@@ -546,6 +547,14 @@ div.corner {
     width: 100%;
     border-width: 0;
 
+    thead {
+      tr {
+        th {
+          font-weight: 600;
+        }
+      }
+    }
+
     tr {
       th {
         font-weight: 400;
@@ -589,6 +598,18 @@ div.corner {
       }
     }
 
+    tbody {
+      tr {
+        th {
+          font-weight: 100;
+
+          strong {
+            font-weight: 400;
+          }
+        }
+      }
+    }
+
     tr {
       &:last-child td, &:last-child th {
         border-bottom-width: 1px;
@@ -612,14 +633,13 @@ div.corner {
   &.assignments table {
     thead {
       th {
+        text-align: center;
+
         &:nth-child(1) {
           width: 20%;
         }
         &:nth-last-child(-n+4) {
           width: 100px;
-        }
-        &:nth-last-child(-n+5) {
-          text-align: center;
         }
         &:last-child {
           border-right-width: 1px;

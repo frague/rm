@@ -21,8 +21,12 @@ export class AssignmentsReportComponent {
     return new Array(cells).join('.').split('').map((value, index) => index + 1);
   }
 
+  isAssignmentBillable(assignment: any): boolean {
+    return billables.indexOf(assignment.billability) >= 0 && assignment.involvement > 0;
+  }
+
   getClass(assignment: any) {
-    let isBillable = billables.indexOf(assignment.billability) >= 0 && assignment.involvement > 0;
+    let isBillable = this.isAssignmentBillable(assignment);
     return {
       'billable': isBillable,
       'non': !isBillable
@@ -31,17 +35,20 @@ export class AssignmentsReportComponent {
 
   show(assignments: any) {
     let today = new Date().getTime();
-    this.assignments = assignments.map(resource => {
+    this.assignments = assignments.reduce((divided, resource) => {
+      let isBillable = false;
       resource.assignmentsArray = [].concat(...Object.values(resource.assignments)).reduce((result, assignment) => {
         let end = assignment.end ? new Date(assignment.end).getTime() : Infinity;
         if (!assignment.demand && today < end) {
           result.push(assignment);
+          isBillable = isBillable || this.isAssignmentBillable(assignment);
         }
         return result;
       }, []);
       resource.assignmentsCount = resource.assignmentsArray.length;
-      return resource;
-    });
+      divided[isBillable ? 'Billable' : 'Non-billable'].push(resource);
+      return divided;
+    }, {'Billable': [], 'Non-billable': []});
     this.modalService.open(this.content, {size: 'lg'});
   }
 }
