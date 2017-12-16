@@ -112,19 +112,22 @@ h2 {
       margin: 0 0 10px 10px;
     }
   }
-  nav {
+  .nav-tabs {
     margin: 5px 0 20px 0;
-
-    a {
-      padding: 4px 10px;
-      margin-right: 4px;
-      border: solid 1px $grid;
-      cursor: pointer;
-
+    a.nav-link {
+      color: #888;
       &.active {
-        background-color: $body - #444;
+        color: #000;
       }
     }
+  }
+}
+
+.modal-footer {
+  text-align: left;
+  .form-check {
+    margin: 5px 0 0 0;
+    float: right;
   }
 }
 
@@ -719,6 +722,7 @@ div.corner {
     background-color: #F8F8F8;
     font-size: 12px;
     padding: 4px;
+    min-height: 190px;
 
     p {
       margin-bottom: 6px;

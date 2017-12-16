@@ -4,20 +4,33 @@ import { CommentService} from '../services/comments.service';
 import { BaseComponent } from '../base.component';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
+const discardConfirmation = 'Are you sure you want to discard current changes?';
+const empty = {
+  date: null,
+  isStatus: null,
+  login: null,
+  source: null,
+  text: null,
+  _id: null
+};
+
 @Component({
   selector: 'comments-modal',
   templateUrl: './comments.component.html'
 })
 export class CommentsComponent extends BaseComponent {
   @ViewChild('content') content;
+
   person: any = {};
   comments: any[] = [];
   status: any = '';
   aggregated: any[] = [];
   modalRef: any;
 
-  showPreview = true;
-  showComments = true;
+  commentsAreShown = true;
+
+  initialValue: any = empty;
+  closeAfterSaving = true;
 
   form = new FormGroup({
     _id: new FormControl(''),
@@ -35,7 +48,13 @@ export class CommentsComponent extends BaseComponent {
     super(commentService);
   }
 
-  ngOnInit() {}
+  tabChange(e) {
+    if (!this.isSafeToProceed()) return e.preventDefault();
+
+    this.commentsAreShown = e.nextId === 'comments';
+    this.form.reset();
+    this.initialValue = empty;
+  }
 
   getEditedValue() {
     let comment = super.getEditedValue();
@@ -48,15 +67,21 @@ export class CommentsComponent extends BaseComponent {
     return (text || '').split('\n');
   }
 
-  save() {
+  saveComplex(tabs) {
     let newValue = this.getEditedValue();
     let newStatus = newValue.isStatus ? newValue.text : '';
     let doChange = newValue.isStatus || this.item.isStatus;
     return super.save().add(() => {
       if (doChange) {
         this.person.status = newValue.isStatus ? newValue : {};
+        this.form.reset();
+        this.initialValue = empty;
       }
-      this.modalRef.close();
+      if (this.closeAfterSaving) {
+        this.modalRef.close();
+      } else {
+        tabs.select('comments');
+      }
     });
   }
 
@@ -70,9 +95,10 @@ export class CommentsComponent extends BaseComponent {
     });
   }
 
-  startEditing(item: any) {
-    this.enableEditing(item);
-    this.switchTab(false);
+  startEditing(item: any, tabs: any) {
+    this.initialValue = item;
+    tabs.select('add');
+    this.form.setValue(this.enableEditing(item));
   }
 
   fetchData() {
@@ -91,7 +117,7 @@ export class CommentsComponent extends BaseComponent {
       if (this.status) {
         this.aggregated.unshift(this.status);
       }
-      this.showComments = this.aggregated.length > 0;
+      this.commentsAreShown = this.aggregated.length > 0;
       this.form.reset({isStatus: !this.status});
     });
   }
@@ -99,11 +125,21 @@ export class CommentsComponent extends BaseComponent {
   show(person: any) {
     this.items = [];
     this.person = person;
-    this.modalRef = this.modalService.open(this.content, {size: 'lg'});
+    this.modalRef = this.modalService.open(this.content, {size: 'lg', beforeDismiss: () => this.isSafeToProceed()});
     this.fetchData();
   }
 
-  switchTab(showComments = true) {
-    this.showComments = showComments;
+  hasChanges() {
+    let newValue = this.form.value;
+    return ['source', 'text'].reduce((result, key) => {
+      let a = this.initialValue[key] || null;
+      let b = newValue[key] || null;
+      return result || a !== b;
+    }, false);
   }
+
+  isSafeToProceed() {
+    return (this.commentsAreShown || !this.hasChanges() || confirm(discardConfirmation));
+  }
+
 }

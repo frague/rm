@@ -48,6 +48,7 @@ export abstract class BaseComponent {
       }
     });
     this.form.setValue(o);
+    return o;
   }
 
   cancelEditing() {
