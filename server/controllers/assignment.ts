@@ -151,6 +151,7 @@ export default class AssignmentCtrl extends BaseCtrl {
           pool: { '$first': '$pool' },
           starts: { '$first': '$starts' },
           ends: { '$first': '$ends' },
+          manager: { '$first': '$manager' },
           minDate: {
             '$min': '$assignment.start'
           },
