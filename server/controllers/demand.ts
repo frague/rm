@@ -41,7 +41,7 @@ export default class DemandCtrl extends BaseCtrl {
     }
     let query = Object.keys(queryOr).length > 0 ? queryOr : {};
 
-    this.model.find(query).sort({row: 1}).exec((err, docs) => {
+    this.model.find(query).sort({login: 1}).exec((err, docs) => {
       if (err) { return console.error(err); }
       res.json(docs);
     });

@@ -25,6 +25,7 @@
               <div [innerHTML]="comment.text|MarkdownToHtml"></div>
             </div>
           </div>
+          <div class="empty" *ngIf="!aggregated.length">No comments added yet</div>
         </ng-template>
       </ngb-tab>
       <ngb-tab title="Add" id="add">

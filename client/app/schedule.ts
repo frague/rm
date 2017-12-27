@@ -178,6 +178,7 @@ export class Schedule {
           let item = {
             _id: demandId,
             name: demand.profile,
+            login: demand.login,
             assignments: [{
               _id: demandId,
               start: demand.start,

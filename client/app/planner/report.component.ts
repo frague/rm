@@ -33,7 +33,7 @@ export class ReportComponent {
   }
 
   getCandidate(demand: any) {
-    let candidate = this.candidatesByLogin[this.matches[demand.row]];
+    let candidate = this.candidatesByLogin[this.matches[demand.login]];
     if (!candidate) {
       return emptyCandidate;
     } else {

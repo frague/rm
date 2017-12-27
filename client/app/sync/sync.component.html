@@ -15,12 +15,13 @@
     </div>
   </div>
   <div class="col-md-6 backup">
-    <h1>Backup & Restore</h1>
+    <h1>Backup</h1>
     <a href="/api/backup" target="blank">Download users comments backup file</a>
 
+    <h1 class="restore">Restore</h1>
     <form class="form" [formGroup]="form" (ngSubmit)="onSubmit()">
       <div class="form-group">
-        <label for="backup">Restore users comments from backup file:</label>
+        <label for="backup">Restore users comments from the backup file:</label>
         <input type="file" class="form-control-file" id="backup" name="backup"  (change)="onFileChange($event)" #fileInput required>
       </div>
       <button type="submit" [disabled]="form.invalid || isLoading" class="btn btn-primary">

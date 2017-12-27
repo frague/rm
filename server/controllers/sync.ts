@@ -350,10 +350,11 @@ export default class SyncCtrl {
           let requestId = demandLine[18];
           requestId = !requestId.indexOf('GD') ? requestId : '';
 
+          let status = demandLine[2];
+
           let demand = {
-            row: account + this._leadingZero(demandAccountIndex[account]),
+            login: account + this._leadingZero(demandAccountIndex[account]),
             account,
-            status: demandLine[2],
             acknowledgement: demandLine[3],
             role: replaceFromMap(billabilityMap, demandLine[4]),
             profile,
@@ -369,7 +370,7 @@ export default class SyncCtrl {
           };
 
           let lcProfile = profile.toLowerCase();
-          if (demand.status !== 'active') return;
+          if (status !== 'active') return;
           // this.addLog('Created demand for ' + demand.account);
 
           setTimeout(() => new Demand(demand).save((err, data) => reject(err)), index);

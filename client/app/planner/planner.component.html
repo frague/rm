@@ -28,6 +28,13 @@
           (click)="showResource(demand, true)"
           [ngClass]="{covered: reserved[demand.row]}"
         >
+          <div
+            class="corner"
+            (click)="showComments(demand, $event)"
+            container="body"
+            placement="top-left"
+            [ngbTooltip]="getCurrentStatus(demand)"
+          ></div>
           <i class="fa fa-plane" *ngIf="isOnsite(demand)"></i>
           {{ demand.profile }}
           <span>{{ getDemandAttrs(demand) }}</span>

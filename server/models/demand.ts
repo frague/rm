@@ -6,7 +6,6 @@ const demandSchema = new mongoose.Schema({
   account: String,
   accountId: String,
   pool: String,
-  status: String,
   acknowledgement: String,
   role: String,
   profile: String,
@@ -18,7 +17,7 @@ const demandSchema = new mongoose.Schema({
   locations: [String],
   requestId: String,
   comment: String,
-  row: String
+  login: String
 });
 
 const Demand = mongoose.model('Demand', demandSchema);

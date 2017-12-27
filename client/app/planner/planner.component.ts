@@ -56,10 +56,10 @@ export class PlannerComponent extends Schedule {
       .filter(item => item.isDemand)
       .map(item => {
         let assignments = item.assignments;
-        item.row = assignments[Object.keys(assignments)[0]][0].demand.row;
+        item.login = assignments[Object.keys(assignments)[0]][0].demand.login;
         return item;
       })
-      .sort((a, b) => a.row < b.row ? -1 : 1)
+      .sort((a, b) => a.login < b.login ? -1 : 1)
       .map(item => {
         let assignments = item.assignments;
         return assignments[Object.keys(assignments)[0]][0].demand;
@@ -138,7 +138,7 @@ export class PlannerComponent extends Schedule {
 
   reserve(candidate: any, demand: any) {
     let demandRow = this.deserved[candidate.login];
-    let candidateId = this.reserved[demand.row];
+    let candidateId = this.reserved[demand.login];
     if (demandRow) {
       this.reserved[demandRow] = '';
     }
@@ -146,8 +146,8 @@ export class PlannerComponent extends Schedule {
       this.deserved[candidateId] = '';
     }
     if (candidate.login != candidateId) {
-      this.reserved[demand.row] = candidate.login;
-      this.deserved[candidate.login] = demand.row;
+      this.reserved[demand.login] = candidate.login;
+      this.deserved[candidate.login] = demand.login;
     }
   }
 

@@ -117,12 +117,13 @@ export class CommentsComponent extends BaseComponent {
       if (this.status) {
         this.aggregated.unshift(this.status);
       }
-      this.commentsAreShown = this.aggregated.length > 0;
+      this.commentsAreShown = true;
       this.form.reset({isStatus: !this.status});
     });
   }
 
   show(person: any) {
+    console.log(person);
     this.items = [];
     this.person = person;
     this.modalRef = this.modalService.open(this.content, {size: 'lg', beforeDismiss: () => this.isSafeToProceed()});
