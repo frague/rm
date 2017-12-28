@@ -74,24 +74,23 @@ export default class DemandCtrl extends BaseCtrl {
         '$match': commentsQuery
       },
       {
-        '$group': {
-          _id: '$_id',
-          account: { '$push': '$account' },
-          pool: { '$first': '$pool' },
-          acknowledgement: { '$first': '$acknowledgement' },
-          role: { '$first': '$role' },
-          profile: { '$first': '$profile' },
-          start: { '$first': '$start' },
-          end: { '$first': '$end' },
-          deployment: { '$first': '$deployment' },
-          stage: { '$first': '$stage' },
-          grades: { '$first': '$grades' },
-          locations: { '$first': '$locations' },
-          requestId: { '$first': '$requestId' },
-          comment: { '$first': '$comment' },
-          login: { '$first': '$login' },
-          commentsCount: { '$first': '$commentsCount' },
-          status: { '$first': '$status' }
+        '$project': {
+          account: 1,
+          pool: 1,
+          acknowledgement: 1,
+          role: 1,
+          profile: 1,
+          start: 1,
+          end: 1,
+          deployment: 1,
+          stage: 1,
+          grades: 1,
+          locations: 1,
+          requestId: 1,
+          comment: 1,
+          login: 1,
+          commentsCount: 1,
+          status: 1
         }
       },
       {

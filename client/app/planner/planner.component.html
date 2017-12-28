@@ -68,11 +68,7 @@
             >
               <div
                 class="corner"
-                (click)="showComments(candidate, $event)"
                 [ngClass]="{'has-status': candidate.status}"
-                container="body"
-                placement="top-left"
-                [ngbTooltip]="getCurrentStatus(candidate)"
               >
                 <b>{{ candidate.commentsCount || '' }}</b>
               </div>
