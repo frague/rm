@@ -35,7 +35,9 @@
             container="body"
             placement="top-left"
             [ngbTooltip]="getCurrentStatus(demand)"
-          ></div>
+          >
+            <b>{{ demand.commentsCount || '' }}</b>
+          </div>
           <i class="fa fa-plane" *ngIf="isOnsite(demand)"></i>
           {{ demand.profile }}
           <span>{{ getDemandAttrs(demand) }}</span>
@@ -63,8 +65,18 @@
               placement="top-right"
               [ngbTooltip]="getCurrentStatus(candidate)"
               (click)="showComments(candidate, $event)"
-              [innerHTML]="getCurrentStatus(candidate)|MarkdownToHtml"
             >
+              <div
+                class="corner"
+                (click)="showComments(candidate, $event)"
+                [ngClass]="{'has-status': candidate.status}"
+                container="body"
+                placement="top-left"
+                [ngbTooltip]="getCurrentStatus(candidate)"
+              >
+                <b>{{ candidate.commentsCount || '' }}</b>
+              </div>
+              <span [innerHTML]="getCurrentStatus(candidate)|MarkdownToHtml"></span>
             </div>
           </li>
         </ol>

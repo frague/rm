@@ -318,6 +318,20 @@ i.initiative {
         }
 
         li {
+          background-color: $body - #111;
+          border-right: solid 1px $grid;
+          width: $demandCardWidth;
+          height: $demandCardHeight;
+          position: absolute;
+          white-space: normal;
+          overflow: hidden;
+          font-size: 14px;
+          line-height: 1.4;
+          font-weight: 500;
+          text-align: center;
+          padding: 5px;
+          list-style: none;
+
           &:first-child {
             border-left: solid 1px $grid;
           }
@@ -346,20 +360,6 @@ i.initiative {
             float: initial;
           }
 
-          background-color: $body - #111;
-          border-right: solid 1px $grid;
-          width: $demandCardWidth;
-          height: $demandCardHeight;
-          position: absolute;
-          white-space: normal;
-          overflow: hidden;
-          font-size: 14px;
-          line-height: 1.4;
-          font-weight: 500;
-          text-align: center;
-          padding: 5px;
-          list-style: none;
-
           span {
             display: block;
             font-size: 80%;
@@ -370,14 +370,20 @@ i.initiative {
             position: absolute;
             cursor: pointer;
             bottom: 0;
+            right: 0;
             border-top: solid 1px $grid;
-            width: $demandCardWidth - 10px;
+            width: $demandCardWidth;
             height: 30px;
-            text-overflow: ellipsis;
-            overflow: hidden;
-            font-size: 10px;
-            font-weight: 200;
             text-align: left;
+            padding: 0 5px;
+            background-color: rgba(0, 0, 0, 0.05);
+
+            span {
+              text-overflow: ellipsis;
+              overflow: hidden;
+              font-size: 10px;
+              font-weight: 200;
+            }
           }
         }
       }
@@ -500,10 +506,21 @@ div.corner {
   position: absolute;
   width: 0;
   height: 0;
-  border-top: 10px solid #AAA;
-  border-left: 10px solid transparent;
+  border-top: 14px solid #AAA;
+  border-left: 14px solid transparent;
   margin-top: -1px;
   right: 0;
+
+  b {
+    display: inline-block;
+    width: 20px;
+    text-align: center;
+    font-size: 8px;
+    position: relative;
+    bottom: 25px;
+    right: 15px;
+    color: #FFF;
+  }
 
   &.has-status {
     border-top-color: $red;

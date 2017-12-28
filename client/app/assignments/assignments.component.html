@@ -31,7 +31,9 @@
           container="body"
           placement="top-left"
           [ngbTooltip]="getCurrentStatus(assignee)"
-        ></div>
+        >
+          <b>{{ assignee.commentsCount || '' }}</b>
+        </div>
         <i class="fa fa-plane" *ngIf="isOnsite(assignee)"></i>
         {{ makeCaption(assignee) }}
       </div>
