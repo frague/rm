@@ -31,6 +31,7 @@
           <div
             class="corner"
             (click)="showComments(demand, $event)"
+            [ngClass]="{'has-status': demand.status}"
             container="body"
             placement="top-left"
             [ngbTooltip]="getCurrentStatus(demand)"

@@ -17,34 +17,96 @@ export default class DemandCtrl extends BaseCtrl {
     return result.length ? {[condition]: result} : {};
   };
 
+  demandTransform = (key, value) => {
+    key = key.replace('demand.', '');
+    return {[key]: value};
+  }
+
   getAll = (req, res) => {
-    let queryOr = {};
-    let queryAnd = {};
+    let or;
+    let query = {};
+    let commentsQuery = {};
 
-    let or = req.query.or;
-    if (or) {
-      or = JSON.parse(or);
+    try {
+      or = req.query.or ? JSON.parse(req.query.or) : [];
+    } catch (e) {
+      console.error('Error parsing search query: ' + req.query.or);
+      return res.status(500);
+    }
 
-      this.extractCriteria(or, '$or');
+    query = this.filterCriteria( or, new RegExp(/^demand\./), this.orKey, this.demandTransform) || {};
+    commentsQuery = this.filterCriteria(or, new RegExp(/^comments/), this.orKey, this.commentTransform) || {};
 
-      let and = or.filter(criterion => !!criterion['$and']);
-      if (and.length) {
-        let queryAnd = this.extractCriteria(and[0]['$and'], '$and');
-        if (queryAnd['$and']) {
-          if (queryOr['$or']) {
-            queryOr['$or'].push(queryAnd);
-          } else {
-            queryOr = queryAnd;
+    console.log('------------------------------------------------------');
+    console.log('Initial:', JSON.stringify(or));
+    console.log('Query:', JSON.stringify(query));
+    console.log('Comments:', JSON.stringify(commentsQuery));
+
+    Demand.aggregate([
+      {
+        '$lookup': {
+          from: 'comments',
+          localField: 'login',
+          foreignField: 'login',
+          as: 'comments'
+        }
+      },
+      {
+        '$addFields': {
+          commentsCount: {'$size': '$comments'},
+          status: {
+            '$arrayElemAt': [
+              {
+                '$filter': {
+                  input: '$comments',
+                  as: 'status',
+                  cond: {
+                    '$eq': ['$$status.isStatus', true]
+                  }
+                }
+              },
+              0
+            ]
           }
         }
+      },
+      {
+        '$match': commentsQuery
+      },
+      {
+        '$group': {
+          _id: '$_id',
+          account: { '$push': '$account' },
+          pool: { '$first': '$pool' },
+          acknowledgement: { '$first': '$acknowledgement' },
+          role: { '$first': '$role' },
+          profile: { '$first': '$profile' },
+          start: { '$first': '$start' },
+          end: { '$first': '$end' },
+          deployment: { '$first': '$deployment' },
+          stage: { '$first': '$stage' },
+          grades: { '$first': '$grades' },
+          locations: { '$first': '$locations' },
+          requestId: { '$first': '$requestId' },
+          comment: { '$first': '$comment' },
+          login: { '$first': '$login' },
+          commentsCount: { '$first': '$commentsCount' },
+          status: { '$first': '$status' }
+        }
+      },
+      {
+        '$match': query
+      },
+      {
+        '$sort': {
+          login: 1
+        }
       }
-    }
-    let query = Object.keys(queryOr).length > 0 ? queryOr : {};
-
-    this.model.find(query).sort({login: 1}).exec((err, docs) => {
+    ], (err, docs) => {
       if (err) { return console.error(err); }
       res.json(docs);
     });
+
   }
 
   cleanup = (req, res) => {

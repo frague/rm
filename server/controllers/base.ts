@@ -4,6 +4,9 @@ abstract class BaseCtrl {
 
   abstract model: mongoose.Schema;
 
+  andKey = '$and';
+  orKey = '$or';
+
   cleanup = (req, res) => res.sendStatus(200);
 
   reduceQuery(query: any) {
@@ -11,6 +14,33 @@ abstract class BaseCtrl {
       result[param] = JSON.parse(query[param]);
       return result;
     }, {});
+  }
+
+  filterCriteria = (source: any[], filterExpression: RegExp|Function, condition = this.orKey, transform: Function = (key, value) => ({[key]: value})): any => {
+    let result = [];
+    let filter = filterExpression instanceof RegExp ? key => filterExpression.test(key) : filterExpression;
+    source.forEach(item => {
+      let key = Object.keys(item)[0];
+      if (key === this.andKey) {
+        let and = this.filterCriteria(item[key], filterExpression, this.andKey, transform);
+        if (and) {
+          result.push(and);
+        }
+      } else if (filter(key)) {
+        result.push(transform(key, item[key]));
+      }
+    });
+    return result.length ? (result.length === 1 ? result[0]: {[condition]: result}) : null;
+  };
+
+  commentTransform = (key, value) => {
+    if (key.indexOf('.') >= 0) {
+      let [comment, source] = key.split('.', 2);
+      return {[this.andKey]: [{'comments.source': source}, {'comments.text': value}]};
+    } else {
+      key += '.text';
+    }
+    return {[key]: value};
   }
 
   // Get all

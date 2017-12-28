@@ -2,41 +2,11 @@ import BaseCtrl from './base';
 import Assignment from '../models/assignment';
 import Resource from '../models/resource';
 
-const andKey = '$and';
-const orKey = '$or';
-
 export default class AssignmentCtrl extends BaseCtrl {
   model = Assignment;
 
-  filterCriteria = (source: any[], filterExpression: RegExp|Function, condition = orKey, transform: Function = (key, value) => ({[key]: value})): any => {
-    let result = [];
-    let filter = filterExpression instanceof RegExp ? key => filterExpression.test(key) : filterExpression;
-    source.forEach(item => {
-      let key = Object.keys(item)[0];
-      if (key === andKey) {
-        let and = this.filterCriteria(item[key], filterExpression, andKey, transform);
-        if (and) {
-          result.push(and);
-        }
-      } else if (filter(key)) {
-        result.push(transform(key, item[key]));
-      }
-    });
-    return result.length ? (result.length === 1 ? result[0]: {[condition]: result}) : null;
-  };
-
   cutDemand = key => {
     return key.indexOf('demand') && key.indexOf('comment');
-  }
-
-  commentTransform = (key, value) => {
-    if (key.indexOf('.') >= 0) {
-      let [comment, source] = key.split('.', 2);
-      return {[andKey]: [{'comment.source': source}, {'comment.text': value}]};
-    } else {
-      key += '.text';
-    }
-    return {[key]: value};
   }
 
   getAll = (req, res) => {
@@ -54,12 +24,12 @@ export default class AssignmentCtrl extends BaseCtrl {
 
     query = this.filterCriteria(or, this.cutDemand) || {};
     assignmentsQuery = this.filterCriteria(or, new RegExp(/^assignment\./)) || {};
-    commentsQuery = this.filterCriteria( or, new RegExp(/^comment/), orKey, this.commentTransform) || {};
+    commentsQuery = this.filterCriteria(or, new RegExp(/^comments/), this.orKey, this.commentTransform) || {};
 
     console.log('------------------------------------------------------');
     console.log('Initial:', JSON.stringify(or));
     console.log('Assignment:', JSON.stringify(assignmentsQuery));
-    console.log('Comment:', JSON.stringify(commentsQuery));
+    console.log('Comments:', JSON.stringify(commentsQuery));
     console.log('The rest:', JSON.stringify(query));
 
     let now = new Date();
@@ -69,7 +39,12 @@ export default class AssignmentCtrl extends BaseCtrl {
           from: 'comments',
           localField: 'login',
           foreignField: 'login',
-          as: 'comment'
+          as: 'comments'
+        }
+      },
+      {
+        '$addFields': {
+          commentsCount: {'$size': '$comments'}
         }
       },
       {
@@ -124,7 +99,7 @@ export default class AssignmentCtrl extends BaseCtrl {
             '$arrayElemAt': [
               {
                 '$filter': {
-                  input: '$comment',
+                  input: '$comments',
                   as: 'status',
                   cond: {
                     '$eq': ['$$status.isStatus', true]
@@ -163,7 +138,8 @@ export default class AssignmentCtrl extends BaseCtrl {
           },
           canTravel: { '$first': '$canTravel' },
           login: { '$first': '$login' },
-          status: { '$first': '$status' }
+          status: { '$first': '$status' },
+          commentsCount: { '$first': '$commentsCount' }
         }
       },
       {
