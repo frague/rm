@@ -114,6 +114,10 @@ h2 {
   }
   .nav-tabs {
     margin: 5px 0 20px 0;
+
+    .nav-item {
+    }
+    
     a.nav-link {
       color: #888;
       &.active {

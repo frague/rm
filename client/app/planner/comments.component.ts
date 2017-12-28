@@ -72,6 +72,9 @@ export class CommentsComponent extends BaseComponent {
     let newStatus = newValue.isStatus ? newValue.text : '';
     let doChange = newValue.isStatus || this.item.isStatus;
     return super.save().add(() => {
+      if (!newValue._id) {
+        this.person.commentsCount++;
+      }
       if (doChange) {
         this.person.status = newValue.isStatus ? newValue : {};
         this.form.reset();
@@ -81,6 +84,7 @@ export class CommentsComponent extends BaseComponent {
         this.modalRef.close();
       } else {
         tabs.select('comments');
+        this.fetchData();
       }
     });
   }
@@ -91,6 +95,7 @@ export class CommentsComponent extends BaseComponent {
       if (isStatus) {
         this.person.status = null;
       }
+      this.person.commentsCount--;
       this.fetchData();
     });
   }
