@@ -179,6 +179,8 @@ export class Schedule {
             _id: demandId,
             name: demand.profile,
             login: demand.login,
+            status: demand.status,
+            commentsCount: demand.commentsCount,
             assignments: [{
               _id: demandId,
               start: demand.start,
