@@ -33,19 +33,22 @@ export default class SyncCtrl {
 
   sync = (req, res) => {
     this.logs = [];
-    this._cleanup().then(() => {
+    this._cleanup().then(() =>
       this._queryConfluence().then(() =>
-        this._queryPMO().then(() => {
-          Promise.all([
-            this._queryBamboo(),
-            this._queryDemand()
-          ]).then(() => {
-            res.setHeader('Content-Type', 'application/json');
-            res.json(this.logs);
-          });
-        })
+        this._queryPMO().then(() =>
+          this._queryBamboo().then(() => {
+
+            delete this._peopleByName;
+            delete this._whois;
+
+            this._queryDemand().then(() => {
+              res.setHeader('Content-Type', 'application/json');
+              res.json(this.logs);
+            })
+          })
+        )
       )
-    }).catch(() => res.sendStatus(500));
+    ).catch(() => res.sendStatus(500));
   };
 
   private _addLog(text, source='') {
