@@ -162,7 +162,7 @@ export class PlannerComponent extends Schedule {
   }
 
   getReservation(candidate: any, demand: any) {
-    return this.reserved[demand.row] === candidate.login;
+    return this.reserved[demand.login] === candidate.login;
   }
 
   getDemandAttrs(demand) {
