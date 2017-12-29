@@ -37,9 +37,10 @@ db.once('open', () => {
   });
 
   if (!module.parent) {
-    app.listen(app.get('port'), () => {
+    let server = app.listen(app.get('port'), () => {
       console.log('RM is listening on port ' + app.get('port'));
     });
+    server.timeout = 240000;
   }
 
 });

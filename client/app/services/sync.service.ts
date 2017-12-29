@@ -10,7 +10,7 @@ export class SyncService {
   }
 
   goOn(): Observable<any> {
-    return this.http.post('/api/sync', {}).map(res => res.json());
+    return this.http.post('/api/sync', {}).retry(0).map(res => res.json());
   }
 
   backup(): Observable<any> {
