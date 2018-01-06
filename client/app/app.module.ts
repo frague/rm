@@ -1,5 +1,7 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { HttpClientModule } from '@angular/common/http';
+
 import { RoutingModule } from './routing.module';
 import { SharedModule } from './shared/shared.module';
 import { MarkdownToHtmlModule } from 'markdown-to-html-pipe';
@@ -72,6 +74,7 @@ import { AssignmentsReportComponent } from './assignments/report.component';
   ],
   imports: [
     RoutingModule,
+    HttpClientModule,
     SharedModule,
     MarkdownToHtmlModule,
     NgbModule.forRoot()
