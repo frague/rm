@@ -2,6 +2,7 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SyncService } from '../services/sync.service';
 import { DpService } from '../services/dp.service';
+import { SocketService } from '../services/socket.service';
 
 @Component({
   selector: 'sync',
@@ -19,7 +20,8 @@ export class SyncComponent {
   constructor(
     private syncService: SyncService,
     private dpService: DpService,
-    private builder: FormBuilder
+    private builder: FormBuilder,
+    private socket: SocketService
  ) {
     this.form = this.builder.group({
       backup: null
@@ -35,10 +37,20 @@ export class SyncComponent {
 
   sync() {
     this.isLoading = true;
-    this.syncService.goOn().subscribe(logs => {
+    this.logs = [];
+    this.syncService.goOn().subscribe(() => {
+      this.socket.subscribe(log => {
+        this.logs.push(log);
+        if (log === 'Done') {
+          this.socket.unsubscribe();
+          this.dpService.saveDiff().subscribe(() => {
+            this.isLoading = false;
+          });
+        }
+      });
+    }, error => {
       this.isLoading = false;
-      this.logs = logs;
-      this.dpService.saveDiff().subscribe();
+      this.logs = [error];
     });
   }
 

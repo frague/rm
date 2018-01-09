@@ -5,6 +5,7 @@ import Demand from '../models/demand';
 
 import IntegrationsCtrl from './integrations';
 import DiffCtrl from './diff';
+import { IO } from '../io';
 
 import * as convert from 'color-convert';
 import * as Confluence from 'confluence-api';
@@ -44,6 +45,9 @@ export default class SyncCtrl {
   }
 
   sync = async (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.sendStatus(200);
+
     this._timers = {};
     this._setTimer('Synchronization');
     try {
@@ -72,20 +76,18 @@ export default class SyncCtrl {
       this._setTimer('Demand sync');
       await this._queryDemand();
       this._getDelay('Demand sync');
-
-      res.setHeader('Content-Type', 'application/json');
-      res.json(this.logs);
     } catch (e) {
       this._addLog(e, 'Error');
-      res.text(e).sendStatus(500);
     }
-    this._getDelay('Synchronization')
+    this._getDelay('Synchronization');
+    this._addLog('Done');
   };
 
   private _addLog(text, source='') {
     let message = (source && source + ': ') + text;
     this.logs.push(message);
     console.log(message);
+    IO.client().emit('message', message);
   }
 
   private async _cleanup() {

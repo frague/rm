@@ -5,6 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { RoutingModule } from './routing.module';
 import { SharedModule } from './shared/shared.module';
 import { MarkdownToHtmlModule } from 'markdown-to-html-pipe';
+import { SocketIoModule, SocketIoConfig } from 'ng-socket-io';
 
 import { AssignmentService } from './services/assignment.service';
 import { ResourceService } from './services/resource.service';
@@ -20,6 +21,8 @@ import { AuthGuardLogin } from './services/auth-guard-login.service';
 import { AuthGuardAdmin } from './services/auth-guard-admin.service';
 import { BusService } from './services/bus.service';
 import { FilterService } from './services/filter.service';
+import { SocketService } from './services/socket.service';
+
 import { AppComponent } from './app.component';
 import { SyncComponent } from './sync/sync.component';
 import { InitiativesComponent } from './initiatives/initiatives.component';
@@ -46,6 +49,11 @@ import { DemandPlanComponent } from './planner/demandplan.component';
 import { DpComponent } from './deadpool/dp.component';
 import { AvatarComponent } from './people/avatar.component';
 import { AssignmentsReportComponent } from './assignments/report.component';
+
+const config: SocketIoConfig = {
+  url: ':3000',
+  options: {}
+};
 
 @NgModule({
   declarations: [
@@ -77,7 +85,8 @@ import { AssignmentsReportComponent } from './assignments/report.component';
     HttpClientModule,
     SharedModule,
     MarkdownToHtmlModule,
-    NgbModule.forRoot()
+    NgbModule.forRoot(),
+    SocketIoModule.forRoot(config)
   ],
   providers: [
     AuthService,
@@ -94,6 +103,7 @@ import { AssignmentsReportComponent } from './assignments/report.component';
     CommentService,
     DemandPlanService,
     DpService,
+    SocketService,
     PrintableDatePipe, AvatarUrlPipe
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
