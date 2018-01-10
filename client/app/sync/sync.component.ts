@@ -40,7 +40,7 @@ export class SyncComponent {
     this.logs = [];
     this.syncService.goOn().subscribe(() => {
       this.socket.subscribe(log => {
-        this.logs.push(log);
+        this.addLog(log);
         if (log === 'Done') {
           this.socket.unsubscribe();
           this.dpService.saveDiff().subscribe(() => {
