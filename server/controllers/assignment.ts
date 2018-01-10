@@ -78,7 +78,16 @@ export default class AssignmentCtrl extends BaseCtrl {
           'assignment.initiative': '$initiative.name',
           'assignment.billable': {
             '$cond': {
-              if: {'$in': ['$assignment.billability', ['Billable', 'Soft booked', 'PTO Coverage']]},
+              if: {
+                '$and': [
+                  {'$in': ['$assignment.billability', ['Billable', 'Soft booked', 'PTO Coverage']]},
+                  {'$or': [
+                      {'$gt': ['$assignment.end', now]},
+                      {'$eq': ['$assignment.end', null]}
+                    ]
+                  }
+                ]
+              },
               then: 'true',
               else: 'false'
             }
