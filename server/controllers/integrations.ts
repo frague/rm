@@ -91,21 +91,15 @@ export default class IntegrationsCtrl {
     doc.useServiceAccountAuth(creds, callback);
   }
 
-  googleGetInfo = (req, res) => {
-    this._googleAuth(() => {
-      doc.getInfo(function(err, info) {
-        if (err) return res.sendStatus(500);
-
-        let result = [];
-
-        let sheet = info.worksheets[1];
-
-        sheet.getCells({
-          'min-row': 8,
+  getSheetPortion = (sheet, min, max) => {
+    return new Promise((resolve, reject) => {
+      sheet.getCells({
+          'min-row': min,
+          'max-row': max,
           'return-empty': true
         }, (err, cells) => {
-          if (err) return res.sendStatus(500);
-
+          if (err) reject(err);
+          let result = [];
           let row = [];
           cells.forEach(cell => {
             if (cell.col == 1 && cell.row) {
@@ -115,10 +109,33 @@ export default class IntegrationsCtrl {
             row.push(cell.value);
           });
           if (row[0]) result.push(row);
-
-          res.setHeader('Content-Type', 'application/json');
-          res.json(result);
+          resolve(result);
         });
+      }
+    )
+    .catch(err => console.log(err));
+  }
+
+  googleGetInfo = (req, res) => {
+    this._googleAuth(() => {
+      doc.getInfo(async (err, info) => {
+        if (err) return res.sendStatus(500);
+
+        let result = [];
+
+        let sheet = info.worksheets[1];
+        let rowsCount = sheet.rowCount;
+        let row = 8; // Min row
+        let offset = 500; // Rows fits into memory at once
+
+        while (row < rowsCount) {
+          let maxRow = (row + offset > rowsCount) ? rowsCount : row + offset;
+          console.log('Reading demand sheet lines range', row, '-', maxRow);
+          result =  result.concat(await this.getSheetPortion(sheet, row, maxRow));
+          row = maxRow + 1;
+        }
+        res.setHeader('Content-Type', 'application/json');
+        res.json(result);
       });
     });
   }
