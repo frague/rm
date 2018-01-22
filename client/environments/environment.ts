@@ -5,6 +5,6 @@
 
 export const environment = {
   production: false,
-  pmoLogin: 'comeuser',
+  pmoLogin: 'someuser',
   pmoPassword: 'somepass'
 };

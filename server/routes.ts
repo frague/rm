@@ -110,6 +110,9 @@ export default function setRoutes(app) {
 
   // Sync
   router.route('/sync').post(syncCtrl.sync);
+  
+  // Skill Tree
+  router.route('/skills/:userId').get(integrationsCtrl.skillTreeGetSkills);
 
   // Backup and restore
   router.route('/backup').get(commentCtrl.download);

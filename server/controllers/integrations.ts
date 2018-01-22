@@ -4,6 +4,7 @@ var GoogleSpreadsheet = require('google-spreadsheet');
 
 const env = process.env;
 const pmo = 'https://pmo.griddynamics.net/';
+const skillTree = 'https://skilltree.griddynamics.net/api/';
 const bamboo = 'api.bamboohr.com/api/gateway.php/griddynamics/v1/';
 
 import { creds } from '../google.credentials';
@@ -22,49 +23,52 @@ var confluence = new Confluence(confluenceConfig);
 
 export default class IntegrationsCtrl {
 
-  cookie = '';
+  pmoCookie = '';
+  skillTreeCookie = '';
 
-  _fillRequest(url: string, payload={}) {
+  _fillRequest(cookie: string, url: string, payload={}) {
     let jar = request.jar();
-    jar.setCookie(this.cookie, url);
+    jar.setCookie(cookie, url);
     return Object.assign({}, {url, jar, form: payload});
   }
 
-  _login() {
-    this.cookie = '';
+  _login(url: string) {
     return request.post({
-      url: pmo + 'j_spring_security_check',
+      url,
       form: {j_username: env.PMO_LOGIN, j_password: env.PMO_PASSWORD}
-    })
+    });
+  }
+
+  _pmoLogin = () => {
+    this.pmoCookie = '';
+    return this._login(pmo + 'j_spring_security_check')
       .on('response', response => {
-        this.cookie = request.cookie(response.headers['set-cookie'][0]);
+        this.pmoCookie = request.cookie(response.headers['set-cookie'][0]);
       });
   }
 
-  pmoLogin = (req, res) => {
-    this._login().then(() => res.sendStatus(200));
-  }
-
   pmoGetAccounts = (req, res) => {
-    this._login().on('response', () => {
-      request.get(
-        this._fillRequest(pmo + 'service/account/getAccounts.action'),
-        (error, response, body) => {
-          res.setHeader('Content-Type', 'application/json');
-          res.json(body);
-        });
-    });
+    this._pmoLogin()
+      .on('response', () => {
+        request.get(
+          this._fillRequest(this.pmoCookie, pmo + 'service/account/getAccounts.action'),
+          (error, response, body) => {
+            res.setHeader('Content-Type', 'application/json');
+            res.json(body);
+          });
+      });
   }
 
   pmoGetPeople = (req, res) => {
-    this._login().on('response', () => {
-      request.get(
-        this._fillRequest(pmo + 'service/people'),
-        (error, response, body) => {
-          res.setHeader('Content-Type', 'application/json');
-          res.json(JSON.parse(body));
-        });
-    });
+    this._pmoLogin()
+      .on('response', () => {
+        request.get(
+          this._fillRequest(this.pmoCookie, pmo + 'service/people'),
+          (error, response, body) => {
+            res.setHeader('Content-Type', 'application/json');
+            res.json(JSON.parse(body));
+          });
+      });
   }
 
   _makeBambooRequest(endpoint: string, payload={}) {
@@ -161,6 +165,28 @@ export default class IntegrationsCtrl {
       res.setHeader('Content-Type', 'application/json');
       res.json(htmlParse(data.body.view.value));
     });
+  }
+
+
+  _skillTreeLogin = () => {
+    this.skillTreeCookie = '';
+    return this._login(skillTree + 'auth')
+      .on('response', response => {
+        this.skillTreeCookie = request.cookie(response.headers['set-cookie'][0]);
+      });
+  }
+
+  skillTreeGetSkills = (req, res) => {
+    const userId = req.params.userId;
+    this._skillTreeLogin()
+      .on('response', () => {
+        request.get(
+          this._fillRequest(this.skillTreeCookie, skillTree + 'v2/user/' + userId + '/allSkills'),
+          (error, response, body) => {
+            res.setHeader('Content-Type', 'application/json');
+            res.json(JSON.parse(body));
+          });
+      });
   }
 
 }
