@@ -5,7 +5,7 @@
     </button>
     <h4 class="modal-title">Notes about {{ person.name }}</h4>
   </div>
-  <div class="modal-body">
+  <div class="comments-modal modal-body">
     <ngb-tabset (tabChange)="tabChange($event)" #tabs="ngbTabset">
       <ngb-tab title="All Notes" id="comments">
         <ng-template ngbTabContent>
@@ -56,9 +56,27 @@
           </div>
         </ng-template>
       </ngb-tab>
+      <ngb-tab title="Skills" id="skills">
+        <ng-template ngbTabContent>
+          <div class="skills">
+            <ul class="categories" *ngIf="skills && skills.categories">
+              <li *ngFor="let category of skills.categories">
+                <h2>{{ category.name }}</h2>
+                <ul *ngIf="category.categories">
+                  <li *ngFor="let sub of category.categories">
+                    <h3>{{ sub.name }}</h3>
+                    <skillset [skills]="sub.skills" *ngIf="sub.skills"></skillset>
+                  </li>
+                </ul>
+                <skillset [skills]="category.skills" *ngIf="category.skills"></skillset>
+              </li>
+            </ul>
+          </div>
+        </ng-template>
+      </ngb-tab>
     </ngb-tabset>
   </div>
-  <div class="modal-footer" *ngIf="!commentsAreShown">
+  <div class="modal-footer" *ngIf="isFormActive">
     <button
       class="btn btn-primary pull-left"
       [disabled]="!form.valid || !hasChanges()"

@@ -1,6 +1,7 @@
 import { Component, ViewChild, Input } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { CommentService} from '../services/comments.service';
+import { SkillsService} from '../services/skills.service';
 import { BaseComponent } from '../base.component';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
@@ -27,7 +28,8 @@ export class CommentsComponent extends BaseComponent {
   aggregated: any[] = [];
   modalRef: any;
 
-  commentsAreShown = true;
+  activeTab: string;
+  skills: any = null;
 
   initialValue: any = empty;
   closeAfterSaving = true;
@@ -43,7 +45,8 @@ export class CommentsComponent extends BaseComponent {
 
   constructor(
     private modalService: NgbModal,
-    private commentService: CommentService
+    private commentService: CommentService,
+    private skillsService: SkillsService
   ) {
     super(commentService);
   }
@@ -51,9 +54,19 @@ export class CommentsComponent extends BaseComponent {
   tabChange(e) {
     if (!this.isSafeToProceed()) return e.preventDefault();
 
-    this.commentsAreShown = e.nextId === 'comments';
+    this.activeTab = e.nextId;
     this.form.reset();
     this.initialValue = empty;
+
+    if (this.activeTab === 'skills' && this.skills === null) {
+      this.fetchSkills();
+    }
+  }
+
+  fetchSkills() {
+    this.skillsService.get(this.person.login).subscribe(skills => {
+      this.skills = skills;
+    });
   }
 
   getEditedValue() {
@@ -122,14 +135,15 @@ export class CommentsComponent extends BaseComponent {
       if (this.status) {
         this.aggregated.unshift(this.status);
       }
-      this.commentsAreShown = true;
+      this.activeTab = 'comments';
       this.form.reset({isStatus: !this.status});
     });
   }
 
   show(person: any) {
-    console.log(person);
     this.items = [];
+    this.skills = null;
+
     this.person = person;
     this.modalRef = this.modalService.open(this.content, {size: 'lg', beforeDismiss: () => this.isSafeToProceed()});
     this.fetchData();
@@ -144,8 +158,12 @@ export class CommentsComponent extends BaseComponent {
     }, false);
   }
 
+  get isFormActive(): boolean {
+    return this.activeTab == 'add';
+  }
+
   isSafeToProceed() {
-    return (this.commentsAreShown || !this.hasChanges() || confirm(discardConfirmation));
+    return (this.isFormActive || !this.hasChanges() || confirm(discardConfirmation));
   }
 
 }

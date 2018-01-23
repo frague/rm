@@ -1,0 +1,8 @@
+<dl *ngIf="skills">
+  <ng-container *ngFor="let skill of skills">
+    <div *ngIf="skill.approved_level">
+      <dd >{{ skill.approved_level }}</dd>
+      <dt>{{ skill.name }}</dt>
+    </div>
+  </ng-container>
+</dl>

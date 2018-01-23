@@ -22,6 +22,7 @@ import { AuthGuardAdmin } from './services/auth-guard-admin.service';
 import { BusService } from './services/bus.service';
 import { FilterService } from './services/filter.service';
 import { SocketService } from './services/socket.service';
+import { SkillsService } from './services/skills.service';
 
 import { AppComponent } from './app.component';
 import { SyncComponent } from './sync/sync.component';
@@ -49,6 +50,7 @@ import { DemandPlanComponent } from './planner/demandplan.component';
 import { DpComponent } from './deadpool/dp.component';
 import { AvatarComponent } from './people/avatar.component';
 import { AssignmentsReportComponent } from './assignments/report.component';
+import { SkillsetComponent } from './planner/skillset.component';
 
 const config: SocketIoConfig = {
   url: ':3000',
@@ -78,7 +80,8 @@ const config: SocketIoConfig = {
     PlannerComponent, ReportComponent, CommentsComponent, DemandPlanComponent,
     DpComponent,
     AvatarComponent,
-    AssignmentsReportComponent
+    AssignmentsReportComponent,
+    SkillsetComponent
   ],
   imports: [
     RoutingModule,
@@ -104,6 +107,7 @@ const config: SocketIoConfig = {
     DemandPlanService,
     DpService,
     SocketService,
+    SkillsService,
     PrintableDatePipe, AvatarUrlPipe
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
