@@ -22,14 +22,20 @@ const empty = {
 export class CommentsComponent extends BaseComponent {
   @ViewChild('content') content;
 
+  surveyStates = {
+    'COMPLETE': 'Completed',
+    'IN_PROGRESS': 'In progress'
+  };
+
   person: any = {};
   comments: any[] = [];
   status: any = '';
   aggregated: any[] = [];
-  modalRef: any;
+  modalRef: any
 
   activeTab: string;
   skills: any = null;
+  skillsInfo: any = null;
 
   initialValue: any = empty;
   closeAfterSaving = true;
@@ -64,8 +70,13 @@ export class CommentsComponent extends BaseComponent {
   }
 
   fetchSkills() {
+    console.log(this.person);
     this.skillsService.get(this.person.login).subscribe(skills => {
       this.skills = skills;
+    });
+    this.skillsService.getInfo(this.person.login).subscribe(info => {
+      this.skillsInfo = info;
+      console.log(info);
     });
   }
 
@@ -143,6 +154,7 @@ export class CommentsComponent extends BaseComponent {
   show(person: any) {
     this.items = [];
     this.skills = null;
+    this.skillsInfo = null;
 
     this.person = person;
     this.modalRef = this.modalService.open(this.content, {size: 'lg', beforeDismiss: () => this.isSafeToProceed()});

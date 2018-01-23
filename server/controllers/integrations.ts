@@ -189,4 +189,17 @@ export default class IntegrationsCtrl {
       });
   }
 
+  skillTreeGetInfo = (req, res) => {
+    const userId = req.params.userId;
+    this._skillTreeLogin()
+      .on('response', () => {
+        request.get(
+          this._fillRequest(this.skillTreeCookie, skillTree + 'v2/user/' + userId + '/info'),
+          (error, response, body) => {
+            res.setHeader('Content-Type', 'application/json');
+            res.json(JSON.parse(body));
+          });
+      });
+  }
+
 }

@@ -13,4 +13,8 @@ export class SkillsService extends BaseService {
   get(login: string): Observable<any> {
     return super.get({_id: login});
   }
+
+  getInfo(login: string): Observable<any> {
+    return this.get(login + '/info');
+  }
 }

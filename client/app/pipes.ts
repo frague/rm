@@ -30,6 +30,7 @@ export class RangePipe implements PipeTransform {
 @Pipe({name: 'keys'})
 export class KeysPipe implements PipeTransform {
   transform(source: Object): string[] {
+    if (!source) return [];
     return Object.keys(source);
   }
 }
@@ -43,5 +44,6 @@ export class EllipsisPipe implements PipeTransform {
     return source || ifEmpty;
   }
 }
+
 
 
