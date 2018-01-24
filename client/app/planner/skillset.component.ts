@@ -6,4 +6,5 @@ import { Component, Input } from '@angular/core';
 })
 export class SkillsetComponent {
   @Input() skills: any = null;
+  @Input() class: string = '';
 }

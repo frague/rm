@@ -779,10 +779,21 @@ div.corner {
     }
 
     dl {
-      font-size: 12px;
+      font-size: 14px;
+
+      &.padded {
+        padding-left: 10px;
+        font-size: 12px;
+        margin-bottom: 5px;
+
+        dt {
+          font-weight: normal;
+        }
+      }
+
       dt {
-        display: inline;
-        margin-left: 80px;
+        display: inline-block;
+        margin-left: 90px;
       }
       dd {
         position: absolute;

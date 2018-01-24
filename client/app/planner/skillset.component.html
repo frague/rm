@@ -1,8 +1,9 @@
-<dl *ngIf="skills">
+<dl *ngIf="skills && skills.length" [ngClass]="class">
   <ng-container *ngFor="let skill of skills">
-    <div *ngIf="skill.approved_level">
-      <dd >{{ skill.approved_level }}</dd>
+    <div *ngIf="skill.approved_level|| skill.declared_level">
+      <dd>{{ skill.approved_level || skill.declared_level }}</dd>
       <dt>{{ skill.name }}</dt>
+      <skillset [skills]="skill.techs" [class]="'padded'" *ngIf="skill.techsDefined"></skillset>
     </div>
   </ng-container>
 </dl>

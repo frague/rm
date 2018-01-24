@@ -59,21 +59,25 @@
       <ngb-tab title="Skills" id="skills" *ngIf="person && !person.isDemand">
         <ng-template ngbTabContent>
           <div class="skills row">
-            <div class="col-md-6">
-              <ul class="categories" *ngIf="skills && skills.categories">
-                <li *ngFor="let category of skills.categories">
-                  <h2>{{ category.name }}</h2>
-                  <ul *ngIf="category.categories">
-                    <li *ngFor="let sub of category.categories">
-                      <h3>{{ sub.name }}</h3>
-                      <skillset [skills]="sub.skills" *ngIf="sub.skills"></skillset>
-                    </li>
-                  </ul>
-                  <skillset [skills]="category.skills" *ngIf="category.skills"></skillset>
-                </li>
+            <div class="col-md-7">
+              <ul class="categories" *ngIf="skills && skills.skillsDefined">
+                <ng-container *ngFor="let category of skills.categories">
+                  <li *ngIf="category.skillsDefined">
+                    <h2>{{ category.name }}</h2>
+                    <ul *ngIf="category.categories">
+                      <ng-container *ngFor="let sub of category.categories">
+                        <li *ngIf="sub.skillsDefined">
+                          <h3>{{ sub.name }} ({{ sub.skillsDefined }})</h3>
+                          <skillset [skills]="sub.skills"></skillset>
+                        </li>
+                      </ng-container>
+                    </ul>
+                    <skillset [skills]="category.skills"></skillset>
+                  </li>
+                </ng-container>
               </ul>
             </div>
-            <div class="col-md-6" *ngIf="skillsInfo">
+            <div class="col-md-5" *ngIf="skillsInfo">
               <h2>Surveys</h2>
               <ng-container *ngFor="let state of surveyStates|keys">
                 <ng-container *ngIf="skillsInfo.surveys[state]">
