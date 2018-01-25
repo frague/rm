@@ -67,7 +67,7 @@
                     <ul *ngIf="category.categories">
                       <ng-container *ngFor="let sub of category.categories">
                         <li *ngIf="sub.skillsDefined">
-                          <h3>{{ sub.name }} ({{ sub.skillsDefined }})</h3>
+                          <h3>{{ sub.name }}</h3>
                           <skillset [skills]="sub.skills"></skillset>
                         </li>
                       </ng-container>

@@ -20,6 +20,7 @@ abstract class BaseCtrl {
     let result = [];
     let filter = filterExpression instanceof RegExp ? key => filterExpression.test(key) : filterExpression;
     source.forEach(item => {
+      item = item || {};
       let key = Object.keys(item)[0];
       if (key === this.andKey) {
         let and = this.filterCriteria(item[key], filterExpression, this.andKey, transform);

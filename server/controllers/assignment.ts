@@ -1,18 +1,38 @@
 import BaseCtrl from './base';
 import Assignment from '../models/assignment';
 import Resource from '../models/resource';
+import IntegrationsCtrl from './integrations';
+import { fakeRes } from './fakeresponse';
+
+const integrations = new IntegrationsCtrl();
+const skillsExpr = new RegExp(/^skills/);
+const delimiter = integrations.delimiter;
 
 export default class AssignmentCtrl extends BaseCtrl {
   model = Assignment;
 
-  cutDemand = key => {
+  cutDemand = (key: string) => {
+    key = key || '';
     return key.indexOf('demand') && key.indexOf('comment');
   }
 
+  filterSkills = (source: any[]): any => {
+    let result = [];
+    source.forEach(item => {
+      item = item || {};
+      let key = Object.keys(item)[0];
+      if (key === this.andKey) {
+        result = result.concat(this.filterSkills(item[key]))
+      } else if (skillsExpr.test(key)) {
+        let value = item[key];
+        let expr = value['$regex'];
+        result.push((expr ? '[^' + delimiter + ']*' + expr + '[^' + delimiter + ']*' : value).toLowerCase());
+      }
+    });
+    return result;
+  };
+
   getAll = (req, res) => {
-    let query = {};
-    let assignmentsQuery = {};
-    let commentsQuery = {};
     let or;
 
     try {
@@ -22,18 +42,45 @@ export default class AssignmentCtrl extends BaseCtrl {
       return res.status(500);
     }
 
-    query = this.filterCriteria(or, this.cutDemand) || {};
-    assignmentsQuery = this.filterCriteria(or, new RegExp(/^assignment\./)) || {};
-    commentsQuery = this.filterCriteria(or, new RegExp(/^comments/), this.orKey, this.commentTransform) || {};
-
-    console.log('------------------------------------------------------');
     console.log('Initial:', JSON.stringify(or));
+
+    let query = this.filterCriteria(or, this.cutDemand) || {};
+    let assignmentsQuery = this.filterCriteria(or, new RegExp(/^assignment\./)) || {};
+    let commentsQuery = this.filterCriteria(or, new RegExp(/^comments/), this.orKey, this.commentTransform) || {};
+    let skillsList = this.filterSkills(or) || [];
+
+    if (skillsList.length) {
+      integrations.skillTreeGetAllSkills(fakeRes(skillIds => {
+        let ids = integrations.mapSkillsIds(skillsList);
+        console.log('Done', ids);
+
+        integrations.skillTreeGetBySkills(ids)
+          .then(people => {
+            let skillsQuery = {
+              login: {
+                '$in': people.map(person => person.user_id)
+              }
+            };
+            this._query(res, query, assignmentsQuery, commentsQuery, skillsQuery);
+          })
+      }));
+    } else {
+      this._query(res, query, assignmentsQuery, commentsQuery);
+    }
+  }
+
+  _query = (res, query, assignmentsQuery, commentsQuery, skillsQuery={}) => {
+    console.log('- Assignments -----------------------------------------------------');
     console.log('Assignment:', JSON.stringify(assignmentsQuery));
     console.log('Comments:', JSON.stringify(commentsQuery));
+    console.log('Skills:', JSON.stringify(skillsQuery));
     console.log('The rest:', JSON.stringify(query));
 
     let now = new Date();
     Resource.aggregate([
+      {
+        '$match': skillsQuery
+      },
       {
         '$lookup': {
           from: 'comments',

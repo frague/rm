@@ -37,7 +37,7 @@ export default class DemandCtrl extends BaseCtrl {
     query = this.filterCriteria( or, new RegExp(/^demand\./), this.orKey, this.demandTransform) || {};
     commentsQuery = this.filterCriteria(or, new RegExp(/^comments/), this.orKey, this.commentTransform) || {};
 
-    console.log('------------------------------------------------------');
+    console.log('- Demand ----------------------------------------------------------');
     console.log('Initial:', JSON.stringify(or));
     console.log('Query:', JSON.stringify(query));
     console.log('Comments:', JSON.stringify(commentsQuery));

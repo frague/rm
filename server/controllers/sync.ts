@@ -6,6 +6,7 @@ import Demand from '../models/demand';
 import IntegrationsCtrl from './integrations';
 import DiffCtrl from './diff';
 import { IO } from '../io';
+import { fakeRes } from './fakeresponse';
 
 import * as convert from 'color-convert';
 import * as Confluence from 'confluence-api';
@@ -97,20 +98,6 @@ export default class SyncCtrl {
     await Demand.deleteMany({});
   };
 
-  private _fakeRes(callback: Function) {
-    return {
-      setHeader: () => {},
-      send: (data, err) => {
-        // console.log('Text', data);
-        callback(JSON.parse(data), err);
-      },
-      json: (data, err) => {
-        // console.log('JSON', data);
-        callback(data, err);
-      }
-    };
-  }
-
   private _makeDate(milliseconds: number): string {
     if (!milliseconds) return '';
     return new Date(milliseconds).toString();
@@ -122,7 +109,7 @@ export default class SyncCtrl {
     return new Promise((resolve, reject) => {
       try {
         // Request timeoffs from the Bamboo
-        this.integrationsCtrl.bambooTimeoff({}, this._fakeRes((data, err) => {
+        this.integrationsCtrl.bambooTimeoff({}, fakeRes((data, err) => {
           this._addLog('Received vacations information', 'Bamboo');
 
           if (err) return reject(err);
@@ -191,7 +178,7 @@ export default class SyncCtrl {
     return new Promise((resolve, reject) => {
       try {
         // Get visas information
-        return this.integrationsCtrl.confluenceGetVisas({}, this._fakeRes((visas, err) => {
+        return this.integrationsCtrl.confluenceGetVisas({}, fakeRes((visas, err) => {
           if (err) return reject(err);
           let records = Object.keys(visas).length;
           // Duplicating visas data for both FirstName_LastName and LastName_FirstName
@@ -204,7 +191,7 @@ export default class SyncCtrl {
           this._addLog(records + ' records fetched', 'Visas');
 
           // Get people from PMO
-          return this.integrationsCtrl.pmoGetPeople({}, this._fakeRes((data, err) => {
+          return this.integrationsCtrl.pmoGetPeople({}, fakeRes((data, err) => {
             let initiatives = {};
             let initiativesCreators = {};
             let assignments = [];
@@ -345,7 +332,7 @@ export default class SyncCtrl {
     return new Promise((resolve, reject) => {
       try {
         // Query Demand file
-        return this.integrationsCtrl.googleGetInfo({}, this._fakeRes((data, err) => {
+        return this.integrationsCtrl.googleGetInfo({}, fakeRes((data, err) => {
           this._addLog(data.length + ' records received', 'Demand');
           let demandAccountIndex = {};
 
@@ -423,7 +410,7 @@ export default class SyncCtrl {
     this.loadings['whois'] = true;
     return new Promise((resolve, reject) => {
       try {
-        this.integrationsCtrl.confluenceGetWhois({}, this._fakeRes((whois, err) => {
+        this.integrationsCtrl.confluenceGetWhois({}, fakeRes((whois, err) => {
           if (err) return reject(err);
 
           this._addLog(whois.length + ' records received', 'Whois');
