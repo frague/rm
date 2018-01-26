@@ -205,7 +205,8 @@ export default class IntegrationsCtrl {
   }
 
   _collectIds(source: any[], destination: any) {
-    source.forEach(item => destination[item.name.toLowerCase()] = item.id);
+    // source.forEach(item => destination[item.name.toLowerCase()] = item.id);
+    source.forEach(item => destination[item.name] = item.id);
   }
 
   _flattenerFilter(source: any, result={}): Object {
@@ -218,7 +219,8 @@ export default class IntegrationsCtrl {
     }
     if (source.skills) {
       source.skills.forEach(skill => {
-        result[skill.name.toLowerCase()] = skill.id;
+        // result[skill.name.toLowerCase()] = skill.id;
+        result[skill.name] = skill.id;
         if (skill.techs) this._collectIds(skill.techs, result);
       });
     }
@@ -226,15 +228,17 @@ export default class IntegrationsCtrl {
     return result;
   }
 
-  mapSkillsIds(needles: string[]): number[] {
-    let criteria = new RegExp(this.delimiter + '(' + needles.join('|') + ')' + this.delimiter, 'g');
+  mapSkillsIds(needles: string[]): {ids: any[], suggestions: any[]} {
+    let criteria = new RegExp(this.delimiter + '(' + needles.join('|') + ')' + this.delimiter, 'gi');
 
     let ids = [];
+    let suggestions = [];
     this.skillsFlatten.replace(criteria, (match, p1) => {
       ids.push({id: '' + this.skills[p1]});
+      suggestions.push(p1);
       return match;
     });
-    return ids;
+    return {ids, suggestions};
   }
 
   skillTreeGetAllSkills = (res) => {
@@ -275,7 +279,7 @@ export default class IntegrationsCtrl {
           delete options.form;
 
           request.post(options, (err, response, body) => {
-            if (err) reject(err);
+            if (err) return reject(err);
             resolve(body);
           });
         });

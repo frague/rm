@@ -8,5 +8,4 @@ export class AssignmentService extends BaseService {
   constructor(http: Http) {
     super('assignment', http);
   }
-
 }

@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter } from '@angular/core';
 import { BusService } from '../services/bus.service';
 import { FilterService } from '../services/filter.service';
 

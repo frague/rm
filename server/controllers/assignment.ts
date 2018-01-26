@@ -13,7 +13,7 @@ export default class AssignmentCtrl extends BaseCtrl {
 
   cutDemand = (key: string) => {
     key = key || '';
-    return key.indexOf('demand') && key.indexOf('comment');
+    return key.indexOf('demand') && key.indexOf('comment') && key.indexOf('skills');
   }
 
   filterSkills = (source: any[]): any => {
@@ -51,25 +51,27 @@ export default class AssignmentCtrl extends BaseCtrl {
 
     if (skillsList.length) {
       integrations.skillTreeGetAllSkills(fakeRes(skillIds => {
-        let ids = integrations.mapSkillsIds(skillsList);
-        console.log('Done', ids);
+        let {ids, suggestions} = integrations.mapSkillsIds(skillsList);
+        console.log('Done', suggestions, ids);
 
         integrations.skillTreeGetBySkills(ids)
           .then(people => {
+            console.log('People', people);
             let skillsQuery = {
               login: {
                 '$in': people.map(person => person.user_id)
               }
             };
-            this._query(res, query, assignmentsQuery, commentsQuery, skillsQuery);
+            this._query(res, query, assignmentsQuery, commentsQuery, skillsQuery, suggestions);
           })
+        .catch(error => res.json({message: 'No skills found', data: []}))
       }));
     } else {
       this._query(res, query, assignmentsQuery, commentsQuery);
     }
   }
 
-  _query = (res, query, assignmentsQuery, commentsQuery, skillsQuery={}) => {
+  _query = (res, query, assignmentsQuery, commentsQuery, skillsQuery={}, skillsList=[]) => {
     console.log('- Assignments -----------------------------------------------------');
     console.log('Assignment:', JSON.stringify(assignmentsQuery));
     console.log('Comments:', JSON.stringify(commentsQuery));
@@ -206,9 +208,13 @@ export default class AssignmentCtrl extends BaseCtrl {
           name: 1
         }
       }
-    ], (err, docs) => {
-      if (err) { return console.error(err); }
-      res.json(docs);
+    ], (err, data) => {
+      if (err) {
+        console.error(err);
+        res.sendStatus(500);
+      }
+      let message = skillsList.length ? 'Skills suggested: ' + skillsList.join(', ') : '';
+      res.json({message, data});
     });
   }
 }

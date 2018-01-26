@@ -1,4 +1,5 @@
 <div>
+  <div class="alert alert-info message" *ngIf="message">{{ message }}</div>
   <h1><span (click)="showReport()">Show Report</span>Demand Planning Board</h1>
 
   <assignment-modal [resources]="resourcesById" [initiatives]="initiatives"></assignment-modal>

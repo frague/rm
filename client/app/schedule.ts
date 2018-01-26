@@ -58,6 +58,7 @@ export class Schedule {
   initiatives = {};
   assignments = [];
   item = {};
+  message = '';
 
   accountInitiatives = {};
   accountsAssignments = {};
@@ -145,7 +146,7 @@ export class Schedule {
     this.reset(fetchAll);
 
     return this.assignmentService.getAll(query).subscribe(data => {
-      this.items = data;
+      [this.items, this.message] = [data.data, data.message];
 
       this.demandService.getAll(query).subscribe(demands => {
         if (!this.demands.length) {

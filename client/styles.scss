@@ -562,6 +562,10 @@ div.corner {
   }
 }
 
+.message {
+  display: flex;
+}
+
 .report {
   max-height: 450px;
   overflow: auto;
