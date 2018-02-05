@@ -762,6 +762,12 @@ div.corner {
     }
   }
 
+  .spinner.big {
+    text-align: center;
+    padding-top: 30px;
+    font-size: 80px;
+  }
+
   .skills {
     h3 {
       font-weight: normal;
@@ -796,11 +802,11 @@ div.corner {
       }
 
       dt {
-        display: inline-block;
-        margin-left: 90px;
+        display: inline;
       }
       dd {
-        position: absolute;
+        float: left;
+        width: 90px;
         margin: 0;
         text-transform: lowercase;
       }
