@@ -27,6 +27,8 @@ export class CommentsComponent extends BaseComponent {
     'IN_PROGRESS': 'In progress'
   };
 
+  skillsFetching = false;
+
   person: any = {};
   comments: any[] = [];
   status: any = '';
@@ -93,12 +95,18 @@ export class CommentsComponent extends BaseComponent {
   }
 
   fetchSkills() {
+    let loadersCount = 2;
+    this.skillsFetching = true;
+
     this.skillsService.get(this.person.login).subscribe(skills => {
       this._countSkillsDefined(skills);
       this.skills = skills;
+      this.skillsFetching = !!--loadersCount;
+
     });
     this.skillsService.getInfo(this.person.login).subscribe(info => {
       this.skillsInfo = info;
+      this.skillsFetching = !!--loadersCount;
     });
   }
 

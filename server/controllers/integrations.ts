@@ -4,8 +4,8 @@ var GoogleSpreadsheet = require('google-spreadsheet');
 
 const env = process.env;
 const pmo = 'https://pmo.griddynamics.net/';
-// const skillTree = 'https://skilltree.griddynamics.net/api/';
-const skillTree = 'http://test1.skilltree.aws.griddynamics.net/api/';
+const skillTree = 'https://skilltree.griddynamics.net/api/';
+//const skillTree = 'http://test1.skilltree.aws.griddynamics.net/api/';
 const bamboo = 'api.bamboohr.com/api/gateway.php/griddynamics/v1/';
 
 import { creds } from '../google.credentials';

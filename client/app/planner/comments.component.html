@@ -58,7 +58,10 @@
       </ngb-tab>
       <ngb-tab title="Skills" id="skills" *ngIf="person && !person.isDemand">
         <ng-template ngbTabContent>
-          <div class="skills row">
+          <div class="big spinner" *ngIf="skillsFetching">
+            <i class="fa fa-spinner fa-spin"></i>
+          </div>
+          <div class="skills row" *ngIf="!skillsFetching">
             <div class="col-md-7">
               <ul class="categories" *ngIf="skills && skills.skillsDefined">
                 <ng-container *ngFor="let category of skills.categories">
