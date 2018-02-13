@@ -36,6 +36,10 @@ export class AssignmentsReportComponent {
   show(assignments: any) {
     let today = new Date().getTime();
     this.assignments = assignments.reduce((divided, resource) => {
+      if (resource.isDemand) {
+        return divided;
+      }
+
       let isBillable = false;
       resource.assignmentsArray = [].concat(...Object.values(resource.assignments)).reduce((result, assignment) => {
         let end = assignment.end ? new Date(assignment.end).getTime() : Infinity;
