@@ -13,6 +13,7 @@ export class FilterComponent {
   filters = {};
   title = '';
   $externalCriteria;
+  isHelpShown = false;
 
   constructor(
     private bus: BusService,
@@ -38,6 +39,10 @@ export class FilterComponent {
 
   getFilters() {
     return Object.values(this.filters);
+  }
+
+  toggleHelp(state=null) {
+    this.isHelpShown = state === null ? !this.isHelpShown : state;
   }
 
   save() {
@@ -132,7 +137,16 @@ export class FilterComponent {
       }
 
       this.bus.updateQuery(this.query, this.criteria);
+      this.isHelpShown = false;
       return false;
     };
+  }
+
+  populate(e: MouseEvent, prefix: string = '') {
+    let srcElement = e.srcElement;
+    if (srcElement && srcElement.tagName === 'LI') {
+      let appendix = (prefix ? prefix + '.' : '') + srcElement['innerText'];
+      this.criteria += (!this.criteria || this.criteria.endsWith(',') ? '' : ',') + appendix;
+    }
   }
 }

@@ -14,7 +14,10 @@
         [(ngModel)]="criteria"
       >
     </div>
-	  <small class="form-text text-muted">Filtering query</small>
+	  <small class="form-text text-muted">
+      <i class="fa fa-info-circle clickable" (click)="toggleHelp(true)"></i>
+      Filtering query
+    </small>
 	</div>
   <div class="form-group col-md-5">
     <div class="input-group">
@@ -47,5 +50,122 @@
       </div>
     </div>
     <small class="form-text text-muted">Filter title</small>
+  </div>
+</div>
+<div class="row col-md-12">
+  <div class="help" *ngIf="isHelpShown">
+    <h2>Query syntax reference</h2>
+    <div class="row">
+      <div class="col-sm-6 col-md-3 col-lg-2">
+        <h3>Logic</h3>
+        <ul>
+          <li>= equal</li>
+          <li>~ regexp</li>
+          <li>~= or equal</li>
+          <li>~+ or regexp</li>
+          <li>, separator</li>
+        </ul>
+
+        <h4>Examples:</h4>
+        <ul>
+          <li>A=1,B=2 &rarr; A==1 && B==2</li>
+          <li>A=1,A=2 &rarr; A==1 || A==2</li>
+          <li>A~ab &rarr; A==/ab/</li>
+          <li>A=1,B+=2 &rarr; A==1 || B==2</li>
+          <li>A=1,B=2,C+=3 &rarr; (A==1 && B==2)||C==3</li>
+        </ul>
+      </div>
+      <div class="col-sm-6 col-md-3 col-lg-2">
+        <h3>People</h3>
+        <ul (click)="populate($event)" class="clickable">
+          <li>name</li>
+          <li>login</li>
+          <li>grade</li>
+          <li>location</li>
+          <li>pool</li>
+          <li>profile</li>
+          <li>specialization</li>
+          <li>manager</li>
+          <li>canTravel</li>
+        </ul>
+
+        <h4>Examples:</h4>
+        <ul (click)="populate($event)" class="clickable">
+          <li>login=iivanov</li>
+          <li>name~Ivanov</li>
+          <li>grade~T[23]</li>
+        </ul>
+      </div>
+      <div class="col-sm-6 col-md-3 col-lg-2">
+        <h3>Assignment</h3>
+        <small>Prefix: <i>assignments.</i></small>
+
+        <ul (click)="populate($event, 'assignments')" class="clickable">
+          <li>account</li>
+          <li>initiative</li>
+          <li>billability</li>
+          <li>billable</li>
+          <li>involvement</li>
+          <li>start</li>
+          <li>end</li>
+        </ul>
+
+        <h4>Examples:</h4>
+        <ul (click)="populate($event)" class="clickable">
+          <li>assignments.account~Apple</li>
+          <li>assignments.end~2018-03</li>
+          <li>assignments.billable=false</li>
+        </ul>
+      </div>
+      <div class="col-sm-6 col-md-3 col-lg-2">
+        <h3>Demand</h3>
+        <small>Prefix: <i>demand.</i></small>
+
+        <ul (click)="populate($event, 'demand')" class="clickable">
+          <li>account</li>
+          <li>acknowledgement</li>
+          <li>comment</li>
+          <li>deployment</li>
+          <li>pool</li>
+          <li>profile</li>
+          <li>role</li>
+          <li>requestId</li>
+          <li>stage</li>
+          <li>start</li>
+          <li>end</li>
+        </ul>
+
+        <h4>Examples:</h4>
+        <ul (click)="populate($event)" class="clickable">
+          <li>demand=only</li>
+          <li>demand.account~Apple</li>
+        </ul>
+      </div>
+      <div class="col-sm-6 col-md-3 col-lg-2">
+        <h3>Skills</h3>
+        <ul (click)="populate($event)" class="clickable">
+          <li>skills</li>
+        </ul>
+
+        <h4>Examples:</h4>
+        <ul (click)="populate($event)" class="clickable">
+          <li>skills=React Native</li>
+          <li>skills~Spark</li>
+        </ul>
+      </div>
+      <div class="col-sm-6 col-md-3 col-lg-2">
+        <h3>Comments</h3>
+        <small>Prefix: <i>comments.</i></small>
+        <ul (click)="populate($event)" class="clickable">
+          <li>comments</li>
+        </ul>
+
+        <h4>Examples:</h4>
+        <ul (click)="populate($event)" class="clickable">
+          <li>comments~Attrition</li>
+          <li>comments.english=Intermediate</li>
+        </ul>
+      </div>
+    </div>
   </div>
 </div>
