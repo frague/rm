@@ -108,7 +108,10 @@ export default class AssignmentCtrl extends BaseCtrl {
         }
       },
       {
-        '$unwind': '$assignment'
+        '$unwind': {
+          path: '$assignment',
+          preserveNullAndEmptyArrays: true
+        }
       },
       {
         '$lookup': {
@@ -119,7 +122,10 @@ export default class AssignmentCtrl extends BaseCtrl {
         }
       },
       {
-        '$unwind': '$initiative'
+        '$unwind': {
+          path: '$initiative',
+          preserveNullAndEmptyArrays: true
+        }
       },
       {
         '$addFields': {
@@ -176,6 +182,7 @@ export default class AssignmentCtrl extends BaseCtrl {
         '$group': {
           _id: '$_id',
           assignments: { '$push': '$assignment' },
+          assignmentsSet: { '$max': '$assignment._id' },
           name: { '$first': '$name' },
           grade: { '$first': '$grade' },
           location: { '$first': '$location' },
@@ -198,6 +205,17 @@ export default class AssignmentCtrl extends BaseCtrl {
           login: { '$first': '$login' },
           status: { '$first': '$status' },
           commentsCount: { '$first': '$commentsCount' }
+        }
+      },
+      {
+        '$addFields': {
+          'assignments': {
+            '$cond': {
+              if: '$assignmentsSet',
+              then: '$assignments',
+              else: []
+            }
+          }
         }
       },
       {
