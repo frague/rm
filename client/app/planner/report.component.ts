@@ -1,7 +1,7 @@
 import { Component, ViewChild, Input } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 
-const emptyCandidate = new Array(5).join('-').split('-');
+const emptyCandidate = new Array(4).join('-').split('-');
 
 @Component({
   selector: 'report-modal',
@@ -32,19 +32,26 @@ export class ReportComponent {
     return this.accountsDemand[account] || [];
   }
 
+  combineStatus(demand: any={}, candidate: any={}) {
+    return [demand.status, candidate.status].reduce((result, source) => {
+      if (source && source.text) result.push(source.text);
+      return result;
+    }, []).join('\n\n');
+  }
+
   getCandidate(demand: any) {
     let candidate = this.candidatesByLogin[this.matches[demand.login]];
-    if (!candidate) {
-      return emptyCandidate;
-    } else {
-      return [
+    let demandCandidate = candidate ?
+      [
         candidate.name,
         candidate.grade,
         candidate.location,
-        candidate.canTravel ? '+' : '',
-        (candidate.status || {text: ''}).text + (demand.request ? ' (Jobvite: ' + demand.request + ')' : '')
-      ];
-    }
+        candidate.canTravel ? '+' : ''
+      ]
+    :
+      [].concat(emptyCandidate);
+    demandCandidate.push(this.combineStatus(demand, candidate));
+    return demandCandidate;
   }
 
   getDetails(demand) {
