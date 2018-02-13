@@ -155,8 +155,8 @@ export class CommentsComponent extends BaseComponent {
   }
 
   startEditing(item: any, tabs: any) {
-    this.initialValue = item;
     tabs.select('add');
+    this.initialValue = item;
     this.form.setValue(this.enableEditing(item));
   }
 
@@ -205,7 +205,7 @@ export class CommentsComponent extends BaseComponent {
   }
 
   isSafeToProceed() {
-    return (this.isFormActive || !this.hasChanges() || confirm(discardConfirmation));
+    return !this.isFormActive || !this.hasChanges() || confirm(discardConfirmation);
   }
 
 }
