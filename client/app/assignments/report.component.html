@@ -21,7 +21,7 @@
         </thead>
         <tbody *ngFor="let person of assignments[billability]">
           <tr
-            *ngFor="let assignment of person.assignmentsArray;let i = index" 
+            *ngFor="let assignment of person.assignmentsArray;let i = index"
             [ngClass]="getClass(assignment)"
           >
             <th [rowSpan]="person.assignmentsCount" *ngIf="!i">{{ person.name }}</th>
