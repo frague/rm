@@ -137,7 +137,7 @@ export default class AssignmentCtrl extends BaseCtrl {
                 '$and': [
                   {'$in': ['$assignment.billability', ['Billable', 'Soft booked', 'PTO Coverage', 'Funded']]},
                   {'$or': [
-                      {'$gt': ['$assignment.end', now]},
+                      {'$gte': ['$assignment.end', now]},
                       {'$eq': ['$assignment.end', null]}
                     ]
                   }
