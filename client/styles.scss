@@ -260,6 +260,10 @@ i.initiative {
       white-space: nowrap;
       overflow: hidden;
 
+      &.an0 {
+        background-color: rgba(255, 85, 0, 0.5);
+      }
+
       @for $i from 0 through 100 {
         &.an#{$i+1} {
           height: $lineHeight + ($i * ($lineHeight - 2));
