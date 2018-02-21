@@ -1,7 +1,7 @@
 import Requisition from '../models/requisition';
 import BaseCtrl from './base';
 
-export default class CandidateCtrl extends BaseCtrl {
+export default class RequisitionCtrl extends BaseCtrl {
   model = Requisition;
 
   // Get all
