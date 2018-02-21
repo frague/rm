@@ -51,6 +51,7 @@ import { DpComponent } from './deadpool/dp.component';
 import { AvatarComponent } from './people/avatar.component';
 import { AssignmentsReportComponent } from './assignments/report.component';
 import { SkillsetComponent } from './planner/skillset.component';
+import { CandidatesComponent } from './candidates/candidates.component';
 
 const config: SocketIoConfig = {
   url: ':3000',
@@ -81,7 +82,8 @@ const config: SocketIoConfig = {
     DpComponent,
     AvatarComponent,
     AssignmentsReportComponent,
-    SkillsetComponent
+    SkillsetComponent,
+    CandidatesComponent
   ],
   imports: [
     RoutingModule,

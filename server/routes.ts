@@ -13,6 +13,8 @@ import CommentCtrl from './controllers/comment';
 import DemandPlanCtrl from './controllers/demandplan';
 import DiffCtrl from './controllers/diff';
 import SnapshotCtrl from './controllers/snapshot';
+import CandidateCtrl from './controllers/candidate';
+import RequisitionCtrl from './controllers/requisition';
 
 import Resource from './models/resource';
 import User from './models/user';
@@ -36,6 +38,8 @@ export default function setRoutes(app) {
   const demandPlanCtrl = new DemandPlanCtrl();
   const diffCtrl = new DiffCtrl();
   const snapshotCtrl = new SnapshotCtrl();
+  const candidateCtrl = new CandidateCtrl();
+  const requisitionCtrl = new RequisitionCtrl();
 
   // Assignments
   router.route('/assignment/:id').get(assignmentCtrl.get);
@@ -90,6 +94,12 @@ export default function setRoutes(app) {
   router.route('/demands/count').get(demandCtrl.count);
   router.route('/demand/:id').delete(demandCtrl.delete);
   router.route('/demands').delete(demandCtrl.deleteAll);
+
+  // Candidates
+  router.route('/candidates').get(candidateCtrl.getAll);
+
+  // Reqiusitions
+  router.route('/requisitions').get(requisitionCtrl.getAll);
 
   // Users
   router.route('/login').post(userCtrl.login);

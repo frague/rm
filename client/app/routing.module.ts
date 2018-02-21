@@ -15,6 +15,7 @@ import { AccountsComponent } from './accounts/accounts.component';
 import { PlannerComponent } from './planner/planner.component';
 import { FilteringPanelComponent } from './filter/filteringpanel.component';
 import { DpComponent } from './deadpool/dp.component';
+import { CandidatesComponent } from './candidates/candidates.component';
 
 import { AuthGuardLogin } from './services/auth-guard-login.service';
 import { AuthGuardAdmin } from './services/auth-guard-admin.service';
@@ -28,6 +29,7 @@ const routes: Routes = [
       {path: 'assignments', component: AssignmentsComponent},
       {path: 'accounts', component: AccountsComponent},
       {path: 'planner', component: PlannerComponent},
+      {path: 'candidates', component: CandidatesComponent},
       {path: '', redirectTo: '/assignments', pathMatch: 'full'}
     ]
   },
