@@ -262,6 +262,7 @@ i.initiative {
 
       &.an0 {
         background-color: rgba(255, 85, 0, 0.5);
+        height: $lineHeight;
       }
 
       @for $i from 0 through 100 {
