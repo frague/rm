@@ -21,8 +21,12 @@ export default class CandidateCtrl extends BaseCtrl {
     let docs = [];
     for (let i = 0; i < 10; i++) {
       docs.push(new Candidate({
-        login: 'login' + i,
+        login: '-flastname' + i,
         name: 'FirstName LastName' + i,
+        country: 'RU',
+        location: 'SPB',
+        profile: 'Developer',
+        specialization: 'UI',
         requisitionId: i < 5 ? 'GD0001' : 'GD0002'
       }));
     }

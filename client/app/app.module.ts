@@ -23,6 +23,8 @@ import { BusService } from './services/bus.service';
 import { FilterService } from './services/filter.service';
 import { SocketService } from './services/socket.service';
 import { SkillsService } from './services/skills.service';
+import { RequisitionService } from './services/requisition.service';
+import { CandidateService } from './services/candidate.service';
 
 import { AppComponent } from './app.component';
 import { SyncComponent } from './sync/sync.component';
@@ -110,6 +112,8 @@ const config: SocketIoConfig = {
     DpService,
     SocketService,
     SkillsService,
+    RequisitionService,
+    CandidateService,
     PrintableDatePipe, AvatarUrlPipe
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

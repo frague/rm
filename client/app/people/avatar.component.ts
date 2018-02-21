@@ -6,10 +6,12 @@ import { Component, Input } from '@angular/core';
 })
 export class AvatarComponent {
   @Input() login: string;
+  @Input() useDefault = false;
 
   getStyle() {
+    let avatar = this.useDefault ? '' : 'url("https://in.griddynamics.net/service/photos/' + this.login + '.jpg"), ';
     return {
-      backgroundImage: 'url("https://in.griddynamics.net/service/photos/' + this.login + '.jpg"), url("/assets/nophoto.png")'
+      backgroundImage: avatar + 'url("/assets/nophoto.png")'
     };
   }
 }

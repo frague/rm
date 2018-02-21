@@ -11,6 +11,7 @@ import { AssignmentService } from '../services/assignment.service';
 import { InitiativeService } from '../services/initiative.service';
 import { ResourceService } from '../services/resource.service';
 import { DemandService } from '../services/demand.service';
+import { CandidateService } from '../services/candidate.service';
 import { BusService } from '../services/bus.service';
 
 @Component({
@@ -29,6 +30,8 @@ export class PlannerComponent extends Schedule {
   candidates = [];
   candidatesCount = 0;
 
+  hirees = [];
+
   reserved = {};
   deserved = {};
 
@@ -37,40 +40,51 @@ export class PlannerComponent extends Schedule {
   postFetch = () => {
     this.accountsDemand = {};
 
-    this.candidates = this.items
-      .filter(item => !item.isDemand)
-      .sort((a, b) => {
-        let [aChosen, bChosen] = [this.deserved[a.login], this.deserved[b.login]];
-        if (aChosen && !bChosen) return -1
-        else if (!aChosen && bChosen) return 1;
-        return a.name < b.name ? -1 : 1;
-      })
-      .slice(0, 30)
-      .map(item => {
-        let result = this.resourcesById[item._id] || {};
-        ['canTravel', 'billable'].forEach(key => result[key] = item[key] === 'true');
-        return result;
+    this.candidateService.getAll({}).subscribe(data => {
+      this.hirees = data;
+
+      this.candidates = this.items
+        .filter(item => !item.isDemand)
+        .sort((a, b) => {
+          let [aChosen, bChosen] = [this.deserved[a.login], this.deserved[b.login]];
+          if (aChosen && !bChosen) return -1
+          else if (!aChosen && bChosen) return 1;
+          return a.name < b.name ? -1 : 1;
+        })
+        .slice(0, 30)
+        .map(item => {
+          let result = this.resourcesById[item._id] || {};
+          ['canTravel', 'billable'].forEach(key => result[key] = item[key] === 'true');
+          return result;
+        });
+
+      this.hirees.forEach(hiree => {
+        hiree.isHiree = true;
+        this.candidates.push(hiree)
       });
-    this.candidatesCount = this.candidates.length;
-    let demands = this.items
-      .filter(item => item.isDemand)
-      .map(item => {
-        let assignments = item.assignments;
-        item.login = assignments[Object.keys(assignments)[0]][0].demand.login;
-        return item;
-      })
-      .sort((a, b) => a.login < b.login ? -1 : 1)
-      .map(item => {
-        let assignments = item.assignments;
-        return assignments[Object.keys(assignments)[0]][0].demand;
+
+      this.candidatesCount = this.candidates.length;
+      let demands = this.items
+        .filter(item => item.isDemand)
+        .map(item => {
+          let assignments = item.assignments;
+          item.login = assignments[Object.keys(assignments)[0]][0].demand.login;
+          return item;
+        })
+        .sort((a, b) => a.login < b.login ? -1 : 1)
+        .map(item => {
+          let assignments = item.assignments;
+          return assignments[Object.keys(assignments)[0]][0].demand;
+        });
+      demands.forEach(demand => {
+        let account = demand.account;
+        if (!this.accountsDemand[account]) {
+          this.accountsDemand[account] = [];
+        }
+        this.accountsDemand[account].push(demand);
       });
-    demands.forEach(demand => {
-      let account = demand.account;
-      if (!this.accountsDemand[account]) {
-        this.accountsDemand[account] = [];
-      }
-      this.accountsDemand[account].push(demand);
     });
+
   };
 
   constructor(
@@ -78,6 +92,7 @@ export class PlannerComponent extends Schedule {
     resourceService: ResourceService,
     initiativeService: InitiativeService,
     demandService: DemandService,
+    private candidateService: CandidateService,
     bus: BusService
   ) {
     super(assignmentService, resourceService, initiativeService, demandService, bus);
@@ -175,5 +190,9 @@ export class PlannerComponent extends Schedule {
 
   isOnsite(demand) {
     return demand.deployment.toLowerCase().indexOf('onsite') >= 0;
+  }
+
+  getCandidateCaption(candidate): string {
+    return (candidate.isHiree ? candidate.requisitionId : candidate.grade) + ', ' + candidate.location;
   }
 }

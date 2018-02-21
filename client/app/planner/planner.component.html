@@ -52,13 +52,13 @@
           <li
             *ngFor="let candidate of candidates;let x = index"
             (click)="showResource(candidate)"
-            [ngClass]="{billable: candidate.billable, assigned: isAssigned(candidate)}"
+            [ngClass]="{billable: candidate.billable, assigned: isAssigned(candidate), hiree: candidate.isHiree}"
           >
-            <avatar [login]="candidate.login"></avatar>
+            <avatar [login]="candidate.login" [useDefault]="candidate.isHiree"></avatar>
             {{ candidate.name }}
             <span>
               <i class="fa fa-plane" *ngIf="candidate.canTravel"></i>
-              {{ candidate.grade }}, {{ candidate.location }}
+              {{ getCandidateCaption(candidate) }}
             </span>
             <div
               class="status"

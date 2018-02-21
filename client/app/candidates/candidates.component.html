@@ -4,37 +4,19 @@
 
   <!-- <assignment-modal [resources]="resourcesById" [initiatives]="initiatives"></assignment-modal> -->
 
-  <div class="row">
-    <div class="col-md-2"></div>
-    <div class="col-md-10"></div>
-  </div>
-
-  <div class="requisitions row" *ngIf="getRequisitions().length">
-    <div class="people col-md-2">
-      <div class="requisition" *ngFor="let requisition of getRequisitions()">
-        <h3>{{ requisition }}</h3>
-        <div class="lines">
-          <div
-            *ngFor="let candidate of getRequisitionCandidates(requisition); let i = index"
-            class="line"
-            [ngClass]="getCandidatesCount(requisition)"
-          >{{ candidate.name }}</div>
+  <div class="requisitions" *ngIf="getRequisitions().length">
+    <div *ngFor="let requisition of getRequisitions()" class="requisition">
+      <h3>{{ requisition.position }}</h3>
+      <div
+        *ngFor="let candidate of requisition.candidates; let i = index"
+        class="row"
+      >
+        <div class="col-md-2">
+          {{ candidate.name }}
+        </div>
+        <div class="candidates col-md-10">
+          {{ candidate.name }}
         </div>
       </div>
-    </div>
-    <div class="candidates col-md-10">
-      <div class="lines">
-        <div *ngFor="let requisition of getRequisitions()" class="requisition">
-          <div
-            *ngFor="let candidate of getRequisitionCandidates(requisition); let i = index"
-            class="line"
-            [ngClass]="getCandidatesCount(requisition)"
-          >
-            {{ candidate }}
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
-
 </div>
