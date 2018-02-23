@@ -5,8 +5,8 @@ var GoogleSpreadsheet = require('google-spreadsheet');
 const env = process.env;
 const pmo = 'https://pmo.griddynamics.net/';
 const skillTree = 'https://skilltree.griddynamics.net/api/';
-//const skillTree = 'http://test1.skilltree.aws.griddynamics.net/api/';
 const bamboo = 'api.bamboohr.com/api/gateway.php/griddynamics/v1/';
+const jobvite = 'https://api.jobvite.com/api/v2/';
 
 import { creds } from '../google.credentials';
 import { htmlParse } from './htmlparser';
@@ -284,6 +284,27 @@ export default class IntegrationsCtrl {
           });
         });
     });
+  }
+
+  // JobVite methods
+
+  jvGetRequisitions = (req, res) => {
+    var key = env.JV_KEY;
+    var secret = env.JV_SECRET;
+    if (!key || !secret) {
+      throw "No JV keys provided to access the API";
+    }
+
+    request.get(
+      jobvite + 'job',
+      {qs: {api: key, sc: secret}},
+      (err, response, body) => {
+        if (err) return res.sendStatus(500);
+
+        res.setHeader('Content-Type', 'application/json');
+        res.json(JSON.parse(body));
+      });
+
   }
 
 }

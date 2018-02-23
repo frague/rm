@@ -2,6 +2,7 @@ import Initiative from '../models/initiative';
 import Resource from '../models/resource';
 import Assignment from '../models/assignment';
 import Demand from '../models/demand';
+import Requisition from '../models/requisition';
 
 import IntegrationsCtrl from './integrations';
 import DiffCtrl from './diff';
@@ -77,6 +78,10 @@ export default class SyncCtrl {
       this._setTimer('Demand sync');
       await this._queryDemand();
       this._getDelay('Demand sync');
+
+      this._setTimer('Requisitions sync');
+      await this._queryRequisitions();
+      this._getDelay('Requisitions sync');
     } catch (e) {
       this._addLog(e, 'Error');
     }
@@ -96,6 +101,7 @@ export default class SyncCtrl {
     await Resource.deleteMany({});
     await Assignment.deleteMany({});
     await Demand.deleteMany({});
+    await Requisition.deleteMany({});
   };
 
   private _makeDate(milliseconds: number): string {
@@ -425,8 +431,29 @@ export default class SyncCtrl {
           return resolve();
         }))
       } catch (e) {
+        this.loadings['whois'] = false;
         reject(e);
       }
     });
   };
+
+  private _queryRequisitions(): Promise<any> {
+    this.loadings['jv'] = true;
+    return new Promise((resolve, reject) => {
+      try {
+        this.integrationsCtrl.jvGetRequisitions({}, fakeRes((data, err) => {
+          if (err) return reject(err);
+          this._addLog(data.total + ' requisitions received', 'JobVite');
+          data.requisitions.forEach((req, index) => {
+            if (req.jobState === 'Open') new Requisition(req).save();
+          })
+          this.loadings['jv'] = false;
+          resolve();
+        }));
+      } catch (e) {
+        this.loadings['jv'] = false;
+        reject(e);
+      }
+    });
+  }
 }
