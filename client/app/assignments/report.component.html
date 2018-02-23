@@ -24,7 +24,7 @@
             *ngFor="let assignment of person.assignmentsArray;let i = index"
             [ngClass]="getClass(assignment)"
           >
-            <th [rowSpan]="person.assignmentsCount" *ngIf="!i">{{ person.name }}</th>
+            <th [rowSpan]="person.assignmentsCount" *ngIf="!i">{{ person.grade }}, {{ person.name }} ({{ person.location }})</th>
             <td>{{ assignment.account }}/{{ assignment.initiative }}</td>
             <td>{{ assignment.start|date }}</td>
             <td>{{ assignment.end|date }}</td>
