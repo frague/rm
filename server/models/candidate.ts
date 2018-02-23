@@ -4,10 +4,12 @@ const candidateSchema = new mongoose.Schema({
   login: String,
   name: String,
   country: String,
-  location: String,
+  city: String,
   profile: String,
-  specialization: String,
-  requisitionId: String
+  state: String,
+  updated: Date,
+  requisitionId: String,
+  applicationId: String
 });
 
 const Candidate = mongoose.model('Candidate', candidateSchema);

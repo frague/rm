@@ -544,22 +544,26 @@ ul.sync {
   .requisition {
     border-top: solid 2px $grid;
 
-    h3 {
-      font-size: 24px;
+    h5 {
+      font-size: 18px;
       white-space: nowrap;
       height: 40px;
       font-weight: 600;
       display: block;
       margin: 0;
-      padding-top: 6px;
+      padding-top: 10px;
     }
 
     div.row {
       height: $lineHeight;
       border-top: solid 1px $grid;
       padding-top: 1px;
-      white-space: nowrap;
-      overflow: hidden;
+      margin: 0;
+
+      div {
+        white-space: nowrap;
+        overflow: hidden;
+      }
     }
   }
 }

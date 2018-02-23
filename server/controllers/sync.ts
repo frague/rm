@@ -2,6 +2,7 @@ import Initiative from '../models/initiative';
 import Resource from '../models/resource';
 import Assignment from '../models/assignment';
 import Demand from '../models/demand';
+import Candidate from '../models/candidate';
 import Requisition from '../models/requisition';
 
 import IntegrationsCtrl from './integrations';
@@ -20,6 +21,8 @@ import {
   profilesInvertedMap,
   demandProfilesMap
 } from '../mappings';
+
+const candidatesChunk = 500;
 
 export default class SyncCtrl {
 
@@ -58,6 +61,16 @@ export default class SyncCtrl {
       await this._cleanup();
       this._getDelay('Cleanup');
 
+      this._setTimer('Requisitions sync');
+      this._queryRequisitions()
+        .catch(err => this._addLog('Error syncing requisitions: ' + err))
+        .then(() => this._getDelay('Requisitions sync'));
+
+      this._setTimer('Candidates sync');
+      this._queryCandidates()
+        .catch(err => this._addLog('Error syncing candidates: ' + err))
+        .then(() => this._getDelay('Candidates sync'));
+
       this._setTimer('Confluence (whois) sync');
       await this._queryConfluence();
       this._getDelay('Confluence (whois) sync');
@@ -78,10 +91,6 @@ export default class SyncCtrl {
       this._setTimer('Demand sync');
       await this._queryDemand();
       this._getDelay('Demand sync');
-
-      this._setTimer('Requisitions sync');
-      await this._queryRequisitions();
-      this._getDelay('Requisitions sync');
     } catch (e) {
       this._addLog(e, 'Error');
     }
@@ -102,6 +111,7 @@ export default class SyncCtrl {
     await Assignment.deleteMany({});
     await Demand.deleteMany({});
     await Requisition.deleteMany({});
+    await Candidate.deleteMany({});
   };
 
   private _makeDate(milliseconds: number): string {
@@ -438,22 +448,72 @@ export default class SyncCtrl {
   };
 
   private _queryRequisitions(): Promise<any> {
-    this.loadings['jv'] = true;
+    this.loadings['jvr'] = true;
     return new Promise((resolve, reject) => {
       try {
         this.integrationsCtrl.jvGetRequisitions({}, fakeRes((data, err) => {
-          if (err) return reject(err);
-          this._addLog(data.total + ' requisitions received', 'JobVite');
-          data.requisitions.forEach((req, index) => {
-            if (req.jobState === 'Open') new Requisition(req).save();
-          })
-          this.loadings['jv'] = false;
+          if (err) {
+            console.log('Unable to fetch requisitions', err);
+            reject(err);
+          }
+          this._addLog(data.length + ' requisitions received', 'JobVite');
+          data.forEach(req => new Requisition(req).save())
+          this.loadings['jvr'] = false;
           resolve();
         }));
       } catch (e) {
-        this.loadings['jv'] = false;
+        this.loadings['jvr'] = false;
+        console.log('Unable to parse requisitions', e);
         reject(e);
       }
+    });
+  }
+
+  private _queryCandidates(): Promise<any> {
+    this.loadings['jvc'] = true;
+    return new Promise((resolve, reject) => {
+      this.integrationsCtrl._jvGetCandidatesCount()
+        .catch(err => this._addLog('Error fetching candidates count'))
+        .then((count: number) => {
+          Promise.all(new Array(10).join('.').split('.').map((x, i) => new Promise((res, rej) => {
+            let start = count - candidatesChunk * (i + 1);
+            this.integrationsCtrl.jvGetCandidates(start, candidatesChunk)
+              .catch(err => rej(err))
+              .then(data => {
+                this._addLog(data.length + ' candidates received from position ' + start, 'JobVite');
+                data.forEach((candidate, index) => {
+                  let login = '-' + (candidate.firstName.charAt(0) + candidate.lastName).toLowerCase();
+                  let name = candidate.lastName + ' ' + candidate.firstName;
+                  let job = candidate.job || {};
+                  let application = candidate.application || {};
+                  let applicationJob = application.job || {};
+
+                  let nc = new Candidate({
+                    login,
+                    name,
+                    country: candidate.country,
+                    city: candidate.city,
+                    profile: candidate.title,
+                    requisitionId: applicationJob.requisitionId,
+                    state: application.workflowState,
+                    updated: application.lastUpdatedDate ? new Date(application.lastUpdatedDate).toISOString().substr(0, 10) : null,
+                    applicationId: application.eId
+                  });
+                  if (nc.state.indexOf('Rejected') < 0) nc.save();
+                });
+                res();
+              }
+            );
+          })))
+            .catch(err => {
+              this.loadings['jvc'] = false;
+              reject(err)
+            })
+            .then(() => {
+              this.loadings['jvc'] = false;
+              resolve();
+            });
+        });
     });
   }
 }

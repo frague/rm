@@ -7,9 +7,13 @@ const pmo = 'https://pmo.griddynamics.net/';
 const skillTree = 'https://skilltree.griddynamics.net/api/';
 const bamboo = 'api.bamboohr.com/api/gateway.php/griddynamics/v1/';
 const jobvite = 'https://api.jobvite.com/api/v2/';
+// const jobvite = 'https://app-stg.jobvite.com/api/v2/';
+
 
 import { creds } from '../google.credentials';
 import { htmlParse } from './htmlparser';
+
+// request.debug = true;
 
 var doc = new GoogleSpreadsheet(env.DEMAND_SHEET);
 
@@ -289,20 +293,36 @@ export default class IntegrationsCtrl {
   // JobVite methods
 
   jvGetRequisitions = (req, res) => {
-    var key = env.JV_JOB_KEY;
-    var secret = env.JV_JOB_SECRET;
-    if (!key || !secret) {
+    var api = env.JV_JOBS_KEY;
+    var sc = env.JV_JOBS_SECRET;
+    if (!api || !sc) {
       throw "No JV keys provided to access the jobs API";
     }
 
     request.get(
       jobvite + 'job',
-      {qs: {api: key, sc: secret}},
+      {
+        qs: {
+          api,
+          sc,
+          jobStatus: ['Open', 'Approved', 'Draft']
+        },
+        useQuerystring: true
+      },
       (err, response, body) => {
-        if (err) return res.sendStatus(500);
-
-        res.setHeader('Content-Type', 'application/json');
-        res.json(JSON.parse(body));
+        if (err) {
+          console.log('Reqisitions fetching error', err);
+          return res.sendStatus(500);
+        }
+        try {
+          body = JSON.parse(body);
+          res.setHeader('Content-Type', 'application/json');
+          console.log('Total requisitions fetched:', body.total);
+          res.json(body.requisitions);
+        } catch (e) {
+          console.log('Requisitions parsing error', e);
+          res.sendStatus(500)
+        }
       });
 
   }
@@ -316,21 +336,26 @@ export default class IntegrationsCtrl {
     return {api, sc};
   }
 
-  jvGetCandidates = (req, res) => {
+  jvGetCandidates(start, count): Promise<any> {
     let keys = this._jvGetCandidatesKeys();
-    this._jvGetCandidatesCount()
-      .catch(error => res.sendStatus(500))
-      .then(total => {
-        request.get(
-          jobvite + 'candidate',
-          {qs: Object.assign({start: total - 100, count: 100}, keys)},
-          (err, response, body) => {
-            if (err) return res.sendStatus(500);
-
-            res.setHeader('Content-Type', 'application/json');
-            res.json(JSON.parse(body));
-          });
-      });
+    return new Promise((resolve, reject) => {
+      request.get(
+        jobvite + 'candidate',
+        {qs: Object.assign({start, count}, keys)},
+        (err, response, body) => {
+          if (err) {
+            console.log('Candidates fetching error', err);
+            reject(err);
+          }
+          try {
+            body = JSON.parse(body);
+            resolve(body.candidates);
+          } catch (e) {
+            console.log('Candidates parsing error', e);
+            reject(e)
+          }
+        });
+    });
   }
 
   _jvGetCandidatesCount(): Promise<number> {
@@ -341,8 +366,14 @@ export default class IntegrationsCtrl {
         {qs: Object.assign({count: 1}, keys)},
         (err, response, body) => {
           if (err) reject('Unable to access JV candidates API');
-          console.log(body.total, body);
-          resolve(JSON.parse(body).total);
+          try {
+            body = JSON.parse(body);
+            let total = body.total;
+            console.log(total, 'candidates in total');
+            resolve(total);
+          } catch (e) {
+            reject('Error parsing JV response')
+          }
         }
       );
     });
