@@ -6,7 +6,7 @@
 
   <div class="requisitions" *ngIf="getRequisitions().length">
     <div *ngFor="let requisition of getRequisitions()" class="requisition">
-      <h3>{{ requisition.position }}</h3>
+      <h3>{{ requisition.requisitionId }}: {{ requisition.title }}</h3>
       <div
         *ngFor="let candidate of requisition.candidates; let i = index"
         class="row"
