@@ -120,6 +120,7 @@ export default function setRoutes(app) {
 
   // Sync
   router.route('/sync').post(syncCtrl.sync);
+  router.route('/jvcandidates').get(integrationsCtrl.jvGetCandidates);
 
   // Skill Tree
   router.route('/skills/:userId').get(integrationsCtrl.skillTreeGetSkills);

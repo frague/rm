@@ -289,10 +289,10 @@ export default class IntegrationsCtrl {
   // JobVite methods
 
   jvGetRequisitions = (req, res) => {
-    var key = env.JV_KEY;
-    var secret = env.JV_SECRET;
+    var key = env.JV_JOB_KEY;
+    var secret = env.JV_JOB_SECRET;
     if (!key || !secret) {
-      throw "No JV keys provided to access the API";
+      throw "No JV keys provided to access the jobs API";
     }
 
     request.get(
@@ -305,6 +305,47 @@ export default class IntegrationsCtrl {
         res.json(JSON.parse(body));
       });
 
+  }
+
+  _jvGetCandidatesKeys() {
+    var api = env.JV_CANDIDATES_KEY;
+    var sc = env.JV_CANDIDATES_SECRET;
+    if (!api || !sc) {
+      throw "No JV keys provided to access the candidates API";
+    }
+    return {api, sc};
+  }
+
+  jvGetCandidates = (req, res) => {
+    let keys = this._jvGetCandidatesKeys();
+    this._jvGetCandidatesCount()
+      .catch(error => res.sendStatus(500))
+      .then(total => {
+        request.get(
+          jobvite + 'candidate',
+          {qs: Object.assign({start: total - 100, count: 100}, keys)},
+          (err, response, body) => {
+            if (err) return res.sendStatus(500);
+
+            res.setHeader('Content-Type', 'application/json');
+            res.json(JSON.parse(body));
+          });
+      });
+  }
+
+  _jvGetCandidatesCount(): Promise<number> {
+    let keys = this._jvGetCandidatesKeys();
+    return new Promise((resolve, reject) => {
+      request.get(
+        jobvite + 'candidate',
+        {qs: Object.assign({count: 1}, keys)},
+        (err, response, body) => {
+          if (err) reject('Unable to access JV candidates API');
+          console.log(body.total, body);
+          resolve(JSON.parse(body).total);
+        }
+      );
+    });
   }
 
 }
