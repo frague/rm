@@ -14,16 +14,23 @@ import { BusService } from '../services/bus.service';
 export class CandidatesComponent implements OnInit {
   items = [];
   requisitionCandidates = {};
+  private $query;
 
   constructor(
     private requisitionService: RequisitionService,
     private candidateService: CandidateService,
-    bus: BusService
+    private bus: BusService
   ) {
   }
 
   ngOnInit() {
     this.fetchData();
+    this.$query = this.bus.filterUpdated.subscribe(query => this.fetchData(query));
+    this.fetchData(this.bus.filterQuery);
+  }
+
+  ngOnDestroy() {
+    this.$query.unsubscribe();
   }
 
   fetchData(query={}): Subscription {
@@ -42,14 +49,4 @@ export class CandidatesComponent implements OnInit {
   getRequisitions() {
     return this.items;
   }
-
-  getLocation(candidate) {
-    let result = [];
-    ['country', 'city'].forEach(key => {
-      if (candidate[key]) result.push(candidate[key]);
-    });
-    return result.join(', ');
-
-  }
-
 }

@@ -5,6 +5,7 @@ const candidateSchema = new mongoose.Schema({
   name: String,
   country: String,
   city: String,
+  location: String,
   profile: String,
   state: String,
   updated: Date,

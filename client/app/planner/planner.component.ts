@@ -58,7 +58,7 @@ export class PlannerComponent extends Schedule {
           return result;
         });
 
-      this.hirees.forEach(hiree => {
+      this.hirees.slice(0, 20).forEach(hiree => {
         hiree.isHiree = true;
         this.candidates.push(hiree)
       });
@@ -193,6 +193,10 @@ export class PlannerComponent extends Schedule {
   }
 
   getCandidateCaption(candidate): string {
-    return (candidate.isHiree ? candidate.requisitionId : candidate.grade) + ', ' + candidate.location;
+    if (candidate.isHiree) {
+      return candidate.state;
+    } else {
+      return candidate.grade + ', ' + candidate.location;
+    }
   }
 }

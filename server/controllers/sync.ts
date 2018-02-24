@@ -23,6 +23,7 @@ import {
 } from '../mappings';
 
 const candidatesChunk = 500;
+const cleanupLocation = new RegExp(/(^,\s*|,\s*^)/);
 
 export default class SyncCtrl {
 
@@ -493,6 +494,7 @@ export default class SyncCtrl {
                     name,
                     country: candidate.country,
                     city: candidate.city,
+                    location: candidate.location.replace(cleanupLocation, ''),
                     profile: candidate.title,
                     requisitionId: applicationJob.requisitionId,
                     state: application.workflowState,

@@ -42,7 +42,7 @@ export default class DemandCtrl extends BaseCtrl {
     console.log('Query:', JSON.stringify(query));
     console.log('Comments:', JSON.stringify(commentsQuery));
 
-    Demand.aggregate([
+    this.model.aggregate([
       {
         '$lookup': {
           from: 'comments',

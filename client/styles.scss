@@ -100,6 +100,11 @@ h2 {
 .avatar {
   background-size: cover;
   border: solid 1px $grid;
+  text-align: left;
+  padding: 2px 0 0 6px;
+  font-size: 8px;
+  font-weight: 500;
+  color: $grid;
 }
 
 .modal-body {
@@ -555,7 +560,7 @@ ul.sync {
     }
 
     div.row {
-      height: $lineHeight;
+      min-height: $lineHeight;
       border-top: solid 1px $grid;
       padding-top: 1px;
       margin: 0;
