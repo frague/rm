@@ -64,6 +64,20 @@ export default class CandidateCtrl extends BaseCtrl {
       {
         '$match': commentsQuery
       },
+      {
+        '$lookup': {
+          from: 'requisitions',
+          localField: 'requisitionId',
+          foreignField: 'requisitionId',
+          as: 'requisition'
+        }
+      },
+      {
+        '$unwind': {
+          path: '$requisition',
+          preserveNullAndEmptyArrays: true
+        }
+      },
       // {
       //   '$project': {
       //     account: 1,

@@ -41,7 +41,7 @@ export class CandidatesComponent implements OnInit {
           result[candidate.requisitionId] = result[candidate.requisitionId] || [];
           result[candidate.requisitionId].push(candidate);
           return result;
-        });
+        }, []);
       });
     })
   }

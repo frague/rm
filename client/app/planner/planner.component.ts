@@ -1,6 +1,7 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { Schedule } from '../schedule';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
+import { Observable } from 'rxjs';
 
 
 import { ReportComponent } from './report.component';
@@ -39,24 +40,30 @@ export class PlannerComponent extends Schedule {
 
   postFetch = query => {
     this.accountsDemand = {};
+    let candidatesQuery = JSON.stringify(query).indexOf('candidate.') >= 0 ?
+      this.candidateService.getAll(query) : Observable.from([[]]);
 
-    this.candidateService.getAll(query).subscribe(data => {
+    candidatesQuery.subscribe(data => {
       this.hirees = data;
 
-      this.candidates = this.items
-        .filter(item => !item.isDemand)
-        .sort((a, b) => {
-          let [aChosen, bChosen] = [this.deserved[a.login], this.deserved[b.login]];
-          if (aChosen && !bChosen) return -1
-          else if (!aChosen && bChosen) return 1;
-          return a.name < b.name ? -1 : 1;
-        })
-        .slice(0, 30)
-        .map(item => {
-          let result = this.resourcesById[item._id] || {};
-          ['canTravel', 'billable'].forEach(key => result[key] = item[key] === 'true');
-          return result;
-        });
+      this.candidates = this.items.length > 100
+        ?
+          []
+        :
+          this.items
+            .filter(item => !item.isDemand)
+            .sort((a, b) => {
+              let [aChosen, bChosen] = [this.deserved[a.login], this.deserved[b.login]];
+              if (aChosen && !bChosen) return -1
+              else if (!aChosen && bChosen) return 1;
+              return a.name < b.name ? -1 : 1;
+            })
+            .slice(0, 30)
+            .map(item => {
+              let result = this.resourcesById[item._id] || {};
+              ['canTravel', 'billable'].forEach(key => result[key] = item[key] === 'true');
+              return result;
+            });
 
       this.hirees.slice(0, 20).forEach(hiree => {
         hiree.isHiree = true;
@@ -137,7 +144,7 @@ export class PlannerComponent extends Schedule {
   showResource(resource: any, isDemand=false) {
     if (isDemand) {
       return this.demandModal.show(resource);
-    } else {
+    } else if (!resource.isHiree) {
       return this.personModal.show(this.resourcesById[resource._id])
     }
   }
