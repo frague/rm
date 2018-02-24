@@ -15,6 +15,8 @@ export default class CandidateCtrl extends BaseCtrl {
     let query = {};
     let commentsQuery = {};
 
+    console.log(req.query);
+
     try {
       or = req.query.or ? JSON.parse(req.query.or) : [];
     } catch (e) {
@@ -22,7 +24,7 @@ export default class CandidateCtrl extends BaseCtrl {
       return res.status(500);
     }
 
-    query = this.filterCriteria( or, new RegExp(/^demand\./), this.orKey, this.candidateTransform) || {};
+    query = this.filterCriteria(or, new RegExp(/^candidate\./), this.orKey, this.candidateTransform) || {};
     commentsQuery = this.filterCriteria(or, new RegExp(/^comments/), this.orKey, this.commentTransform) || {};
 
     console.log('- Candidates ------------------------------------------------------');

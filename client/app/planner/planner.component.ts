@@ -37,10 +37,10 @@ export class PlannerComponent extends Schedule {
 
   accountsDemand = {};
 
-  postFetch = () => {
+  postFetch = query => {
     this.accountsDemand = {};
 
-    this.candidateService.getAll({}).subscribe(data => {
+    this.candidateService.getAll(query).subscribe(data => {
       this.hirees = data;
 
       this.candidates = this.items

@@ -13,7 +13,7 @@ export default class AssignmentCtrl extends BaseCtrl {
 
   cutDemand = (key: string) => {
     key = key || '';
-    return key.indexOf('demand') && key.indexOf('comment') && key.indexOf('skills');
+    return key.indexOf('demand') && key.indexOf('comment') && key.indexOf('skills') && key.indexOf('candidate');
   }
 
   filterSkills = (source: any[]): any => {

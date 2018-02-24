@@ -69,7 +69,7 @@ export class Schedule {
   visibleAccounts = {};
   visibleInitiatives = {};
 
-  postFetch = () => {};
+  postFetch = query => {};
 
   private $query;
 
@@ -264,7 +264,7 @@ export class Schedule {
             }, {});
           },
           error => console.log(error)
-        ).add(() => this.postFetch());
+        ).add(() => this.postFetch(query));
 
         if (!fetchAll) {
           this.findVisibleAccounts();

@@ -34,7 +34,7 @@ export default class DemandCtrl extends BaseCtrl {
       return res.status(500);
     }
 
-    query = this.filterCriteria( or, new RegExp(/^demand\./), this.orKey, this.demandTransform) || {};
+    query = this.filterCriteria(or, new RegExp(/^demand\./), this.orKey, this.demandTransform) || {};
     commentsQuery = this.filterCriteria(or, new RegExp(/^comments/), this.orKey, this.commentTransform) || {};
 
     console.log('- Demand ----------------------------------------------------------');

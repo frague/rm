@@ -34,9 +34,9 @@ export class CandidatesComponent implements OnInit {
   }
 
   fetchData(query={}): Subscription {
-    return this.requisitionService.getAll(query).subscribe(data => {
+    return this.requisitionService.getAll({}).subscribe(data => {
       this.items = data;
-      this.candidateService.getAll().subscribe(data => {
+      this.candidateService.getAll(query).subscribe(data => {
         this.requisitionCandidates = data.reduce((result, candidate) => {
           result[candidate.requisitionId] = result[candidate.requisitionId] || [];
           result[candidate.requisitionId].push(candidate);
