@@ -145,10 +145,13 @@ export class Schedule {
   fetchData(query={}, fetchAll=false): Subscription {
     this.reset(fetchAll);
 
+    let demandQuery = JSON.stringify(query).indexOf('demand') >= 0 ?
+      this.demandService.getAll(query) : Observable.from([[]]);
+
     return this.assignmentService.getAll(query).subscribe(data => {
       [this.items, this.message] = [data.data, data.message];
 
-      this.demandService.getAll(query).subscribe(demands => {
+      demandQuery.subscribe(demands => {
         if (!this.demands.length) {
           this.demands = demands;
         }

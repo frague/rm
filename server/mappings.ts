@@ -150,3 +150,17 @@ export var dePolish = {
   'Ż': 'Z',
   'ż': 'z'
 };
+
+export var candidateStates = {
+  'New': 'New',
+  'Screened': 'Screened',
+  'Submitted to Interviewers': 'Interview',
+  'Submitted to Hiring Manager': 'Passed to HM',
+  'Approved by Hiring Manager': 'Approved by HM',
+  'HR Interview': 'HR Interview',
+  'Technical Interview': 'Tech. Interview',
+  'Rejected after Technical Interview': 'Rejected after Tech. Interview',
+  'Non-Technical Interview': 'Non-Tech. Interview',
+  'Recommended for Hiring': 'Recommended for Hiring',
+  'Offer Generation': 'Offer Generation'
+};
