@@ -19,7 +19,8 @@ import {
   locationsMap,
   locations,
   profilesInvertedMap,
-  demandProfilesMap
+  demandProfilesMap,
+  candidateStates
 } from '../mappings';
 
 const candidatesChunk = 500;
@@ -488,6 +489,7 @@ export default class SyncCtrl {
                   let job = candidate.job || {};
                   let application = candidate.application || {};
                   let applicationJob = application.job || {};
+                  let state = candidateStates[application.workflowState];
 
                   let nc = new Candidate({
                     login,
@@ -497,7 +499,7 @@ export default class SyncCtrl {
                     location: candidate.location.replace(cleanupLocation, ''),
                     profile: candidate.title,
                     requisitionId: applicationJob.requisitionId,
-                    state: application.workflowState,
+                    state: state || application.workflowState,
                     updated: application.lastUpdatedDate ? new Date(application.lastUpdatedDate).toISOString().substr(0, 10) : null,
                     applicationId: application.eId
                   });

@@ -7,12 +7,13 @@
   <div class="requisitions" *ngIf="getRequisitions().length">
     <ng-container *ngFor="let requisition of getRequisitions()">
       <div class="requisition" *ngIf="requisitionCandidates[requisition.requisitionId] && requisitionCandidates[requisition.requisitionId].length">
-        <h5>{{ requisition.requisitionId }}, {{ requisition.category }}: <span>{{ requisition.title }}</span></h5>
+        <h5><a [href]="getJvRequisitionLink(requisition)" target="_blank">{{ requisition.requisitionId }}</a>, {{ requisition.category }}: <span>{{ requisition.title }}</span></h5>
         <div
           *ngFor="let candidate of requisitionCandidates[requisition.requisitionId]"
           class="row"
         >
           <div class="col-md-2">
+            <a [href]="getJvCandidateLink(candidate)" target="_blank"><i class="fa fa-external-link-square"></i></a>
             {{ candidate.name }}
           </div>
           <div class="candidates col-md-3">

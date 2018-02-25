@@ -11,6 +11,7 @@ const requisitionSchema = new mongoose.Schema({
   location: String,
   postingType: String,
   requisitionId: String,
+  eId: String,
   title: String
 });
 

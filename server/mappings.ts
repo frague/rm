@@ -155,12 +155,12 @@ export var candidateStates = {
   'New': 'New',
   'Screened': 'Screened',
   'Submitted to Interviewers': 'Interview',
+  'Approved by Interviewers by CV': 'Approved by CV',
   'Submitted to Hiring Manager': 'Passed to HM',
   'Approved by Hiring Manager': 'Approved by HM',
   'HR Interview': 'HR Interview',
   'Technical Interview': 'Tech. Interview',
-  'Rejected after Technical Interview': 'Rejected after Tech. Interview',
   'Non-Technical Interview': 'Non-Tech. Interview',
-  'Recommended for Hiring': 'Recommended for Hiring',
+  'Recommended for Hiring': 'Hiring Recommended',
   'Offer Generation': 'Offer Generation'
 };

@@ -142,15 +142,31 @@
         </ul>
       </div>
       <div class="col-sm-6 col-md-3 col-lg-2">
-        <h3>Skills</h3>
-        <ul (click)="populate($event)" class="clickable">
-          <li>skills</li>
+        <h3>Candidates</h3>
+        <small>Prefix: <i>candidate.</i></small>
+        <ul (click)="populate($event, 'candidate')" class="clickable">
+          <li>name</li>
+          <li>location</li>
+          <li>city</li>
+          <li>country</li>
+          <li>state</li>
+          <li>state</li>
+          <li>requisitionId</li>
+          <li>
+            <ul>
+              <li>requisition.title</li>
+              <li>requisition.category</li>
+              <li>requisition.department</li>
+              <li>requisition.jobState</li>
+              <li>requisition.location</li>
+            </ul>
+          </li>
         </ul>
 
         <h4>Examples:</h4>
         <ul (click)="populate($event)" class="clickable">
-          <li>skills=React Native</li>
-          <li>skills~Spark</li>
+          <li>candidate.requisitionId=GD86</li>
+          <li>candidate.requisition.title~UI</li>
         </ul>
       </div>
       <div class="col-sm-6 col-md-3 col-lg-2">
@@ -164,6 +180,17 @@
         <ul (click)="populate($event)" class="clickable">
           <li>comments~Attrition</li>
           <li>comments.english=Intermediate</li>
+        </ul>
+
+        <h3>Skills</h3>
+        <ul (click)="populate($event)" class="clickable">
+          <li>skills</li>
+        </ul>
+
+        <h4>Examples:</h4>
+        <ul (click)="populate($event)" class="clickable">
+          <li>skills=React Native</li>
+          <li>skills~Spark</li>
         </ul>
       </div>
     </div>

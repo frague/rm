@@ -572,6 +572,18 @@ ul.sync {
       div {
         white-space: nowrap;
         overflow: hidden;
+
+        &:first-child {
+          padding-left: 0;
+        }
+
+        i.fa {
+          margin-right: 2px;
+          color: #888;
+          font-size: 12px;
+          position: relative;
+          bottom: 5px;
+        }
       }
     }
   }
@@ -639,6 +651,7 @@ div.corner {
   font-size: 11px;
   padding: 15px;
   padding-bottom: 0;
+  overflow: hidden;
 
   h2 {
     font-size: 16px;
@@ -671,6 +684,9 @@ div.corner {
 
     li {
       list-style: none;
+      ul {
+        padding-left: 10px;
+      }
     }
   }
 }

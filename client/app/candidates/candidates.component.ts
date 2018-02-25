@@ -1,11 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import { ToastComponent } from '../shared/toast/toast.component';
 import { Subscription } from 'rxjs';
 
 import { RequisitionService } from '../services/requisition.service';
 import { CandidateService } from '../services/candidate.service';
 import { BusService } from '../services/bus.service';
+
+const jobViteCandidate = 'https://app.jobvite.com/jhire/modules/candidates/details.html?applicationId=';
+const jobViteRequisition = 'https://app.jobvite.com/jhire/modules/requisitions/tabs.html#/summary/';
 
 @Component({
   selector: 'candidates',
@@ -19,12 +22,12 @@ export class CandidatesComponent implements OnInit {
   constructor(
     private requisitionService: RequisitionService,
     private candidateService: CandidateService,
+    private sanitizer: DomSanitizer,
     private bus: BusService
   ) {
   }
 
   ngOnInit() {
-    this.fetchData();
     this.$query = this.bus.filterUpdated.subscribe(query => this.fetchData(query));
     this.fetchData(this.bus.filterQuery);
   }
@@ -49,4 +52,13 @@ export class CandidatesComponent implements OnInit {
   getRequisitions() {
     return this.items;
   }
+
+  getJvRequisitionLink(requisition) {
+    return this.sanitizer.bypassSecurityTrustUrl(jobViteRequisition + requisition.eId);
+  }
+
+  getJvCandidateLink(candidate) {
+    return this.sanitizer.bypassSecurityTrustUrl(jobViteCandidate + candidate.applicationId);
+  }
+
 }

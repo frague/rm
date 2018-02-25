@@ -208,4 +208,8 @@ export class CommentsComponent extends BaseComponent {
     return !this.isFormActive || !this.hasChanges() || confirm(discardConfirmation);
   }
 
+  hasSkills(person): boolean {
+    return person && !person.isDemand && !person.isHiree;
+  }
+
 }

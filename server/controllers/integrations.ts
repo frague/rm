@@ -305,7 +305,7 @@ export default class IntegrationsCtrl {
         qs: {
           api,
           sc,
-          jobStatus: ['Open', 'Approved', 'Draft']
+          jobStatus: ['Open', 'Approved', 'Draft', 'Awaiting Approval']
         },
         useQuerystring: true
       },
