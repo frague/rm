@@ -42,7 +42,7 @@ import { PersonComponent } from './people/person.component';
 import { AssignmentComponent } from './assignments/assignment.component';
 import { AccountsComponent } from './accounts/accounts.component';
 import { DemandComponent } from './assignments/demand.component';
-import { PrintableDatePipe, AvatarUrlPipe, RangePipe, KeysPipe, EllipsisPipe } from './pipes';
+import { PrintableDatePipe, AvatarUrlPipe, RangePipe, KeysPipe, EllipsisPipe, CutIndexPipe } from './pipes';
 import { FilterComponent } from './filter/filter.component';
 import { FilteringPanelComponent } from './filter/filteringpanel.component';
 import { PlannerComponent } from './planner/planner.component';
@@ -79,7 +79,7 @@ const config: SocketIoConfig = {
     AccountsComponent,
     DemandComponent,
     PrintableDatePipe, AvatarUrlPipe, RangePipe, KeysPipe, EllipsisPipe,
-    FilterComponent, FilteringPanelComponent,
+    FilterComponent, FilteringPanelComponent, CutIndexPipe,
     PlannerComponent, ReportComponent, CommentsComponent, DemandPlanComponent,
     DpComponent,
     AvatarComponent,

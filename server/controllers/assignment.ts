@@ -11,10 +11,10 @@ const delimiter = integrations.delimiter;
 export default class AssignmentCtrl extends BaseCtrl {
   model = Assignment;
 
-  cutDemand = (key: string) => {
-    key = key || '';
-    return key.indexOf('demand') && key.indexOf('comment') && key.indexOf('skills') && key.indexOf('candidate');
-  }
+  modifiers = {
+    exclude: ['demand', 'skills', 'candidate'],
+    comments: this.commentTransform
+  };
 
   filterSkills = (source: any[]): any => {
     let result = [];
@@ -34,7 +34,6 @@ export default class AssignmentCtrl extends BaseCtrl {
 
   getAll = (req, res) => {
     let or;
-
     try {
       or = req.query.or ? JSON.parse(req.query.or) : [];
     } catch (e) {
@@ -42,12 +41,10 @@ export default class AssignmentCtrl extends BaseCtrl {
       return res.status(500);
     }
 
-    console.log('Initial:', JSON.stringify(or));
-
-    let query = this.filterCriteria(or, this.cutDemand) || {};
-    let assignmentsQuery = this.filterCriteria(or, new RegExp(/^assignment\./)) || {};
-    let commentsQuery = this.filterCriteria(or, new RegExp(/^comments/), this.orKey, this.commentTransform) || {};
     let skillsList = this.filterSkills(or) || [];
+
+    console.log('- Assignments -----------------------------------------------------');
+    console.log('Initial:', JSON.stringify(or));
 
     if (skillsList.length) {
       integrations.skillTreeGetAllSkills(fakeRes(skillIds => {
@@ -57,32 +54,31 @@ export default class AssignmentCtrl extends BaseCtrl {
         integrations.skillTreeGetBySkills(ids)
           .then(people => {
             console.log('People', people);
-            let skillsQuery = {
+            or.push({
               login: {
                 '$in': people.map(person => person.user_id)
               }
-            };
-            this._query(res, query, assignmentsQuery, commentsQuery, skillsQuery, suggestions);
+            });
+            console.log('With skills:', JSON.stringify(or));
+            let query = this.modifyCriteria(or, this.modifiers);
+            this._query(res, this.fixOr(query), suggestions);
           })
-        .catch(error => res.json({message: 'No skills found', data: []}))
+        .catch(error => {
+          console.log('Error', error);
+          res.json({message: 'No skills found', data: []})
+        })
       }));
     } else {
-      this._query(res, query, assignmentsQuery, commentsQuery);
+      let query = this.modifyCriteria(or, this.modifiers);
+      this._query(res, this.fixOr(query));
     }
   }
 
-  _query = (res, query, assignmentsQuery, commentsQuery, skillsQuery={}, skillsList=[]) => {
-    console.log('- Assignments -----------------------------------------------------');
-    console.log('Assignment:', JSON.stringify(assignmentsQuery));
-    console.log('Comments:', JSON.stringify(commentsQuery));
-    console.log('Skills:', JSON.stringify(skillsQuery));
-    console.log('The rest:', JSON.stringify(query));
+  _query = (res, query, skillsList=[]) => {
+    console.log('Query:', JSON.stringify(query));
 
     let now = new Date();
     Resource.aggregate([
-      {
-        '$match': skillsQuery
-      },
       {
         '$lookup': {
           from: 'comments',
@@ -95,9 +91,6 @@ export default class AssignmentCtrl extends BaseCtrl {
         '$addFields': {
           commentsCount: {'$size': '$comments'}
         }
-      },
-      {
-        '$match': commentsQuery
       },
       {
         '$lookup': {
@@ -174,9 +167,6 @@ export default class AssignmentCtrl extends BaseCtrl {
             ]
           }
         }
-      },
-      {
-        '$match': assignmentsQuery
       },
       {
         '$group': {

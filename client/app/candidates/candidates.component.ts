@@ -45,8 +45,9 @@ export class CandidatesComponent implements OnInit {
     return this.requisitionService.getAll({}).subscribe(data => {
       this.items = data;
       this.candidateService.getAll(query).subscribe(data => {
-        this.requisitionCandidates = data.reduce((result, candidate) => {
         this.allExpanded = data.length <= 100;
+        this.requisitionCandidates = data.reduce((result, candidate) => {
+          candidate.isHiree = true;
           result[candidate.requisitionId] = result[candidate.requisitionId] || [];
           result[candidate.requisitionId].push(candidate);
           return result;

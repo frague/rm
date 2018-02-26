@@ -98,18 +98,23 @@ export default class IntegrationsCtrl {
       });
   };
 
+  // Google spreadsheets (Demand)
+
   _googleAuth(callback: Function) {
     doc.useServiceAccountAuth(creds, callback);
   }
 
-  getSheetPortion = (sheet, min, max) => {
+  getSheetPortion = (sheet, min, max): Promise<any> => {
     return new Promise((resolve, reject) => {
       sheet.getCells({
           'min-row': min,
           'max-row': max,
           'return-empty': true
         }, (err, cells) => {
-          if (err) reject(err);
+          if (err) {
+            console.log(err);
+            reject(err);
+          }
           let result = [];
           let row = [];
           cells.forEach(cell => {
@@ -127,29 +132,19 @@ export default class IntegrationsCtrl {
     .catch(err => console.log(err));
   }
 
-  googleGetInfo = (req, res) => {
-    this._googleAuth(() => {
-      doc.getInfo(async (err, info) => {
-        if (err) return res.sendStatus(500);
-
-        let result = [];
-
-        let sheet = info.worksheets[1];
-        let rowsCount = sheet.rowCount;
-        let row = 8; // Min row
-        let offset = 500; // Rows fits into memory at once
-
-        while (row < rowsCount) {
-          let maxRow = (row + offset > rowsCount) ? rowsCount : row + offset;
-          console.log('Reading demand sheet lines range', row, '-', maxRow);
-          result =  result.concat(await this.getSheetPortion(sheet, row, maxRow));
-          row = maxRow + 1;
-        }
-        res.setHeader('Content-Type', 'application/json');
-        res.json(result);
+  googleGetSheet = () => {
+    return new Promise((resolve, reject) => {
+      this._googleAuth(() => {
+        doc.getInfo(async (err, info) => {
+          if (err) return reject(err);
+          resolve(info.worksheets[1]);
+        });
       });
-    });
+    })
+    .catch(err => console.log(err));
   }
+
+  // Confluence
 
   confluenceGetWhois = (req, res) => {
     confluence.getContentByPageTitle('HQ', 'New WhoIs', function(err, data) {
@@ -341,7 +336,10 @@ export default class IntegrationsCtrl {
     return new Promise((resolve, reject) => {
       request.get(
         jobvite + 'candidate',
-        {qs: Object.assign({start, count}, keys)},
+        {
+          qs: Object.assign({start, count}, keys),
+          useQuerystring: true
+        },
         (err, response, body) => {
           if (err) {
             console.log('Candidates fetching error', err);
@@ -349,6 +347,7 @@ export default class IntegrationsCtrl {
           }
           try {
             body = JSON.parse(body);
+            if (body.status.code !== 200) return reject(body.status.messages);
             resolve(body.candidates);
           } catch (e) {
             console.log('Candidates parsing error', e);
@@ -358,7 +357,7 @@ export default class IntegrationsCtrl {
     });
   }
 
-  _jvGetCandidatesCount(): Promise<number> {
+  jvGetCandidatesCount(): Promise<number> {
     let keys = this._jvGetCandidatesKeys();
     return new Promise((resolve, reject) => {
       request.get(
@@ -369,7 +368,7 @@ export default class IntegrationsCtrl {
           try {
             body = JSON.parse(body);
             let total = body.total;
-            console.log(total, 'candidates in total');
+            console.log('JV candidates count: ' + total);
             resolve(total);
           } catch (e) {
             reject('Error parsing JV response')

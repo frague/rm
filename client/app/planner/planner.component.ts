@@ -15,6 +15,8 @@ import { DemandService } from '../services/demand.service';
 import { CandidateService } from '../services/candidate.service';
 import { BusService } from '../services/bus.service';
 
+const stripIndex = new RegExp(/^\d{2} /);
+
 @Component({
 	selector: 'planner',
   templateUrl: './planner.component.html'
@@ -40,7 +42,8 @@ export class PlannerComponent extends Schedule {
 
   postFetch = query => {
     this.accountsDemand = {};
-    let candidatesQuery = JSON.stringify(query).indexOf('candidate.') >= 0 ?
+    let queryString = JSON.stringify(query);
+    let candidatesQuery = queryString.indexOf('candidate.') >= 0 || queryString.indexOf('comments.') >= 0 ?
       this.candidateService.getAll(query) : Observable.from([[]]);
 
     candidatesQuery.subscribe(data => {
@@ -201,7 +204,7 @@ export class PlannerComponent extends Schedule {
 
   getCandidateCaption(candidate): string {
     if (candidate.isHiree) {
-      return candidate.state;
+      return candidate.state.replace(stripIndex, '');
     } else {
       return candidate.grade + ', ' + candidate.location;
     }

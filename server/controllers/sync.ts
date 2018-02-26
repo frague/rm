@@ -24,7 +24,7 @@ import {
 } from '../mappings';
 
 const candidatesChunk = 500;
-const cleanupLocation = new RegExp(/(^,\s*|,\s*^)/);
+const cleanupLocation = new RegExp(/(^,\s*|,\s*$)/);
 
 export default class SyncCtrl {
 
@@ -347,81 +347,89 @@ export default class SyncCtrl {
       color: '#FF5050'
     }).save();
 
-    return new Promise((resolve, reject) => {
-      try {
-        // Query Demand file
-        return this.integrationsCtrl.googleGetInfo({}, fakeRes((data, err) => {
-          this._addLog(data.length + ' records received', 'Demand');
-          let demandAccountIndex = {};
+    return new Promise(async (resolve, reject) => {
+      // Query Demand file
+      let sheet: any = await this.integrationsCtrl.googleGetSheet();
+      let rowsCount = sheet.rowCount;
+      this._addLog(rowsCount + ' records received', 'Demand');
+      let demandAccountIndex = {};
 
-          // For each line of demand file
-          data.forEach((demandLine, index) => {
-            // ... parse its cells
-            let start = this._parseDate(demandLine[8]);
-            let duration = this._parseDuration(demandLine[10]);
-            let end;
-            if (start) {
-              if (!duration) {
-                duration = 6;
-              }
-              end = new Date(start);
-              end.setMonth(start.getMonth() + duration);
+      let row = 8; // Min row
+      let offset = 500; // Rows fits into memory at once
+
+      while (row < rowsCount) {
+        let maxRow = (row + offset > rowsCount) ? rowsCount : row + offset;
+        this._addLog('Reading demand sheet lines range [' + row + '÷' + maxRow + ']', 'Demand');
+        let data = await this.integrationsCtrl.getSheetPortion(sheet, row, maxRow);
+        row = maxRow + 1;
+
+        // For each line of demand file
+        data.forEach((demandLine, index) => {
+          // ... parse its cells
+          let start = this._parseDate(demandLine[8]);
+          let duration = this._parseDuration(demandLine[10]);
+          let end;
+          if (start) {
+            if (!duration) {
+              duration = 6;
+            }
+            end = new Date(start);
+            end.setMonth(start.getMonth() + duration);
+          } else {
+            end = start;
+          }
+
+          let account = demandLine[1];
+          if (!this._accounts[account]) {
+            if (accountsMap[account]) {
+              account = accountsMap[account];
             } else {
-              end = start;
+              this._addLog('Unknown account - ' + account, 'Demand');
+              this._accounts[account] = true;
             }
+          }
+          demandAccountIndex[account] = (demandAccountIndex[account] || 0) + 1;
 
-            let account = demandLine[1];
-            if (!this._accounts[account]) {
-              if (accountsMap[account]) {
-                account = accountsMap[account];
-              } else {
-                this._addLog('Unknown account - ' + account, 'Demand');
-                this._accounts[account] = true;
-              }
-            }
-            demandAccountIndex[account] = (demandAccountIndex[account] || 0) + 1;
+          let demandLocations = demandLine.slice(12, 18);
+          let l = locations.filter((location, index) => !!demandLocations[index]);
 
-            let demandLocations = demandLine.slice(12, 18);
-            let l = locations.filter((location, index) => !!demandLocations[index]);
+          let profile = demandLine[5];
+          let pool = demandProfilesMap[profile] || '';
 
-            let profile = demandLine[5];
-            let pool = demandProfilesMap[profile] || '';
+          let requestId = demandLine[18];
+          requestId = !requestId.indexOf('GD') ? requestId : '';
 
-            let requestId = demandLine[18];
-            requestId = !requestId.indexOf('GD') ? requestId : '';
+          let status = demandLine[2];
 
-            let status = demandLine[2];
+          let demand = {
+            login: account + this._leadingZero(demandAccountIndex[account]),
+            account,
+            acknowledgement: demandLine[3],
+            role: replaceFromMap(billabilityMap, demandLine[4]),
+            profile,
+            pool,
+            comment: demandLine[6],
+            deployment: demandLine[7],
+            start,
+            end,
+            stage: demandLine[9],
+            grades: demandLine[11].split(/[,-]/g),
+            locations: l,
+            requestId
+          };
 
-            let demand = {
-              login: account + this._leadingZero(demandAccountIndex[account]),
-              account,
-              acknowledgement: demandLine[3],
-              role: replaceFromMap(billabilityMap, demandLine[4]),
-              profile,
-              pool,
-              comment: demandLine[6],
-              deployment: demandLine[7],
-              start,
-              end,
-              stage: demandLine[9],
-              grades: demandLine[11].split(/[,-]/g),
-              locations: l,
-              requestId
-            };
+          if (status === 'active') {
+            setTimeout(() => new Demand(demand).save((err, data) => {
+              if (err) reject(err);
+            }), 0);
+          }
+        })
+      };
 
-            let lcProfile = profile.toLowerCase();
-            if (status !== 'active') return;
-            // this.addLog('Created demand for ' + demand.account);
-
-            setTimeout(() => new Demand(demand).save((err, data) => reject(err)), index);
-          });
-          this.loadings['demands'] = false;
-          return resolve();
-        }));
-      } catch (e) {
-        reject(e);
-      }
-    });
+      this.loadings['demands'] = false;
+      return resolve();
+    })
+      .catch(err => console.log(err));
   }
 
   private _queryConfluence(): Promise<any> {
@@ -431,7 +439,7 @@ export default class SyncCtrl {
         this.integrationsCtrl.confluenceGetWhois({}, fakeRes((whois, err) => {
           if (err) return reject(err);
 
-          this._addLog(whois.length + ' records received', 'Whois');
+          this._addLog(whois.length + ' records fetched', 'Whois');
 
           this._whois = whois.reduce((result, u) => {
             let [pool, name, account, initiative, profile, grade, manager, location, skype, phone, room, login] = u;
@@ -458,7 +466,7 @@ export default class SyncCtrl {
             console.log('Unable to fetch requisitions', err);
             reject(err);
           }
-          this._addLog(data.length + ' requisitions received', 'JobVite');
+          this._addLog(data.length + ' requisitions fetched', 'JobVite');
           data.forEach(req => new Requisition(req).save())
           this.loadings['jvr'] = false;
           resolve();
@@ -471,53 +479,64 @@ export default class SyncCtrl {
     });
   }
 
+  private async _jvGetCandidatesChunk(start, resolve, reject) {
+    let data = await this.integrationsCtrl.jvGetCandidates(start, candidatesChunk)
+      .catch(err => {
+        console.log(err);
+        reject(err);
+        return [];
+      });
+    this._addLog('Candidates chunk fetched [' + start + '÷' + (start + candidatesChunk) + ']', 'JobVite');
+    data.forEach((candidate, index) => {
+      let login = '-' + (candidate.firstName.charAt(0) + candidate.lastName).toLowerCase();
+      let name = candidate.lastName + ' ' + candidate.firstName;
+      let job = candidate.job || {};
+      let application = candidate.application || {};
+      let applicationJob = application.job || {};
+      let state = candidateStates[application.workflowState];
+
+      let nc = new Candidate({
+        login,
+        name,
+        country: candidate.country,
+        city: candidate.city,
+        location: candidate.location.replace(cleanupLocation, ''),
+        profile: candidate.title,
+        requisitionId: applicationJob.requisitionId,
+        state: state || application.workflowState,
+        updated: application.lastUpdatedDate ? new Date(application.lastUpdatedDate).toISOString().substr(0, 10) : null,
+        applicationId: application.eId
+      });
+      if (nc.state.indexOf('Rejected') < 0) nc.save();
+    });
+    resolve();
+  }
+
   private _queryCandidates(): Promise<any> {
     this.loadings['jvc'] = true;
-    return new Promise((resolve, reject) => {
-      this.integrationsCtrl._jvGetCandidatesCount()
-        .catch(err => this._addLog('Error fetching candidates count'))
-        .then((count: number) => {
-          Promise.all(new Array(10).join('.').split('.').map((x, i) => new Promise((res, rej) => {
-            let start = count - candidatesChunk * (i + 1);
-            this.integrationsCtrl.jvGetCandidates(start, candidatesChunk)
-              .catch(err => rej(err))
-              .then(data => {
-                this._addLog(data.length + ' candidates received from position ' + start, 'JobVite');
-                data.forEach((candidate, index) => {
-                  let login = '-' + (candidate.firstName.charAt(0) + candidate.lastName).toLowerCase();
-                  let name = candidate.lastName + ' ' + candidate.firstName;
-                  let job = candidate.job || {};
-                  let application = candidate.application || {};
-                  let applicationJob = application.job || {};
-                  let state = candidateStates[application.workflowState];
-
-                  let nc = new Candidate({
-                    login,
-                    name,
-                    country: candidate.country,
-                    city: candidate.city,
-                    location: candidate.location.replace(cleanupLocation, ''),
-                    profile: candidate.title,
-                    requisitionId: applicationJob.requisitionId,
-                    state: state || application.workflowState,
-                    updated: application.lastUpdatedDate ? new Date(application.lastUpdatedDate).toISOString().substr(0, 10) : null,
-                    applicationId: application.eId
-                  });
-                  if (nc.state.indexOf('Rejected') < 0) nc.save();
-                });
-                res();
-              }
-            );
-          })))
-            .catch(err => {
-              this.loadings['jvc'] = false;
-              reject(err)
-            })
-            .then(() => {
-              this.loadings['jvc'] = false;
-              resolve();
-            });
+    return new Promise(async (resolve, reject) => {
+      let count: number = await this.integrationsCtrl.jvGetCandidatesCount()
+        .catch(err => {
+          this._addLog('Error fetching candidates count');
+          reject(err);
+          return 0;
         });
-    });
+
+        Promise.all(new Array(40).join('.').split('.').map((x, i) =>
+          new Promise((res, rej) =>
+            // Using timeout to overcome calls per second API limitation
+            setTimeout(() => this._jvGetCandidatesChunk(count - candidatesChunk * (i + 1), res, rej), 5000 * i)
+          ))
+        )
+          .catch(err => {
+            this.loadings['jvc'] = false;
+            reject(err)
+          })
+          .then(() => {
+            this.loadings['jvc'] = false;
+            resolve();
+          });
+    })
+      .catch(err => console.log(err));
   }
 }

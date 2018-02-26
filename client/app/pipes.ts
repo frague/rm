@@ -2,6 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { Utils } from './utils';
 import { months } from './sync/mappings';
 
+const trailingIndex = new RegExp(/^\d{2} /);
+
 @Pipe({name: 'date'})
 export class PrintableDatePipe implements PipeTransform {
   transform(date: string): string {
@@ -45,5 +47,11 @@ export class EllipsisPipe implements PipeTransform {
   }
 }
 
+@Pipe({name: 'cutIndex'})
+export class CutIndexPipe implements PipeTransform {
+  transform(source: string) {
+    return source.replace(trailingIndex, '');
+  }
+}
 
 

@@ -5,28 +5,18 @@ import BaseCtrl from './base';
 export default class DemandCtrl extends BaseCtrl {
   model = Demand;
 
-  extractCriteria = (source: any[], condition: string) => {
-    let result = source.reduce((result, criterion) => {
-      let key = Object.keys(criterion)[0];
-      if (key.indexOf('demand.') === 0) {
-        let newKey = key.replace('demand.', '');
-        result.push({[newKey]: criterion[key]});
-      }
-      return result;
-    }, []);
-    return result.length ? {[condition]: result} : {};
+  modifiers = {
+    include: ['demand'],
+    demand: this.demandTransform
   };
 
-  demandTransform = (key, value) => {
+  demandTransform(key, value) {
     key = key.replace('demand.', '');
     return {[key]: value};
   }
 
   getAll = (req, res) => {
     let or;
-    let query = {};
-    let commentsQuery = {};
-
     try {
       or = req.query.or ? JSON.parse(req.query.or) : [];
     } catch (e) {
@@ -34,13 +24,11 @@ export default class DemandCtrl extends BaseCtrl {
       return res.status(500);
     }
 
-    query = this.filterCriteria(or, new RegExp(/^demand\./), this.orKey, this.demandTransform) || {};
-    commentsQuery = this.filterCriteria(or, new RegExp(/^comments/), this.orKey, this.commentTransform) || {};
+    let query = this.fixOr(this.modifyCriteria(or, this.modifiers));
 
     console.log('- Demand ----------------------------------------------------------');
     console.log('Initial:', JSON.stringify(or));
     console.log('Query:', JSON.stringify(query));
-    console.log('Comments:', JSON.stringify(commentsQuery));
 
     this.model.aggregate([
       {
@@ -71,7 +59,7 @@ export default class DemandCtrl extends BaseCtrl {
         }
       },
       {
-        '$match': commentsQuery
+        '$match': query
       },
       {
         '$project': {
@@ -92,9 +80,6 @@ export default class DemandCtrl extends BaseCtrl {
           commentsCount: 1,
           status: 1
         }
-      },
-      {
-        '$match': query
       },
       {
         '$sort': {

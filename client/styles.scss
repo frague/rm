@@ -571,12 +571,12 @@ ul.sync {
     div.row {
       min-height: $lineHeight;
       border-top: solid 1px $grid;
-      padding-top: 1px;
       margin: 0;
 
-      div {
+      & > div {
         white-space: nowrap;
         overflow: hidden;
+        padding-top: 2px;
 
         &:first-child {
           padding-left: 0;

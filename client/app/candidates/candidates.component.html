@@ -19,7 +19,7 @@
             *ngFor="let candidate of requisitionCandidates[requisition.requisitionId]"
             class="row"
           >
-            <div class="col-md-2">
+            <div class="col-md-3">
               <div
                 class="corner"
                 (click)="showComments(candidate, $event)"
@@ -34,15 +34,12 @@
               {{ candidate.name }}
             </div>
             <div class="candidates col-md-3">
-              {{ candidate.profile }}
-            </div>
-            <div class="candidates col-md-3">
-              {{ candidate.state }}
+              {{ candidate.state|cutIndex }}
             </div>
             <div class="candidates col-md-2">
               {{ candidate.updated|date }}
             </div>
-            <div class="candidates col-md-2">
+            <div class="candidates col-md-4">
               {{ candidate.location }}
             </div>
           </div>

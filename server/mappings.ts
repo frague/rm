@@ -152,15 +152,16 @@ export var dePolish = {
 };
 
 export var candidateStates = {
-  'New': 'New',
-  'Screened': 'Screened',
-  'Submitted to Interviewers': 'Interview',
-  'Approved by Interviewers by CV': 'Approved by CV',
-  'Submitted to Hiring Manager': 'Passed to HM',
-  'Approved by Hiring Manager': 'Approved by HM',
-  'HR Interview': 'HR Interview',
-  'Technical Interview': 'Tech. Interview',
-  'Non-Technical Interview': 'Non-Tech. Interview',
-  'Recommended for Hiring': 'Hiring Recommended',
-  'Offer Generation': 'Offer Generation'
+  'New': '01 New',
+  'Screened': '02 Screened',
+  'Submitted to Interviewers': '03 Interview',
+  'Approved by Interviewers by CV': '04 Approved by CV',
+  'Submitted to Hiring Manager': '05 Passed to HM',
+  'Approved by Hiring Manager': '06 Approved by HM',
+  'HR Interview': '07 HR Interview',
+  'Technical Interview': '08 Tech. Interview',
+  'Non-Technical Interview': '09 Non-Tech. Interview',
+  'Recommended for Hiring': '10 Hiring Recommended',
+  'Offer Generation': '11 Offer Generation',
+  'Offer Accepted': '12 Offer Accepted'
 };

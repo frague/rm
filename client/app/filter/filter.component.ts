@@ -110,7 +110,7 @@ export class FilterComponent {
             case '+=':
               addition = true;
               value = {[param]: value};
-              return;
+              break;
             case '=':
               if (!inOperator[param]) {
                 inOperator[param] = [];

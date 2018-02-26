@@ -1,5 +1,7 @@
 import * as mongoose from 'mongoose';
 
+const keywordExtender = new RegExp(/\.[^\s]+$/);
+
 abstract class BaseCtrl {
 
   abstract model: mongoose.Schema;
@@ -9,6 +11,54 @@ abstract class BaseCtrl {
 
   cleanup = (req, res) => res.sendStatus(200);
 
+  modifyCriteria(criteria: any[], modifiers: any = {}): any[] {
+    let or = [];
+    let inclusions = modifiers.include || [];
+    let useWhitelist = inclusions.length > 0;
+    let exclusions = useWhitelist ? [] : modifiers.exclude || [];
+
+    criteria.forEach(criterion => {
+      let key = Object.keys(criterion)[0];
+      let value = criterion[key];
+      let keyBase = key.replace(keywordExtender, '');
+
+      if (key === this.andKey) {
+        let and = this.modifyCriteria(value, modifiers);
+        let l = and.length;
+        if (l) {
+          if (l === 1) {
+            or = or.concat(and);
+          } else {
+            or.push({[this.andKey]: and});
+          }
+        }
+        return;
+      }
+
+      if ((!useWhitelist && exclusions.includes(keyBase)) || (useWhitelist && !inclusions.includes(keyBase))) {
+        return;
+      }
+      if (modifiers[keyBase]) {
+        criterion = modifiers[keyBase](key, value);
+      }
+      if (criterion) {
+        or.push(criterion);
+      }
+    });
+    return or;
+  }
+
+  fixOr(or: any[]) {
+    let l = or.length;
+    if (!l) {
+      return {};
+    }
+    if (l === 1) {
+      return or[0];
+    }
+    return {[this.orKey]: or};
+  }
+
   reduceQuery(query: any) {
     return Object.keys(query).reduce((result, param) => {
       result[param] = JSON.parse(query[param]);
@@ -16,28 +66,10 @@ abstract class BaseCtrl {
     }, {});
   }
 
-  filterCriteria = (source: any[], filterExpression: RegExp|Function, condition = this.orKey, transform: Function = (key, value) => ({[key]: value})): any => {
-    let result = [];
-    let filter = filterExpression instanceof RegExp ? key => filterExpression.test(key) : filterExpression;
-    source.forEach(item => {
-      item = item || {};
-      let key = Object.keys(item)[0];
-      if (key === this.andKey) {
-        let and = this.filterCriteria(item[key], filterExpression, this.andKey, transform);
-        if (and) {
-          result.push(and);
-        }
-      } else if (filter(key)) {
-        result.push(transform(key, item[key]));
-      }
-    });
-    return result.length ? (result.length === 1 ? result[0]: {[condition]: result}) : null;
-  };
-
   commentTransform = (key, value) => {
     if (key.indexOf('.') >= 0) {
       let [comment, source] = key.split('.', 2);
-      return {[this.andKey]: [{'comments.source': source}, {'comments.text': value}]};
+      return {'$and': [{'comments.source': source}, {'comments.text': value}]};
     } else {
       key += '.text';
     }

@@ -13,11 +13,6 @@ export default class ResourceCtrl extends BaseCtrl {
   }
 
 	getAll = (req, res) => {
-    // this.model.find({}).sort({name: 1}).exec((err, docs) => {
-    //   if (err) { return console.error(err); }
-    //   res.json(docs);
-    // });
-
     Resource.aggregate([
       {
         '$lookup': {
