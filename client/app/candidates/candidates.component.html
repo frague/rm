@@ -2,33 +2,51 @@
   <div class="alert alert-info message" *ngIf="message">{{ message }}</div>
   <h1>Requisitions & candidates</h1>
 
-  <!-- <assignment-modal [resources]="resourcesById" [initiatives]="initiatives"></assignment-modal> -->
+  <comments-modal></comments-modal>
 
   <div class="requisitions" *ngIf="getRequisitions().length">
     <ng-container *ngFor="let requisition of getRequisitions()">
       <div class="requisition" *ngIf="requisitionCandidates[requisition.requisitionId] && requisitionCandidates[requisition.requisitionId].length">
-        <h5><a [href]="getJvRequisitionLink(requisition)" target="_blank">{{ requisition.requisitionId }}</a>, {{ requisition.category }}: <span>{{ requisition.title }}</span></h5>
-        <div
-          *ngFor="let candidate of requisitionCandidates[requisition.requisitionId]"
-          class="row"
-        >
-          <div class="col-md-2">
-            <a [href]="getJvCandidateLink(candidate)" target="_blank"><i class="fa fa-external-link-square"></i></a>
-            {{ candidate.name }}
+        <h5>
+          <i class="clickable fa" [ngClass]="getRequisitionClass(requisition)" (click)="toggleSelection(requisition)"></i>
+          <a [href]="getJvRequisitionLink(requisition)" target="_blank">{{ requisition.requisitionId }}</a>, 
+          {{ requisition.category }}:
+          <span>{{ requisition.title }}</span>
+          ({{ requisitionCandidates[requisition.requisitionId].length }})
+        </h5>
+        <ng-container *ngIf="isRequisitionSelected(requisition)">
+          <div
+            *ngFor="let candidate of requisitionCandidates[requisition.requisitionId]"
+            class="row"
+          >
+            <div class="col-md-2">
+              <div
+                class="corner"
+                (click)="showComments(candidate, $event)"
+                [ngClass]="{'has-status': candidate.status}"
+                container="body"
+                placement="top-left"
+                [ngbTooltip]="getCurrentStatus(candidate)"
+              >
+                <b>{{ candidate.commentsCount || '' }}</b>
+              </div>
+              <a [href]="getJvCandidateLink(candidate)" target="_blank"><i class="fa fa-external-link-square"></i></a>
+              {{ candidate.name }}
+            </div>
+            <div class="candidates col-md-3">
+              {{ candidate.profile }}
+            </div>
+            <div class="candidates col-md-3">
+              {{ candidate.state }}
+            </div>
+            <div class="candidates col-md-2">
+              {{ candidate.updated|date }}
+            </div>
+            <div class="candidates col-md-2">
+              {{ candidate.location }}
+            </div>
           </div>
-          <div class="candidates col-md-3">
-            {{ candidate.profile }}
-          </div>
-          <div class="candidates col-md-3">
-            {{ candidate.state }}
-          </div>
-          <div class="candidates col-md-2">
-            {{ candidate.updated|date }}
-          </div>
-          <div class="candidates col-md-2">
-            {{ candidate.location }}
-          </div>
-        </div>
+        </ng-container>
       </div>
     </ng-container>
   </div>

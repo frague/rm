@@ -3,6 +3,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 
+import { CommentsComponent } from '../planner/comments.component';
 import { RequisitionService } from '../services/requisition.service';
 import { CandidateService } from '../services/candidate.service';
 import { BusService } from '../services/bus.service';
@@ -15,9 +16,13 @@ const jobViteRequisition = 'https://app.jobvite.com/jhire/modules/requisitions/t
   templateUrl: './candidates.component.html'
 })
 export class CandidatesComponent implements OnInit {
+  @ViewChild(CommentsComponent) commentsModal: CommentsComponent;
+
   items = [];
   requisitionCandidates = {};
   private $query;
+  selectedRequisitionId = null;
+  allExpanded = false;
 
   constructor(
     private requisitionService: RequisitionService,
@@ -41,6 +46,7 @@ export class CandidatesComponent implements OnInit {
       this.items = data;
       this.candidateService.getAll(query).subscribe(data => {
         this.requisitionCandidates = data.reduce((result, candidate) => {
+        this.allExpanded = data.length <= 100;
           result[candidate.requisitionId] = result[candidate.requisitionId] || [];
           result[candidate.requisitionId].push(candidate);
           return result;
@@ -59,6 +65,31 @@ export class CandidatesComponent implements OnInit {
 
   getJvCandidateLink(candidate) {
     return this.sanitizer.bypassSecurityTrustUrl(jobViteCandidate + candidate.applicationId);
+  }
+
+  isRequisitionSelected(requisition) {
+    return this.allExpanded || requisition.requisitionId === this.selectedRequisitionId;
+  }
+
+  getRequisitionClass(requisition) {
+    let isSelected = this.isRequisitionSelected(requisition);
+    return {
+      'fa-caret-right': !isSelected,
+      'fa-caret-down': isSelected
+    }
+  }
+
+  toggleSelection(requisition) {
+    this.selectedRequisitionId = this.isRequisitionSelected(requisition) ? null : requisition.requisitionId;
+  }
+
+  getCurrentStatus(candidate: any): string {
+    return (candidate && candidate.status) ? candidate.status.text : '';
+  }
+
+  showComments(candidate, event: MouseEvent) {
+    event.stopPropagation();
+    this.commentsModal.show(candidate);
   }
 
 }

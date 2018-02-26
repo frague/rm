@@ -558,6 +558,11 @@ ul.sync {
       margin: 0;
       padding-top: 10px;
 
+      i.fa {
+        font-weight: normal;
+        width: 10px;
+      }
+
       span {
         font-weight: 200;
       }
@@ -575,6 +580,10 @@ ul.sync {
 
         &:first-child {
           padding-left: 0;
+          .corner {
+            overflow: visible;
+            top: 1px;
+          }
         }
 
         i.fa {
