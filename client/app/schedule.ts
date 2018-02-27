@@ -145,7 +145,8 @@ export class Schedule {
   fetchData(query={}, fetchAll=false): Subscription {
     this.reset(fetchAll);
 
-    let demandQuery = JSON.stringify(query).indexOf('demand') >= 0 ?
+    let queryString = JSON.stringify(query);
+    let demandQuery = queryString.indexOf('demand') >= 0 || queryString.indexOf('comments') >= 0 ?
       this.demandService.getAll(query) : Observable.from([[]]);
 
     return this.assignmentService.getAll(query).subscribe(data => {
@@ -157,12 +158,18 @@ export class Schedule {
         }
 
         let showDemand = false;
-        (JSON.stringify(query).match(demandCriteria) || []).forEach(criterion => {
+        (queryString.match(demandCriteria) || []).forEach(criterion => {
           showDemand = true;
           let [key, value] = criterion.split(':');
           key = key.slice(2, -1);
-          if (key === 'demand' && value === '"only"') {
-            this.items = [];
+          if (key === 'demand') {
+            if (value === '"only"') {
+              this.items = [];
+            } else if (value === '"true"') {
+              showDemand = true;
+            } else if (value === '"false"') {
+              showDemand = false;
+            }
           }
         });
 

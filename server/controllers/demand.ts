@@ -6,8 +6,9 @@ export default class DemandCtrl extends BaseCtrl {
   model = Demand;
 
   modifiers = {
-    include: ['demand'],
-    demand: this.demandTransform
+    include: ['demand', 'comments'],
+    demand: this.demandTransform,
+    comments: this.commentTransform
   };
 
   demandTransform(key, value) {

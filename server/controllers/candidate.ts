@@ -77,6 +77,23 @@ export default class CandidateCtrl extends BaseCtrl {
         '$match': query
       },
       {
+        '$project': {
+          applicationId: 1,
+          city: 1,
+          comments: 1,
+          commentsCount: 1,
+          country: 1,
+          location: 1,
+          login: 1,
+          name: 1,
+          profile: 1,
+          requisitionId: 1,
+          state: 1,
+          updated: 1,
+          _id: 1
+        }
+      },
+      {
         '$sort': {
           requisitionId: 1,
           state: -1,

@@ -18,6 +18,7 @@ abstract class BaseCtrl {
     let exclusions = useWhitelist ? [] : modifiers.exclude || [];
 
     criteria.forEach(criterion => {
+      if (!criterion) return;
       let key = Object.keys(criterion)[0];
       let value = criterion[key];
       let keyBase = key.replace(keywordExtender, '');

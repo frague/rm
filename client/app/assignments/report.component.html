@@ -17,6 +17,7 @@
             <th>End</th>
             <th>Billable</th>
             <th>Involvement</th>
+            <th>Comments</th>
           </tr>
         </thead>
         <tbody *ngFor="let person of assignments[billability]">
@@ -30,6 +31,7 @@
             <td>{{ assignment.end|date }}</td>
             <td>{{ assignment.billability }}</td>
             <td>{{ assignment.involvement }}%</td>
+            <td [rowSpan]="person.assignmentsCount" *ngIf="!i">&nbsp;</td>
           </tr>
         </tbody>
       </table>

@@ -213,6 +213,29 @@ export default class AssignmentCtrl extends BaseCtrl {
         '$match': query
       },
       {
+        '$project': {
+          _id: 1,
+          assignments: 1,
+          assignmentsSet: 1,
+          name: 1,
+          grade: 1,
+          location: 1,
+          profile: 1,
+          specialization: 1,
+          pool: 1,
+          starts: 1,
+          ends: 1,
+          manager: 1,
+          minDate: 1,
+          maxDate: 1,
+          billable: 1,
+          canTravel: 1,
+          login: 1,
+          status: 1,
+          commentsCount: 1
+        }
+      },
+      {
         '$sort': {
           name: 1
         }
