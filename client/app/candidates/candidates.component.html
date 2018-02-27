@@ -9,7 +9,7 @@
       <div class="requisition" *ngIf="requisitionCandidates[requisition.requisitionId] && requisitionCandidates[requisition.requisitionId].length">
         <h5>
           <i class="clickable fa" [ngClass]="getRequisitionClass(requisition)" (click)="toggleSelection(requisition)"></i>
-          <a [href]="getJvRequisitionLink(requisition)" target="_blank">{{ requisition.requisitionId }}</a>, 
+          <a [href]="getJvRequisitionLink(requisition)" target="_blank">{{ requisition.requisitionId }}</a>
           {{ requisition.category }}:
           <span>{{ requisition.title }}</span>
           ({{ requisitionCandidates[requisition.requisitionId].length }})
