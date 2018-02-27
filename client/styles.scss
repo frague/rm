@@ -546,17 +546,24 @@ ul.sync {
 }
 
 .requisitions {
-  .requisition {
+  h3 {
     border-top: solid 2px $grid;
+    font-size: 24px;
+    height: 40px;
+    padding-top: 8px;
+  }
+
+  .requisition {
 
     h5 {
-      font-size: 18px;
+      font-size: 16px;
       white-space: nowrap;
-      height: 40px;
-      font-weight: 600;
+      height: $lineHeight;
+      font-weight: 200;
       display: block;
       margin: 0;
-      padding-top: 10px;
+      padding-top: 4px;
+      border-top: solid 1px $grid;
 
       i.fa {
         font-weight: normal;
@@ -568,8 +575,8 @@ ul.sync {
         display: inline-block;
       }
 
-      span {
-        font-weight: 200;
+      i, span {
+        @extend .clickable;
       }
     }
 

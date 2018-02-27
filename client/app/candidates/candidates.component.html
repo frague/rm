@@ -1,50 +1,54 @@
 <div>
   <div class="alert alert-info message" *ngIf="message">{{ message }}</div>
-  <h1>Requisitions & candidates</h1>
+  <h1>Requisitions &amp; candidates</h1>
 
   <comments-modal></comments-modal>
 
   <div class="requisitions" *ngIf="getRequisitions().length">
-    <ng-container *ngFor="let requisition of getRequisitions()">
-      <div class="requisition" *ngIf="requisitionCandidates[requisition.requisitionId] && requisitionCandidates[requisition.requisitionId].length">
-        <h5>
-          <i class="clickable fa" [ngClass]="getRequisitionClass(requisition)" (click)="toggleSelection(requisition)"></i>
-          <a [href]="getJvRequisitionLink(requisition)" target="_blank">{{ requisition.requisitionId }}</a>
-          {{ requisition.category }}:
-          <span>{{ requisition.title }}</span>
-          ({{ requisitionCandidates[requisition.requisitionId].length }})
-        </h5>
-        <ng-container *ngIf="isRequisitionSelected(requisition)">
-          <div
-            *ngFor="let candidate of requisitionCandidates[requisition.requisitionId]"
-            class="row"
-          >
-            <div class="col-md-3">
-              <div
-                class="corner"
-                (click)="showComments(candidate, $event)"
-                [ngClass]="{'has-status': candidate.status}"
-                container="body"
-                placement="top-left"
-                [ngbTooltip]="getCurrentStatus(candidate)"
-              >
-                <b>{{ candidate.commentsCount || '' }}</b>
+    <ng-container *ngFor="let category of getCategories()">
+      <h3 *ngIf="isCategoryFilled[category]">{{ category }}</h3>
+      <ng-container *ngFor="let requisition of requisitionCategories[category]">
+        <div class="requisition" *ngIf="requisitionCandidates[requisition.requisitionId] && requisitionCandidates[requisition.requisitionId].length">
+          <h5>
+            <i class="fa" [ngClass]="getRequisitionClass(requisition)" (click)="toggleSelection(requisition)"></i>
+            <a [href]="getJvRequisitionLink(requisition)" target="_blank">{{ requisition.requisitionId }}</a>
+            <span (click)="toggleSelection(requisition)">
+              {{ requisition.title }}
+              ({{ requisitionCandidates[requisition.requisitionId].length }})
+            </span>
+          </h5>
+          <ng-container *ngIf="isRequisitionSelected(requisition)">
+            <div
+              *ngFor="let candidate of requisitionCandidates[requisition.requisitionId]"
+              class="row"
+            >
+              <div class="col-md-3">
+                <div
+                  class="corner"
+                  (click)="showComments(candidate, $event)"
+                  [ngClass]="{'has-status': candidate.status}"
+                  container="body"
+                  placement="top-left"
+                  [ngbTooltip]="getCurrentStatus(candidate)"
+                >
+                  <b>{{ candidate.commentsCount || '' }}</b>
+                </div>
+                <a [href]="getJvCandidateLink(candidate)" target="_blank"><i class="fa fa-external-link-square"></i></a>
+                {{ candidate.name }}
               </div>
-              <a [href]="getJvCandidateLink(candidate)" target="_blank"><i class="fa fa-external-link-square"></i></a>
-              {{ candidate.name }}
+              <div class="candidates col-md-3">
+                {{ candidate.state|cutIndex }}
+              </div>
+              <div class="candidates col-md-2">
+                {{ candidate.updated|date }}
+              </div>
+              <div class="candidates col-md-4">
+                {{ candidate.location }}
+              </div>
             </div>
-            <div class="candidates col-md-3">
-              {{ candidate.state|cutIndex }}
-            </div>
-            <div class="candidates col-md-2">
-              {{ candidate.updated|date }}
-            </div>
-            <div class="candidates col-md-4">
-              {{ candidate.location }}
-            </div>
-          </div>
-        </ng-container>
-      </div>
+          </ng-container>
+        </div>
+      </ng-container>
     </ng-container>
   </div>
 </div>

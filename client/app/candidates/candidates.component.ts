@@ -19,10 +19,13 @@ export class CandidatesComponent implements OnInit {
   @ViewChild(CommentsComponent) commentsModal: CommentsComponent;
 
   items = [];
+  requisitionCategories = {};
   requisitionCandidates = {};
-  private $query;
+  isCategoryFilled = {};
   selectedRequisitionId = null;
   allExpanded = false;
+
+  private $query;
 
   constructor(
     private requisitionService: RequisitionService,
@@ -42,6 +45,11 @@ export class CandidatesComponent implements OnInit {
   }
 
   fetchData(query={}): Subscription {
+    this.items = [];
+    this.requisitionCategories = {};
+    this.requisitionCandidates = {};
+    this.isCategoryFilled = {};
+
     return this.requisitionService.getAll({}).subscribe(data => {
       this.items = data;
       this.candidateService.getAll(query).subscribe(data => {
@@ -52,8 +60,24 @@ export class CandidatesComponent implements OnInit {
           result[candidate.requisitionId].push(candidate);
           return result;
         }, []);
+        this.requisitionCategories = this.items.reduce((result, requisition) => {
+          let category = requisition.category;
+          if (!result[category]) {
+            result[category] = [requisition];
+          } else {
+            result[category].push(requisition);
+          }
+          if (!this.isCategoryFilled[category]) {
+            this.isCategoryFilled[category] = (this.requisitionCandidates[requisition.requisitionId] || []).length > 0;
+          }
+          return result;
+        }, {});
       });
     })
+  }
+
+  getCategories() {
+    return Object.keys(this.requisitionCategories).sort();
   }
 
   getRequisitions() {
