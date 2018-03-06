@@ -104,6 +104,17 @@ export class CandidatesComponent implements OnInit {
     }
   }
 
+  getRequisitionDetails(requisition): string {
+    if (!requisition) {
+      return '';
+    }
+    return [
+      requisition.department,
+      requisition.location,
+      requisition.internalOnly ? 'Internal Only' : 'Internal/External'
+    ].filter(item => !!item).join(', ');
+  }
+
   toggleSelection(requisition) {
     this.selectedRequisitionId = this.isRequisitionSelected(requisition) ? null : requisition.requisitionId;
   }

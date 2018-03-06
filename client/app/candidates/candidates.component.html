@@ -15,6 +15,7 @@
             <span (click)="toggleSelection(requisition)">
               {{ requisition.title }}
               ({{ requisitionCandidates[requisition.requisitionId].length }})
+              <p>{{ getRequisitionDetails(requisition) }}</p>
             </span>
           </h5>
           <ng-container *ngIf="isRequisitionSelected(requisition)">

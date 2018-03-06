@@ -558,7 +558,7 @@ ul.sync {
     h5 {
       font-size: 16px;
       white-space: nowrap;
-      height: $lineHeight;
+      height: 40px;
       font-weight: 200;
       display: block;
       margin: 0;
@@ -567,15 +567,26 @@ ul.sync {
 
       i.fa {
         font-weight: normal;
-        width: 10px;
+        margin-top: 6px;
+        width: 12px;
+        float: left;
       }
 
       a {
-        width: 75px;
-        display: inline-block;
+        width: 80px;
+        display: block;
+        font-size: 20px;
+        padding-top: 5px;
+        float: left;
+        text-decoration: none;
       }
 
-      i, span {
+      span p {
+        font-size: 10px;
+        line-height: 1.6;
+      }
+
+      i, span, div {
         @extend .clickable;
       }
     }
