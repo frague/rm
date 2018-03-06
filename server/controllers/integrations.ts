@@ -171,23 +171,40 @@ export default class IntegrationsCtrl {
 
   // Skill Tree methods
 
-  _skillTreeLogin = () => {
-    this.skillTreeCookie = '';
-    return this._login(skillTree + 'auth')
-      .on('response', response => {
-        this.skillTreeCookie = request.cookie(response.headers['set-cookie'][0]);
-      });
+  _skillTreeLogin = (): Promise<any> => {
+    return new Promise((resolve, reject) => {
+      this.skillTreeCookie = '';
+      this._login(skillTree + 'auth')
+        .on('response', response => {
+          let cookies = response.headers['set-cookie'];
+          if (cookies && cookies.length) {
+            this.skillTreeCookie = request.cookie(response.headers['set-cookie'][0]);
+            return resolve(request);
+          } else {
+            console.log('Error logging in to skillTree');
+            return reject('Error logging in to skillTree');
+          }
+        });
+    });
   }
 
-  _getSkillTree(url: string, res, preprocessor=null) {
-    return this._skillTreeLogin()
-      .on('response', () => {
+  _getSkillTree(url: string, res, preprocessor=null): void {
+    this._skillTreeLogin()
+      .catch(err => {
+        res.sendStatus(500);
+      })
+      .then(() => {
         request.get(
           this._fillRequest(this.skillTreeCookie, skillTree + url),
           (err, response, body) => {
             if (err) return res.sendStatus(500);
 
-            let data = JSON.parse(body);
+            let data;
+            try {
+              data = JSON.parse(body);
+            } catch (e) {
+              return res.sendStatus(500);
+            }
             if (preprocessor) {
               data = preprocessor(data);
             }
@@ -240,7 +257,7 @@ export default class IntegrationsCtrl {
     return {ids, suggestions};
   }
 
-  skillTreeGetAllSkills = (res) => {
+  skillTreeGetAllSkills = (res): void => {
     if (this.skills) {
       res.setHeader('Content-Type', 'application/json');
       res.json(this.skills);
@@ -252,11 +269,11 @@ export default class IntegrationsCtrl {
     }
   }
 
-  skillTreeGetUserSkills = (userId, res) => {
+  skillTreeGetUserSkills = (userId, res): void => {
     this._getSkillTree('v2/user/' + userId + '/allSkills', res);
   }
 
-  skillTreeGetInfo = (req, res) => {
+  skillTreeGetInfo = (req, res): void => {
     const userId = req.params.userId;
     this._getSkillTree('v2/user/' + userId + '/info', res);
   }
@@ -264,7 +281,10 @@ export default class IntegrationsCtrl {
   skillTreeGetBySkills(skills: any): Promise<any> {
     return new Promise((resolve, reject) => {
       this._skillTreeLogin()
-        .on('response', () => {
+        .catch(e => {
+          reject(e);
+        })
+        .then(() => {
           let query = {
             employees: [],
             skills

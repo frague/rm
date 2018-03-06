@@ -38,7 +38,7 @@ export default class AssignmentCtrl extends BaseCtrl {
       or = req.query.or ? JSON.parse(req.query.or) : [];
     } catch (e) {
       console.error('Error parsing search query: ' + req.query.or);
-      return res.status(500);
+      return res.sendStatus(500);
     }
 
     let skillsList = this.filterSkills(or) || [];
@@ -47,27 +47,34 @@ export default class AssignmentCtrl extends BaseCtrl {
     console.log('Initial:', JSON.stringify(or));
 
     if (skillsList.length) {
-      integrations.skillTreeGetAllSkills(fakeRes(skillIds => {
-        let {ids, suggestions} = integrations.mapSkillsIds(skillsList);
-        console.log('Done', suggestions, ids);
+      try {
+        integrations.skillTreeGetAllSkills(fakeRes(skillIds => {
+          let {ids, suggestions} = integrations.mapSkillsIds(skillsList);
+          console.log('Skills suggestions are fetched:', suggestions, ids);
 
-        integrations.skillTreeGetBySkills(ids)
-          .then(people => {
-            console.log('People', people);
-            or.push({
-              login: {
-                '$in': people.map(person => person.user_id)
+          integrations.skillTreeGetBySkills(ids)
+            .catch(error => {
+              res.json({message: 'No skills found', data: []})
+              throw error;
+            })
+            .then(people => {
+              if (people && people.length) {
+                console.log('People', people);
+                or.push({
+                  login: {
+                    '$in': people.map(person => person.user_id)
+                  }
+                });
+                console.log('With skills:', JSON.stringify(or));
               }
-            });
-            console.log('With skills:', JSON.stringify(or));
-            let query = this.modifyCriteria(or, this.modifiers);
-            this._query(res, this.fixOr(query), suggestions);
-          })
-        .catch(error => {
-          console.log('Error', error);
-          res.json({message: 'No skills found', data: []})
-        })
-      }));
+              let query = this.modifyCriteria(or, this.modifiers);
+              this._query(res, this.fixOr(query), suggestions);
+            })
+        }));
+      } catch (e) {
+        console.log('Error', e);
+        return res.sendStatus(500);
+      }
     } else {
       let query = this.modifyCriteria(or, this.modifiers);
       this._query(res, this.fixOr(query));
