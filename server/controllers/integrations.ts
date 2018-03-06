@@ -351,13 +351,15 @@ export default class IntegrationsCtrl {
     return {api, sc};
   }
 
-  jvGetCandidates(start, count): Promise<any> {
+  jvGetCandidates(start, count, newHires=false): Promise<any> {
     let keys = this._jvGetCandidatesKeys();
     return new Promise((resolve, reject) => {
+      let params = newHires ? {action: 'getNewHires'} : {start, count};
+      console.log(params);
       request.get(
         jobvite + 'candidate',
         {
-          qs: Object.assign({start, count}, keys),
+          qs: Object.assign(params, keys),
           useQuerystring: true
         },
         (err, response, body) => {

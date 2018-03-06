@@ -553,69 +553,63 @@ ul.sync {
     padding-top: 8px;
   }
 
-  .requisition {
+  div.requisition {
+    min-height: $lineHeight;
+    border-top: solid 1px $grid;
+    margin: 0;
+    padding-top: 2px;
 
-    h5 {
-      font-size: 16px;
-      white-space: nowrap;
-      height: 40px;
-      font-weight: 200;
-      display: block;
-      margin: 0;
-      padding-top: 4px;
-      border-top: solid 1px $grid;
+    &.selected {
+      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+      position: relative;
+    }
 
-      i.fa {
-        font-weight: normal;
-        margin-top: 6px;
-        width: 12px;
-        float: left;
-      }
+    div:first-child {
+      span {
+        display: inline-block;
+        float: right;
+        color: #888;
 
-      a {
-        width: 80px;
-        display: block;
-        font-size: 20px;
-        padding-top: 5px;
-        float: left;
-        text-decoration: none;
-      }
-
-      span p {
-        font-size: 10px;
-        line-height: 1.6;
-      }
-
-      i, span, div {
-        @extend .clickable;
+        i.fa {
+          font-size: 14px;
+          position: relative;
+          bottom: 1px;
+          right: 2px;
+        }
       }
     }
 
-    div.row {
-      min-height: $lineHeight;
-      border-top: solid 1px $grid;
-      margin: 0;
+    div:nth-child(2) {
+      @extend .clickable;
+      font-weight: 500;
+    }
+  }
 
-      & > div {
-        white-space: nowrap;
-        overflow: hidden;
-        padding-top: 2px;
+  div.candidate {
+    min-height: $lineHeight;
+    border-top: solid 1px $grid;
+    margin: 0;
+    background-color: $body + #222;
 
-        &:first-child {
-          padding-left: 0;
-          .corner {
-            overflow: visible;
-            top: 1px;
-          }
+    & > div {
+      white-space: nowrap;
+      overflow: hidden;
+      padding-top: 2px;
+
+      &:first-child {
+        padding-left: 0;
+        .corner {
+          overflow: visible;
+          top: 1px;
         }
+      }
 
-        i.fa {
-          margin-right: 2px;
-          color: #888;
-          font-size: 12px;
-          position: relative;
-          bottom: 5px;
-        }
+      i.fa {
+        margin-right: 2px;
+        color: #888;
+        font-size: 12px;
+        position: relative;
+        bottom: 5px;
       }
     }
   }
