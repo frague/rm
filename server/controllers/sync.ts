@@ -479,21 +479,14 @@ export default class SyncCtrl {
     });
   }
 
-  private async _jvGetCandidatesChunk(start, resolve, reject, newHires=false) {
-    if (newHires) {
-      start -= candidatesChunk;
-    }
-    let data = await this.integrationsCtrl.jvGetCandidates(start, candidatesChunk, newHires)
+  private async _jvGetCandidatesChunk(start, resolve, reject) {
+    let data = await this.integrationsCtrl.jvGetCandidates(start, candidatesChunk)
       .catch(err => {
         console.log(err);
         reject(err);
         return [];
       });
-    if (newHires) {
-      this._addLog('New hires fetched', 'JobVite');
-    } else {
-      this._addLog('Candidates chunk fetched [' + start + '÷' + (start + candidatesChunk) + ']', 'JobVite');
-    }
+    this._addLog('Candidates chunk fetched [' + start + '÷' + (start + candidatesChunk) + ']', 'JobVite');
     data.forEach((candidate, index) => {
       let login = '-' + (candidate.firstName.charAt(0) + candidate.lastName).toLowerCase();
       let name = candidate.lastName + ' ' + candidate.firstName;
@@ -532,7 +525,7 @@ export default class SyncCtrl {
         let fetchers = new Array(40).join('.').split('.').map((x, i) =>
           new Promise((res, rej) =>
             // Using timeout to overcome calls per second API limitation
-            setTimeout(() => this._jvGetCandidatesChunk(count - candidatesChunk * i, res, rej, !i), 5000 * i)
+            setTimeout(() => this._jvGetCandidatesChunk(count - candidatesChunk * (i + 1), res, rej), 5000 * i)
           ));
         Promise.all(fetchers)
           .catch(err => {

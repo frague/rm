@@ -11,6 +11,12 @@ import { BusService } from '../services/bus.service';
 const jobViteCandidate = 'https://app.jobvite.com/jhire/modules/candidates/details.html?applicationId=';
 const jobViteRequisition = 'https://app.jobvite.com/jhire/modules/requisitions/tabs.html#/summary/';
 
+const emptyRequisition = {
+  title: 'Filled, Closed, Cancelled, etc.',
+  category: ' Everything else',
+  requisitionId: ''
+};
+
 @Component({
   selector: 'candidates',
   templateUrl: './candidates.component.html'
@@ -19,6 +25,7 @@ export class CandidatesComponent implements OnInit {
   @ViewChild(CommentsComponent) commentsModal: CommentsComponent;
 
   items = [];
+  requisitionsIds = [];
   requisitionCategories = {};
   requisitionCandidates = {};
   isCategoryFilled = {};
@@ -48,18 +55,28 @@ export class CandidatesComponent implements OnInit {
     this.items = [];
     this.requisitionCategories = {};
     this.requisitionCandidates = {};
+
     this.isCategoryFilled = {};
 
     return this.requisitionService.getAll({}).subscribe(data => {
       this.items = data;
+      this.items.push(emptyRequisition);
+      this.requisitionsIds = this.items.map(requisition => requisition.requisitionId);
+
       this.candidateService.getAll(query).subscribe(data => {
         this.allExpanded = data.length <= 100;
+        
+        // Group candidates by requisition
         this.requisitionCandidates = data.reduce((result, candidate) => {
           candidate.isHiree = true;
+          if (!this.requisitionsIds.includes(candidate.requisitionId)) {
+            candidate.requisitionId = emptyRequisition.requisitionId;
+          }
           result[candidate.requisitionId] = result[candidate.requisitionId] || [];
           result[candidate.requisitionId].push(candidate);
           return result;
         }, []);
+        
         this.requisitionCategories = this.items.reduce((result, requisition) => {
           let category = requisition.category;
           if (!result[category]) {

@@ -562,6 +562,7 @@ ul.sync {
     &.selected {
       box-shadow: 0 2px 5px rgba(0,0,0,0.5);
       position: relative;
+      background-color: $green;
     }
 
     div:first-child {
