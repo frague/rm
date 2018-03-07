@@ -560,7 +560,7 @@ ul.sync {
     padding-top: 2px;
 
     &.selected {
-      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+      box-shadow: 0 10px 10px -5px rgba(0,0,0,0.5);
       position: relative;
       background-color: $green;
     }
