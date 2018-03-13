@@ -158,7 +158,8 @@ export class PlannerComponent extends Schedule {
     this.reportModal.show(this.reserved);
   }
 
-  showRequisition(requisitionId: string) {
+  showRequisition(requisitionId: string, e: MouseEvent) {
+    e.cancelBubble = true;
     this.requisitionModal.show(requisitionId);
   }
 

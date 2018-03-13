@@ -22,7 +22,7 @@
   </div>
 
   <div class="planner row" *ngIf="items.length">
-    <div class="col-md-2 demands lines">
+    <div class="col-md-3 demands lines">
       <div class="account" *ngFor="let account of getAccounts()">
         <h3>{{ account }}</h3>
         <div
@@ -51,7 +51,7 @@
         </div>
       </div>
     </div>
-    <div class="col-md-10 candidates">
+    <div class="col-md-9 candidates">
       <div class="lines" [ngStyle]="{width: (candidatesCount * cardWidth) + 'px'}">
         <ol #sticky [ngStyle]="{top: bofOffset}" [ngClass]="{sticky: bofOffset !== 'auto'}">
           <li

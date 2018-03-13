@@ -3,7 +3,7 @@
     <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
-    <h4 class="modal-title">Notes about {{ person.name }}</h4>
+    <h4 class="modal-title">Notes about {{ person.name || (person.account + '/' + person.profile) }}</h4>
   </div>
   <div class="comments-modal modal-body">
     <ngb-tabset (tabChange)="tabChange($event)" #tabs="ngbTabset">
