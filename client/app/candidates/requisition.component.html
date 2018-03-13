@@ -1,0 +1,20 @@
+<ng-template #content let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <h4 class="modal-title">Requisition Details</h4>
+  </div>
+  <div class="modal-body requisition">
+    <dl class="attributes">
+      <dt>ID</dt>
+      <dd>{{ requisition.requisitionId }}</dd>
+
+      <dt>Title</dt>
+      <dd>
+        {{ requisition.title }}
+      </dd>
+    </dl>
+
+  </div>
+</ng-template>

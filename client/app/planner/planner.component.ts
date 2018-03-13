@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { ReportComponent } from './report.component';
 import { CommentsComponent } from './comments.component';
 import { DemandPlanComponent } from './demandplan.component';
+import { RequisitionComponent } from '../candidates/requisition.component';
 
 import { AssignmentService } from '../services/assignment.service';
 import { InitiativeService } from '../services/initiative.service';
@@ -24,7 +25,8 @@ const stripIndex = new RegExp(/^\d{2} /);
 export class PlannerComponent extends Schedule {
   @ViewChild(ReportComponent) reportModal: ReportComponent;
   @ViewChild(CommentsComponent) commentsModal: CommentsComponent;
-  @ViewChild(DemandPlanComponent) demandPlan: CommentsComponent;
+  @ViewChild(DemandPlanComponent) demandPlan: DemandPlanComponent;
+  @ViewChild(RequisitionComponent) requisitionModal: RequisitionComponent;
   @ViewChild('sticky') boardOfFame: ElementRef;
   bofOffset: any = 'auto';
 
@@ -154,6 +156,10 @@ export class PlannerComponent extends Schedule {
 
   showReport() {
     this.reportModal.show(this.reserved);
+  }
+
+  showRequisition(requisitionId: string) {
+    this.requisitionModal.show(requisitionId);
   }
 
   showComments(candidate, event: MouseEvent) {

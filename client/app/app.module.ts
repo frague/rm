@@ -54,6 +54,7 @@ import { AvatarComponent } from './people/avatar.component';
 import { AssignmentsReportComponent } from './assignments/report.component';
 import { SkillsetComponent } from './planner/skillset.component';
 import { CandidatesComponent } from './candidates/candidates.component';
+import { RequisitionComponent } from './candidates/requisition.component';
 
 const config: SocketIoConfig = {
   url: ':3000',
@@ -81,6 +82,7 @@ const config: SocketIoConfig = {
     PrintableDatePipe, AvatarUrlPipe, RangePipe, KeysPipe, EllipsisPipe,
     FilterComponent, FilteringPanelComponent, CutIndexPipe,
     PlannerComponent, ReportComponent, CommentsComponent, DemandPlanComponent,
+    RequisitionComponent,
     DpComponent,
     AvatarComponent,
     AssignmentsReportComponent,
