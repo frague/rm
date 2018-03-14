@@ -50,6 +50,9 @@ export class AssignmentsReportComponent {
         return result;
       }, []);
       resource.assignmentsCount = resource.assignmentsArray.length;
+      if (!resource.assignmentsCount) {
+        resource.assignmentsArray = [{}];
+      }
       divided[isBillable ? 'Billable' : 'Non-billable'].push(resource);
       return divided;
     }, {'Billable': [], 'Non-billable': []});

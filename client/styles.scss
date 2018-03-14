@@ -838,6 +838,7 @@ div.corner {
     thead {
       th {
         text-align: center;
+        border-top-width: 1px;
 
         &:nth-child(1) {
           width: 20%;
@@ -860,7 +861,17 @@ div.corner {
       }
 
       &:last-child td, &:last-child th {
-        border-bottom-width: 1px;
+        // border-bottom-width: 1px;
+      }
+
+      &:first-child {
+        td:nth-child(3) {
+          text-align: center;
+        }
+      }
+
+      th, td {
+          border-bottom-width: 1px;
       }
 
       td {
@@ -872,6 +883,7 @@ div.corner {
 
         &:last-child {
           border-right-width: 1px;
+          // border-bottom-width: 1px;
         }
       }
     }
