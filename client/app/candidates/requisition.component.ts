@@ -8,7 +8,7 @@ import { RequisitionService } from '../services/requisition.service';
 })
 export class RequisitionComponent {
   @ViewChild('content') content;
-  
+
   requisition: any = {};
   public isFetching: boolean = false;
 

@@ -9,7 +9,7 @@ $yellow: #FFB;
 $blue: #1CA1C0;
 $red: #FF6E27;
 
-$link: #8020FF;
+$link: #006ba2;
 
 $demandCardHeight: 200px;
 $demandCardWidth: 120px;
@@ -21,6 +21,12 @@ body {
   background-color: $body;
   margin-top: 15px;
   margin-bottom: 10px;
+}
+
+a {
+  &, &:hover, &:visited, &:active, &:focus {
+    color: $link;
+  }
 }
 
 h1 {
@@ -113,6 +119,7 @@ h2 {
   &.with-image {
     min-height: 180px;
   }
+
   &.person {
     .avatar {
       width: 150px;
@@ -121,6 +128,7 @@ h2 {
       margin: 0 0 10px 10px;
     }
   }
+
   &.assignment {
     .avatar {
       width: 60px;
@@ -129,6 +137,11 @@ h2 {
       margin: 0 0 10px 10px;
     }
   }
+
+  &.requisition {
+    min-height: 180px;
+  }
+
   .nav-tabs {
     margin: 5px 0 20px 0;
 
@@ -470,6 +483,7 @@ i.initiative {
 dl.attributes {
   dt {
     float: left;
+    clear: left;
   }
   dd {
     padding-left: 140px;
@@ -531,24 +545,22 @@ ul.sync {
         padding-top: 6px;
       }
 
-      span {
-        display: block;
-        font-size: 64%;
-        font-weight: 600;
-
-        a {
-          color: $link;
-
-          &:before {
-            content: "(";
-          }
-          &:after {
-            content: ") ";
-          }
-        }
-
-        &:nth-child(2) {
+      div.line {
+        span {
+          display: block;
+          font-size: 64%;
           font-weight: 400;
+
+          a {
+            color: $link;
+
+            &:before {
+              content: "(";
+            }
+            &:after {
+              content: ") ";
+            }
+          }
         }
       }
     }

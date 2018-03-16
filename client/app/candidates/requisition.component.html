@@ -3,17 +3,40 @@
     <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
-    <h4 class="modal-title">Requisition Details</h4>
+    <h4 class="modal-title">{{ requisition.requisitionId }} Requisition Details</h4>
   </div>
   <div class="modal-body requisition">
     <dl class="attributes">
-      <dt>ID</dt>
-      <dd>{{ requisition.requisitionId }}</dd>
-
       <dt>Title</dt>
       <dd>
         {{ requisition.title }}
       </dd>
+
+      <dt>Category</dt>
+      <dd>
+        {{ requisition.category }}
+      </dd>
+
+      <dt>Department</dt>
+      <dd>
+        {{ requisition.department }}
+      </dd>
+
+      <dt>State</dt>
+      <dd>
+        {{ requisition.jobState }}
+      </dd>
+
+      <dt>Location</dt>
+      <dd>
+        {{ requisition.location }}
+      </dd>
+
+      <dt>Posting Type</dt>
+      <dd>
+        {{ requisition.postingType }}
+      </dd>
+
     </dl>
 
   </div>

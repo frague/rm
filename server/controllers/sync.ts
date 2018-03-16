@@ -66,12 +66,14 @@ export default class SyncCtrl {
       this._setTimer('Requisitions sync');
       this._queryRequisitions()
         .catch(err => this._addLog('Error syncing requisitions: ' + err))
-        .then(() => this._getDelay('Requisitions sync'));
+        .then((requisitionIds: string[]) => {
+          this._getDelay('Requisitions sync')
 
-      this._setTimer('Candidates sync');
-      this._queryCandidates()
-        .catch(err => this._addLog('Error syncing candidates: ' + err))
-        .then(() => this._getDelay('Candidates sync'));
+          this._setTimer('Candidates sync');
+          this._queryCandidates(requisitionIds)
+            .catch(err => this._addLog('Error syncing candidates: ' + err))
+            .then(() => this._getDelay('Candidates sync'));
+        });
 
       this._setTimer('Confluence (whois) sync');
       await this._queryConfluence();
@@ -457,8 +459,9 @@ export default class SyncCtrl {
     });
   };
 
-  private _queryRequisitions(): Promise<any> {
+  private _queryRequisitions(): Promise<string[]> {
     this.loadings['jvr'] = true;
+    let result = [];
     return new Promise((resolve, reject) => {
       try {
         this.integrationsCtrl.jvGetRequisitions({}, fakeRes((data, err) => {
@@ -467,9 +470,12 @@ export default class SyncCtrl {
             reject(err);
           }
           this._addLog(data.length + ' requisitions fetched', 'JobVite');
-          data.forEach(req => new Requisition(req).save())
+          data.forEach(req => {
+            new Requisition(req).save();
+            result.push(req.requisitionId);
+          })
           this.loadings['jvr'] = false;
-          resolve();
+          resolve(result);
         }));
       } catch (e) {
         this.loadings['jvr'] = false;
@@ -479,7 +485,7 @@ export default class SyncCtrl {
     });
   }
 
-  private async _jvGetCandidatesChunk(start, resolve, reject) {
+  private async _jvGetCandidatesChunk(start: number, allowedRequisitions: string[], resolve, reject) {
     let data = await this.integrationsCtrl.jvGetCandidates(start, candidatesChunk)
       .catch(err => {
         console.log(err);
@@ -507,12 +513,15 @@ export default class SyncCtrl {
         updated: application.lastUpdatedDate ? new Date(application.lastUpdatedDate).toISOString().substr(0, 10) : null,
         applicationId: application.eId
       });
-      if (nc.state.indexOf('Rejected') < 0) nc.save();
+
+      if (nc.state.indexOf('Rejected') < 0 && nc.requisitionId && (allowedRequisitions.includes(nc.requisitionId) || nc.state.indexOf('New') < 0)) {
+        nc.save();
+      }
     });
     resolve();
   }
 
-  private _queryCandidates(): Promise<any> {
+  private _queryCandidates(requisitionIds: string[]): Promise<any> {
     this.loadings['jvc'] = true;
     return new Promise(async (resolve, reject) => {
       let count: number = await this.integrationsCtrl.jvGetCandidatesCount()
@@ -525,7 +534,7 @@ export default class SyncCtrl {
         let fetchers = new Array(40).join('.').split('.').map((x, i) =>
           new Promise((res, rej) =>
             // Using timeout to overcome calls per second API limitation
-            setTimeout(() => this._jvGetCandidatesChunk(count - candidatesChunk * (i + 1), res, rej), 5000 * i)
+            setTimeout(() => this._jvGetCandidatesChunk(count - candidatesChunk * (i + 1), requisitionIds, res, rej), 5000 * i)
           ));
         Promise.all(fetchers)
           .catch(err => {

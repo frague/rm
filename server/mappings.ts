@@ -56,7 +56,8 @@ export var demandProfilesMap = {
 
 export var profilesMap = {
   'QA': {
-    'Quality Engineer': []
+    'Quality Engineer': [],
+    'Site Reliability Engineer': ['']
   },
   'DevOps': {
     'DevOps': ['', 'BigData', 'CICD', 'Cloud', 'NOC']
@@ -79,8 +80,7 @@ export var profilesMap = {
   'UI': {
     'Architect': ['UI'],
     'Developer': ['UI'],
-    'UX Designer': [''],
-    'Site Reliability Engineer': ['']
+    'UX Designer': ['']
   },
   'Mobile': {
     'Developer': ['Android', 'iOS']
@@ -114,11 +114,12 @@ export var locationsMap = {
   'Menlo Park': 'MP',
   'Kharkov': 'KHR',
   'Krakow': 'KR',
-  'Lviv': 'LV'
+  'Lviv': 'LV',
+  'Belgrade': 'BEL'
 };
 
 export var locations = [
-  'SPB', 'SAR', 'KHA', 'LV', 'KR', 'US'
+  'SPB', 'SAR', 'KHA', 'LV', 'KR', 'US', 'BEL'
 ];
 
 export var visasCols = {

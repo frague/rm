@@ -65,7 +65,7 @@ export class CandidatesComponent implements OnInit {
 
       this.candidateService.getAll(query).subscribe(data => {
         this.allExpanded = data.length <= 100;
-        
+
         // Group candidates by requisition
         this.requisitionCandidates = data.reduce((result, candidate) => {
           candidate.isHiree = true;
@@ -76,7 +76,7 @@ export class CandidatesComponent implements OnInit {
           result[candidate.requisitionId].push(candidate);
           return result;
         }, []);
-        
+
         this.requisitionCategories = this.items.reduce((result, requisition) => {
           let category = requisition.category;
           if (!result[category]) {
