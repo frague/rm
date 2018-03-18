@@ -1,17 +1,54 @@
 import Snapshot from '../models/snapshot';
 import Resource from '../models/resource';
+import Demand from '../models/demand';
+import Candidate from '../models/candidate';
 import Diff from '../models/diff';
 import DiffCtrl from '../controllers/diff';
 import BaseCtrl from './base';
 
 var diffCtrl = new DiffCtrl();
-const keys = ['grade','license','location','login','manager','name','passport','phone','pool','profile','room','skype','specialization','visaB','visaL'];
-const dateKeys = ['passport','visaB','visaL'];
+const keys = [
+  'grade', 
+  'license',
+  'location',
+  'login',
+  'manager',
+  'name',
+  'passport',
+  'phone',
+  'pool',
+  'profile',
+  'room',
+  'skype',
+  'specialization',
+  'visaB',
+  'visaL',
+  'state',
+  'updated',
+  'start',
+  'end',
+  'locations',
+  'stage',
+  'role',
+  'requestId',
+  'comment',
+  'deployment',
+  'account'
+];
+
+const dateKeys = [
+  'passport',
+  'visaB',
+  'visaL',
+  'updated',
+  'start',
+  'end',
+];
 
 export default class SnapshotCtrl extends BaseCtrl {
   model = Snapshot;
 
-  areEqual(a, b): any {
+  _areEqual(a, b): any {
     return keys.reduce((result, key) => {
       let [c, d] = [a[key], b[key]];
       if (dateKeys.includes(key)) {
@@ -27,12 +64,12 @@ export default class SnapshotCtrl extends BaseCtrl {
     }, {});
   }
 
-  saveDiffDelayed(diff: any) {
+  _saveDiffDelayed(diff: any) {
     new Diff(diff).save();
   }
 
-  makeDiff = (current, res) => {
-    this.model.find({}).sort({date: 1}).limit(1).exec((err, docs) => {
+  makeDiff = (current, type: string) => {
+    this.model.find({type}).sort({date: 1}).limit(1).exec((err, docs) => {
       if (docs.length) {
         let prev = docs[0].snapshot || {};
         let today = new Date();
@@ -45,41 +82,62 @@ export default class SnapshotCtrl extends BaseCtrl {
           let diff: any = {
             date: today,
             subject: login,
-            title: updated['name'] || state['name'] || login
+            title: updated['name'] || state['name'] || login,
+            type
           };
 
           if (!state['_id']) {
             diff.diff = 1;
-            this.saveDiffDelayed(diff);
+            this._saveDiffDelayed(diff);
           } else if (!updated['_id']) {
             diff.diff = -1;
-            this.saveDiffDelayed(diff);
+            this._saveDiffDelayed(diff);
           } else {
-            let fields = this.areEqual(state, updated);
+            let fields = this._areEqual(state, updated);
             if (Object.keys(fields).length) {
               diff.diff = fields;
-              this.saveDiffDelayed(diff);
+              this._saveDiffDelayed(diff);
             }
           }
         });
       }
-      this.model.deleteMany({}, (err) => {
+
+      // Delete the snapshot and save the new one
+      this.model.deleteMany({type}, (err) => {
         new this.model({
           date: new Date(),
-          snapshot: current
+          snapshot: current,
+          type
         }).save();
-        return res.sendStatus(200);
       })
     });
   }
 
-  saveDiffs = (req, res) => {
-    Resource.find({}, (err, docs) => {
-      let updated = docs.reduce((result, resource) => {
-        result[resource.login] = resource;
-        return result;
-      }, {});
-      this.makeDiff(updated, res);
+  saveDiff(model, entity: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      model.find({}, (err, docs) => {
+        if (err) reject(err);
+        let updated = docs.reduce((result, doc) => {
+          result[doc.login] = doc;
+          return result;
+        }, {});
+        resolve(this.makeDiff(updated, entity));
+      });
     });
+  }
+
+  saveDiffs = (req, res) => {
+    Promise.all([
+      this.saveDiff(Resource, 'r'),
+      this.saveDiff(Demand, 'd'),
+      this.saveDiff(Candidate, 'c')
+    ])
+      .then(() => {
+        res.sendStatus(200);
+      })
+      .catch(err => {
+        console.log(err);
+        res.sendStatus(500);
+      });
   }
 }

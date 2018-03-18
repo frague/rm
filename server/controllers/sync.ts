@@ -6,7 +6,6 @@ import Candidate from '../models/candidate';
 import Requisition from '../models/requisition';
 
 import IntegrationsCtrl from './integrations';
-import DiffCtrl from './diff';
 import { IO } from '../io';
 import { fakeRes } from './fakeresponse';
 
@@ -38,7 +37,6 @@ export default class SyncCtrl {
   private _timers = {};
 
   integrationsCtrl = new IntegrationsCtrl();
-  diffCtrl = new DiffCtrl();
 
   private _setTimer(name) {
     this._timers[name] = new Date().getTime();
@@ -392,6 +390,7 @@ export default class SyncCtrl {
           }
           demandAccountIndex[account] = (demandAccountIndex[account] || 0) + 1;
 
+          let login = (account + this._leadingZero(demandAccountIndex[account])).replace(/\./g, '_');
           let demandLocations = demandLine.slice(12, 18);
           let l = locations.filter((location, index) => !!demandLocations[index]);
 
@@ -404,7 +403,7 @@ export default class SyncCtrl {
           let status = demandLine[2];
 
           let demand = {
-            login: account + this._leadingZero(demandAccountIndex[account]),
+            login,
             account,
             acknowledgement: demandLine[3],
             role: replaceFromMap(billabilityMap, demandLine[4]),
@@ -494,7 +493,7 @@ export default class SyncCtrl {
       });
     this._addLog('Candidates chunk fetched [' + start + '÷' + (start + candidatesChunk) + ']', 'JobVite');
     data.forEach((candidate, index) => {
-      let login = '-' + (candidate.firstName.charAt(0) + candidate.lastName).toLowerCase();
+      let login = '-' + (candidate.firstName.charAt(0) + candidate.lastName).toLowerCase().replace(/\./g, '_');
       let name = candidate.lastName + ' ' + candidate.firstName;
       let job = candidate.job || {};
       let application = candidate.application || {};

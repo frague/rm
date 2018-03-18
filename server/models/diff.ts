@@ -4,7 +4,8 @@ const diffSchema = new mongoose.Schema({
   date: Date,
   subject: String,
   title: String,
-  diff: Object
+  diff: Object,
+  type: String
 });
 
 const Diff = mongoose.model('Diff', diffSchema);
