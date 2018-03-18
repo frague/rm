@@ -211,6 +211,8 @@ i.deadpool {
 }
 
 i.initiative {
+  @extend .clickable;
+
   font-style: normal;
   display: inline-block;
   height: 27px;
@@ -480,6 +482,14 @@ i.initiative {
   }
 }
 
+.assignments, .planner {
+  .people, .demands, .candidates {
+    .line, .lines {
+      @extend .clickable;
+    }
+  }
+}
+
 dl.attributes {
   dt {
     float: left;
@@ -590,27 +600,37 @@ ul.sync {
     &.selected {
       box-shadow: 0 10px 10px -5px rgba(0,0,0,0.5);
       position: relative;
-      background-color: $green;
+      background-color: $body - #111;
     }
 
-    div:first-child {
-      span {
-        display: inline-block;
-        float: right;
-        color: #888;
+    div {
+      @extend .clickable;
+      &:first-child {
+        a {
+          color: $link;
+        }
+        span {
+          display: inline-block;
+          float: right;
+          color: #888;
 
-        i.fa {
-          font-size: 14px;
-          position: relative;
-          bottom: 1px;
-          right: 2px;
+          i.fa {
+            font-size: 14px;
+            position: relative;
+            bottom: 1px;
+            right: 2px;
+          }
         }
       }
-    }
 
-    div:nth-child(2) {
-      @extend .clickable;
-      font-weight: 500;
+      &:nth-child(2) {
+        font-weight: 500;
+      }
+
+      &:last-child a {
+        display: inline-block;
+        float: right;
+      }
     }
   }
 
@@ -626,19 +646,18 @@ ul.sync {
       padding-top: 2px;
 
       &:first-child {
-        padding-left: 0;
         .corner {
           overflow: visible;
           top: 1px;
         }
       }
 
-      i.fa {
-        margin-right: 2px;
-        color: #888;
-        font-size: 12px;
-        position: relative;
-        bottom: 5px;
+      &:last-child {
+        a {
+          display: inline-block;
+          float: right;
+          color: $link + #444;
+        }
       }
     }
   }

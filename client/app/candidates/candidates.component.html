@@ -4,6 +4,8 @@
 
   <comments-modal></comments-modal>
 
+  <requisition-modal></requisition-modal>
+
   <div class="requisitions" *ngIf="getRequisitions().length">
     <ng-container *ngFor="let category of getCategories()">
       <h3 *ngIf="isCategoryFilled[category]">{{ category }}</h3>
@@ -11,7 +13,7 @@
         <div class="requisition row" *ngIf="requisitionCandidates[requisition.requisitionId] && requisitionCandidates[requisition.requisitionId].length" [ngClass]="isRequisitionSelected(requisition) && 'selected'">
           <div class="col-md-2">
             <i class="fa" [ngClass]="getRequisitionClass(requisition)" (click)="toggleSelection(requisition)"></i>
-            <a [href]="getJvRequisitionLink(requisition)" target="_blank">{{ requisition.requisitionId }}</a>
+            <a (click)="showRequisition(requisition, $event)">{{ requisition.requisitionId }}</a>
             <span>
               {{ requisitionCandidates[requisition.requisitionId].length }}
               <i class="fa fa-male"></i>
@@ -24,6 +26,7 @@
             {{ requisition.department }}
           </div>
           <div class="col-md-3">
+            <a [href]="getJvRequisitionLink(requisition)" target="_blank"><i class="fa fa-external-link-square"></i></a>
             {{ requisition.location }}
           </div>
         </div>
@@ -43,7 +46,6 @@
               >
                 <b>{{ candidate.commentsCount || '' }}</b>
               </div>
-              <a [href]="getJvCandidateLink(candidate)" target="_blank"><i class="fa fa-external-link-square"></i></a>
               {{ candidate.name }}
             </div>
             <div class="col-md-3">
@@ -53,6 +55,7 @@
               {{ candidate.updated|date }}
             </div>
             <div class="col-md-5">
+              <a [href]="getJvCandidateLink(candidate)" target="_blank"><i class="fa fa-external-link-square"></i></a>
               {{ candidate.location }}
             </div>
           </div>

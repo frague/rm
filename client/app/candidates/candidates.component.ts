@@ -4,6 +4,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { CommentsComponent } from '../planner/comments.component';
+import { RequisitionComponent } from './requisition.component';
+
 import { RequisitionService } from '../services/requisition.service';
 import { CandidateService } from '../services/candidate.service';
 import { BusService } from '../services/bus.service';
@@ -23,6 +25,7 @@ const emptyRequisition = {
 })
 export class CandidatesComponent implements OnInit {
   @ViewChild(CommentsComponent) commentsModal: CommentsComponent;
+  @ViewChild(RequisitionComponent) requisitionModal: RequisitionComponent;
 
   items = [];
   requisitionsIds = [];
@@ -143,6 +146,11 @@ export class CandidatesComponent implements OnInit {
   showComments(candidate, event: MouseEvent) {
     event.stopPropagation();
     this.commentsModal.show(candidate);
+  }
+
+  showRequisition(requisition, event: MouseEvent) {
+    event.stopPropagation();
+    this.requisitionModal.show(requisition);
   }
 
 }
