@@ -55,8 +55,8 @@ export class ReportComponent {
   }
 
   getDetails(demand) {
-    demand = demand || {deployment: '', grades: []};
-    let grades = demand.grades.join(', ');
+    demand = demand || {deployment: '', grades: ''};
+    let grades = demand.grades;
     let deployment = demand.deployment.toLowerCase().indexOf('onsite') >= 0 ? 'onsite' : '';
     if (grades  || deployment) {
       return ' (' +  (grades && grades) + (grades && deployment ? ', ' : '') + (deployment && deployment) + ')';

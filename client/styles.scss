@@ -1048,8 +1048,11 @@ div.corner {
       margin-bottom: 10px;
       ul {
         margin-bottom: 0;
+        padding-left: 10px;
+
         li {
           list-style: none;
+          font-size: 12px;
         }
       }
       .joined {

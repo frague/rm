@@ -24,6 +24,7 @@ import {
 
 const candidatesChunk = 500;
 const cleanupLocation = new RegExp(/(^,\s*|,\s*$)/);
+const outdated = 1000 * 60 * 60 * 24 * 30 * 3;  // 3 months
 
 export default class SyncCtrl {
 
@@ -492,6 +493,7 @@ export default class SyncCtrl {
         return [];
       });
     this._addLog('Candidates chunk fetched [' + start + '÷' + (start + candidatesChunk) + ']', 'JobVite');
+    let now = new Date().getTime();
     data.forEach((candidate, index) => {
       let name = candidate.lastName + ' ' + candidate.firstName;
       let job = candidate.job || {};
@@ -499,7 +501,8 @@ export default class SyncCtrl {
       let applicationJob = application.job || {};
       let state = candidateStates[application.workflowState];
       let requisitionId = applicationJob.requisitionId || '';
-      let login = '-' + (candidate.firstName + '_' + candidate.lastName).toLowerCase().replace(/\./g, '_') + requisitionId;
+      let login = (candidate.firstName + '_' + candidate.lastName).toLowerCase().replace(/\./g, '_') + '-' + requisitionId;
+      let updated = application.lastUpdatedDate ? new Date(application.lastUpdatedDate) : null;
 
       let nc = new Candidate({
         login,
@@ -510,11 +513,17 @@ export default class SyncCtrl {
         profile: candidate.title,
         requisitionId,
         state: state || application.workflowState,
-        updated: application.lastUpdatedDate ? new Date(application.lastUpdatedDate).toISOString().substr(0, 10) : null,
+        updated: updated ? updated.toISOString().substr(0, 10) : null,
         applicationId: application.eId
       });
 
-      if (nc.state.indexOf('Rejected') < 0 && nc.requisitionId && (allowedRequisitions.includes(nc.requisitionId) || nc.state.indexOf('New') < 0)) {
+      if (
+        nc.state.indexOf('Rejected') < 0
+        && nc.requisitionId
+        && allowedRequisitions.includes(nc.requisitionId)
+        && updated
+        && (now - updated.getTime()) < outdated
+      ) {
         nc.save();
       }
     });

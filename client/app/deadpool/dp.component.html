@@ -1,3 +1,7 @@
+<requisition-modal></requisition-modal>
+
+<demand-modal></demand-modal>
+
 <div class="deadpool row">
   <div class="col-md-4" *ngFor="let type of types">
     <h3>{{ typeNames[type] }}</h3>
@@ -5,14 +9,26 @@
       <h4>{{ date }}</h4>
 
       <div *ngFor="let diff of diffs[type][date]">
-      	{{ diff.title|ellipsis:diff.subject }}
+        <span *ngIf="type === 'r'">
+          {{ diff.title|ellipsis:diff.subject }}
+        </span>
+        <span *ngIf="type === 'd'" (click)="showDemand(diff.subject)">
+          {{ makeDemandCaption(diff.subject) }}
+        </span>
+      	<span *ngIf="type === 'c'">
+          <a (click)="showRequisition(diff.subject)">{{ makeReq(diff.subject) }}</a>:
+          {{ diff.title }}
+        </span>
       	<ul *ngIf="hasDiff(diff)">
       		<li *ngFor="let key of diff.diff|keys">
       			<b>{{ key }}:</b>
-      			{{ diff.diff[key][0]|ellipsis:'...' }} &rarr; {{ diff.diff[key][1]|ellipsis:'...' }}</li>
+      			{{ diff.diff[key][0]|ellipsis:'...' }}
+            &rarr;
+            {{ diff.diff[key][1]|ellipsis:'...' }}
+          </li>
       	</ul>
-        <span *ngIf="diff.diff === 1" class="joined">has joined</span>
-        <span *ngIf="diff.diff === -1" class="left">has left</span>
+        <span *ngIf="diff.diff === 1" class="joined">added</span>
+        <span *ngIf="diff.diff === -1" class="left">removed</span>
       </div>
     </div>
   </div>

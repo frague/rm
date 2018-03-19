@@ -1,20 +1,27 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BaseComponent } from '../base.component';
 import { DpService } from '../services/dp.service';
 import { PrintableDatePipe } from '../pipes';
 import { Subscription, Observable } from 'rxjs';
 
+import { DemandComponent } from '../assignments/demand.component';
+import { RequisitionComponent } from '../candidates/requisition.component';
+
+const rowNumber = /\d+$/g;
+
 @Component({
   selector: 'deadpool',
   templateUrl: './dp.component.html'
 })
 export class DpComponent extends BaseComponent {
+  @ViewChild(DemandComponent) demandModal: DemandComponent;
+  @ViewChild(RequisitionComponent) requisitionModal: RequisitionComponent;
 
   public form = new FormGroup({});
   types = ['r', 'd', 'c'];
 
-  typeNames = {r: 'Resources', d: 'Demands', c: 'Candidates'};
+  typeNames = {r: 'Employees', d: 'Demands', c: 'Candidates'};
   diffs = {};
 
   constructor(
@@ -55,6 +62,25 @@ export class DpComponent extends BaseComponent {
 
   getDatesFor(type: string) {
     return Object.keys(this.diffs[type]);
+  }
+
+  makeReq(id: string) {
+    let [, requisitionId] = id.split('-');
+    return requisitionId || '';
+  }
+
+  makeDemandCaption(id: string) {
+    let account = id.replace(rowNumber, '');
+    let row = id.substr(account.length);
+    return account + ' #' + row;
+  }
+
+  showDemand(demandId: string) {
+    this.demandModal.show(demandId);
+  }
+
+  showRequisition(requisitionId: string) {
+    this.requisitionModal.show(requisitionId);
   }
 
   hasDiff(diff: any) {
