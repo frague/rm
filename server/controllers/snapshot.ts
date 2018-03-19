@@ -8,9 +8,15 @@ import BaseCtrl from './base';
 
 var diffCtrl = new DiffCtrl();
 const keys = [
-  'grade', 
+  'account',
+  'comment',
+  'deployment',
+  'end',
+  'grade',
+  'grades',
   'license',
   'location',
+  'locations',
   'login',
   'manager',
   'name',
@@ -21,28 +27,23 @@ const keys = [
   'room',
   'skype',
   'specialization',
-  'visaB',
-  'visaL',
+  'start',
+  'requestId',
+  'role',
+  'stage',
   'state',
   'updated',
-  'start',
-  'end',
-  'locations',
-  'stage',
-  'role',
-  'requestId',
-  'comment',
-  'deployment',
-  'account'
+  'visaB',
+  'visaL',
 ];
 
 const dateKeys = [
+  'end',
   'passport',
+  'start',
+  'updated',
   'visaB',
   'visaL',
-  'updated',
-  'start',
-  'end',
 ];
 
 export default class SnapshotCtrl extends BaseCtrl {

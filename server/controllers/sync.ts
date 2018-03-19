@@ -392,7 +392,7 @@ export default class SyncCtrl {
 
           let login = (account + this._leadingZero(demandAccountIndex[account])).replace(/\./g, '_');
           let demandLocations = demandLine.slice(12, 18);
-          let l = locations.filter((location, index) => !!demandLocations[index]);
+          let l = locations.filter((location, index) => !!demandLocations[index]).sort().join(', ');
 
           let profile = demandLine[5];
           let pool = demandProfilesMap[profile] || '';
@@ -414,7 +414,7 @@ export default class SyncCtrl {
             start,
             end,
             stage: demandLine[9],
-            grades: demandLine[11].split(/[,-]/g),
+            grades: demandLine[11].split(/[,-]/g).sort().join(', '),
             locations: l,
             requestId
           };
@@ -493,12 +493,13 @@ export default class SyncCtrl {
       });
     this._addLog('Candidates chunk fetched [' + start + '÷' + (start + candidatesChunk) + ']', 'JobVite');
     data.forEach((candidate, index) => {
-      let login = '-' + (candidate.firstName.charAt(0) + candidate.lastName).toLowerCase().replace(/\./g, '_');
       let name = candidate.lastName + ' ' + candidate.firstName;
       let job = candidate.job || {};
       let application = candidate.application || {};
       let applicationJob = application.job || {};
       let state = candidateStates[application.workflowState];
+      let requisitionId = applicationJob.requisitionId || '';
+      let login = '-' + (candidate.firstName + '_' + candidate.lastName).toLowerCase().replace(/\./g, '_') + requisitionId;
 
       let nc = new Candidate({
         login,
@@ -507,7 +508,7 @@ export default class SyncCtrl {
         city: candidate.city,
         location: candidate.location.replace(cleanupLocation, ''),
         profile: candidate.title,
-        requisitionId: applicationJob.requisitionId,
+        requisitionId,
         state: state || application.workflowState,
         updated: application.lastUpdatedDate ? new Date(application.lastUpdatedDate).toISOString().substr(0, 10) : null,
         applicationId: application.eId

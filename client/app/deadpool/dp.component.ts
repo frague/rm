@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BaseComponent } from '../base.component';
 import { DpService } from '../services/dp.service';
 import { PrintableDatePipe } from '../pipes';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 
 @Component({
   selector: 'deadpool',
@@ -12,32 +12,50 @@ import { Subscription } from 'rxjs';
 export class DpComponent extends BaseComponent {
 
   public form = new FormGroup({});
-  dates = [];
+  types = ['r', 'd', 'c'];
+
+  typeNames = {r: 'Resources', d: 'Demands', c: 'Candidates'};
+  diffs = {};
 
   constructor(
     private makeDate: PrintableDatePipe,
     private dp: DpService
   ) {
     super(dp);
+    this.reset();
   }
 
-  getAll(criteria?: any): Subscription {
-    return this.dp.getAll(criteria).subscribe(
-      data => {
-        this.dates = data.reduce((result, item) => {
-          let key = this.makeDate.transform(item.date);
-          if (!result[key]) {
-            result[key] = [];
+  reset() {
+    this.diffs = this.types.reduce((result, type) => {
+      result[type] = {};
+      return result
+    }, {});
+  }
+
+  getAll(criteria: any = {}): Subscription {
+    this.reset();
+    return Observable.forkJoin(this.types.map(type => {
+      let query = Object.assign({type}, criteria);
+      return this.dp.getAll(query);
+    })).subscribe(
+      diffs => {
+        [].concat(...diffs).forEach(diff => {
+          let key = this.makeDate.transform(diff.date);
+          let byType = this.diffs[diff.type];
+          if (!byType[key]) {
+            byType[key] = [];
           }
-          result[key].push(item);
-          return result;
-        }, {});
+          byType[key].push(diff);
+
+        });
       },
       error => console.log(error)
     );
   }
 
-
+  getDatesFor(type: string) {
+    return Object.keys(this.diffs[type]);
+  }
 
   hasDiff(diff: any) {
     return diff.diff !== 1 && diff.diff !== -1;

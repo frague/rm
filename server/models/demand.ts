@@ -13,8 +13,8 @@ const demandSchema = new mongoose.Schema({
   end: Date,
   deployment: String,
   stage: String,
-  grades: [String],
-  locations: [String],
+  grades: String,
+  locations: String,
   requestId: String,
   comment: String,
   login: String

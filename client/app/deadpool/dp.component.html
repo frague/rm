@@ -1,16 +1,19 @@
-<div class="deadpool">
-  <div class="date" *ngFor="let date of dates|keys">
-    <h4>{{ date }}</h4>
+<div class="deadpool row">
+  <div class="col-md-4" *ngFor="let type of types">
+    <h3>{{ typeNames[type] }}</h3>
+    <div class="date" *ngFor="let date of getDatesFor(type)">
+      <h4>{{ date }}</h4>
 
-    <div *ngFor="let diff of dates[date]">
-    	{{ diff.title|ellipsis:diff.subject }}
-    	<ul *ngIf="hasDiff(diff)">
-    		<li *ngFor="let key of diff.diff|keys">
-    			<b>{{ key }}:</b>
-    			{{ diff.diff[key][0]|ellipsis:'...' }} &rarr; {{ diff.diff[key][1]|ellipsis:'...' }}</li>
-    	</ul>
-      <span *ngIf="diff.diff === 1" class="joined">has joined</span>
-      <span *ngIf="diff.diff === -1" class="left">has left</span>
+      <div *ngFor="let diff of diffs[type][date]">
+      	{{ diff.title|ellipsis:diff.subject }}
+      	<ul *ngIf="hasDiff(diff)">
+      		<li *ngFor="let key of diff.diff|keys">
+      			<b>{{ key }}:</b>
+      			{{ diff.diff[key][0]|ellipsis:'...' }} &rarr; {{ diff.diff[key][1]|ellipsis:'...' }}</li>
+      	</ul>
+        <span *ngIf="diff.diff === 1" class="joined">has joined</span>
+        <span *ngIf="diff.diff === -1" class="left">has left</span>
+      </div>
     </div>
   </div>
 </div>

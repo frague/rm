@@ -1,7 +1,7 @@
 import Diff from '../models/diff';
 import BaseCtrl from './base';
 
-export default class SnapshotCtrl extends BaseCtrl {
+export default class DiffCtrl extends BaseCtrl {
   model = Diff;
 
   getAll = (req, res) => {
