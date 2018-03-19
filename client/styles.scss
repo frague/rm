@@ -664,6 +664,7 @@ ul.sync {
 }
 
 div.corner {
+  @extend .clickable;
   position: absolute;
   width: 0;
   height: 0;
