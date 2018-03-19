@@ -198,7 +198,7 @@ export class PlannerComponent extends Schedule {
   }
 
   getDemandAttrs(demand) {
-    return (demand.grades || []).join(', ') + ' (' + (demand.locations || []).join(', ') + ')';
+    return (demand.grades || '') + ' (' + (demand.locations || '') + ')';
   }
 
   isAssigned(candidate: any) {

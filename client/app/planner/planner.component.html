@@ -9,7 +9,7 @@
   <demand-modal></demand-modal>
 
   <comments-modal></comments-modal>
-  
+
   <requisition-modal></requisition-modal>
 
   <report-modal [accountsDemand]="accountsDemand" [candidates]="candidates"></report-modal>
@@ -44,7 +44,7 @@
           <i class="fa fa-plane" *ngIf="isOnsite(demand)"></i>
           {{ demand.profile }}
           <span>
-            <a (click)="showRequisition(demand.requestId, $event)" *ngIf="demand.requestId">{{ demand.requestId }}</a> 
+            <a (click)="showRequisition(demand.requestId, $event)" *ngIf="demand.requestId">{{ demand.requestId }}</a>
             {{ getDemandAttrs(demand) }}
           </span>
           <span [title]="demand.comment">{{ demand.comment }}</span>
