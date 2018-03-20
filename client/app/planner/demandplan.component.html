@@ -1,10 +1,15 @@
 <div class="filter form-row">
   <div class="form-group">
     <div class="input-group">
+      <div class="input-group-btn">
+        <button type="button" class="btn btn-secondary" (click)="reset()" [disabled]="!selectedPlan._id">
+          <i class="fa fa-times"></i>
+        </button>
+      </div>
       <input
         type="text"
         class="form-control"
-        placeholder="Filter name"
+        placeholder="Plan name"
         [(ngModel)]="title"
       >
       <div class="input-group-btn">
