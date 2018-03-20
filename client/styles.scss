@@ -9,6 +9,7 @@ $yellow: #FFB;
 $blue: #1CA1C0;
 $red: #FF6E27;
 
+$cornerColor: #87afb3;
 $link: #006ba2;
 
 $demandCardHeight: 200px;
@@ -46,6 +47,12 @@ h2 {
   font-size: 28px;
   margin-top: 20px;
   font-weight: 300;
+}
+
+.form-control {
+  &, .btn {
+    border-radius: 0;
+  }
 }
 
 .btn {
@@ -609,17 +616,21 @@ ul.sync {
         a {
           color: $link;
         }
+
+        i.fa-caret-down {
+          position: relative;
+          right: 2px;
+
+        }
+        
+        i.fa-caret-down, i.fa-caret-right {
+          width: 10px;
+        }
+
         span {
           display: inline-block;
           float: right;
           color: #888;
-
-          i.fa {
-            font-size: 14px;
-            position: relative;
-            bottom: 1px;
-            right: 2px;
-          }
         }
       }
 
@@ -668,7 +679,7 @@ div.corner {
   position: absolute;
   width: 0;
   height: 0;
-  border-top: 16px solid #AAA;
+  border-top: 16px solid $cornerColor;
   border-left: 16px solid transparent;
   margin-top: -1px;
   right: 0;
