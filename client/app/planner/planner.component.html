@@ -42,6 +42,7 @@
             <b>{{ demand.commentsCount || '' }}</b>
           </div>
           <i class="fa fa-plane" *ngIf="isOnsite(demand)"></i>
+          {{ makeDemandCaption(demand.login) }}
           {{ demand.profile }}
           <span>
             <a (click)="showRequisition(demand.requestId, $event)" *ngIf="demand.requestId">{{ demand.requestId }}</a>
