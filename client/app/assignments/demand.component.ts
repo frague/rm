@@ -1,5 +1,6 @@
 import { Component, ViewChild, Input } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { DemandService } from '../services/demand.service';
 
 const month = 60*60*24*30*1000;
 
@@ -9,13 +10,24 @@ const month = 60*60*24*30*1000;
 })
 export class DemandComponent {
   @ViewChild('content') content;
-  demand: any;
+  demand: any = {};
+  isLoading = false;
 
-  constructor(private modalService: NgbModal) {}
+  constructor(
+    private modalService: NgbModal,
+    private demandService: DemandService
+  ) {}
 
   show(demand: any) {
-    this.demand = demand;
-    console.log(demand);
+    if (typeof demand === 'string') {
+      this.isLoading = true;
+      this.demandService.get({_id: demand}).subscribe(
+        demand => this.demand = demand,
+        error => console.log(error)
+      ).add(() => this.isLoading = false);
+    } else {
+      this.demand = demand;
+    }
     this.modalService.open(this.content);
   }
 

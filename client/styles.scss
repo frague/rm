@@ -50,13 +50,12 @@ h2 {
 }
 
 .form-control {
-  &, .btn {
-    border-radius: 0;
-  }
+  border-radius: 0;
 }
 
 .btn {
   outline-width: 0px !important;
+  border-radius: 0;
 
   &, &:hover, &:active, &:visited, &:focus, &:focus:active {
     color: #000;
@@ -86,6 +85,11 @@ h2 {
       background-color: $danger - #222;
       border-color: $danger - #111;
     }
+  }
+
+  &:disabled, &.disabled {
+    opacity: 0.8;
+    color: $body - #222;
   }
 }
 
@@ -120,6 +124,14 @@ h2 {
   font-size: 8px;
   font-weight: 500;
   color: $grid;
+}
+
+.modal-dialog {
+  box-shadow: 0 10px 10px -5px rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  border-radius: 0;
 }
 
 .modal-body {

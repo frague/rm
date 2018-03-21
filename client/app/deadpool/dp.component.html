@@ -12,11 +12,11 @@
         <span *ngIf="type === 'r'">
           {{ diff.title|ellipsis:diff.subject }}
         </span>
-        <span *ngIf="type === 'd'" (click)="showDemand(diff.subject)">
+        <span *ngIf="type === 'd'" (click)="showDemand(diff)">
           {{ makeDemandCaption(diff.subject) }}
         </span>
       	<span *ngIf="type === 'c'">
-          <a (click)="showRequisition(diff.subject)">{{ makeReq(diff.subject) }}</a>:
+          <a (click)="showRequisition(diff)">{{ makeReq(diff.subject) }}</a>:
           {{ diff.title }}
         </span>
       	<ul *ngIf="hasDiff(diff)">

@@ -75,12 +75,12 @@ export class DpComponent extends BaseComponent {
     return account + ' #' + row;
   }
 
-  showDemand(demandId: string) {
-    this.demandModal.show(demandId);
+  showDemand(diff: any) {
+    this.demandModal.show(diff.subject);
   }
 
-  showRequisition(requisitionId: string) {
-    this.requisitionModal.show(requisitionId);
+  showRequisition(diff: any) {
+    this.requisitionModal.show(diff.subject);
   }
 
   hasDiff(diff: any) {

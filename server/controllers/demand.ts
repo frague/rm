@@ -16,6 +16,15 @@ export default class DemandCtrl extends BaseCtrl {
     return {[key]: value};
   }
 
+  get = (req, res) => {
+    this.model.findOne({login: req.params.id}, (err, obj) => {
+      if (err) {
+        return console.error(err);
+      }
+      res.json(obj);
+    });
+  }
+
   getAll = (req, res) => {
     let or;
     try {
