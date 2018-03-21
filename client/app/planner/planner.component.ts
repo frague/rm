@@ -52,11 +52,10 @@ export class PlannerComponent extends Schedule {
     candidatesQuery.subscribe(data => {
       this.hirees = data;
 
-      this.candidates = this.items.length > 100
+      this.candidates = Object.keys(query).length
         ?
-          []
-        :
           this.items
+            .slice(0, 100)
             .filter(item => !item.isDemand)
             .sort((a, b) => {
               let [aChosen, bChosen] = [this.deserved[a.login], this.deserved[b.login]];
@@ -69,7 +68,9 @@ export class PlannerComponent extends Schedule {
               let result = this.resourcesById[item._id] || {};
               ['canTravel', 'billable'].forEach(key => result[key] = item[key] === 'true');
               return result;
-            });
+            })
+        :
+          [];
 
       this.hirees.slice(0, 20).forEach(hiree => {
         hiree.isHiree = true;
@@ -77,6 +78,7 @@ export class PlannerComponent extends Schedule {
       });
 
       this.candidatesCount = this.candidates.length;
+
       let demands = this.items
         .filter(item => item.isDemand)
         .map(item => {
