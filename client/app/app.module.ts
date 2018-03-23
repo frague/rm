@@ -55,6 +55,7 @@ import { AssignmentsReportComponent } from './assignments/report.component';
 import { SkillsetComponent } from './planner/skillset.component';
 import { CandidatesComponent } from './candidates/candidates.component';
 import { RequisitionComponent } from './candidates/requisition.component';
+import { SpinnerComponent } from './shared/spinner/spinner.component';
 
 const config: SocketIoConfig = {
   url: ':3000',
@@ -87,7 +88,8 @@ const config: SocketIoConfig = {
     AvatarComponent,
     AssignmentsReportComponent,
     SkillsetComponent,
-    CandidatesComponent
+    CandidatesComponent,
+    SpinnerComponent
   ],
   imports: [
     RoutingModule,

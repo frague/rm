@@ -932,13 +932,16 @@ div.corner {
       td {
         font-weight: 100;
 
+        &.neutral {
+          background-color: #EEE;
+        }
+
         &:nth-last-child(-n+4) {
           text-align: center;
         }
 
         &:last-child {
           border-right-width: 1px;
-          // border-bottom-width: 1px;
         }
       }
     }
@@ -1001,9 +1004,11 @@ div.corner {
     }
   }
 
-  .spinner.big {
+  .spinner {
+    position: absolute;
+    width: 100%;
+    border: solid 1px red;
     text-align: center;
-    padding-top: 30px;
     font-size: 80px;
   }
 

@@ -31,7 +31,9 @@
             <td>{{ assignment.end|date }}</td>
             <td>{{ assignment.billability }}</td>
             <td>{{ assignment.involvement || 0 }}%</td>
-            <td [rowSpan]="person.assignmentsCount" *ngIf="!i">&nbsp;</td>
+            <td [rowSpan]="person.assignmentsCount" *ngIf="!i" class="neutral">
+              <div *ngIf="person.status" [innerHTML]="person.status.text|MarkdownToHtml"></div>
+            </td>
           </tr>
         </tbody>
       </table>
