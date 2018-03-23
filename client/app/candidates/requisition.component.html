@@ -6,43 +6,44 @@
     <h4 class="modal-title">{{ requisition.requisitionId }} Requisition Details</h4>
   </div>
   <div class="modal-body requisition">
-    <dl class="attributes">
-      <dt>Title</dt>
-      <dd>
-        {{ requisition.title }}
-      </dd>
+    <spinner [isShown]="isLoading">
+      <dl class="attributes">
+        <dt>Title</dt>
+        <dd>
+          {{ requisition.title }}
+        </dd>
 
-      <dt>Category</dt>
-      <dd>
-        {{ requisition.category }}
-      </dd>
+        <dt>Category</dt>
+        <dd>
+          {{ requisition.category }}
+        </dd>
 
-      <dt>Department</dt>
-      <dd>
-        {{ requisition.department }}
-      </dd>
+        <dt>Department</dt>
+        <dd>
+          {{ requisition.department }}
+        </dd>
 
-      <dt>State</dt>
-      <dd>
-        {{ requisition.jobState }}
-      </dd>
+        <dt>State</dt>
+        <dd>
+          {{ requisition.jobState }}
+        </dd>
 
-      <dt>Location</dt>
-      <dd>
-        {{ requisition.location }}
-      </dd>
+        <dt>Location</dt>
+        <dd>
+          {{ requisition.location }}
+        </dd>
 
-      <dt>Posting Type</dt>
-      <dd>
-        {{ requisition.postingType }}
-      </dd>
+        <dt>Posting Type</dt>
+        <dd>
+          {{ requisition.postingType }}
+        </dd>
 
-      <dt>JobVite Link</dt>
-      <dd>
-        <a [href]="getJvRequisitionLink(requisition)" target="_blank">{{ requisition.requisitionId }}</a>
-      </dd>
+        <dt>JobVite Link</dt>
+        <dd>
+          <a [href]="getJvRequisitionLink(requisition)" target="_blank">{{ requisition.requisitionId }}</a>
+        </dd>
 
-    </dl>
-
+      </dl>
+    </spinner>
   </div>
 </ng-template>

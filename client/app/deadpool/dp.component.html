@@ -2,6 +2,8 @@
 
 <demand-modal></demand-modal>
 
+<person-modal></person-modal>
+
 <div class="deadpool row">
   <div class="col-md-4" *ngFor="let type of types">
     <h3>{{ typeNames[type] }}</h3>
@@ -10,10 +12,14 @@
 
       <div *ngFor="let diff of diffs[type][date]">
         <span *ngIf="type === 'r'">
-          {{ diff.title|ellipsis:diff.subject }}
+          <a (click)="showPerson(diff)">
+            {{ diff.title|ellipsis:diff.subject }}
+          </a>
         </span>
-        <span *ngIf="type === 'd'" (click)="showDemand(diff)">
-          {{ makeDemandCaption(diff.subject) }}
+        <span *ngIf="type === 'd'">
+          <a (click)="showDemand(diff)">
+            {{ makeDemandCaption(diff.subject) }}
+          </a>
         </span>
       	<span *ngIf="type === 'c'">
           <a (click)="showRequisition(diff)">{{ makeReq(diff.subject) }}</a>:

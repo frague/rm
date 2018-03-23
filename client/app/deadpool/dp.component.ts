@@ -7,6 +7,7 @@ import { Subscription, Observable } from 'rxjs';
 
 import { DemandComponent } from '../assignments/demand.component';
 import { RequisitionComponent } from '../candidates/requisition.component';
+import { PersonComponent } from '../people/person.component';
 
 const rowNumber = /\d+$/g;
 
@@ -17,6 +18,7 @@ const rowNumber = /\d+$/g;
 export class DpComponent extends BaseComponent {
   @ViewChild(DemandComponent) demandModal: DemandComponent;
   @ViewChild(RequisitionComponent) requisitionModal: RequisitionComponent;
+  @ViewChild(PersonComponent) personModal: PersonComponent;
 
   public form = new FormGroup({});
   types = ['r', 'd', 'c'];
@@ -80,7 +82,14 @@ export class DpComponent extends BaseComponent {
   }
 
   showRequisition(diff: any) {
-    this.requisitionModal.show(diff.subject);
+    let reqId = this.makeReq(diff.subject);
+    if (reqId) {
+      this.requisitionModal.show(reqId);
+    }
+  }
+
+  showPerson(diff: any) {
+    this.personModal.show(diff.subject);
   }
 
   hasDiff(diff: any) {

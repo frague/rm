@@ -6,41 +6,41 @@
     <h4 class="modal-title">Demand for {{ demand.profile }}</h4>
   </div>
   <div class="modal-body">
+    <spinner [isShown]="isLoading">
+      <dl class="attributes">
+        <dt>Account</dt>
+        <dd>{{ demand.account }}</dd>
 
-    <dl class="attributes">
-      <dt>Account</dt>
-      <dd>{{ demand.account }}</dd>
+        <dt>Pool</dt>
+        <dd>{{ demand.pool }}</dd>
 
-      <dt>Pool</dt>
-      <dd>{{ demand.pool }}</dd>
+        <dt>Dates</dt>
+        <dd>{{ demand.start|date }} - {{ demand.end|date }} {{ datesDiff() }}</dd>
 
-      <dt>Dates</dt>
-      <dd>{{ demand.start|date }} - {{ demand.end|date }} {{ datesDiff() }}</dd>
+        <dt>Grades</dt>
+        <dd>{{ demand.grades }}</dd>
 
-      <dt>Grades</dt>
-      <dd>{{ demand.grades }}</dd>
+        <dt>Locations</dt>
+        <dd>{{ demand.locations }}</dd>
 
-      <dt>Locations</dt>
-      <dd>{{ demand.locations }}</dd>
+        <dt>Deployment</dt>
+        <dd>{{ demand.deployment }}</dd>
 
-      <dt>Deployment</dt>
-      <dd>{{ demand.deployment }}</dd>
+        <dt>Ack.</dt>
+        <dd>{{ demand.acknowledgement }}</dd>
 
-      <dt>Ack.</dt>
-      <dd>{{ demand.acknowledgement }}</dd>
+        <dt>Billability</dt>
+        <dd>{{ demand.role }}</dd>
 
-      <dt>Billability</dt>
-      <dd>{{ demand.role }}</dd>
+        <dt>Stage</dt>
+        <dd>{{ demand.stage }}</dd>
 
-      <dt>Stage</dt>
-      <dd>{{ demand.stage }}</dd>
+        <dt>Request</dt>
+        <dd>{{ demand.requestId }}</dd>
 
-      <dt>Request</dt>
-      <dd>{{ demand.requestId }}</dd>
-
-      <dt>Comment</dt>
-      <dd>{{ demand.comment }}</dd>
-    </dl>
-
+        <dt>Comment</dt>
+        <dd>{{ demand.comment }}</dd>
+      </dl>
+    </spinner>
   </div>
 </ng-template>

@@ -1005,11 +1005,13 @@ div.corner {
   }
 
   .spinner {
-    position: absolute;
-    width: 100%;
-    border: solid 1px red;
-    text-align: center;
-    font-size: 80px;
+    i.fa {
+      position: absolute;
+      left: 50%;
+      margin-left: -40px;
+      margin-top: 50px;
+      font-size: 80px;
+    } 
   }
 
   .skills {
@@ -1073,8 +1075,13 @@ div.corner {
       border-bottom: solid 1px $grid;
     }
 
-    div {
+    div.date {
       margin-bottom: 10px;
+
+      div span a {
+        @extend .clickable;
+      }
+
       ul {
         margin-bottom: 0;
         padding-left: 10px;
@@ -1084,9 +1091,12 @@ div.corner {
           font-size: 12px;
         }
       }
+
+      
       .joined {
         color: $primary - #444;
       }
+      
       .left {
         color: $red;
       }

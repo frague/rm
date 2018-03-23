@@ -12,7 +12,7 @@ export class RequisitionComponent {
   @ViewChild('content') content;
 
   requisition: any = {};
-  public isFetching: boolean = false;
+  public isLoading: boolean = false;
 
   constructor(
     private modalService: NgbModal,
@@ -22,16 +22,16 @@ export class RequisitionComponent {
 
   show(requisition: any) {
     if (typeof requisition === 'string') {
-      this.isFetching = true;
+      this.isLoading = true;
       this.requisition = {};
       this.requisitionService.get(requisition).subscribe(
         requisition => {
           this.requisition = requisition;
-          this.isFetching = false;
+          this.isLoading = false;
         },
         error => {
           console.log('Error fetching requisition', requisition);
-          this.isFetching = false;
+          this.isLoading = false;
         }
       );
     } else {

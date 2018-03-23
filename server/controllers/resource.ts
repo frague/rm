@@ -5,6 +5,9 @@ import BaseCtrl from './base';
 export default class ResourceCtrl extends BaseCtrl {
   model = Resource;
 
+  modifiers = {
+  };
+
   cleanup = (req, res) => {
     Assignment.deleteMany({resourceId: req.params.id}, (err) => {
       if (err) { return console.error(err); }
@@ -13,6 +16,20 @@ export default class ResourceCtrl extends BaseCtrl {
   }
 
 	getAll = (req, res) => {
+    let or;
+    try {
+      or = req.query.or ? JSON.parse(req.query.or) : [];
+    } catch (e) {
+      console.error('Error parsing search query: ' + req.query.or);
+      return res.status(500);
+    }
+
+    let query = this.fixOr(this.modifyCriteria(or, this.modifiers));
+
+    console.log('- Resource ----------------------------------------------------------');
+    console.log('Initial:', JSON.stringify(or));
+    console.log('Query:', JSON.stringify(query));
+
     Resource.aggregate([
       {
         '$lookup': {
@@ -61,6 +78,9 @@ export default class ResourceCtrl extends BaseCtrl {
           status: 1,
           commentsCount: 1
         }
+      },
+      {
+        '$match': query
       },
       {
         '$sort': {
