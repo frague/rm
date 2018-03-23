@@ -1,6 +1,8 @@
 import { Component, ViewChild, Input } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { RequisitionService } from '../services/requisition.service';
+import { DomSanitizer } from '@angular/platform-browser';
+import { jobViteRequisition } from '../consts';
 
 @Component({
   selector: 'requisition-modal',
@@ -12,7 +14,11 @@ export class RequisitionComponent {
   requisition: any = {};
   public isFetching: boolean = false;
 
-  constructor(private modalService: NgbModal, private requisitionService: RequisitionService) {}
+  constructor(
+    private modalService: NgbModal,
+    private sanitizer: DomSanitizer,
+    private requisitionService: RequisitionService
+  ) {}
 
   show(requisition: any) {
     if (typeof requisition === 'string') {
@@ -22,7 +28,7 @@ export class RequisitionComponent {
         requisition => {
           this.requisition = requisition;
           this.isFetching = false;
-        }, 
+        },
         error => {
           console.log('Error fetching requisition', requisition);
           this.isFetching = false;
@@ -32,5 +38,9 @@ export class RequisitionComponent {
       this.requisition = requisition;
     }
     this.modalService.open(this.content);
+  }
+
+  getJvRequisitionLink(requisition) {
+    return this.sanitizer.bypassSecurityTrustUrl(jobViteRequisition + requisition.eId);
   }
 }

@@ -37,6 +37,11 @@
         {{ requisition.postingType }}
       </dd>
 
+      <dt>JobVite Link</dt>
+      <dd>
+        <a [href]="getJvRequisitionLink(requisition)" target="_blank">{{ requisition.requisitionId }}</a>
+      </dd>
+
     </dl>
 
   </div>

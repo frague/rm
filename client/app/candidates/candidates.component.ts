@@ -10,8 +10,7 @@ import { RequisitionService } from '../services/requisition.service';
 import { CandidateService } from '../services/candidate.service';
 import { BusService } from '../services/bus.service';
 
-const jobViteCandidate = 'https://app.jobvite.com/jhire/modules/candidates/details.html?applicationId=';
-const jobViteRequisition = 'https://app.jobvite.com/jhire/modules/requisitions/tabs.html#/summary/';
+import { jobViteRequisition, jobViteCandidate } from '../consts';
 
 const emptyRequisition = {
   title: 'Filled, Closed, Cancelled, etc.',

@@ -2,7 +2,7 @@ import { Component, ViewChild, Input } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { DemandService } from '../services/demand.service';
 
-const month = 60*60*24*30*1000;
+const month = 60 * 60 * 24 * 30 * 1000;
 
 @Component({
   selector: 'demand-modal',

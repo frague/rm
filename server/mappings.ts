@@ -32,6 +32,7 @@ export var demandProfilesMap = {
   'Dev-UI-FullStack': 'UI',
   'Dev-UI-Angular2': 'UI',
   'Dev-UI-Common': 'UI',
+  'Dev-UI-DotNet': 'UI',
   'Dev-UI-React': 'UI',
   'Architect-UI': 'UI',
 
