@@ -83,7 +83,8 @@ abstract class BaseCtrl {
     console.log('Finding all', query);
     this.model.find(query, (err, docs) => {
       if (err) {
-        return console.error(err);
+        console.error(err);
+        return res.sendStatus(500);
       }
       res.json(docs);
     });
@@ -93,7 +94,8 @@ abstract class BaseCtrl {
   count = (req, res) => {
     this.model.count((err, count) => {
       if (err) {
-        return console.error(err);
+        console.error(err);
+        return res.sendStatus(500);
       }
       res.json(count);
     });
@@ -108,9 +110,10 @@ abstract class BaseCtrl {
         res.sendStatus(400);
       }
       if (err) {
-        return console.error(err);
+        console.error(err);
+        return res.sendStatus(500);
       }
-      res.status(200).json(item);
+      res.json(item);
     });
   }
 
@@ -118,7 +121,8 @@ abstract class BaseCtrl {
   get = (req, res) => {
     this.model.findOne({ _id: req.params.id }, (err, obj) => {
       if (err) {
-        return console.error(err);
+        console.error(err);
+        return res.sendStatus(500);
       }
       res.json(obj);
     });
@@ -128,7 +132,8 @@ abstract class BaseCtrl {
   update = (req, res) => {
     this.model.findOneAndUpdate({ _id: req.params.id }, req.body, {new: true}, (err, item) => {
       if (err) {
-        return console.error(err);
+        console.error(err);
+        return res.sendStatus(500);
       }
       res.status(200).json(item);
     });
@@ -138,7 +143,8 @@ abstract class BaseCtrl {
   delete = (req, res) => {
     this.model.findOneAndRemove({ _id: req.params.id }, (err) => {
       if (err) {
-        return console.error(err);
+        console.error(err);
+        return res.sendStatus(500);
       }
       this.cleanup(req, res);
     });
@@ -148,7 +154,8 @@ abstract class BaseCtrl {
   deleteAll = (req, res) => {
     this.model.remove({}, (err) => {
       if (err) {
-        return console.error(err);
+        console.error(err);
+        return res.sendStatus(500);
       }
       res.sendStatus(200);
     });
