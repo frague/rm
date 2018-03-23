@@ -122,7 +122,8 @@ export default class SnapshotCtrl extends BaseCtrl {
           result[doc.login] = doc;
           return result;
         }, {});
-        resolve(this.makeDiff(updated, entity));
+        this.makeDiff(updated, entity);
+        resolve();
       });
     });
   }
