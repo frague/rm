@@ -77,14 +77,18 @@ abstract class BaseCtrl {
     return {[key]: value};
   }
 
+  _respondWithError(res, error='') {
+    console.log('Error:', error);
+    res.sendStatus(500);
+  }
+
   // Get all
   getAll = (req, res) => {
     let query = this.reduceQuery(req.query);
     console.log('Finding all', query);
     this.model.find(query, (err, docs) => {
       if (err) {
-        console.error(err);
-        return res.sendStatus(500);
+        return this._respondWithError(res, err);
       }
       res.json(docs);
     });
@@ -94,8 +98,7 @@ abstract class BaseCtrl {
   count = (req, res) => {
     this.model.count((err, count) => {
       if (err) {
-        console.error(err);
-        return res.sendStatus(500);
+        return this._respondWithError(res, err);
       }
       res.json(count);
     });
@@ -106,13 +109,13 @@ abstract class BaseCtrl {
     const obj = new this.model(req.body);
     obj.save((err, item) => {
       // 11000 is the code for duplicate key error
-      if (err && err.code === 11000) {
-        res.sendStatus(400);
-      }
       if (err) {
-        console.error(err);
-        return res.sendStatus(500);
-      }
+        if (err.code === 11000) {
+          return res.sendStatus(400);
+        } else {
+          return this._respondWithError(res, err);
+        }
+      } 
       res.json(item);
     });
   }
@@ -121,8 +124,7 @@ abstract class BaseCtrl {
   get = (req, res) => {
     this.model.findOne({ _id: req.params.id }, (err, obj) => {
       if (err) {
-        console.error(err);
-        return res.sendStatus(500);
+        return this._respondWithError(res, err);
       }
       res.json(obj);
     });
@@ -132,8 +134,7 @@ abstract class BaseCtrl {
   update = (req, res) => {
     this.model.findOneAndUpdate({ _id: req.params.id }, req.body, {new: true}, (err, item) => {
       if (err) {
-        console.error(err);
-        return res.sendStatus(500);
+        return this._respondWithError(res, err);
       }
       res.status(200).json(item);
     });
@@ -143,8 +144,7 @@ abstract class BaseCtrl {
   delete = (req, res) => {
     this.model.findOneAndRemove({ _id: req.params.id }, (err) => {
       if (err) {
-        console.error(err);
-        return res.sendStatus(500);
+        return this._respondWithError(res, err);
       }
       this.cleanup(req, res);
     });
@@ -154,8 +154,7 @@ abstract class BaseCtrl {
   deleteAll = (req, res) => {
     this.model.remove({}, (err) => {
       if (err) {
-        console.error(err);
-        return res.sendStatus(500);
+        return this._respondWithError(res, err);
       }
       res.sendStatus(200);
     });
