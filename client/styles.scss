@@ -135,6 +135,8 @@ h2 {
 }
 
 .modal-body {
+  min-height: 200px;
+  
   &.with-image {
     min-height: 180px;
   }
@@ -1004,16 +1006,6 @@ div.corner {
     }
   }
 
-  .spinner {
-    i.fa {
-      position: absolute;
-      left: 50%;
-      margin-left: -40px;
-      margin-top: 50px;
-      font-size: 80px;
-    } 
-  }
-
   .skills {
     h3 {
       font-weight: normal;
@@ -1058,6 +1050,16 @@ div.corner {
       }
     }
   }
+}
+
+.spinner {
+  i.fa {
+    position: absolute;
+    left: 50%;
+    margin-left: -40px;
+    margin-top: 50px;
+    font-size: 80px;
+  } 
 }
 
 .backup {

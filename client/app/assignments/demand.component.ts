@@ -22,7 +22,7 @@ export class DemandComponent {
     if (typeof demand === 'string') {
       this.isLoading = true;
       this.demandService.get({_id: demand}).subscribe(
-        demand => this.demand = demand,
+        demand => this.demand = demand || {},
         error => console.log(error)
       ).add(() => this.isLoading = false);
     } else {

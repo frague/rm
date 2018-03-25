@@ -67,7 +67,8 @@ export class DpComponent extends BaseComponent {
   }
 
   makeReq(id: string) {
-    let [, requisitionId] = id.split('-');
+    let dash = id.lastIndexOf('-') + 1;
+    let requisitionId = id.substr(dash);
     return requisitionId || '';
   }
 
@@ -78,18 +79,24 @@ export class DpComponent extends BaseComponent {
   }
 
   showDemand(diff: any) {
-    this.demandModal.show(diff.subject);
+    if (diff.diff !== -1) {
+      this.demandModal.show(diff.subject);
+    }
   }
 
   showRequisition(diff: any) {
-    let reqId = this.makeReq(diff.subject);
-    if (reqId) {
-      this.requisitionModal.show(reqId);
+    if (diff.diff !== -1) {
+      let reqId = this.makeReq(diff.subject);
+      if (reqId) {
+        this.requisitionModal.show(reqId);
+      }
     }
   }
 
   showPerson(diff: any) {
-    this.personModal.show(diff.subject);
+    if (diff.diff !== -1) {
+      this.personModal.show(diff.subject);
+    }
   }
 
   hasDiff(diff: any) {
