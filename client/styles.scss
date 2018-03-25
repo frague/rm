@@ -130,13 +130,20 @@ h2 {
   box-shadow: 0 10px 10px -5px rgba(0, 0, 0, 0.5);
 }
 
+
 .modal-content {
   border-radius: 0;
+  
+  .modal-header {
+    h4.modal-title {
+      font-weight: 100;
+    }
+  }
 }
 
 .modal-body {
   min-height: 200px;
-  
+
   &.with-image {
     min-height: 180px;
   }
