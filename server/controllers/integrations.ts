@@ -4,6 +4,7 @@ var GoogleSpreadsheet = require('google-spreadsheet');
 
 const env = process.env;
 const pmo = 'https://pmo.griddynamics.net/';
+const pmoDemandMeta = pmo + '/service/api/internal/position/demand/';
 const skillTree = 'https://skilltree.griddynamics.net/api/';
 const bamboo = 'api.bamboohr.com/api/gateway.php/griddynamics/v1/';
 const jobvite = 'https://api.jobvite.com/api/v2/';
@@ -74,6 +75,54 @@ export default class IntegrationsCtrl {
           (error, response, body) => {
             res.setHeader('Content-Type', 'application/json');
             res.json(JSON.parse(body));
+          });
+      });
+  }
+
+  _pmoGetDemandDict(name: string, index: number): Promise<any> {
+    return new Promise((resolve, reject) => {
+      let url = pmoDemandMeta + (index ? 'meta/' + name + '/active' : name);
+      return request.get(
+        this._fillRequest(this.pmoCookie, url),
+        (err, response, body) => {
+          if (err) reject('Unable to access PMO demand dictionary ' + name);
+          try {
+            body = JSON.parse(body).data.reduce((result, item) => {
+              result[item.id] = item;
+              return result;
+            }, {});
+            resolve(body);
+          } catch (e) {
+            console.log(e);
+            reject('Error parsing PMO response for dict ' + name);
+          }
+        }
+      );
+    });
+  }
+
+  pmoGetDemandDicts = (req, res) => {
+    let dicts = {};
+    this._pmoLogin()
+      .on('response', () => {
+        Promise.all([
+            'load',
+            'locations',
+            'accounts',
+            'grades',
+            'workProfiles',
+            'stages',
+            'types',
+            'statuses',
+            'deploy-destinations'
+          ].map((dict, index) => this._pmoGetDemandDict(dict, index).then(data => dicts[dict] = data))
+        )
+          .then(() => {
+            res.json(dicts);
+          })
+          .catch(reason => {
+            console.log(reason);
+            res.sendStatus(500);
           });
       });
   }
