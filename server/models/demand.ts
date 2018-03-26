@@ -5,10 +5,12 @@ var idType = mongoose.Schema.Types.ObjectId;
 const demandSchema = new mongoose.Schema({
   account: String,
   accountId: String,
+  project: String,
   pool: String,
   acknowledgement: String,
   role: String,
   profile: String,
+  specializations: String,
   start: Date,
   end: Date,
   deployment: String,

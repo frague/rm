@@ -338,6 +338,64 @@ export default class SyncCtrl {
     return (index > 9 ? '' : '0') + index;
   }
 
+  private _queryPMODemand(): Promise<any> {
+    this.loadings['demands'] = true;
+
+    // Create new initiative to show demand
+    new Initiative({
+      name: 'Demand',
+      account: 'Griddynamics',
+      color: '#FF5050'
+    }).save();
+
+    return new Promise(async (resolve, reject) => {
+      this.integrationsCtrl.pmoGetDemandDicts({}, fakeRes((data: any, err) => {
+        let {load, locations, accounts, grades, workProfiles, stages, types, statuses} = data;
+        let destinations = data['deploy-destinations'];
+
+        Object.keys(load).forEach(id => {
+          let item = load[id];
+          let account = accounts[item.accountId];
+          let end = new Date(item.startDate);
+          end.setMonth(end.getMonth() + item.duration);
+          let profile = workProfiles[item.workProfileId];
+
+          let pool = ''; // TODO: Identify
+
+          let demand = {
+            login: id,
+            account: account.name,
+            comment: item.comment,
+            deployment: destinations[item.deployDestinationId].name,
+            end: end.toISOString().substr(0, 10),
+            grades: item.gradeRequirements.map(rid => grades[rid].name).sort().join(', '),
+            locations: item.locations.map(lid => locations[lid].name).sort().join(', '),
+            profile: profile.name,
+            project: account.projects.filter(project => project.id === item.projectId)[0].name,
+            role: types[item.typeId].billableStatus,
+            start: item.startDate,
+            specializations: item.specializations.map(sid => profile.specializations[sid]).join(', '),
+            stage: stages[item.stageId].name,
+
+            pool
+          };
+
+          if (status === 'active') {
+            setTimeout(() => new Demand(demand).save((err, data) => {
+              if (err) reject(err);
+            }), 0);
+          }
+
+        });
+
+        this.loadings['demands'] = false;
+        return resolve();
+      }));
+    })
+      .catch(err => console.log(err));
+  }
+
+
   private _queryDemand(): Promise<any> {
     this.loadings['demands'] = true;
 
