@@ -117,9 +117,15 @@ export default class SyncCtrl {
     await Candidate.deleteMany({});
   };
 
-  private _makeDate(milliseconds: number): string {
+  private _makeDate(milliseconds: number, eod=false): string {
     if (!milliseconds) return '';
-    return new Date(milliseconds).toString();
+    let result = new Date(milliseconds);
+    if (eod) {
+      result.setHours(23);
+      result.setMinutes(59);
+      result.setSeconds(59);
+    }
+    return result.toString()
   }
 
   private _queryBamboo(): Promise<any> {
@@ -275,7 +281,7 @@ export default class SyncCtrl {
                     name: project,
                     account,
                     start: this._makeDate(person.assignmentStart[index]),
-                    end: this._makeDate(person.assignmentFinish[index]),
+                    end: this._makeDate(person.assignmentFinish[index], true),
                     billability: person.assignmentStatus[index].name,
                     involvement: person.involvements[index]
                   };
