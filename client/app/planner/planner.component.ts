@@ -200,6 +200,10 @@ export class PlannerComponent extends Schedule {
     return this.reserved[demand.login] === candidate.login;
   }
 
+  getDemandCandidate(demand: any) {
+    return this.reserved[demand.login];
+  }
+
   getDemandAttrs(demand) {
     return (demand.grades || '') + ' (' + (demand.locations || '') + ')';
   }

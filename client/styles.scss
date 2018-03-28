@@ -133,7 +133,7 @@ h2 {
 
 .modal-content {
   border-radius: 0;
-  
+
   .modal-header {
     h4.modal-title {
       font-weight: 300;
@@ -643,7 +643,7 @@ ul.sync {
           right: 2px;
 
         }
-        
+
         i.fa-caret-down, i.fa-caret-right {
           width: 10px;
         }
@@ -718,6 +718,27 @@ div.corner {
 
   &.has-status {
     border-top-color: $red;
+  }
+}
+
+div.bottom-corner {
+  @extend .clickable;
+  position: absolute;
+  width: 0;
+  height: 0;
+  // border-bottom: 16px solid $cornerColor;
+  // border-left: 16px solid transparent;
+  right: 0;
+  margin-top: $plannerLineHeight - 16px;
+
+  i {
+    display: inline-block;
+    text-align: center;
+    font-size: 8px;
+    position: relative;
+    bottom: 7px;
+    right: 12px;
+    color: $cornerColor !important;
   }
 }
 

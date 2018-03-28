@@ -41,6 +41,15 @@
           >
             <b>{{ demand.commentsCount || '' }}</b>
           </div>
+          <div
+            class="bottom-corner"
+            container="body"
+            placement="top-left"
+            [ngbTooltip]="getDemandCandidate(demand)"
+            *ngIf="getDemandCandidate(demand)"
+          >
+            <i class="fa fa-info-circle"></i>
+          </div>
           <i class="fa fa-plane" *ngIf="isOnsite(demand)"></i>
           {{ makeDemandCaption(demand.login) }}
           {{ demand.profile }}
