@@ -12,6 +12,7 @@ export default class DemandCtrl extends BaseCtrl {
   };
 
   demandTransform(key, value) {
+    if (key === 'demand') return;  // For cases with demand='true'|'false'|'only'
     key = key.replace('demand.', '');
     return {[key]: value};
   }
