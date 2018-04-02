@@ -25,13 +25,13 @@
             *ngFor="let assignment of person.assignmentsArray;let i = index"
             [ngClass]="getClass(assignment)"
           >
-            <th [rowSpan]="person.assignmentsCount" *ngIf="!i">{{ person.grade }}, {{ person.name }} ({{ person.location }})</th>
+            <th [rowSpan]="person.assignmentsCount || 1" *ngIf="!i">{{ person.grade }}, {{ person.name }} ({{ person.location }})</th>
             <td>{{ assignment.account || '-' }}/{{ assignment.initiative || '-' }}</td>
             <td>{{ assignment.start|date }}</td>
             <td>{{ assignment.end|date }}</td>
             <td>{{ assignment.billability }}</td>
             <td>{{ assignment.involvement || 0 }}%</td>
-            <td [rowSpan]="person.assignmentsCount" *ngIf="!i" class="neutral">
+            <td [rowSpan]="person.assignmentsCount || 1" *ngIf="!i" class="neutral">
               <div *ngIf="person.status" [innerHTML]="person.status.text|MarkdownToHtml"></div>
             </td>
           </tr>

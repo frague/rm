@@ -49,6 +49,11 @@ h2 {
   font-weight: 300;
 }
 
+.input-group {
+  // border: solid 1px #c0e6ea;
+  border: solid 1px $body - #333;
+}
+
 .form-control {
   border-radius: 0;
 }
