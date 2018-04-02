@@ -193,11 +193,9 @@ export class CommentsComponent extends BaseComponent {
 
   hasChanges() {
     let newValue = this.form.value;
-    return ['source', 'text'].reduce((result, key) => {
-      let a = this.initialValue[key] || null;
-      let b = newValue[key] || null;
-      return result || a !== b;
-    }, false);
+    return ['source', 'text', 'isStatus'].some(
+      key => (this.initialValue[key] || null) !== (newValue[key] || null)
+    );
   }
 
   get isFormActive(): boolean {
