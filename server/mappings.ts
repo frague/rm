@@ -50,6 +50,7 @@ export var demandProfilesMap = {
   'Dev-Search-Elastic': 'Search',
 
   'ML Engineer': 'ML',
+  'ML Team Lead': 'ML',
   'BigDataEng-DataScientist': 'ML',
 
   'Dev-Mobile-Android': 'Mobile'
