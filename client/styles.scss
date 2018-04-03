@@ -32,6 +32,7 @@ a {
 
 h1 {
   font-size: 32px;
+  font-weight: 200;
 
   span {
     font-size: 16px;
@@ -56,14 +57,19 @@ h2 {
 
 .form-control {
   border-radius: 0;
+
+  &:focus {
+    border-color: $body - #888;
+  }
 }
 
 .btn {
   outline-width: 0px !important;
   border-radius: 0;
+  color: $body - #777;
 
-  &, &:hover, &:active, &:visited, &:focus, &:focus:active {
-    color: #000;
+  &:hover, &:active, &:visited, &:focus, &:focus:active {
+    background-color: $body - #111 !important;
   }
 
   &.btn-primary {
@@ -93,8 +99,12 @@ h2 {
   }
 
   &:disabled, &.disabled {
-    opacity: 0.8;
     color: $body - #222;
+    opacity: 1;
+
+    &, &:hover {
+      background-color: $body + #040404;
+    }
   }
 }
 
