@@ -69,7 +69,11 @@
             (click)="showResource(candidate)"
             [ngClass]="{billable: candidate.billable, assigned: isAssigned(candidate), hiree: candidate.isHiree}"
           >
-            <avatar [login]="candidate.login" [useDefault]="candidate.isHiree">{{ candidate.requisitionId || '' }}</avatar>
+            <avatar [login]="candidate.login" [useDefault]="candidate.isHiree">
+              <a (click)="showRequisition(candidate.requisitionId, $event)" *ngIf="candidate.requisitionId">
+                {{ candidate.requisitionId }}
+              </a>
+            </avatar>
             {{ candidate.name }}
             <span>
               <i class="fa fa-plane" *ngIf="candidate.canTravel"></i>
