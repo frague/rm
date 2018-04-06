@@ -96,6 +96,8 @@ export class CommentsComponent extends BaseComponent {
 
   fetchSkills() {
     let loadersCount = 2;
+    let loaded = () => this.skillsFetching = !!--loadersCount;
+
     this.skillsFetching = true;
 
     this.skillsService.get(this.person.login).subscribe(
@@ -103,11 +105,11 @@ export class CommentsComponent extends BaseComponent {
         this._countSkillsDefined(skills);
         this.skills = skills;
       }
-    ).add(() => this.skillsFetching = !!--loadersCount);
+    ).add(loaded);
 
     this.skillsService.getInfo(this.person.login).subscribe(
       info => this.skillsInfo = info
-    ).add(() => this.skillsFetching = !!--loadersCount);
+    ).add(loaded);
   }
 
   getEditedValue() {
