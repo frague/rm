@@ -30,66 +30,73 @@ export default class ResourceCtrl extends BaseCtrl {
     console.log('Initial:', JSON.stringify(or));
     console.log('Query:', JSON.stringify(query));
 
-    Resource.aggregate([
-      {
-        '$lookup': {
-          from: 'comments',
-          localField: 'login',
-          foreignField: 'login',
-          as: 'comments'
-        }
-      },
-      {
-        '$addFields': {
-          commentsCount: {'$size': '$comments'},
-          status: {
-            '$arrayElemAt': [
-              {
-                '$filter': {
-                  input: '$comments',
-                  as: 'status',
-                  cond: {
-                    '$eq': ['$$status.isStatus', true]
+    Resource
+      .aggregate([
+        {
+          '$lookup': {
+            from: 'comments',
+            localField: 'login',
+            foreignField: 'login',
+            as: 'comments'
+          }
+        },
+        {
+          '$addFields': {
+            commentsCount: {'$size': '$comments'},
+            status: {
+              '$arrayElemAt': [
+                {
+                  '$filter': {
+                    input: '$comments',
+                    as: 'status',
+                    cond: {
+                      '$eq': ['$$status.isStatus', true]
+                    }
                   }
-                }
-              },
-              0
-            ]
+                },
+                0
+              ]
+            }
+          }
+        },
+        {
+          '$project': {
+            name: 1,
+            login: 1,
+            grade: 1,
+            location: 1,
+            profile: 1,
+            specialization: 1,
+            pool: 1,
+            manager: 1,
+            skype: 1,
+            phone: 1,
+            room: 1,
+            passport: 1,
+            visaB: 1,
+            visaL: 1,
+            license: 1,
+            status: 1,
+            commentsCount: 1
+          }
+        },
+        {
+          '$match': query
+        },
+        {
+          '$sort': {
+            name: 1
           }
         }
-      },
-      {
-        '$project': {
-          name: 1,
-          login: 1,
-          grade: 1,
-          location: 1,
-          profile: 1,
-          specialization: 1,
-          pool: 1,
-          manager: 1,
-          skype: 1,
-          phone: 1,
-          room: 1,
-          passport: 1,
-          visaB: 1,
-          visaL: 1,
-          license: 1,
-          status: 1,
-          commentsCount: 1
-        }
-      },
-      {
-        '$match': query
-      },
-      {
-        '$sort': {
-          name: 1
-        }
-      }
-    ], (err, docs) => {
-      if (err) { return console.error(err); }
-      res.json(docs);
+      ]
+    )
+    .cursor({})
+    .exec()
+    .toArray()
+    .then(data => res.json(data))
+    .catch(error => {
+      console.log('Error', error);
+      res.sendStatus(500);
     });
   }
 

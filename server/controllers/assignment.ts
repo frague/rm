@@ -85,175 +85,180 @@ export default class AssignmentCtrl extends BaseCtrl {
     console.log('Query:', JSON.stringify(query));
 
     let now = new Date();
-    Resource.aggregate([
-      {
-        '$lookup': {
-          from: 'comments',
-          localField: 'login',
-          foreignField: 'login',
-          as: 'comments'
-        }
-      },
-      {
-        '$addFields': {
-          commentsCount: {'$size': '$comments'}
-        }
-      },
-      {
-        '$lookup': {
-          from: 'assignments',
-          localField: '_id',
-          foreignField: 'resourceId',
-          as: 'assignment'
-        }
-      },
-      {
-        '$unwind': {
-          path: '$assignment',
-          preserveNullAndEmptyArrays: true
-        }
-      },
-      {
-        '$lookup': {
-          from: 'initiatives',
-          localField: 'assignment.initiativeId',
-          foreignField: '_id',
-          as: 'initiative'
-        }
-      },
-      {
-        '$unwind': {
-          path: '$initiative',
-          preserveNullAndEmptyArrays: true
-        }
-      },
-      {
-        '$addFields': {
-          'assignment.account': '$initiative.account',
-          'assignment.initiative': '$initiative.name',
-          'assignment.billable': {
-            '$cond': {
-              if: {
-                '$and': [
-                  {'$in': ['$assignment.billability', ['Billable', 'Soft booked', 'PTO Coverage', 'Funded']]},
-                  {'$or': [
-                      {'$gte': ['$assignment.end', now]},
-                      {'$eq': ['$assignment.end', null]}
-                    ]
-                  }
-                ]
-              },
-              then: 'true',
-              else: 'false'
-            }
-          },
-          'canTravel': {
-            '$cond': {
-              if: {
-                '$or': [
-                  {'$gt': ['$visaB', now]},
-                  {'$gt': ['$visaL', now]}
-                ]
-              },
-              then: 'true',
-              else: 'false'
-            }
-          },
-          status: {
-            '$arrayElemAt': [
-              {
-                '$filter': {
-                  input: '$comments',
-                  as: 'status',
-                  cond: {
-                    '$eq': ['$$status.isStatus', true]
-                  }
-                }
-              },
-              0
-            ]
+    let cursor = Resource
+      .aggregate([
+        {
+          '$lookup': {
+            from: 'comments',
+            localField: 'login',
+            foreignField: 'login',
+            as: 'comments'
           }
-        }
-      },
-      {
-        '$group': {
-          _id: '$_id',
-          assignments: { '$push': '$assignment' },
-          assignmentsSet: { '$max': '$assignment._id' },
-          name: { '$first': '$name' },
-          grade: { '$first': '$grade' },
-          location: { '$first': '$location' },
-          profile: { '$first': '$profile' },
-          specialization: { '$first': '$specialization' },
-          pool: { '$first': '$pool' },
-          starts: { '$first': '$starts' },
-          ends: { '$first': '$ends' },
-          manager: { '$first': '$manager' },
-          minDate: {
-            '$min': '$assignment.start'
-          },
-          maxDate: {
-            '$max': '$assignment.end'
-          },
-          billable: {
-            '$max': '$assignment.billable'
-          },
-          canTravel: { '$first': '$canTravel' },
-          login: { '$first': '$login' },
-          status: { '$first': '$status' },
-          commentsCount: { '$first': '$commentsCount' },
-          comments: {'$first': '$comments'}
-        }
-      },
-      {
-        '$addFields': {
-          'assignments': {
-            '$cond': {
-              if: '$assignmentsSet',
-              then: '$assignments',
-              else: []
+        },
+        {
+          '$addFields': {
+            commentsCount: {'$size': '$comments'}
+          }
+        },
+        {
+          '$lookup': {
+            from: 'assignments',
+            localField: '_id',
+            foreignField: 'resourceId',
+            as: 'assignment'
+          }
+        },
+        {
+          '$unwind': {
+            path: '$assignment',
+            preserveNullAndEmptyArrays: true
+          }
+        },
+        {
+          '$lookup': {
+            from: 'initiatives',
+            localField: 'assignment.initiativeId',
+            foreignField: '_id',
+            as: 'initiative'
+          }
+        },
+        {
+          '$unwind': {
+            path: '$initiative',
+            preserveNullAndEmptyArrays: true
+          }
+        },
+        {
+          '$addFields': {
+            'assignment.account': '$initiative.account',
+            'assignment.initiative': '$initiative.name',
+            'assignment.billable': {
+              '$cond': {
+                if: {
+                  '$and': [
+                    {'$in': ['$assignment.billability', ['Billable', 'Soft booked', 'PTO Coverage', 'Funded']]},
+                    {'$or': [
+                        {'$gte': ['$assignment.end', now]},
+                        {'$eq': ['$assignment.end', null]}
+                      ]
+                    }
+                  ]
+                },
+                then: 'true',
+                else: 'false'
+              }
+            },
+            'canTravel': {
+              '$cond': {
+                if: {
+                  '$or': [
+                    {'$gt': ['$visaB', now]},
+                    {'$gt': ['$visaL', now]}
+                  ]
+                },
+                then: 'true',
+                else: 'false'
+              }
+            },
+            status: {
+              '$arrayElemAt': [
+                {
+                  '$filter': {
+                    input: '$comments',
+                    as: 'status',
+                    cond: {
+                      '$eq': ['$$status.isStatus', true]
+                    }
+                  }
+                },
+                0
+              ]
             }
           }
+        },
+        {
+          '$group': {
+            _id: '$_id',
+            assignments: { '$push': '$assignment' },
+            assignmentsSet: { '$max': '$assignment._id' },
+            name: { '$first': '$name' },
+            grade: { '$first': '$grade' },
+            location: { '$first': '$location' },
+            profile: { '$first': '$profile' },
+            specialization: { '$first': '$specialization' },
+            pool: { '$first': '$pool' },
+            starts: { '$first': '$starts' },
+            ends: { '$first': '$ends' },
+            manager: { '$first': '$manager' },
+            minDate: {
+              '$min': '$assignment.start'
+            },
+            maxDate: {
+              '$max': '$assignment.end'
+            },
+            billable: {
+              '$max': '$assignment.billable'
+            },
+            canTravel: { '$first': '$canTravel' },
+            login: { '$first': '$login' },
+            status: { '$first': '$status' },
+            commentsCount: { '$first': '$commentsCount' },
+            comments: {'$first': '$comments'}
+          }
+        },
+        {
+          '$addFields': {
+            'assignments': {
+              '$cond': {
+                if: '$assignmentsSet',
+                then: '$assignments',
+                else: []
+              }
+            }
+          }
+        },
+        {
+          '$match': query
+        },
+        {
+          '$project': {
+            _id: 1,
+            assignments: 1,
+            assignmentsSet: 1,
+            name: 1,
+            grade: 1,
+            location: 1,
+            profile: 1,
+            specialization: 1,
+            pool: 1,
+            starts: 1,
+            ends: 1,
+            manager: 1,
+            minDate: 1,
+            maxDate: 1,
+            billable: 1,
+            canTravel: 1,
+            login: 1,
+            status: 1,
+            commentsCount: 1
+          }
+        },
+        {
+          '$sort': {
+            name: 1
+          }
         }
-      },
-      {
-        '$match': query
-      },
-      {
-        '$project': {
-          _id: 1,
-          assignments: 1,
-          assignmentsSet: 1,
-          name: 1,
-          grade: 1,
-          location: 1,
-          profile: 1,
-          specialization: 1,
-          pool: 1,
-          starts: 1,
-          ends: 1,
-          manager: 1,
-          minDate: 1,
-          maxDate: 1,
-          billable: 1,
-          canTravel: 1,
-          login: 1,
-          status: 1,
-          commentsCount: 1
-        }
-      },
-      {
-        '$sort': {
-          name: 1
-        }
-      }
-    ], (err, data) => {
-      if (err) {
-        console.error(err);
-        res.sendStatus(500);
-      }
-      let message = skillsList.length ? 'Skills suggested: ' + skillsList.join(', ') : '';
-      res.json({message, data});
-    });
+      ])
+      .cursor({})
+      .exec()
+      .toArray()
+      .then(data => {
+        let message = skillsList.length ? 'Skills suggested: ' + skillsList.join(', ') : '';
+        res.json({message, data});
+      })
+      .catch(error => {
+        console.log('Error', error);
+        return res.sendStatus(500);
+      });
   }
 }

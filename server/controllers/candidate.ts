@@ -31,78 +31,85 @@ export default class CandidateCtrl extends BaseCtrl {
     console.log('Initial:', JSON.stringify(or));
     console.log('Query:', JSON.stringify(query));
 
-    this.model.aggregate([
-      {
-        '$lookup': {
-          from: 'comments',
-          localField: 'login',
-          foreignField: 'login',
-          as: 'comments'
-        }
-      },
-      {
-        '$addFields': {
-          commentsCount: {'$size': '$comments'},
-          status: {
-            '$arrayElemAt': [
-              {
-                '$filter': {
-                  input: '$comments',
-                  as: 'status',
-                  cond: {
-                    '$eq': ['$$status.isStatus', true]
+    this.model
+      .aggregate([
+        {
+          '$lookup': {
+            from: 'comments',
+            localField: 'login',
+            foreignField: 'login',
+            as: 'comments'
+          }
+        },
+        {
+          '$addFields': {
+            commentsCount: {'$size': '$comments'},
+            status: {
+              '$arrayElemAt': [
+                {
+                  '$filter': {
+                    input: '$comments',
+                    as: 'status',
+                    cond: {
+                      '$eq': ['$$status.isStatus', true]
+                    }
                   }
-                }
-              },
-              0
-            ]
+                },
+                0
+              ]
+            }
+          }
+        },
+        {
+          '$lookup': {
+            from: 'requisitions',
+            localField: 'requisitionId',
+            foreignField: 'requisitionId',
+            as: 'requisition'
+          }
+        },
+        {
+          '$unwind': {
+            path: '$requisition',
+            preserveNullAndEmptyArrays: true
+          }
+        },
+        {
+          '$match': query
+        },
+        {
+          '$project': {
+            applicationId: 1,
+            city: 1,
+            comments: 1,
+            commentsCount: 1,
+            country: 1,
+            location: 1,
+            login: 1,
+            name: 1,
+            profile: 1,
+            requisitionId: 1,
+            state: 1,
+            updated: 1,
+            _id: 1
+          }
+        },
+        {
+          '$sort': {
+            requisitionId: 1,
+            state: -1,
+            updated: -1
           }
         }
-      },
-      {
-        '$lookup': {
-          from: 'requisitions',
-          localField: 'requisitionId',
-          foreignField: 'requisitionId',
-          as: 'requisition'
-        }
-      },
-      {
-        '$unwind': {
-          path: '$requisition',
-          preserveNullAndEmptyArrays: true
-        }
-      },
-      {
-        '$match': query
-      },
-      {
-        '$project': {
-          applicationId: 1,
-          city: 1,
-          comments: 1,
-          commentsCount: 1,
-          country: 1,
-          location: 1,
-          login: 1,
-          name: 1,
-          profile: 1,
-          requisitionId: 1,
-          state: 1,
-          updated: 1,
-          _id: 1
-        }
-      },
-      {
-        '$sort': {
-          requisitionId: 1,
-          state: -1,
-          updated: -1
-        }
-      }
-    ], (err, docs) => {
-      if (err) { return console.error(err); }
-      res.json(docs);
+      ]
+    )
+    .cursor({})
+    .exec()
+    .toArray()
+    .then(data => res.json(data))
+    .catch(error => {
+      console.log('Error', error);
+      res.sendStatus(500);
     });
   }
 }

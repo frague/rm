@@ -41,67 +41,73 @@ export default class DemandCtrl extends BaseCtrl {
     console.log('Initial:', JSON.stringify(or));
     console.log('Query:', JSON.stringify(query));
 
-    this.model.aggregate([
-      {
-        '$lookup': {
-          from: 'comments',
-          localField: 'login',
-          foreignField: 'login',
-          as: 'comments'
-        }
-      },
-      {
-        '$addFields': {
-          commentsCount: {'$size': '$comments'},
-          status: {
-            '$arrayElemAt': [
-              {
-                '$filter': {
-                  input: '$comments',
-                  as: 'status',
-                  cond: {
-                    '$eq': ['$$status.isStatus', true]
+    this.model
+      .aggregate([
+        {
+          '$lookup': {
+            from: 'comments',
+            localField: 'login',
+            foreignField: 'login',
+            as: 'comments'
+          }
+        },
+        {
+          '$addFields': {
+            commentsCount: {'$size': '$comments'},
+            status: {
+              '$arrayElemAt': [
+                {
+                  '$filter': {
+                    input: '$comments',
+                    as: 'status',
+                    cond: {
+                      '$eq': ['$$status.isStatus', true]
+                    }
                   }
-                }
-              },
-              0
-            ]
+                },
+                0
+              ]
+            }
+          }
+        },
+        {
+          '$match': query
+        },
+        {
+          '$project': {
+            account: 1,
+            pool: 1,
+            acknowledgement: 1,
+            role: 1,
+            profile: 1,
+            start: 1,
+            end: 1,
+            deployment: 1,
+            stage: 1,
+            grades: 1,
+            locations: 1,
+            requestId: 1,
+            comment: 1,
+            login: 1,
+            commentsCount: 1,
+            status: 1
+          }
+        },
+        {
+          '$sort': {
+            login: 1
           }
         }
-      },
-      {
-        '$match': query
-      },
-      {
-        '$project': {
-          account: 1,
-          pool: 1,
-          acknowledgement: 1,
-          role: 1,
-          profile: 1,
-          start: 1,
-          end: 1,
-          deployment: 1,
-          stage: 1,
-          grades: 1,
-          locations: 1,
-          requestId: 1,
-          comment: 1,
-          login: 1,
-          commentsCount: 1,
-          status: 1
-        }
-      },
-      {
-        '$sort': {
-          login: 1
-        }
-      }
-    ], (err, docs) => {
-      if (err) { return console.error(err); }
-      res.json(docs);
+      ]
+    )
+    .cursor({})
+    .exec()
+    .toArray()
+    .then(data => res.json(data))
+    .catch(error => {
+      console.log('Error', error);
+      res.sendStatus(500);
     });
-
   }
 
   cleanup = (req, res) => {
