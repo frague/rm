@@ -239,14 +239,13 @@ export default class IntegrationsCtrl {
 
   _getSkillTree(url: string, res, preprocessor=null): void {
     this._skillTreeLogin()
-      .catch(err => {
-        res.sendStatus(500);
-      })
       .then(() => {
         request.get(
           this._fillRequest(this.skillTreeCookie, skillTree + url),
           (err, response, body) => {
-            if (err) return res.sendStatus(500);
+            if (err) {
+              return res.sendStatus(500);
+            }
 
             let data;
             try {
@@ -261,6 +260,9 @@ export default class IntegrationsCtrl {
             res.setHeader('Content-Type', 'application/json');
             res.json(data);
           });
+      })
+      .catch(err => {
+        return res.sendStatus(500);
       });
   }
 

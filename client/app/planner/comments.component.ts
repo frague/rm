@@ -98,16 +98,16 @@ export class CommentsComponent extends BaseComponent {
     let loadersCount = 2;
     this.skillsFetching = true;
 
-    this.skillsService.get(this.person.login).subscribe(skills => {
-      this._countSkillsDefined(skills);
-      this.skills = skills;
-      this.skillsFetching = !!--loadersCount;
+    this.skillsService.get(this.person.login).subscribe(
+      skills => {
+        this._countSkillsDefined(skills);
+        this.skills = skills;
+      }
+    ).add(() => this.skillsFetching = !!--loadersCount);
 
-    });
-    this.skillsService.getInfo(this.person.login).subscribe(info => {
-      this.skillsInfo = info;
-      this.skillsFetching = !!--loadersCount;
-    });
+    this.skillsService.getInfo(this.person.login).subscribe(
+      info => this.skillsInfo = info
+    ).add(() => this.skillsFetching = !!--loadersCount);
   }
 
   getEditedValue() {
