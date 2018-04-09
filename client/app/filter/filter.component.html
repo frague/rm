@@ -76,7 +76,7 @@
         </ul>
       </div>
       <div class="col-sm-6 col-md-3 col-lg-2">
-        <h3>People</h3>
+        <h3>Person</h3>
         <ul (click)="populate($event)" class="clickable">
           <li>name</li>
           <li>login</li>
@@ -108,6 +108,7 @@
           <li>involvement</li>
           <li>start</li>
           <li>end</li>
+          <li>comment</li>
         </ul>
 
         <h4>Examples:</h4>
@@ -142,7 +143,7 @@
         </ul>
       </div>
       <div class="col-sm-6 col-md-3 col-lg-2">
-        <h3>Candidates</h3>
+        <h3>Candidate</h3>
         <small>Prefix: <i>candidate.</i></small>
         <ul (click)="populate($event, 'candidate')" class="clickable">
           <li>name</li>
@@ -170,7 +171,7 @@
         </ul>
       </div>
       <div class="col-sm-6 col-md-3 col-lg-2">
-        <h3>Comments</h3>
+        <h3>Comment</h3>
         <small>Prefix: <i>comments.</i></small>
         <ul (click)="populate($event)" class="clickable">
           <li>comments</li>
@@ -182,7 +183,7 @@
           <li>comments.english=Intermediate</li>
         </ul>
 
-        <h3>Skills</h3>
+        <h3>Skill</h3>
         <ul (click)="populate($event)" class="clickable">
           <li>skills</li>
         </ul>
