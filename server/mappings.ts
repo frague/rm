@@ -81,7 +81,7 @@ export var profilesMap = {
   },
   'UI': {
     'Architect': ['UI'],
-    'Developer': ['UI'],
+    'Developer': ['UI', 'Full stack'],
     'UX Designer': ['']
   },
   'Mobile': {
