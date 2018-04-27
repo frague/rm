@@ -21,6 +21,7 @@ export var demandProfilesMap = {
   'QE-Mobile': 'QA',
   'BSA-Common': 'QA',
   'QE-Automation': 'QA',
+  'Analyst': 'QA',
 
   'Dev-Services-ATG': 'Custom Dev',
   'Dev-Services-Java': 'Custom Dev',
@@ -44,6 +45,7 @@ export var demandProfilesMap = {
   'DevOps-Cloud': 'DevOps',
   'DevOps-BigData': 'DevOps',
   'Architect-CICD': 'DevOps',
+  'DevOps Engineer': 'DevOps',
 
   'Dev-Search-Solr': 'Search',
   'Architect-Search': 'Search',
@@ -53,7 +55,9 @@ export var demandProfilesMap = {
   'ML Team Lead': 'ML',
   'BigDataEng-DataScientist': 'ML',
 
-  'Dev-Mobile-Android': 'Mobile'
+  'Dev-Mobile-Android': 'Mobile',
+
+  'Manager-DM': 'Management',
 };
 
 export var profilesMap = {
