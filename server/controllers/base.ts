@@ -115,7 +115,7 @@ abstract class BaseCtrl {
         } else {
           return this._respondWithError(res, err);
         }
-      } 
+      }
       res.json(item);
     });
   }

@@ -58,7 +58,7 @@ import { RequisitionComponent } from './candidates/requisition.component';
 import { SpinnerComponent } from './shared/spinner/spinner.component';
 
 const config: SocketIoConfig = {
-  url: ':3000',
+  url: ':3030',
   options: {}
 };
 
