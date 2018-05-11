@@ -19,6 +19,7 @@ import {
   locations,
   profilesInvertedMap,
   demandProfilesMap,
+  demandPoolsMap,
   candidateStates
 } from '../mappings';
 
@@ -92,7 +93,7 @@ export default class SyncCtrl {
       this._whois = {};
 
       this._setTimer('Demand sync');
-      await this._queryDemand();
+      await this._queryPMODemand();
       this._getDelay('Demand sync');
     } catch (e) {
       this._addLog(e, 'Error');
@@ -359,34 +360,47 @@ export default class SyncCtrl {
         let {load, locations, accounts, grades, workProfiles, stages, types, statuses} = data;
         let destinations = data['deploy-destinations'];
 
+        const specializations = Object.values(workProfiles).reduce((result, profile: any) => {
+          profile.specializations.forEach(spec => result[spec.id] = spec);
+          return result;
+        }, {});
+
         Object.keys(load).forEach(id => {
           let item = load[id];
-          let account = accounts[item.accountId];
-          let end = new Date(item.startDate);
-          end.setMonth(end.getMonth() + item.duration);
-          let profile = workProfiles[item.workProfileId];
 
-          let pool = ''; // TODO: Identify
+          const account = item.account.name;
+          const end = new Date(item.startDate);
+          end.setMonth(end.getMonth() + item.duration);
+          const profile = workProfiles[item.workProfileId].name;
+          const status = statuses[item.statusId].name;
+          const specs = item.specializations.map(sid => specializations[sid].name).join(', ');
+          const pool = demandPoolsMap[profile + '-' + specs] || '';
+
 
           let demand = {
-            login: id,
+            login: id + ':' + specs + '_' + profile + '_for_' + account.replace(' ', '_'),
             account: account.name,
             comment: item.comment,
+            candidates: item.proposedCandidates.join(', '),
             deployment: destinations[item.deployDestinationId].name,
             end: end.toISOString().substr(0, 10),
-            grades: item.gradeRequirements.map(rid => grades[rid].name).sort().join(', '),
+            grades: item.gradeRequirements.map(rid => {
+              let grade = grades[rid];
+              return grade ? (grade.code + grade.level) : '?';
+            }).sort().join(', '),
             locations: item.locations.map(lid => locations[lid].name).sort().join(', '),
-            profile: profile.name,
-            project: account.projects.filter(project => project.id === item.projectId)[0].name,
+            profile,
+            project: item.project.name,
             role: types[item.typeId].billableStatus,
             start: item.startDate,
-            specializations: item.specializations.map(sid => profile.specializations[sid]).join(', '),
-            stage: stages[item.stageId].name,
+            specializations: specs,
+            stage: stages[item.stageId].code,
+            requestId: item.jobviteId,
 
             pool
           };
 
-          if (status === 'active') {
+          if (status === 'Active') {
             setTimeout(() => new Demand(demand).save((err, data) => {
               if (err) reject(err);
             }), 0);

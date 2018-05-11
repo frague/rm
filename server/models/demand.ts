@@ -19,6 +19,7 @@ const demandSchema = new mongoose.Schema({
   locations: String,
   requestId: String,
   comment: String,
+  candidates: String,
   login: String
 });
 

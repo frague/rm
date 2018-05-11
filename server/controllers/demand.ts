@@ -88,6 +88,8 @@ export default class DemandCtrl extends BaseCtrl {
             locations: 1,
             requestId: 1,
             comment: 1,
+            specializations: 1,
+            candidates: 1,
             login: 1,
             commentsCount: 1,
             status: 1

@@ -20,8 +20,8 @@ var doc = new GoogleSpreadsheet(env.DEMAND_SHEET);
 
 var Confluence = require('confluence-api');
 var confluenceConfig = {
-  username: env.PMO_LOGIN,
-  password: env.PMO_PASSWORD,
+  username: env.CONFLUENCE_LOGIN,
+  password: env.CONFLUENCE_PASSWORD,
   baseUrl: 'https://wiki.griddynamics.net'
 };
 var confluence = new Confluence(confluenceConfig);
