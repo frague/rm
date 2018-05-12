@@ -17,7 +17,7 @@ import { CandidateService } from '../services/candidate.service';
 import { BusService } from '../services/bus.service';
 
 const stripIndex = new RegExp(/^\d{2} /);
-const rowNumber = new RegExp(/^[^0-9]*(\d+)$/g);
+const rowNumber = new RegExp(/^(\d+):/);
 
 @Component({
 	selector: 'planner',
@@ -225,6 +225,6 @@ export class PlannerComponent extends Schedule {
   }
 
   makeDemandCaption(id: string) {
-    return '#' + id.replace(rowNumber, '$1');
+    return '#' + id.replace(rowNumber, '$1. ').replace(/_/g, ' ');
   }
 }

@@ -365,6 +365,13 @@ export default class SyncCtrl {
           return result;
         }, {});
 
+        const transformLocations = (item, locations) => {
+          return item.locations.map(lid => {
+            const name = locations[lid].name;
+            return locationsMap[name] || name;
+          }).sort().join(', ');
+        };
+
         Object.keys(load).forEach(id => {
           let item = load[id];
 
@@ -376,10 +383,9 @@ export default class SyncCtrl {
           const specs = item.specializations.map(sid => specializations[sid].name).join(', ');
           const pool = demandPoolsMap[profile + '-' + specs] || '';
 
-
           let demand = {
             login: id + ':' + specs + '_' + profile + '_for_' + account.replace(' ', '_'),
-            account: account.name,
+            account: account,
             comment: item.comment,
             candidates: item.proposedCandidates.join(', '),
             deployment: destinations[item.deployDestinationId].name,
@@ -388,7 +394,7 @@ export default class SyncCtrl {
               let grade = grades[rid];
               return grade ? (grade.code + grade.level) : '?';
             }).sort().join(', '),
-            locations: item.locations.map(lid => locations[lid].name).sort().join(', '),
+            locations: transformLocations(item, locations),
             profile,
             project: item.project.name,
             role: types[item.typeId].billableStatus,
