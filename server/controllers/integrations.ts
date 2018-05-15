@@ -40,10 +40,10 @@ export default class IntegrationsCtrl {
     return Object.assign({}, {url, jar, form: payload});
   }
 
-  _login(url: string) {
+  _login(url: string, j_username=env.PMO_LOGIN, j_password=env.PMO_PASSWORD) {
     return request.post({
       url,
-      form: {j_username: env.PMO_LOGIN, j_password: env.PMO_PASSWORD}
+      form: {j_username, j_password}
     });
   }
 
@@ -77,6 +77,17 @@ export default class IntegrationsCtrl {
             res.json(JSON.parse(body));
           });
       });
+  }
+
+  _pmoGetEmployees = (req, res): Promise<any> => {
+    return new Promise((resolve, reject) => {
+      request.get(
+        this._fillRequest(this.pmoCookie, pmo + 'service/people'),
+        (error, response, body) => {
+          res.setHeader('Content-Type', 'application/json');
+          res.json(JSON.parse(body));
+        });
+    });
   }
 
   _pmoGetDemandDict(name: string, index: number): Promise<any> {
@@ -223,7 +234,7 @@ export default class IntegrationsCtrl {
   _skillTreeLogin = (): Promise<any> => {
     return new Promise((resolve, reject) => {
       this.skillTreeCookie = '';
-      this._login(skillTree + 'auth')
+      this._login(skillTree + 'auth', env.CONFLUENCE_LOGIN, env.CONFLUENCE_PASSWORD)
         .on('response', response => {
           let cookies = response.headers['set-cookie'];
           if (cookies && cookies.length) {
