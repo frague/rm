@@ -375,6 +375,28 @@ i.initiative {
     &.lines div.covered {
       background-color: $primary;
     }
+
+    ul.requisitions {
+      &:before {
+        content: "(";
+      }
+      &:after {
+        content: ") ";
+      }
+
+      font-size: 10px;
+      margin-bottom: 0;
+      padding: 0;
+      display: inline-block;
+
+      li {
+        &:nth-child(n+2):before {
+          content: ", ";
+        }
+        list-style: none;
+        display: inline;
+      }
+    }
   }
 
   .candidates {
@@ -606,13 +628,7 @@ ul.sync {
 
           a {
             color: $link;
-
-            &:before {
-              content: "(";
-            }
-            &:after {
-              content: ") ";
-            }
+            font-weight: 500;
           }
         }
       }
@@ -1137,11 +1153,10 @@ div.bottom-corner {
         }
       }
 
-      
       .joined {
         color: $primary - #444;
       }
-      
+
       .left {
         color: $red;
       }

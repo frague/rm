@@ -53,7 +53,7 @@
           <i class="fa fa-plane" *ngIf="isOnsite(demand)"></i>
           {{ makeDemandCaption(demand.login) }}
           <span>
-            <a (click)="showRequisition(demand.requestId, $event)" *ngIf="demand.requestId">{{ demand.requestId }}</a>
+            <ul class="requisitions" *ngIf="demand.requestId"><li *ngFor="let req of getDemandRequisitions(demand)"><a (click)="showRequisition(req, $event)">{{ req }}</a></li></ul>
             {{ getDemandAttrs(demand) }}
           </span>
           <span [title]="demand.comment">{{ demand.comment }}</span>

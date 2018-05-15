@@ -208,6 +208,10 @@ export class PlannerComponent extends Schedule {
     return (demand.grades || '') + ' (' + (demand.locations || '') + ')';
   }
 
+  getDemandRequisitions(demand) {
+    return (demand.requestId || '').split(',').map(req => (req || '').trim());
+  }
+
   isAssigned(candidate: any) {
     return Object.values(this.reserved).indexOf(candidate.login) >= 0;
   }
@@ -225,6 +229,6 @@ export class PlannerComponent extends Schedule {
   }
 
   makeDemandCaption(id: string) {
-    return '#' + id.replace(rowNumber, '$1. ').replace(/_/g, ' ');
+    return '#' + id.replace(rowNumber, '$1. ').replace(/_/g, ' ').replace(/ for .+$/, '');
   }
 }
