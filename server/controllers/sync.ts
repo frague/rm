@@ -47,7 +47,7 @@ export default class SyncCtrl {
 
   private _getDelay(name) {
     let initial = this._timers[name];
-    let ms = initial ? ' in ' + (new Date().getTime() - initial) + 'ms' : '';
+    let ms = initial ? ' in ' + Math.ceil((new Date().getTime() - initial) / 1000) + 's' : '';
     this._addLog(name + ' is completed' + ms);
   }
 

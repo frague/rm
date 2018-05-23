@@ -43,7 +43,8 @@ export default class IntegrationsCtrl {
   _login(url: string, j_username=env.PMO_LOGIN, j_password=env.PMO_PASSWORD) {
     return request.post({
       url,
-      form: {j_username, j_password}
+      form: {j_username, j_password},
+      rejectUnauthorized: false
     });
   }
 
@@ -52,6 +53,9 @@ export default class IntegrationsCtrl {
     return this._login(pmo + 'j_spring_security_check')
       .on('response', response => {
         this.pmoCookie = request.cookie(response.headers['set-cookie'][0]);
+      })
+      .on('error', () => {
+        console.log('Error logging into PMO');
       });
   }
 
@@ -64,6 +68,9 @@ export default class IntegrationsCtrl {
             res.setHeader('Content-Type', 'application/json');
             res.json(body);
           });
+      })
+      .on('error', () => {
+        console.log('Error getting PMO accounts');
       });
   }
 
@@ -76,6 +83,9 @@ export default class IntegrationsCtrl {
             res.setHeader('Content-Type', 'application/json');
             res.json(JSON.parse(body));
           });
+      })
+      .on('error', () => {
+        console.log('Error fetching employee from PMO');
       });
   }
 
@@ -135,6 +145,9 @@ export default class IntegrationsCtrl {
             console.log(reason);
             res.sendStatus(500);
           });
+      })
+      .on('error', () => {
+        console.log('Error getting demands from PMO');
       });
   }
 
@@ -155,6 +168,9 @@ export default class IntegrationsCtrl {
         res.setHeader('Content-Type', 'application/json');
         // console.log(body);
         res.json(JSON.parse(body));
+      })
+      .on('error', () => {
+        console.log('Error getting bamboo time offs');
       });
   };
 
@@ -241,9 +257,13 @@ export default class IntegrationsCtrl {
             this.skillTreeCookie = request.cookie(response.headers['set-cookie'][0]);
             return resolve(request);
           } else {
-            console.log('Error logging in to skillTree');
-            return reject('Error logging in to skillTree');
+            console.log('Error logging into skillTree');
+            reject('Error logging into skillTree');
           }
+        })
+        .on('error', err => {
+          console.log('Error logging into skilltree: ', err);
+          reject('Error logging into skillTree');
         });
     });
   }
@@ -252,9 +272,13 @@ export default class IntegrationsCtrl {
     this._skillTreeLogin()
       .then(() => {
         request.get(
-          this._fillRequest(this.skillTreeCookie, skillTree + url),
+          Object.assign(
+            {rejectUnauthorized: false},
+            this._fillRequest(this.skillTreeCookie, skillTree + url)
+          ),
           (err, response, body) => {
             if (err) {
+              console.log('Error requesting skill tree skills', err);
               return res.sendStatus(500);
             }
 
@@ -262,6 +286,7 @@ export default class IntegrationsCtrl {
             try {
               data = JSON.parse(body);
             } catch (e) {
+              console.log('Error decoding json');
               return res.sendStatus(500);
             }
             if (preprocessor) {
@@ -273,6 +298,7 @@ export default class IntegrationsCtrl {
           });
       })
       .catch(err => {
+        console.log(err);
         return res.sendStatus(500);
       });
   }
@@ -425,16 +451,16 @@ export default class IntegrationsCtrl {
         (err, response, body) => {
           if (err) {
             console.log('Candidates fetching error', err);
-            reject(err);
+            return reject(err);
           }
           try {
             body = JSON.parse(body);
-            if (body.status.code !== 200) return reject(body.status.messages);
-            resolve(body.candidates);
           } catch (e) {
             console.log('Candidates parsing error', e);
-            reject(e)
+            return reject(e)
           }
+          if (body.status.code !== 200) return reject(body.status.messages);
+          resolve(body.candidates);
         });
     });
   }
