@@ -4,6 +4,20 @@ import { SyncService } from '../services/sync.service';
 import { DpService } from '../services/dp.service';
 import { SocketService } from '../services/socket.service';
 
+const tasks = {
+  mandatory: true, dependants: {
+    'users': {mandatory: false, dependants: {
+      'whois': {mandatory: false},
+      'visas': {mandatory: false},
+      'vacations': {mandatory: false},
+    }},
+    'demand': {mandatory: false},
+    'requisitions': {mandatory: false, default: false, dependants: {
+      'candidates': {mandatory: false},
+    }},
+  }
+};
+
 @Component({
   selector: 'sync',
   templateUrl: './sync.component.html'
@@ -16,6 +30,13 @@ export class SyncComponent {
   form: FormGroup;
   logs = [];
   isLoading = false;
+  stati = {};
+
+  public get tasks(): any {
+    return tasks;
+  };
+
+  selectedTasks = {};
 
   constructor(
     private syncService: SyncService,
@@ -35,17 +56,30 @@ export class SyncComponent {
     }
   }
 
+  collectTasks(states: any) {
+    this.selectedTasks = states;
+  }
+
   sync() {
     this.isLoading = true;
     this.logs = [];
-    this.syncService.goOn().subscribe(() => {
-      this.socket.subscribe(log => {
-        this.addLog(log);
-        if (log === 'Done') {
-          this.socket.unsubscribe();
-          this.dpService.saveDiff().subscribe(() => {
-            this.isLoading = false;
-          });
+    this.stati = {};
+
+    let tasksToExecute = Object.keys(this.selectedTasks).filter(key => !!this.selectedTasks[key]).join(',');
+    this.syncService.goOn(tasksToExecute).subscribe(() => {
+      this.socket.subscribe((log, status=null) => {
+        if (status) {
+          this.stati[status[0]] = status[1];
+        }
+
+        if (log) {
+          this.addLog(log);
+          if (log === 'done') {
+            this.socket.unsubscribe();
+            this.dpService.saveDiff().subscribe(() => {
+              this.isLoading = false;
+            });
+          }
         }
       });
     }, error => {

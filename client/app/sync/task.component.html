@@ -1,0 +1,10 @@
+<label [ngClass]="props.mandatory ? 'locked' : ''">
+  <i class="fa" [ngClass]="getIconStyles()"></i>
+  <input type="checkbox" [(ngModel)]="checked" (click)="validate($event)" />
+  {{ name }}
+</label>
+<ul *ngIf="props.dependants && checked" class="dependent">
+  <li *ngFor="let task of props.dependants|keys">
+    <task [name]="task" [props]="props.dependants[task]" (setState)="collectTasks($event)"></task>
+  </li>
+</ul>

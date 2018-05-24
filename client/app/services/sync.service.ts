@@ -10,8 +10,8 @@ export class SyncService {
   constructor(private http: Http) {
   }
 
-  goOn(): Observable<any> {
-    return this.http.post('/api/sync', {});
+  goOn(tasks: string): Observable<any> {
+    return this.http.post('/api/sync', {tasks});
   }
 
   backup(): Observable<any> {

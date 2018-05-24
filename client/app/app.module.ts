@@ -28,6 +28,7 @@ import { CandidateService } from './services/candidate.service';
 
 import { AppComponent } from './app.component';
 import { SyncComponent } from './sync/sync.component';
+import { TaskComponent } from './sync/task.component';
 import { InitiativesComponent } from './initiatives/initiatives.component';
 import { InitiativeComponent } from './initiatives/initiative.component';
 import { AssignmentsComponent } from './assignments/assignments.component';
@@ -75,7 +76,7 @@ const config: SocketIoConfig = {
     AccountComponent,
     AdminComponent,
     NotFoundComponent,
-    SyncComponent,
+    SyncComponent, TaskComponent,
     PersonComponent,
     AssignmentComponent,
     AccountsComponent,

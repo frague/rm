@@ -37,69 +37,92 @@ export default class SyncCtrl {
   private _accounts = {};
   private _whois = {};
   private _timers = {};
+  private _tasks = [];
 
   integrationsCtrl = new IntegrationsCtrl();
 
-  private _setTimer(name) {
-    this._timers[name] = new Date().getTime();
-    this._addLog(name + ' has started');
+  private _isTaskEnabled(name: string) {
+    return this._tasks.includes(name);
   }
 
-  private _getDelay(name) {
-    let initial = this._timers[name];
+  private _setTimer(task, validate=true): boolean {
+    if (validate && !this._isTaskEnabled(task)) {
+      console.log(task, 'sync is skipped');
+      this._sendStatus(task, 'skipped');
+      return false;
+    }
+    this._timers[task] = new Date().getTime();
+    this._addLog(task + ' sync has started');
+    this._sendStatus(task, 'progress');
+    return true;
+  }
+
+  private _getDelay(task, validate=true): void {
+    let initial = this._timers[task];
     let ms = initial ? ' in ' + Math.ceil((new Date().getTime() - initial) / 1000) + 's' : '';
-    this._addLog(name + ' is completed' + ms);
+    this._addLog(task + ' sync is completed' + ms);
+    this._sendStatus(task, 'done');
   }
 
   sync = async (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.sendStatus(200);
 
+    this._tasks = (req.params.tasks || '').split(',');
     this._timers = {};
-    this._setTimer('Synchronization');
+    this._setTimer('overall', false);
     try {
       this.logs = [];
-      this._setTimer('Cleanup');
+      this._setTimer('cleanup');
       await this._cleanup();
-      this._getDelay('Cleanup');
+      this._getDelay('cleanup');
 
-      this._setTimer('Requisitions sync');
-      this._queryRequisitions()
-        .catch(err => this._addLog('Error syncing requisitions: ' + err))
-        .then((requisitionIds: string[]) => {
-          this._getDelay('Requisitions sync')
+      if (this._setTimer('requisitions')) {
+        this._queryRequisitions()
+          .catch(err => this._addLog('Error syncing requisitions: ' + err))
+          .then((requisitionIds: string[]) => {
+            this._getDelay('requisitions')
 
-          this._setTimer('Candidates sync');
-          this._queryCandidates(requisitionIds)
-            .catch(err => this._addLog('Error syncing candidates: ' + err))
-            .then(() => this._getDelay('Candidates sync'));
-        });
+            if (this._setTimer('candidates')) {
+              this._queryCandidates(requisitionIds)
+                .catch(err => this._addLog('Error syncing candidates: ' + err))
+                .then(() => this._getDelay('candidates'));
+            }
+          });
+      }
 
-      this._setTimer('Confluence (whois) sync');
-      await this._queryConfluence();
-      this._getDelay('Confluence (whois) sync');
+      if (this._setTimer('users')) {
+        if (this._setTimer('whois')) {
+          await this._queryConfluence();
+          this._getDelay('whois');
+        }
 
-      this._setTimer('PMO and visas sync');
-      await this._queryPMO();
-      this._getDelay('PMO and visas sync');
+        if (this._setTimer('visas')) {
+          await this._queryPMO();
+          this._getDelay('visas');
+        }
 
-      this._setTimer('Bamboo (vacations) sync');
-      await this._queryBamboo();
-      this._getDelay('Bamboo (vacations) sync');
+        if (this._setTimer('vacations')) {
+          await this._queryBamboo();
+          this._getDelay('vacations');
+        }
+        this._getDelay('users');
+      }
 
       delete this._peopleByName;
       this._peopleByName = {};
       delete this._whois;
       this._whois = {};
 
-      this._setTimer('Demand sync');
-      await this._queryPMODemand();
-      this._getDelay('Demand sync');
+      if (this._setTimer('demand')) {
+        await this._queryPMODemand();
+        this._getDelay('demand');
+      }
     } catch (e) {
       this._addLog(e, 'Error');
     }
-    this._getDelay('Synchronization');
-    this._addLog('Done');
+    this._getDelay('overall');
+    this._addLog('done');
   };
 
   private _addLog(text, source='') {
@@ -107,6 +130,11 @@ export default class SyncCtrl {
     this.logs.push(message);
     console.log(message);
     IO.client().emit('message', message);
+  }
+
+  private _sendStatus(task: string, status: string) {
+    console.log('Status:', task, '->', status);
+    IO.client().emit('status', [task, status]);
   }
 
   private async _cleanup() {
