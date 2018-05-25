@@ -600,7 +600,7 @@ export default class SyncCtrl {
       try {
         let whois: any[] = await this.wiki.getWhois().catch(reject);
 
-        this._addLog(whois.length + ' records fetched', 'Whois');
+        this._addLog(whois.length + ' records fetched', 'whois');
 
         this._whois = whois.reduce((result, u) => {
           let [pool, name, account, initiative, profile, grade, manager, location, skype, phone, room, login] = u;

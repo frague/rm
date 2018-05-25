@@ -76,10 +76,10 @@ export class SyncComponent {
         if (log) {
           this.addLog(log);
           if (log === 'done') {
+            this.stati = {};
             this.socket.unsubscribe();
             this.dpService.saveDiff().subscribe(() => {
               this.isLoading = false;
-              this.stati = {};
             });
           }
         }
