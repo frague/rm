@@ -5,6 +5,6 @@
 </label>
 <ul *ngIf="props.dependants && checked" class="dependent">
   <li *ngFor="let task of props.dependants|keys">
-    <task [name]="task" [props]="props.dependants[task]" (setState)="collectTasks($event)"></task>
+    <task [name]="task" [props]="props.dependants[task]" [stati]="stati" (setState)="collectTasks($event)"></task>
   </li>
 </ul>

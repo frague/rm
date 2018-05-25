@@ -68,7 +68,7 @@ export default class SyncCtrl {
     res.setHeader('Content-Type', 'application/json');
     res.sendStatus(200);
 
-    this._tasks = (req.params.tasks || '').split(',');
+    this._tasks = (req.body.tasks || '').split(',');
     this._timers = {};
     this._setTimer('overall', false);
     try {
@@ -412,7 +412,7 @@ export default class SyncCtrl {
           const pool = demandPoolsMap[profile + '-' + specs] || '';
 
           let demand = {
-            login: id + ':' + specs + '_' + profile + '_for_' + account.replace(' ', '_'),
+            login: id + ':' + specs + '_' + profile + '_for_' + account.replace(/[ .:]/g, '_'),
             account: account,
             comment: item.comment,
             candidates: item.proposedCandidates.join(', '),

@@ -78,12 +78,14 @@ export class SyncComponent {
             this.socket.unsubscribe();
             this.dpService.saveDiff().subscribe(() => {
               this.isLoading = false;
+              this.stati = {};
             });
           }
         }
       });
     }, error => {
       this.isLoading = false;
+      this.stati = {};
       this.logs = [error];
     });
   }

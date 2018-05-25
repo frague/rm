@@ -21,7 +21,7 @@ export class SocketService {
 
   subscribe(callback) {
     this.socket.on('message', data => callback(data));
-    this.socket.on('state', data => callback('', data));
+    this.socket.on('status', data => callback('', data));
   }
 
   unsubscribe() {

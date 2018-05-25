@@ -34,11 +34,12 @@ export class TaskComponent {
 
   getIconStyles() {
     let status = this.status;
-    return status ?
+    return Object.keys(this.stati).length > 0 ?
     {
-      'circle-o-notch rotate': status == 'progress',
-      'check-circle-o green': status == 'done',
-      'times-circle-o grey': status == 'skip',
+      'fa-circle-o-notch fa-spin': status == 'progress',
+      'fa-check-circle-o green': status == 'done',
+      'fa-stop-circle-o grey': status == 'skipped',
+      'fa-pause-circle-o grey': !status,
     }
       :
     {

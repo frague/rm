@@ -3,7 +3,7 @@
     <h1>Synchronize</h1>
     <ul class="tasks">
       <li>
-        <task name="cleanup" [props]="tasks" (setState)="collectTasks($event)"></task>
+        <task name="cleanup" [props]="tasks" [stati]="stati" (setState)="collectTasks($event)"></task>
       </li>
     </ul>
     <button
