@@ -9,7 +9,7 @@ import { DemandComponent } from '../assignments/demand.component';
 import { RequisitionComponent } from '../candidates/requisition.component';
 import { PersonComponent } from '../people/person.component';
 
-const rowNumber = /^\d+$:/;
+const rowNumber = /^\d+$:/g;
 
 @Component({
   selector: 'deadpool',
@@ -73,9 +73,9 @@ export class DpComponent extends BaseComponent {
   }
 
   makeDemandCaption(id: string) {
-    let account = id.replace(rowNumber, '').replace('_', ' ');
-    let row = id.substr(account.length - 1);
-    return account + ' #' + row;
+    let account = id.replace(/^\d+:/g, '').replace(/_/g, ' ');
+    let row = id.substr(0, id.length - account.length - 1);
+    return '#' + row + '. ' + account.replace('for ', '@');
   }
 
   showDemand(diff: any) {
