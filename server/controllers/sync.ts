@@ -6,11 +6,15 @@ import Candidate from '../models/candidate';
 import Requisition from '../models/requisition';
 
 import IntegrationsCtrl from './integrations';
+
+import PmoIntegrationsCtrl from './integrations/pmo';
+import ConfluenceIntegrationsCtrl from './integrations/confluence';
+
 import { IO } from '../io';
 import { fakeRes } from './fakeresponse';
 
 import * as convert from 'color-convert';
-import * as Confluence from 'confluence-api';
+// import * as Confluence from 'confluence-api';
 import {
   replaceFromMap,
   accountsMap,
@@ -31,15 +35,18 @@ export default class SyncCtrl {
 
   data: any = [];
   logs = [];
-  loadings = {};
 
   private _peopleByName = {};
   private _accounts = {};
   private _whois = {};
   private _timers = {};
   private _tasks = [];
+  private _visas = {};
 
   integrationsCtrl = new IntegrationsCtrl();
+
+  PMO = new PmoIntegrationsCtrl();
+  wiki = new ConfluenceIntegrationsCtrl();
 
   private _isTaskEnabled(name: string) {
     return this._tasks.includes(name);
@@ -73,17 +80,18 @@ export default class SyncCtrl {
     this._setTimer('overall', false);
     try {
       this.logs = [];
-      this._setTimer('cleanup');
-      await this._cleanup();
-      this._getDelay('cleanup');
 
+      // JobVite requisitions
       if (this._setTimer('requisitions')) {
+        await Requisition.deleteMany({});
         this._queryRequisitions()
           .catch(err => this._addLog('Error syncing requisitions: ' + err))
-          .then((requisitionIds: string[]) => {
+          .then(async (requisitionIds: string[]) => {
             this._getDelay('requisitions')
 
+            // JobVite candidates
             if (this._setTimer('candidates')) {
+              await Candidate.deleteMany({});
               this._queryCandidates(requisitionIds)
                 .catch(err => this._addLog('Error syncing candidates: ' + err))
                 .then(() => this._getDelay('candidates'));
@@ -91,17 +99,32 @@ export default class SyncCtrl {
           });
       }
 
+      // Users
       if (this._setTimer('users')) {
+        await Resource.deleteMany({});
+        await Initiative.deleteMany({});
+        await Assignment.deleteMany({});
+
+        // Visas in wiki (passport, visa type, expiration)
+        if (this._setTimer('visas')) {
+          this._visas = {};
+          await this._queryVisas();
+          this._getDelay('visas');
+        }
+
+        // Whois in wiki (skype id, room, etc.)
         if (this._setTimer('whois')) {
           await this._queryConfluence();
           this._getDelay('whois');
         }
 
+        // Visas in wiki (passport, visa type, expiration)
         if (this._setTimer('visas')) {
           await this._queryPMO();
           this._getDelay('visas');
         }
 
+        // Vacations in bamboo
         if (this._setTimer('vacations')) {
           await this._queryBamboo();
           this._getDelay('vacations');
@@ -109,12 +132,14 @@ export default class SyncCtrl {
         this._getDelay('users');
       }
 
-      delete this._peopleByName;
-      this._peopleByName = {};
-      delete this._whois;
-      this._whois = {};
+      // delete this._peopleByName;
+      // this._peopleByName = {};
+      // delete this._whois;
+      // this._whois = {};
 
+      // Demand in PMO
       if (this._setTimer('demand')) {
+        await Demand.deleteMany({});
         await this._queryPMODemand();
         this._getDelay('demand');
       }
@@ -133,18 +158,9 @@ export default class SyncCtrl {
   }
 
   private _sendStatus(task: string, status: string) {
-    console.log('Status:', task, '->', status);
+    console.log(task, '->', status);
     IO.client().emit('status', [task, status]);
   }
-
-  private async _cleanup() {
-    await Initiative.deleteMany({});
-    await Resource.deleteMany({});
-    await Assignment.deleteMany({});
-    await Demand.deleteMany({});
-    await Requisition.deleteMany({});
-    await Candidate.deleteMany({});
-  };
 
   private _makeDate(milliseconds: number, eod=false): string {
     if (!milliseconds) return '';
@@ -159,7 +175,6 @@ export default class SyncCtrl {
 
   private _queryBamboo(): Promise<any> {
     let todayYear = new Date().getFullYear();
-    this.loadings['bamboo'] = true;
     return new Promise((resolve, reject) => {
       try {
         // Request timeoffs from the Bamboo
@@ -213,7 +228,6 @@ export default class SyncCtrl {
               }
             });
             this._addLog(vacationsCount + ' vacation records created', 'Bamboo');
-            this.loadings['bamboo'] = false;
             return resolve();
           });
         }));
@@ -223,135 +237,140 @@ export default class SyncCtrl {
     });
   }
 
-  private _queryPMO(): Promise<any> {
-    this.loadings['pmo'] = true;
+  private async _queryVisas(): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        // Get visas information
+        let visas = await this.wiki.getVisas();
+        let records = Object.keys(visas).length;
+
+        // Duplicating visas data for both FirstName_LastName and LastName_FirstName
+        visas = Object.assign(visas, Object.keys(visas).reduce((result, name) => {
+          let [first, last] = name.split(' ');
+          result[last +  ' ' + first] = visas[name];
+          return result;
+        }, {}));
+        this._addLog(records + ' records fetched', 'Visas');
+        resolve(visas);
+      } catch (error) {
+        console.log('Error fetching visas from the wiki');
+        reject(error);
+      }
+    });
+  }
+
+  private async _queryPMO(): Promise<any> {
     let initiativesIds = {};
     let profilesCreated = 0;
     let hue = 0;
 
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
-        // Get visas information
-        return this.integrationsCtrl.confluenceGetVisas({}, fakeRes((visas, err) => {
-          if (err) return reject(err);
-          let records = Object.keys(visas).length;
-          // Duplicating visas data for both FirstName_LastName and LastName_FirstName
-          visas = Object.assign(visas, Object.keys(visas).reduce((result, name) => {
-            let [first, last] = name.split(' ');
-            let mena = last +  ' ' + first;
-            result[mena] = visas[name];
-            return result;
-          }, {}));
-          this._addLog(records + ' records fetched', 'Visas');
+        // Get people from PMO
+        let data = await this.PMO.getPeople();
+        let initiatives = {};
+        let initiativesCreators = {};
+        let assignments = [];
 
-          // Get people from PMO
-          return this.integrationsCtrl.pmoGetPeople({}, fakeRes((data, err) => {
-            let initiatives = {};
-            let initiativesCreators = {};
-            let assignments = [];
+        this._addLog(data.rows.length + ' records received', 'PMO');
+        let peopleSorted = data.rows.sort((a, b) => (a.name > b.name) ? 1 : -1);
 
-            // console.log(data);
-            this._addLog(data.rows.length + ' records received', 'PMO');
-            let peopleSorted = data.rows.sort((a, b) => (a.name > b.name) ? 1 : -1);
+        // For every person
+        peopleSorted.forEach(person => {
+          // ... determine the pool they belong to
+          let pool;
+          if (profilesInvertedMap[person.workProfile]) {
+            pool = profilesInvertedMap[person.workProfile][person.specialization];
+          }
+          if (!pool) {
+            pool = '';
+          }
 
-            // For every person
-            peopleSorted.forEach(person => {
-              // ... determine the pool they belong to
-              let pool;
-              if (profilesInvertedMap[person.workProfile]) {
-                pool = profilesInvertedMap[person.workProfile][person.specialization];
-              }
-              if (!pool) {
-                pool = '';
-              }
+          let who = this._whois[person.employeeId] || {};
+          let visa = this._visas[person.fullName] || {};
 
-              let who = this._whois[person.employeeId] || {};
-              let visa = visas[person.fullName] || {};
+          let resource = new Resource({
+            name: person.fullName,
+            login: person.employeeId,
+            grade: person.grade,
+            location: locationsMap[person.location],
+            profile: person.workProfile,
+            specialization: person.specialization,
+            pool,
+            manager: who.manager,
+            skype: who.skype,
+            phone: who.phone,
+            room: who.room,
+            passport: visa.passport,
+            visaB: visa.visaB,
+            visaL: visa.visaL,
+            license: visa.license
+          });
 
-              let resource = new Resource({
-                name: person.fullName,
-                login: person.employeeId,
-                grade: person.grade,
-                location: locationsMap[person.location],
-                profile: person.workProfile,
-                specialization: person.specialization,
-                pool,
-                manager: who.manager,
-                skype: who.skype,
-                phone: who.phone,
-                room: who.room,
-                passport: visa.passport,
-                visaB: visa.visaB,
-                visaL: visa.visaL,
-                license: visa.license
-              });
+          profilesCreated++;
 
-              profilesCreated++;
+          // Save the person
+          // TODO: use login as an ID
+          return resource.save((err, resource) => {
+            if (err) return reject(err);
+            // this._addLog('Created profile for ' + resource.name);
 
-              // Save the person
-              // TODO: use login as an ID
-              return resource.save((err, resource) => {
-                if (err) return reject(err);
-                // this._addLog('Created profile for ' + resource.name);
+            let name = resource.name.split(' ').reverse().join(' ');
+            this._peopleByName[resource.name] = resource;
+            this._peopleByName[name] = resource;
 
-                let name = resource.name.split(' ').reverse().join(' ');
-                this._peopleByName[resource.name] = resource;
-                this._peopleByName[name] = resource;
+            // No assignments to accounts - continue
+            if (!person.account) return;
 
-                // No assignments to accounts - continue
-                if (!person.account) return;
+            // Map this person to accounts they assigned
+            person.account.forEach((account, index) => {
+              let project = person.project[index];
+              let name = account + ':' + project;
+              let assignment = {
+                resourceId: resource._id,
+                name: project,
+                account,
+                start: this._makeDate(person.assignmentStart[index]),
+                end: this._makeDate(person.assignmentFinish[index], true),
+                billability: person.assignmentStatus[index].name,
+                involvement: person.involvements[index]
+              };
+              // Keep all accounts met
+              this._accounts[account] = true;
 
-                // Map this person to accounts they assigned
-                person.account.forEach((account, index) => {
-                  let project = person.project[index];
-                  let name = account + ':' + project;
-                  let assignment = {
-                    resourceId: resource._id,
-                    name: project,
-                    account,
-                    start: this._makeDate(person.assignmentStart[index]),
-                    end: this._makeDate(person.assignmentFinish[index], true),
-                    billability: person.assignmentStatus[index].name,
-                    involvement: person.involvements[index]
-                  };
-                  // Keep all accounts met
-                  this._accounts[account] = true;
-
-                  // Store all initiative creation promises to avoid duplication
-                  let initiative = initiativesCreators[name] as Promise<any>;
-                  if (initiative) {
-                    // Initiative has been created already, its ID can be added to the
-                    // newly created assignment
-                    initiative.then(() => {
-                      assignment['initiativeId'] = initiatives[name]._id;
-                      new Assignment(assignment).save();
-                    });
-                  } else {
-                    // ... otherwise new Initiative should be created
-                    hue = (hue + 10) % 360;
-                    let initiative = {
-                      name: project,
-                      account,
-                      color: '#' + convert.hsl.hex(hue, 50, 80)
-                    };
-                    initiativesCreators[name] = new Promise((resolve1, reject1) => {
-                      new Initiative(initiative).save((err, initiative) => {
-                        if (err) return reject1(err);
-                        resolve1(initiative);
-                      });
-                    }).then((initiative: any) => {
-                      initiatives[name] = initiative;
-                      assignment['initiativeId'] = initiative._id;
-                      new Assignment(assignment).save();
-                    });
-                  }
+              // Store all initiative creation promises to avoid duplication
+              let initiative = initiativesCreators[name] as Promise<any>;
+              if (initiative) {
+                // Initiative has been created already, its ID can be added to the
+                // newly created assignment
+                initiative.then(() => {
+                  assignment['initiativeId'] = initiatives[name]._id;
+                  new Assignment(assignment).save();
                 });
-                return resolve();
-              });
+              } else {
+                // ... otherwise new Initiative should be created
+                hue = (hue + 10) % 360;
+                let initiative = {
+                  name: project,
+                  account,
+                  color: '#' + convert.hsl.hex(hue, 50, 80)
+                };
+                initiativesCreators[name] = new Promise((resolve1, reject1) => {
+                  new Initiative(initiative).save((err, initiative) => {
+                    if (err) return reject1(err);
+                    resolve1(initiative);
+                  });
+                }).then((initiative: any) => {
+                  initiatives[name] = initiative;
+                  assignment['initiativeId'] = initiative._id;
+                  new Assignment(assignment).save();
+                });
+              }
             });
-            this._addLog(profilesCreated + ' profiles created', 'PMO');
-          }));
-        }));
+            return resolve();
+          });
+        });
+        this._addLog(profilesCreated + ' profiles created', 'PMO');
       } catch (e) {
         reject(e);
       }
@@ -374,8 +393,6 @@ export default class SyncCtrl {
   }
 
   private _queryPMODemand(): Promise<any> {
-    this.loadings['demands'] = true;
-
     // Create new initiative to show demand
     new Initiative({
       name: 'Demand',
@@ -384,74 +401,71 @@ export default class SyncCtrl {
     }).save();
 
     return new Promise(async (resolve, reject) => {
-      this.integrationsCtrl.pmoGetDemandDicts({}, fakeRes((data: any, err) => {
-        let {load, locations, accounts, grades, workProfiles, stages, types, statuses} = data;
-        let destinations = data['deploy-destinations'];
+      let data: any = await this.PMO.getDemandDicts().catch(reject);
+      let { load, locations, accounts, grades, workProfiles, stages, types, statuses } = data;
+      let destinations = data['deploy-destinations'];
 
-        const specializations = Object.values(workProfiles).reduce((result, profile: any) => {
-          profile.specializations.forEach(spec => result[spec.id] = spec);
-          return result;
-        }, {});
+      const specializations = Object.values(workProfiles).reduce((result, profile: any) => {
+        profile.specializations.forEach(spec => result[spec.id] = spec);
+        return result;
+      }, {});
 
-        const transformLocations = (item, locations) => {
-          return item.locations.map(lid => {
-            const name = locations[lid].name;
-            return locationsMap[name] || name;
-          }).sort().join(', ');
+      const transformLocations = (item, locations) => {
+        return item.locations.map(lid => {
+          const name = locations[lid].name;
+          return locationsMap[name] || name;
+        }).sort().join(', ');
+      };
+
+      Object.keys(load).forEach(id => {
+        let item = load[id];
+
+        const account = item.account.name;
+        const end = new Date(item.startDate);
+        end.setMonth(end.getMonth() + item.duration);
+        const profile = workProfiles[item.workProfileId].name;
+        const status = statuses[item.statusId].name;
+        const specs = item.specializations.map(sid => specializations[sid].name).join(', ');
+        const pool = demandPoolsMap[profile + '-' + specs] || '';
+
+        let demand = {
+          login: id + ':' + specs + '_' + profile + '_for_' + account.replace(/[ .:]/g, '_'),
+          account: account,
+          comment: item.comment,
+          candidates: item.proposedCandidates.join(', '),
+          deployment: destinations[item.deployDestinationId].name,
+          end: end.toISOString().substr(0, 10),
+          grades: item.gradeRequirements.map(rid => {
+            let grade = grades[rid];
+            return grade ? (grade.code + grade.level) : '?';
+          }).sort().join(', '),
+          locations: transformLocations(item, locations),
+          profile,
+          project: item.project.name,
+          role: types[item.typeId].billableStatus,
+          start: item.startDate,
+          specializations: specs,
+          stage: stages[item.stageId].code,
+          requestId: item.jobviteId,
+
+          pool
         };
 
-        Object.keys(load).forEach(id => {
-          let item = load[id];
+        if (status === 'Active') {
+          setTimeout(() => new Demand(demand).save((err, data) => {
+            if (err) reject(err);
+          }), 0);
+        }
 
-          const account = item.account.name;
-          const end = new Date(item.startDate);
-          end.setMonth(end.getMonth() + item.duration);
-          const profile = workProfiles[item.workProfileId].name;
-          const status = statuses[item.statusId].name;
-          const specs = item.specializations.map(sid => specializations[sid].name).join(', ');
-          const pool = demandPoolsMap[profile + '-' + specs] || '';
+      });
 
-          let demand = {
-            login: id + ':' + specs + '_' + profile + '_for_' + account.replace(/[ .:]/g, '_'),
-            account: account,
-            comment: item.comment,
-            candidates: item.proposedCandidates.join(', '),
-            deployment: destinations[item.deployDestinationId].name,
-            end: end.toISOString().substr(0, 10),
-            grades: item.gradeRequirements.map(rid => {
-              let grade = grades[rid];
-              return grade ? (grade.code + grade.level) : '?';
-            }).sort().join(', '),
-            locations: transformLocations(item, locations),
-            profile,
-            project: item.project.name,
-            role: types[item.typeId].billableStatus,
-            start: item.startDate,
-            specializations: specs,
-            stage: stages[item.stageId].code,
-            requestId: item.jobviteId,
-
-            pool
-          };
-
-          if (status === 'Active') {
-            setTimeout(() => new Demand(demand).save((err, data) => {
-              if (err) reject(err);
-            }), 0);
-          }
-
-        });
-
-        this.loadings['demands'] = false;
-        return resolve();
-      }));
+      return resolve();
     })
       .catch(err => console.log(err));
   }
 
 
   private _queryDemand(): Promise<any> {
-    this.loadings['demands'] = true;
 
     // Create new initiative to show demand
     new Initiative({
@@ -540,14 +554,12 @@ export default class SyncCtrl {
         })
       };
 
-      this.loadings['demands'] = false;
       return resolve();
     })
       .catch(err => console.log(err));
   }
 
   private _queryConfluence(): Promise<any> {
-    this.loadings['whois'] = true;
     return new Promise((resolve, reject) => {
       try {
         this.integrationsCtrl.confluenceGetWhois({}, fakeRes((whois, err) => {
@@ -560,19 +572,16 @@ export default class SyncCtrl {
             result[login] = {manager, skype, phone, room};
             return result;
           }, {});
-          this.loadings['whois'] = false;
 
           return resolve();
         }))
       } catch (e) {
-        this.loadings['whois'] = false;
         reject(e);
       }
     });
   };
 
   private _queryRequisitions(): Promise<string[]> {
-    this.loadings['jvr'] = true;
     let result = [];
     return new Promise((resolve, reject) => {
       try {
@@ -586,11 +595,9 @@ export default class SyncCtrl {
             new Requisition(req).save();
             result.push(req.requisitionId);
           })
-          this.loadings['jvr'] = false;
           resolve(result);
         }));
       } catch (e) {
-        this.loadings['jvr'] = false;
         console.log('Unable to parse requisitions', e);
         reject(e);
       }
@@ -643,7 +650,6 @@ export default class SyncCtrl {
   }
 
   private _queryCandidates(requisitionIds: string[]): Promise<any> {
-    this.loadings['jvc'] = true;
     return new Promise(async (resolve, reject) => {
       let count: number = await this.integrationsCtrl.jvGetCandidatesCount()
         .catch(err => {
@@ -659,11 +665,9 @@ export default class SyncCtrl {
           ));
         Promise.all(fetchers)
           .catch(err => {
-            this.loadings['jvc'] = false;
             reject(err)
           })
           .then(() => {
-            this.loadings['jvc'] = false;
             resolve();
           });
     })

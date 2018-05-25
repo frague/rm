@@ -1,0 +1,86 @@
+const request = require('request');
+import { login, fillRequest } from './utils';
+
+const env = process.env;
+const pmo = 'https://pmo.griddynamics.net/';
+const pmoDemandMeta = pmo + '/service/api/internal/position/demand/';
+
+export default class PmoIntegrationsCtrl {
+  sessionCookies = '';
+
+  login = (): Promise<any> => {
+    return new Promise((resolve, reject) => {
+      this.sessionCookies = '';
+      return login(pmo + 'j_spring_security_check', env.PMO_LOGIN, env.PMO_PASSWORD)
+        .on('response', response => {
+          this.sessionCookies = request.cookie(response.headers['set-cookie'][0]);
+          resolve();
+        })
+        .on('error', error => {
+          console.log('Error logging into PMO');
+          reject(error);
+        });
+    });
+  }
+
+  // Get employees info
+  getPeople = (): Promise<any> => {
+    return new Promise(async (resolve, reject) => {
+      await this.login();
+      request.get(
+        fillRequest(this.sessionCookies, pmo + 'service/people'),
+        (error, response, body) => {
+          let data = JSON.parse(body);
+          resolve(data);
+        })
+        .on('error', error => {
+          console.log('Error fetching employee from PMO');
+          reject(error);
+        });
+    });
+  }
+
+  // Fetching a single dictionary
+  getDemandDict(name: string, index: number): Promise<any> {
+    return new Promise((resolve, reject) => {
+      let url = pmoDemandMeta + (index ? 'meta/' + name + '/active' : name);
+      return request.get(
+        fillRequest(this.sessionCookies, url),
+        (error, response, body) => {
+          try {
+            body = JSON.parse(body).data.reduce((result, item) => {
+              result[item.id] = item;
+              return result;
+            }, {});
+            resolve(body);
+          } catch (e) {
+            console.log(e);
+            reject('Error parsing PMO response for dict ' + name);
+          }
+        })
+        .on('error', error => {
+          console.log('Error', name, error);
+          reject('Unable to access PMO demand dictionary ' + name);
+        })
+    });
+  }
+
+  getDemandDicts = async (): Promise<any> => {
+    let _dicts = {};
+    await this.login();
+    return Promise.all([
+        'load',
+        'locations',
+        'accounts',
+        'grades',
+        'workProfiles',
+        'stages',
+        'types',
+        'statuses',
+        'deploy-destinations'
+      ].map((dict, index) => this.getDemandDict(dict, index).then(data => _dicts[dict] = data))
+    )
+      .then(() => _dicts);
+  }
+
+}
