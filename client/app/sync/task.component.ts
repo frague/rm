@@ -37,9 +37,10 @@ export class TaskComponent {
     return Object.keys(this.stati).length > 0 ?
     {
       'fa-circle-o-notch fa-spin': status == 'progress',
-      'fa-check-circle-o green': status == 'done',
+      'fa-check-circle-o text-success': status == 'done',
       'fa-stop-circle-o grey': status == 'skipped',
-      'fa-pause-circle-o grey': !status,
+      'fa-times-circle text-danger': status == 'error',
+      'fa-clock-o grey': !status,
     }
       :
     {

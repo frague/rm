@@ -24,6 +24,10 @@ body {
   margin-bottom: 10px;
 }
 
+.grey {
+  color: #888;
+}
+
 a {
   &, &:hover, &:visited, &:active, &:focus {
     color: $link;

@@ -22,10 +22,13 @@ export default class ConfluenceIntegrationsCtrl {
           reject(error);
         }
 
-        let [, , body, ,] = data.results[0].body.storage.value.split(/(var dataSet = |;\s+var newData =)/g);
-
-        let whois = JSON.parse(body.replace(/\t/g, ' '));
-        resolve(whois);
+        try {
+          let [, , body, ,] = data.results[0].body.storage.value.split(/(var dataSet = |;\s+var newData =)/g);
+          let whois = JSON.parse(body.replace(/\t/g, ' '));
+          resolve(whois);
+        } catch (e) {
+          reject(e);
+        }
       });
     });
   }
@@ -40,9 +43,12 @@ export default class ConfluenceIntegrationsCtrl {
         if (error) {
           reject(error);
         }
-
-        let visas = htmlParse(data.body.view.value);
-        resolve(visas);
+        try {
+          let visas = htmlParse(data.body.view.value);
+          resolve(visas);
+        } catch (e) {
+          reject(e);
+        }
       });
     });
   }

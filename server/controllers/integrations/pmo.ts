@@ -1,5 +1,5 @@
 const request = require('request');
-import { login, fillRequest } from './utils';
+import { catchAwait, login, fillRequest } from './utils';
 
 const env = process.env;
 const pmo = 'https://pmo.griddynamics.net/';
@@ -17,7 +17,7 @@ export default class PmoIntegrationsCtrl {
           resolve();
         })
         .on('error', error => {
-          console.log('Error logging into PMO');
+          console.log('Error logging into PMO:', error);
           reject(error);
         });
     });
@@ -26,11 +26,16 @@ export default class PmoIntegrationsCtrl {
   // Get employees info
   getPeople = (): Promise<any> => {
     return new Promise(async (resolve, reject) => {
-      await this.login();
+      await this.login().catch(reject);
       request.get(
         fillRequest(this.sessionCookies, pmo + 'service/people'),
         (error, response, body) => {
-          let data = JSON.parse(body);
+          let data;
+          try {
+            data = JSON.parse(body);
+          } catch (e) {
+            reject(e);
+          }
           resolve(data);
         })
         .on('error', error => {
@@ -67,7 +72,11 @@ export default class PmoIntegrationsCtrl {
 
   getDemandDicts = async (): Promise<any> => {
     let _dicts = {};
-    await this.login();
+    let _error;
+    await this.login().catch(error => _error = error);
+    if (_error) {
+      return Promise.reject(_error);
+    }
     return Promise.all([
         'load',
         'locations',

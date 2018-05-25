@@ -7,8 +7,11 @@ import Requisition from '../models/requisition';
 
 import IntegrationsCtrl from './integrations';
 
+import { catchAwait } from './integrations/utils';
 import PmoIntegrationsCtrl from './integrations/pmo';
 import ConfluenceIntegrationsCtrl from './integrations/confluence';
+import BambooIntegrationsCtrl from './integrations/bamboo';
+import JobViteIntegrationsCtrl from './integrations/jobvite';
 
 import { IO } from '../io';
 import { fakeRes } from './fakeresponse';
@@ -42,14 +45,42 @@ export default class SyncCtrl {
   private _timers = {};
   private _tasks = [];
   private _visas = {};
+  private _stati = {};
+  private _threads = {};
 
   integrationsCtrl = new IntegrationsCtrl();
 
   PMO = new PmoIntegrationsCtrl();
   wiki = new ConfluenceIntegrationsCtrl();
+  bamboo = new BambooIntegrationsCtrl();
+  jv = new JobViteIntegrationsCtrl();
 
   private _isTaskEnabled(name: string) {
     return this._tasks.includes(name);
+  }
+
+  private _addLog(text, source='') {
+    let message = (source && source + ': ') + text;
+    this.logs.push(message);
+    console.log(message);
+    IO.client().emit('message', message);
+  }
+
+  private _sendStatus(task: string, status: string) {
+    console.log(task, '->', status);
+    this._stati[task] = status;
+    IO.client().emit('status', [task, status]);
+  }
+
+  private _makeDate(milliseconds: number, eod=false): string {
+    if (!milliseconds) return '';
+    let result = new Date(milliseconds);
+    if (eod) {
+      result.setHours(23);
+      result.setMinutes(59);
+      result.setSeconds(59);
+    }
+    return result.toString()
   }
 
   private _setTimer(task, validate=true): boolean {
@@ -68,7 +99,22 @@ export default class SyncCtrl {
     let initial = this._timers[task];
     let ms = initial ? ' in ' + Math.ceil((new Date().getTime() - initial) / 1000) + 's' : '';
     this._addLog(task + ' sync is completed' + ms);
-    this._sendStatus(task, 'done');
+    if (this._stati[task] !== 'error') {
+      this._sendStatus(task, 'done');
+    }
+  }
+
+  private _setError(task, error) {
+    this._addLog(task + ' syncing error');
+    this._sendStatus(task, 'error');
+  }
+
+  private _finishOverall(task) {
+    delete this._threads[task];
+    if (Object.keys(this._threads).length === 0) {
+      this._getDelay('overall');
+      this._addLog('done');
+    }
   }
 
   sync = async (req, res) => {
@@ -77,15 +123,17 @@ export default class SyncCtrl {
 
     this._tasks = (req.body.tasks || '').split(',');
     this._timers = {};
+    this._stati = {};
+    this._threads = {};
     this._setTimer('overall', false);
     try {
       this.logs = [];
 
       // JobVite requisitions
       if (this._setTimer('requisitions')) {
+        this._threads['requisitions'] = true;
         await Requisition.deleteMany({});
         this._queryRequisitions()
-          .catch(err => this._addLog('Error syncing requisitions: ' + err))
           .then(async (requisitionIds: string[]) => {
             this._getDelay('requisitions')
 
@@ -93,14 +141,18 @@ export default class SyncCtrl {
             if (this._setTimer('candidates')) {
               await Candidate.deleteMany({});
               this._queryCandidates(requisitionIds)
-                .catch(err => this._addLog('Error syncing candidates: ' + err))
-                .then(() => this._getDelay('candidates'));
+                .then(() => this._getDelay('candidates'))
+                .catch(err => this._addLog('error syncing candidates: ' + err));
             }
-          });
+          })
+          .catch(error => this._setError('requisitions', error))
+          .then(() => this._finishOverall('requisitions'));
       }
 
       // Users
       if (this._setTimer('users')) {
+        this._threads['users'] = true;
+
         await Resource.deleteMany({});
         await Initiative.deleteMany({});
         await Assignment.deleteMany({});
@@ -108,28 +160,33 @@ export default class SyncCtrl {
         // Visas in wiki (passport, visa type, expiration)
         if (this._setTimer('visas')) {
           this._visas = {};
-          await this._queryVisas();
+          await this._queryVisas()
+            .catch(error => this._setError('visas', error));
           this._getDelay('visas');
         }
 
         // Whois in wiki (skype id, room, etc.)
         if (this._setTimer('whois')) {
-          await this._queryConfluence();
+          await this._queryConfluence()
+            .catch(error => this._setError('whois', error));
           this._getDelay('whois');
         }
 
-        // Visas in wiki (passport, visa type, expiration)
-        if (this._setTimer('visas')) {
-          await this._queryPMO();
-          this._getDelay('visas');
+        // Employees and their assignments
+        if (this._setTimer('assignments')) {
+          await this._queryPMO()
+            .catch(error => this._setError('assignments', error));
+          this._getDelay('assignments');
         }
 
         // Vacations in bamboo
         if (this._setTimer('vacations')) {
-          await this._queryBamboo();
+          await this._queryBamboo()
+            .catch(error => this._setError('vacations', error));
           this._getDelay('vacations');
         }
         this._getDelay('users');
+        this._finishOverall('users');
       }
 
       // delete this._peopleByName;
@@ -139,98 +196,74 @@ export default class SyncCtrl {
 
       // Demand in PMO
       if (this._setTimer('demand')) {
-        await Demand.deleteMany({});
-        await this._queryPMODemand();
+        this._threads['demand'] = true;
+
+        Demand.deleteMany({});
+        await this._queryPMODemand()
+          .catch(error => this._setError('demand', error));
         this._getDelay('demand');
+        this._finishOverall('demand');
       }
     } catch (e) {
-      this._addLog(e, 'Error');
+      this._setError('overall', e);
     }
-    this._getDelay('overall');
-    this._addLog('done');
   };
-
-  private _addLog(text, source='') {
-    let message = (source && source + ': ') + text;
-    this.logs.push(message);
-    console.log(message);
-    IO.client().emit('message', message);
-  }
-
-  private _sendStatus(task: string, status: string) {
-    console.log(task, '->', status);
-    IO.client().emit('status', [task, status]);
-  }
-
-  private _makeDate(milliseconds: number, eod=false): string {
-    if (!milliseconds) return '';
-    let result = new Date(milliseconds);
-    if (eod) {
-      result.setHours(23);
-      result.setMinutes(59);
-      result.setSeconds(59);
-    }
-    return result.toString()
-  }
 
   private _queryBamboo(): Promise<any> {
     let todayYear = new Date().getFullYear();
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         // Request timeoffs from the Bamboo
-        this.integrationsCtrl.bambooTimeoff({}, fakeRes((data, err) => {
-          this._addLog('Received vacations information', 'Bamboo');
+        let data = await this.bamboo.getTimeoffs().catch(reject);
+        this._addLog('received vacations information', 'bamboo');
 
+        // Create new Vacation initiative
+        new Initiative({
+          name: 'Vacation',
+          account: 'Griddynamics',
+          color: '#1ca1c0'
+        }).save((err, vacation) => {
+          // ... and save it
           if (err) return reject(err);
+          let vacationId = vacation._id;
 
-          // Create new Vacation initiative
-          new Initiative({
-            name: 'Vacation',
-            account: 'Griddynamics',
-            color: '#1ca1c0'
-          }).save((err, vacation) => {
-            // ... and save it
-            if (err) return reject(err);
-
-            let vacationId = vacation._id;
-            // Create custom method to add vacation assignment to resource
-            let addVacation = (resourceId, startDate, endDate) => {
-              // console.log('add vacation', resourceId, startDate, endDate);
-              let vac = new Assignment({
-                initiativeId: vacationId,
-                resourceId,
-                start: startDate,
-                end: endDate,
-                billability: 'Non-billable',
-                involvement: 100
-              });
-              vac.save(err => reject(err));
-            };
-
-            let vacationRequests = {};
-            let vacationsCount = 0;
-            // For each timeoff
-            data.requests.request.forEach(request => {
-              // ... try to find corresponding resource
-              let name = request.employee['$t'];
-              let resource = this._peopleByName[name];
-              if (!resource) {
-                this._addLog('Unable to add vacations for ' + name, 'Bamboo');
-                return;
-              }
-              let endYear = new Date(request.end).getFullYear();
-              if (todayYear - endYear > 1) return;
-
-              // Add vacation if it is approved
-              if (request.status && request.status['$t'] === 'approved') {
-                addVacation(resource._id, request.start, request.end);
-                vacationsCount++;
-              }
+          // Create custom method to add vacation assignment to resource
+          let addVacation = (resourceId, startDate, endDate) => {
+            // console.log('add vacation', resourceId, startDate, endDate);
+            let vac = new Assignment({
+              initiativeId: vacationId,
+              resourceId,
+              start: startDate,
+              end: endDate,
+              billability: 'Non-billable',
+              involvement: 100
             });
-            this._addLog(vacationsCount + ' vacation records created', 'Bamboo');
-            return resolve();
+            vac.save(err => reject(err));
+          };
+
+          let vacationRequests = {};
+          let vacationsCount = 0;
+          // For each timeoff
+          data.requests.request.forEach(request => {
+            // ... try to find corresponding resource
+            let name = request.employee['$t'];
+            let resource = this._peopleByName[name];
+            if (!resource) {
+              this._addLog('unable to add vacations for ' + name, 'bamboo');
+              return;
+            }
+            let endYear = new Date(request.end).getFullYear();
+            if (todayYear - endYear > 1) return;
+
+            // Add vacation if it is approved
+            if (request.status && request.status['$t'] === 'approved') {
+              addVacation(resource._id, request.start, request.end);
+              vacationsCount++;
+            }
           });
-        }));
+          this._addLog(vacationsCount + ' vacation records created', 'bamboo');
+          return resolve();
+        });
       } catch (e) {
         reject(e);
       }
@@ -241,7 +274,7 @@ export default class SyncCtrl {
     return new Promise(async (resolve, reject) => {
       try {
         // Get visas information
-        let visas = await this.wiki.getVisas();
+        let visas = await this.wiki.getVisas().catch(reject);
         let records = Object.keys(visas).length;
 
         // Duplicating visas data for both FirstName_LastName and LastName_FirstName
@@ -250,7 +283,7 @@ export default class SyncCtrl {
           result[last +  ' ' + first] = visas[name];
           return result;
         }, {}));
-        this._addLog(records + ' records fetched', 'Visas');
+        this._addLog(records + ' records fetched', 'visas');
         resolve(visas);
       } catch (error) {
         console.log('Error fetching visas from the wiki');
@@ -267,7 +300,7 @@ export default class SyncCtrl {
     return new Promise(async (resolve, reject) => {
       try {
         // Get people from PMO
-        let data = await this.PMO.getPeople();
+        let data = await this.PMO.getPeople().catch(reject);
         let initiatives = {};
         let initiativesCreators = {};
         let assignments = [];
@@ -401,7 +434,12 @@ export default class SyncCtrl {
     }).save();
 
     return new Promise(async (resolve, reject) => {
-      let data: any = await this.PMO.getDemandDicts().catch(reject);
+      let _error;
+      let data = await this.PMO.getDemandDicts().catch(error => _error = error);
+      if (_error) {
+        return reject(_error);
+      }
+
       let { load, locations, accounts, grades, workProfiles, stages, types, statuses } = data;
       let destinations = data['deploy-destinations'];
 
@@ -460,8 +498,7 @@ export default class SyncCtrl {
       });
 
       return resolve();
-    })
-      .catch(err => console.log(err));
+    });
   }
 
 
@@ -478,7 +515,7 @@ export default class SyncCtrl {
       // Query Demand file
       let sheet: any = await this.integrationsCtrl.googleGetSheet();
       let rowsCount = sheet.rowCount;
-      this._addLog(rowsCount + ' records received', 'Demand');
+      this._addLog(rowsCount + ' records received', 'demand');
       let demandAccountIndex = {};
 
       let row = 8; // Min row
@@ -486,7 +523,7 @@ export default class SyncCtrl {
 
       while (row < rowsCount) {
         let maxRow = (row + offset > rowsCount) ? rowsCount : row + offset;
-        this._addLog('Reading demand sheet lines range [' + row + '÷' + maxRow + ']', 'Demand');
+        this._addLog('reading demand sheet lines range [' + row + '÷' + maxRow + ']', 'demand');
         let data = await this.integrationsCtrl.getSheetPortion(sheet, row, maxRow);
         row = maxRow + 1;
 
@@ -511,7 +548,7 @@ export default class SyncCtrl {
             if (accountsMap[account]) {
               account = accountsMap[account];
             } else {
-              this._addLog('Unknown account - ' + account, 'Demand');
+              this._addLog('unknown account - ' + account, 'demand');
               this._accounts[account] = true;
             }
           }
@@ -555,26 +592,23 @@ export default class SyncCtrl {
       };
 
       return resolve();
-    })
-      .catch(err => console.log(err));
+    });
   }
 
   private _queryConfluence(): Promise<any> {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
-        this.integrationsCtrl.confluenceGetWhois({}, fakeRes((whois, err) => {
-          if (err) return reject(err);
+        let whois: any[] = await this.wiki.getWhois().catch(reject);
 
-          this._addLog(whois.length + ' records fetched', 'Whois');
+        this._addLog(whois.length + ' records fetched', 'Whois');
 
-          this._whois = whois.reduce((result, u) => {
-            let [pool, name, account, initiative, profile, grade, manager, location, skype, phone, room, login] = u;
-            result[login] = {manager, skype, phone, room};
-            return result;
-          }, {});
+        this._whois = whois.reduce((result, u) => {
+          let [pool, name, account, initiative, profile, grade, manager, location, skype, phone, room, login] = u;
+          result[login] = {manager, skype, phone, room};
+          return result;
+        }, {});
 
-          return resolve();
-        }))
+        return resolve();
       } catch (e) {
         reject(e);
       }
@@ -583,20 +617,21 @@ export default class SyncCtrl {
 
   private _queryRequisitions(): Promise<string[]> {
     let result = [];
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
+      let _error;
+      let data = await this.jv.getRequisitions().catch(error => _error = error);
+      if (_error || !data) {
+        console.log('Unable to fetch requisitions', _error);
+        return reject(_error);
+      }
+
+      this._addLog(data.length + ' requisitions fetched', 'jobvite');
       try {
-        this.integrationsCtrl.jvGetRequisitions({}, fakeRes((data, err) => {
-          if (err) {
-            console.log('Unable to fetch requisitions', err);
-            reject(err);
-          }
-          this._addLog(data.length + ' requisitions fetched', 'JobVite');
-          data.forEach(req => {
-            new Requisition(req).save();
-            result.push(req.requisitionId);
-          })
-          resolve(result);
-        }));
+        data.forEach(req => {
+          new Requisition(req).save();
+          result.push(req.requisitionId);
+        })
+        resolve(result);
       } catch (e) {
         console.log('Unable to parse requisitions', e);
         reject(e);
@@ -605,13 +640,15 @@ export default class SyncCtrl {
   }
 
   private async _jvGetCandidatesChunk(start: number, allowedRequisitions: string[], resolve, reject) {
-    let data = await this.integrationsCtrl.jvGetCandidates(start, candidatesChunk)
-      .catch(err => {
-        console.log(err);
-        reject(err);
-        return [];
-      });
-    this._addLog('Candidates chunk fetched [' + start + '÷' + (start + candidatesChunk) + ']', 'JobVite');
+    const diapasone = '[' + start + '÷' + (start + candidatesChunk) + ']';
+    let _error;
+    let data = await this.jv.getCandidates(start, candidatesChunk).catch(error => _error = error);
+    if (_error) {
+      console.log('Unable to fetch JobVite candidates chunk ' + diapasone, _error);
+      return reject(_error);
+    };
+
+    this._addLog('Candidates chunk fetched ' + diapasone, 'jobvite');
     let now = new Date().getTime();
     data.forEach((candidate, index) => {
       let name = candidate.lastName + ' ' + candidate.firstName;
@@ -651,26 +688,22 @@ export default class SyncCtrl {
 
   private _queryCandidates(requisitionIds: string[]): Promise<any> {
     return new Promise(async (resolve, reject) => {
-      let count: number = await this.integrationsCtrl.jvGetCandidatesCount()
-        .catch(err => {
-          this._addLog('Error fetching candidates count');
-          reject(err);
-          return 0;
-        });
+      let _error;
+      let count: number = await this.jv.getCandidatesCount().catch(error => _error = error);
+      if (_error) {
+        this._addLog('Error fetching candidates count', _error);
+        return reject(_error);
+      };
 
-        let fetchers = new Array(40).join('.').split('.').map((x, i) =>
-          new Promise((res, rej) =>
-            // Using timeout to overcome calls per second API limitation
-            setTimeout(() => this._jvGetCandidatesChunk(count - candidatesChunk * (i + 1), requisitionIds, res, rej), 5000 * i)
-          ));
-        Promise.all(fetchers)
-          .catch(err => {
-            reject(err)
-          })
-          .then(() => {
-            resolve();
-          });
-    })
-      .catch(err => console.log(err));
+      let fetchers = new Array(40).join('.').split('.').map((x, i) =>
+        new Promise((res, rej) =>
+          // Using timeout to overcome calls per second API limitation
+          setTimeout(() => this._jvGetCandidatesChunk(count - candidatesChunk * (i + 1), requisitionIds, res, rej), 5000 * i)
+        ));
+
+      Promise.all(fetchers)
+        .then(resolve)
+        .catch(reject);
+    });
   }
 }
