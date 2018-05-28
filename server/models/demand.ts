@@ -3,6 +3,7 @@ import * as mongoose from 'mongoose';
 var idType = mongoose.Schema.Types.ObjectId;
 
 const demandSchema = new mongoose.Schema({
+  name: String,
   account: String,
   accountId: String,
   project: String,

@@ -18,16 +18,16 @@ export var accountsMap = {
 };
 
 export var demandProfilesMap = {
-  'QE-Mobile': 'QA',
-  'BSA-Common': 'QA',
-  'QE-Automation': 'QA',
-  'Analyst': 'QA',
+  'QE-Mobile': 'Quality Engineer',
+  'BSA-Common': 'Quality Engineer',
+  'QE-Automation': 'Quality Engineer',
+  'Analyst': 'Quality Engineer',
 
-  'Dev-Services-ATG': 'Custom Dev',
-  'Dev-Services-Java': 'Custom Dev',
-  'Dev-Services-Other': 'Custom Dev',
-  'Dev-Services-Scala': 'Custom Dev',
-  'Dev-Services-DotNet': 'Custom Dev',
+  'Dev-Services-ATG': 'CustomDev',
+  'Dev-Services-Java': 'CustomDev',
+  'Dev-Services-Other': 'CustomDev',
+  'Dev-Services-Scala': 'CustomDev',
+  'Dev-Services-DotNet': 'CustomDev',
 
   'Dev-Services-Node': 'UI',
   'Dev-UI-FullStack': 'UI',

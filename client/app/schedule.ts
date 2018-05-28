@@ -188,7 +188,7 @@ export class Schedule {
 
           let item = {
             _id: demandId,
-            name: demand.profile,
+            name: demand.name,
             login: demand.login,
             status: demand.status,
             commentsCount: demand.commentsCount,
@@ -262,7 +262,7 @@ export class Schedule {
 
             demandResources.forEach(demand => data.push({
               _id: demand._id,
-              name: demandPrefix,
+              name: demand.name,
               isDemand: true
             }));
 

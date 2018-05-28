@@ -41,7 +41,7 @@ export class AssignmentsComponent extends Schedule {
     let demand = assignment.demand;
 
     return {
-      name: (demand ? (initiative.account + ': ' + demand.comment) : initiative.name),
+      name: (demand ? (initiative.account + (demand.comment ? ': ' + demand.comment : '')) : initiative.name),
       account: initiative.account,
       color: initiative.color,
       billability: assignment.billability,

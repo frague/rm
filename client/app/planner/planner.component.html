@@ -51,7 +51,7 @@
             <i class="fa fa-info-circle"></i>
           </div>
           <i class="fa fa-plane" *ngIf="isOnsite(demand)"></i>
-          {{ makeDemandCaption(demand.login) }}
+          {{ demand.name }}
           <span>
             <ul class="requisitions" *ngIf="demand.requestId"><li *ngFor="let req of getDemandRequisitions(demand)"><a (click)="showRequisition(req, $event)">{{ req }}</a></li></ul>
             {{ getDemandAttrs(demand) }}

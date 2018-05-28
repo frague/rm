@@ -76,6 +76,7 @@ export default class DemandCtrl extends BaseCtrl {
         {
           '$project': {
             account: 1,
+            name: 1,
             pool: 1,
             acknowledgement: 1,
             role: 1,

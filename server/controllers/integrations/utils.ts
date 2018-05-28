@@ -15,9 +15,3 @@ export const login = (url: string, j_username: string, j_password: string) => {
     rejectUnauthorized: false,
   });
 }
-
-export const catchAwait = (promise) => {
-  return promise
-    .then(data => [null, data])
-    .catch(err => [err]);
-}

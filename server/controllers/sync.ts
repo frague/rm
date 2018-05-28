@@ -7,7 +7,6 @@ import Requisition from '../models/requisition';
 
 import IntegrationsCtrl from './integrations';
 
-import { catchAwait } from './integrations/utils';
 import PmoIntegrationsCtrl from './integrations/pmo';
 import ConfluenceIntegrationsCtrl from './integrations/confluence';
 import BambooIntegrationsCtrl from './integrations/bamboo';
@@ -24,7 +23,6 @@ import {
   billabilityMap,
   locationsMap,
   locations,
-  profilesInvertedMap,
   demandProfilesMap,
   demandPoolsMap,
   candidateStates
@@ -107,6 +105,7 @@ export default class SyncCtrl {
   private _setError(task, error) {
     this._addLog(task + ' syncing error');
     this._sendStatus(task, 'error');
+    console.log('Error executing task', task, error);
   }
 
   private _finishOverall(task) {
@@ -122,6 +121,8 @@ export default class SyncCtrl {
     res.sendStatus(200);
 
     this._tasks = (req.body.tasks || '').split(',');
+    this._tasks.forEach(task => this._sendStatus(task, 'pending'));
+
     this._timers = {};
     this._stati = {};
     this._threads = {};
@@ -140,13 +141,27 @@ export default class SyncCtrl {
             // JobVite candidates
             if (this._setTimer('candidates')) {
               await Candidate.deleteMany({});
-              this._queryCandidates(requisitionIds)
+              await this._queryCandidates(requisitionIds)
                 .then(() => this._getDelay('candidates'))
                 .catch(err => this._addLog('error syncing candidates: ' + err));
             }
           })
           .catch(error => this._setError('requisitions', error))
           .then(() => this._finishOverall('requisitions'));
+      }
+
+      // Demand in PMO
+      if (this._setTimer('demand')) {
+        this._threads['demand'] = true;
+        await Demand.deleteMany({});
+        this._queryPMODemand()
+          .then(() => {
+            this._getDelay('demand');
+          })
+          .catch(error => {
+            this._setError('demand', error);
+          })
+          .then(() => this._finishOverall('demand'));
       }
 
       // Users
@@ -188,22 +203,6 @@ export default class SyncCtrl {
         this._getDelay('users');
         this._finishOverall('users');
       }
-
-      // delete this._peopleByName;
-      // this._peopleByName = {};
-      // delete this._whois;
-      // this._whois = {};
-
-      // Demand in PMO
-      if (this._setTimer('demand')) {
-        this._threads['demand'] = true;
-
-        Demand.deleteMany({});
-        await this._queryPMODemand()
-          .catch(error => this._setError('demand', error));
-        this._getDelay('demand');
-        this._finishOverall('demand');
-      }
     } catch (e) {
       this._setError('overall', e);
     }
@@ -211,6 +210,7 @@ export default class SyncCtrl {
 
   private _queryBamboo(): Promise<any> {
     let todayYear = new Date().getFullYear();
+    let notFound = {};
     return new Promise(async (resolve, reject) => {
       try {
         // Request timeoffs from the Bamboo
@@ -224,7 +224,9 @@ export default class SyncCtrl {
           color: '#1ca1c0'
         }).save((err, vacation) => {
           // ... and save it
-          if (err) return reject(err);
+          if (err) {
+            return reject(err);
+          }
           let vacationId = vacation._id;
 
           // Create custom method to add vacation assignment to resource
@@ -238,7 +240,7 @@ export default class SyncCtrl {
               billability: 'Non-billable',
               involvement: 100
             });
-            vac.save(err => reject(err));
+            vac.save(reject);
           };
 
           let vacationRequests = {};
@@ -249,7 +251,10 @@ export default class SyncCtrl {
             let name = request.employee['$t'];
             let resource = this._peopleByName[name];
             if (!resource) {
-              this._addLog('unable to add vacations for ' + name, 'bamboo');
+              if (!notFound[name]) {
+                this._addLog('unable to add vacations for ' + name, 'bamboo');
+                notFound[name] = true;
+              }
               return;
             }
             let endYear = new Date(request.end).getFullYear();
@@ -300,37 +305,44 @@ export default class SyncCtrl {
     return new Promise(async (resolve, reject) => {
       try {
         // Get people from PMO
-        let data = await this.PMO.getPeople().catch(reject);
+        let _error;
+        let data = await this.PMO.getPeople().catch(error => _error = error);
+        if (_error) {
+          return reject(_error);
+        }
+
         let initiatives = {};
         let initiativesCreators = {};
         let assignments = [];
 
-        this._addLog(data.rows.length + ' records received', 'PMO');
-        let peopleSorted = data.rows.sort((a, b) => (a.name > b.name) ? 1 : -1);
+        this._addLog(data.length + ' records received', 'pmo');
+        let peopleSorted = data.sort((a, b) => (a.name > b.name) ? 1 : -1);
+
+        let pools = {};
 
         // For every person
         peopleSorted.forEach(person => {
           // ... determine the pool they belong to
-          let pool;
-          if (profilesInvertedMap[person.workProfile]) {
-            pool = profilesInvertedMap[person.workProfile][person.specialization];
-          }
-          if (!pool) {
-            pool = '';
+          let ems = person['engineerManagers'];
+          let pool = (ems && ems.length) ? ems[0].discipline : '';
+          if (!pools[pool]) {
+            console.log('*', pool);
+            pools[pool] = true;
           }
 
-          let who = this._whois[person.employeeId] || {};
-          let visa = this._visas[person.fullName] || {};
+          let who = this._whois[person.username] || {};
+          let visa = this._visas[person.name] || {};
 
           let resource = new Resource({
-            name: person.fullName,
-            login: person.employeeId,
+            name: person.name,
+            login: person.username,
             grade: person.grade,
             location: locationsMap[person.location],
             profile: person.workProfile,
             specialization: person.specialization,
             pool,
-            manager: who.manager,
+            manager: person.manager,
+            benchDays: person.daysOnBench,
             skype: who.skype,
             phone: who.phone,
             room: who.room,
@@ -353,20 +365,22 @@ export default class SyncCtrl {
             this._peopleByName[name] = resource;
 
             // No assignments to accounts - continue
-            if (!person.account) return;
+            if (!person.assignments) return;
 
             // Map this person to accounts they assigned
-            person.account.forEach((account, index) => {
-              let project = person.project[index];
+            person.assignments.forEach(involvement => {
+              let project = involvement.project;
+              let account = involvement.account;
               let name = account + ':' + project;
               let assignment = {
                 resourceId: resource._id,
                 name: project,
                 account,
-                start: this._makeDate(person.assignmentStart[index]),
-                end: this._makeDate(person.assignmentFinish[index], true),
-                billability: person.assignmentStatus[index].name,
-                involvement: person.involvements[index]
+                start: this._makeDate(involvement.start),
+                end: this._makeDate(involvement.end, true),
+                billability: involvement.status,
+                involvement: involvement.involvement,
+                comment: involvement.comment
               };
               // Keep all accounts met
               this._accounts[account] = true;
@@ -403,7 +417,7 @@ export default class SyncCtrl {
             return resolve();
           });
         });
-        this._addLog(profilesCreated + ' profiles created', 'PMO');
+        this._addLog(profilesCreated + ' profiles created', 'pmo');
       } catch (e) {
         reject(e);
       }
@@ -468,6 +482,7 @@ export default class SyncCtrl {
 
         let demand = {
           login: id + ':' + specs + '_' + profile + '_for_' + account.replace(/[ .:]/g, '_'),
+          name: id + '. ' + specs + ' ' + profile,
           account: account,
           comment: item.comment,
           candidates: item.proposedCandidates.join(', '),

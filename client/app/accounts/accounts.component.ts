@@ -40,7 +40,7 @@ export class AccountsComponent extends Schedule {
     let resource = this.resourcesById[assignment.resourceId] || {name: '...', grade: '...'};
     let demand = assignment.demand;
     return {
-      name: (demand ? (demand.profile + ': ' + demand.comment) : resource.name + ', ' + resource.grade),
+      name: (demand ? (demand.name + (demand.comment ? ': ' + demand.comment : '')) : resource.name + ', ' + resource.grade),
       account: initiative.account,
       color: initiative.color,
       billability: assignment.billability,

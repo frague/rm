@@ -33,15 +33,14 @@ export class TaskComponent {
   }
 
   getIconStyles() {
-    let status = this.status;
     return Object.keys(this.stati).length > 0 ?
-    {
-      'fa-circle-o-notch fa-spin': status == 'progress',
-      'fa-check-circle-o text-success': status == 'done',
-      'fa-stop-circle-o grey': status == 'skipped',
-      'fa-times-circle text-danger': status == 'error',
-      'fa-clock-o grey': !status,
-    }
+    ({
+           progress: 'fa-circle-o-notch fa-spin',
+           done: 'fa-check-circle-o text-success',
+           skipped: 'fa-stop-circle-o grey',
+           error: 'fa-times-circle text-danger',
+           pending: 'fa-clock-o grey',
+         }[this.status]) || 'fa-ban'
       :
     {
       'fa-check-square': this.checked,

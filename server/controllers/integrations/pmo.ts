@@ -1,8 +1,10 @@
 const request = require('request');
-import { catchAwait, login, fillRequest } from './utils';
+import { login, fillRequest } from './utils';
 
 const env = process.env;
 const pmo = 'https://pmo.griddynamics.net/';
+const pmoEmployees = pmo + '/service/api/employee/active';
+const pmoAssignments = pmo + '/service/v1/people/employees';
 const pmoDemandMeta = pmo + '/service/api/internal/position/demand/';
 
 export default class PmoIntegrationsCtrl {
@@ -28,7 +30,7 @@ export default class PmoIntegrationsCtrl {
     return new Promise(async (resolve, reject) => {
       await this.login().catch(reject);
       request.get(
-        fillRequest(this.sessionCookies, pmo + 'service/people'),
+        fillRequest(this.sessionCookies, pmoAssignments),
         (error, response, body) => {
           let data;
           try {
@@ -36,7 +38,7 @@ export default class PmoIntegrationsCtrl {
           } catch (e) {
             reject(e);
           }
-          resolve(data);
+          resolve(data.data);
         })
         .on('error', error => {
           console.log('Error fetching employee from PMO');
