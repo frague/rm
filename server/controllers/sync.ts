@@ -154,7 +154,7 @@ export default class SyncCtrl {
       if (this._setTimer('demand')) {
         this._threads['demand'] = true;
         await Demand.deleteMany({});
-        this._queryPMODemand()
+        this._queryDemand()
           .then(() => {
             this._getDelay('demand');
           })
@@ -170,7 +170,7 @@ export default class SyncCtrl {
 
         await Resource.deleteMany({});
         await Initiative.deleteMany({});
-        await Assignment.deleteMany({});
+        await Assignment.deleteMany({name: { '$ne': 'Demand' }});
 
         // Visas in wiki (passport, visa type, expiration)
         if (this._setTimer('visas')) {
@@ -439,13 +439,20 @@ export default class SyncCtrl {
     return (index > 9 ? '' : '0') + index;
   }
 
-  private _queryPMODemand(): Promise<any> {
-    // Create new initiative to show demand
-    new Initiative({
-      name: 'Demand',
-      account: 'Griddynamics',
-      color: '#FF5050'
-    }).save();
+  private _queryDemand(): Promise<any> {
+    // Create new initiative to show demand (if not exists)
+    Initiative.findOne(
+      {name: 'Demand'},
+      (err, data) => {
+        if (err || !data) {
+          new Initiative({
+            name: 'Demand',
+            account: 'Griddynamics',
+            color: '#FF5050'
+          }).save();
+        }
+      }
+    );
 
     return new Promise(async (resolve, reject) => {
       let _error;
@@ -516,100 +523,6 @@ export default class SyncCtrl {
     });
   }
 
-
-  private _queryDemand(): Promise<any> {
-
-    // Create new initiative to show demand
-    new Initiative({
-      name: 'Demand',
-      account: 'Griddynamics',
-      color: '#FF5050'
-    }).save();
-
-    return new Promise(async (resolve, reject) => {
-      // Query Demand file
-      let sheet: any = await this.integrationsCtrl.googleGetSheet();
-      let rowsCount = sheet.rowCount;
-      this._addLog(rowsCount + ' records received', 'demand');
-      let demandAccountIndex = {};
-
-      let row = 8; // Min row
-      let offset = 500; // Rows fits into memory at once
-
-      while (row < rowsCount) {
-        let maxRow = (row + offset > rowsCount) ? rowsCount : row + offset;
-        this._addLog('reading demand sheet lines range [' + row + '÷' + maxRow + ']', 'demand');
-        let data = await this.integrationsCtrl.getSheetPortion(sheet, row, maxRow);
-        row = maxRow + 1;
-
-        // For each line of demand file
-        data.forEach((demandLine, index) => {
-          // ... parse its cells
-          let start = this._parseDate(demandLine[8]);
-          let duration = this._parseDuration(demandLine[10]);
-          let end;
-          if (start) {
-            if (!duration) {
-              duration = 6;
-            }
-            end = new Date(start);
-            end.setMonth(start.getMonth() + duration);
-          } else {
-            end = start;
-          }
-
-          let account = demandLine[1];
-          if (!this._accounts[account]) {
-            if (accountsMap[account]) {
-              account = accountsMap[account];
-            } else {
-              this._addLog('unknown account - ' + account, 'demand');
-              this._accounts[account] = true;
-            }
-          }
-          demandAccountIndex[account] = (demandAccountIndex[account] || 0) + 1;
-
-          let login = (account + this._leadingZero(demandAccountIndex[account])).replace(/\./g, '_');
-          let demandLocations = demandLine.slice(12, 18);
-          let l = locations.filter((location, index) => !!demandLocations[index]).sort().join(', ');
-
-          let profile = demandLine[5];
-          let pool = demandProfilesMap[profile] || '';
-
-          let requestId = demandLine[18];
-          requestId = !requestId.indexOf('GD') ? requestId : '';
-
-          let status = demandLine[2];
-
-          let demand = {
-            login,
-            account,
-            acknowledgement: demandLine[3],
-            role: replaceFromMap(billabilityMap, demandLine[4]),
-            profile,
-            pool,
-            comment: demandLine[6],
-            deployment: demandLine[7],
-            start,
-            end,
-            stage: demandLine[9],
-            grades: demandLine[11].split(/[,-]/g).sort().join(', '),
-            locations: l,
-            requestId
-          };
-
-          if (status === 'active') {
-            setTimeout(() => new Demand(demand).save((err, data) => {
-              if (err) reject(err);
-            }), 0);
-          }
-        })
-      };
-
-      return resolve();
-    });
-  }
-
   private _queryConfluence(): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
@@ -619,7 +532,7 @@ export default class SyncCtrl {
 
         this._whois = whois.reduce((result, u) => {
           let [pool, name, account, initiative, profile, grade, manager, location, skype, phone, room, login] = u;
-          result[login] = {manager, skype, phone, room};
+          result[login] = { manager, skype, phone, room };
           return result;
         }, {});
 
