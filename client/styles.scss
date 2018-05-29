@@ -54,6 +54,16 @@ h2 {
   font-weight: 300;
 }
 
+pre {
+  white-space: pre-line;
+  font: inherit;
+}
+
+.scrollable {
+  max-height: 100px;
+  overflow-y: auto;
+}
+
 .input-group {
   // border: solid 1px #c0e6ea;
   border: solid 1px $body - #333;

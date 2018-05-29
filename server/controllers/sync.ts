@@ -165,8 +165,14 @@ export default class SyncCtrl {
         this._threads['users'] = true;
 
         await Resource.deleteMany({});
-        await Initiative.deleteMany({});
-        await Assignment.deleteMany({name: { '$ne': 'Demand' }});
+        await Initiative.deleteMany({
+          name: {
+            '$ne': {
+              '$in': ['Demand', 'Vacation']
+            }
+          }
+        });
+        await Assignment.deleteMany({});
 
         // Visas in wiki (passport, visa type, expiration)
         if (this._setTimer('visas')) {
@@ -214,6 +220,26 @@ export default class SyncCtrl {
         this._addLog('received vacations information', 'bamboo');
 
         // Create new Vacation initiative
+        let _error;
+        let vacation = await Initiative.findOne(
+          {name: 'Vacation'},
+          async (error, data) => {
+            if (error) {
+              _error = error;
+              return;
+            }
+            if (!data) {
+              return await new Initiative({
+                name: 'Vacation',
+                account: 'Griddynamics',
+                color: '#1ca1c0'
+              }).save();
+            } else {
+              return data;
+            }
+          }
+        );
+
         new Initiative({
           name: 'Vacation',
           account: 'Griddynamics',

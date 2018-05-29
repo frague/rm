@@ -8,7 +8,6 @@ const demandSchema = new mongoose.Schema({
   accountId: String,
   project: String,
   pool: String,
-  acknowledgement: String,
   role: String,
   profile: String,
   specializations: String,

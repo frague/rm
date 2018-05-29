@@ -78,7 +78,6 @@ export default class DemandCtrl extends BaseCtrl {
             account: 1,
             name: 1,
             pool: 1,
-            acknowledgement: 1,
             role: 1,
             profile: 1,
             start: 1,
