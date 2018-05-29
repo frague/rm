@@ -5,8 +5,6 @@ import Demand from '../models/demand';
 import Candidate from '../models/candidate';
 import Requisition from '../models/requisition';
 
-import IntegrationsCtrl from './integrations';
-
 import PmoIntegrationsCtrl from './integrations/pmo';
 import ConfluenceIntegrationsCtrl from './integrations/confluence';
 import BambooIntegrationsCtrl from './integrations/bamboo';
@@ -45,8 +43,6 @@ export default class SyncCtrl {
   private _visas = {};
   private _stati = {};
   private _threads = {};
-
-  integrationsCtrl = new IntegrationsCtrl();
 
   PMO = new PmoIntegrationsCtrl();
   wiki = new ConfluenceIntegrationsCtrl();

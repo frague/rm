@@ -5,7 +5,6 @@ import ResourceCtrl from './controllers/resource';
 import InitiativeCtrl from './controllers/initiative';
 import AssignmentCtrl from './controllers/assignment';
 import UserCtrl from './controllers/user';
-import IntegrationsCtrl from './controllers/integrations';
 import SkillTreeCtrl from './controllers/integrations/skilltree';
 import DemandCtrl from './controllers/demand';
 import FilterCtrl from './controllers/filter';
@@ -31,7 +30,6 @@ export default function setRoutes(app) {
   const initiativeCtrl = new InitiativeCtrl();
   const assignmentCtrl = new AssignmentCtrl();
   const userCtrl = new UserCtrl();
-  const integrationsCtrl = new IntegrationsCtrl();
   const demandCtrl = new DemandCtrl();
   const filterCtrl = new FilterCtrl();
   const syncCtrl = new SyncCtrl();
@@ -134,8 +132,6 @@ export default function setRoutes(app) {
   // Deadpool
   router.route('/dps').get(diffCtrl.getAll);
   router.route('/dps').post(snapshotCtrl.saveDiffs);
-
-  router.route('/dm').get(integrationsCtrl.pmoGetDemandDicts);
 
   // Apply the routes to our application with the prefix /api
   app.use('/api', router);
