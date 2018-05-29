@@ -11,7 +11,6 @@ export default class JobViteIntegrationsCtrl {
       throw 'No JobVite keys provided to access the candidates API';
     }
     let qs = Object.assign({}, extras, { api, sc });
-    console.log('qs', qs);
     return qs;
   }
 
@@ -22,7 +21,7 @@ export default class JobViteIntegrationsCtrl {
 				qs = this._buildQueryParams(
 			    env.JV_JOBS_KEY,
 			    env.JV_JOBS_SECRET,
-					{jobStatus: ['Open', 'Approved', 'Draft', 'Awaiting Approval']}
+					{ jobStatus: ['Open', 'Approved', 'Draft', 'Awaiting Approval'] }
 				);
 			} catch (e) {
 				return reject(e);

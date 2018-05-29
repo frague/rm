@@ -1,12 +1,12 @@
 import BaseCtrl from './base';
 import Assignment from '../models/assignment';
 import Resource from '../models/resource';
-import IntegrationsCtrl from './integrations';
+import SkillTreeCtrl from './integrations/skilltree';
 import { fakeRes } from './fakeresponse';
 
-const integrations = new IntegrationsCtrl();
+const skillTree = new SkillTreeCtrl();
 const skillsExpr = new RegExp(/^skills/);
-const delimiter = integrations.delimiter;
+const delimiter = skillTree.delimiter;
 
 export default class AssignmentCtrl extends BaseCtrl {
   model = Assignment;
@@ -32,7 +32,7 @@ export default class AssignmentCtrl extends BaseCtrl {
     return result;
   };
 
-  getAll = (req, res) => {
+  getAll = async (req, res) => {
     let or;
     try {
       or = req.query.or ? JSON.parse(req.query.or) : [];
@@ -48,29 +48,27 @@ export default class AssignmentCtrl extends BaseCtrl {
 
     if (skillsList.length) {
       try {
-        integrations.skillTreeGetAllSkills(fakeRes(skillIds => {
-          let {ids, suggestions} = integrations.mapSkillsIds(skillsList);
-          console.log('Skills suggestions are fetched:', suggestions, ids);
+        let skillIds = await skillTree.getAllSkills();
+        let { ids, suggestions } = skillTree.mapSkillsIds(skillsList);
+        console.log('Skills suggestions are fetched:', suggestions, ids);
 
-          integrations.skillTreeGetBySkills(ids)
-            .catch(error => {
-              res.json({message: 'No skills found', data: []})
-              throw error;
-            })
-            .then(people => {
-              if (people && people.length) {
-                console.log('People', people);
-                or.push({
-                  login: {
-                    '$in': people.map(person => person.user_id)
-                  }
-                });
-                console.log('With skills:', JSON.stringify(or));
-              }
-              let query = this.modifyCriteria(or, this.modifiers);
-              this._query(res, this.fixOr(query), suggestions);
-            })
-        }));
+        let people = await skillTree.getEngineersBySkills(ids)
+          .catch(error => {
+            res.json({message: 'No skills found', data: []})
+            throw error;
+          });
+
+        if (people && people.length) {
+          console.log('People', people);
+          or.push({
+            login: {
+              '$in': people.map(person => person.user_id)
+            }
+          });
+          console.log('With skills:', JSON.stringify(or));
+        }
+        let query = this.modifyCriteria(or, this.modifiers);
+        this._query(res, this.fixOr(query), suggestions);
       } catch (e) {
         console.log('Error', e);
         return res.sendStatus(500);

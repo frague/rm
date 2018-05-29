@@ -36,7 +36,7 @@ export default class PmoIntegrationsCtrl {
           try {
             data = JSON.parse(body);
           } catch (e) {
-            reject(e);
+            return reject(e);
           }
           resolve(data.data);
         })

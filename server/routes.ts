@@ -6,6 +6,7 @@ import InitiativeCtrl from './controllers/initiative';
 import AssignmentCtrl from './controllers/assignment';
 import UserCtrl from './controllers/user';
 import IntegrationsCtrl from './controllers/integrations';
+import SkillTreeCtrl from './controllers/integrations/skilltree';
 import DemandCtrl from './controllers/demand';
 import FilterCtrl from './controllers/filter';
 import SyncCtrl from './controllers/sync';
@@ -40,6 +41,7 @@ export default function setRoutes(app) {
   const snapshotCtrl = new SnapshotCtrl();
   const candidateCtrl = new CandidateCtrl();
   const requisitionCtrl = new RequisitionCtrl();
+  const skillTreeCtrl = new SkillTreeCtrl();
 
   // Assignments
   router.route('/assignment/:id').get(assignmentCtrl.get);
@@ -122,8 +124,8 @@ export default function setRoutes(app) {
   router.route('/sync').post(syncCtrl.sync);
 
   // Skill Tree
-  router.route('/skills/:userId').get(integrationsCtrl.skillTreeGetSkills);
-  router.route('/skills/:userId/info').get(integrationsCtrl.skillTreeGetInfo);
+  router.route('/skills/:userId').get(skillTreeCtrl.querySkills);
+  router.route('/skills/:userId/info').get(skillTreeCtrl.queryUsersInfo);
 
   // Backup and restore
   router.route('/backup').get(commentCtrl.download);

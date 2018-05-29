@@ -247,151 +247,151 @@ export default class IntegrationsCtrl {
 
   // Skill Tree methods
 
-  _skillTreeLogin = (): Promise<any> => {
-    return new Promise((resolve, reject) => {
-      this.skillTreeCookie = '';
-      this._login(skillTree + 'auth', env.CONFLUENCE_LOGIN, env.CONFLUENCE_PASSWORD)
-        .on('response', response => {
-          let cookies = response.headers['set-cookie'];
-          if (cookies && cookies.length) {
-            this.skillTreeCookie = request.cookie(response.headers['set-cookie'][0]);
-            return resolve(request);
-          } else {
-            console.log('Error logging into skillTree');
-            reject('Error logging into skillTree');
-          }
-        })
-        .on('error', err => {
-          console.log('Error logging into skilltree: ', err);
-          reject('Error logging into skillTree');
-        });
-    });
-  }
+  // _skillTreeLogin = (): Promise<any> => {
+  //   return new Promise((resolve, reject) => {
+  //     this.skillTreeCookie = '';
+  //     this._login(skillTree + 'auth', env.CONFLUENCE_LOGIN, env.CONFLUENCE_PASSWORD)
+  //       .on('response', response => {
+  //         let cookies = response.headers['set-cookie'];
+  //         if (cookies && cookies.length) {
+  //           this.skillTreeCookie = request.cookie(response.headers['set-cookie'][0]);
+  //           return resolve(request);
+  //         } else {
+  //           console.log('Error logging into skillTree');
+  //           reject('Error logging into skillTree');
+  //         }
+  //       })
+  //       .on('error', err => {
+  //         console.log('Error logging into skilltree: ', err);
+  //         reject('Error logging into skillTree');
+  //       });
+  //   });
+  // }
 
-  _getSkillTree(url: string, res, preprocessor=null): void {
-    this._skillTreeLogin()
-      .then(() => {
-        request.get(
-          Object.assign(
-            {rejectUnauthorized: false},
-            this._fillRequest(this.skillTreeCookie, skillTree + url)
-          ),
-          (err, response, body) => {
-            if (err) {
-              console.log('Error requesting skill tree skills', err);
-              return res.sendStatus(500);
-            }
+  // _getSkillTree(url: string, res, preprocessor=null): void {
+  //   this._skillTreeLogin()
+  //     .then(() => {
+  //       request.get(
+  //         Object.assign(
+  //           {rejectUnauthorized: false},
+  //           this._fillRequest(this.skillTreeCookie, skillTree + url)
+  //         ),
+  //         (err, response, body) => {
+  //           if (err) {
+  //             console.log('Error requesting skill tree skills', err);
+  //             return res.sendStatus(500);
+  //           }
 
-            let data;
-            try {
-              data = JSON.parse(body);
-            } catch (e) {
-              console.log('Error decoding json');
-              return res.sendStatus(500);
-            }
-            if (preprocessor) {
-              data = preprocessor(data);
-            }
+  //           let data;
+  //           try {
+  //             data = JSON.parse(body);
+  //           } catch (e) {
+  //             console.log('Error decoding json');
+  //             return res.sendStatus(500);
+  //           }
+  //           if (preprocessor) {
+  //             data = preprocessor(data);
+  //           }
 
-            res.setHeader('Content-Type', 'application/json');
-            res.json(data);
-          });
-      })
-      .catch(err => {
-        console.log(err);
-        return res.sendStatus(500);
-      });
-  }
+  //           res.setHeader('Content-Type', 'application/json');
+  //           res.json(data);
+  //         });
+  //     })
+  //     .catch(err => {
+  //       console.log(err);
+  //       return res.sendStatus(500);
+  //     });
+  // }
 
-  skillTreeGetSkills = (req, res) => {
-    const userId = req.params.userId;
-    return userId === 'all' ? this.skillTreeGetAllSkills(res) : this.skillTreeGetUserSkills(userId, res);
-  }
+  // skillTreeGetSkills = (req, res) => {
+  //   const userId = req.params.userId;
+  //   return userId === 'all' ? this.skillTreeGetAllSkills(res) : this.skillTreeGetUserSkills(userId, res);
+  // }
 
-  _collectIds(source: any[], destination: any) {
-    // source.forEach(item => destination[item.name.toLowerCase()] = item.id);
-    source.forEach(item => destination[item.name] = item.id);
-  }
+  // _collectIds(source: any[], destination: any) {
+  //   // source.forEach(item => destination[item.name.toLowerCase()] = item.id);
+  //   source.forEach(item => destination[item.name] = item.id);
+  // }
 
-  _flattenerFilter(source: any, result={}): Object {
-    if (!source) {
-      return result;
-    }
+  // _flattenerFilter(source: any, result={}): Object {
+  //   if (!source) {
+  //     return result;
+  //   }
 
-    if (source.categories) {
-      source.categories.forEach(category => result = Object.assign(result, this._flattenerFilter(category, result)));
-    }
-    if (source.skills) {
-      source.skills.forEach(skill => {
-        // result[skill.name.toLowerCase()] = skill.id;
-        result[skill.name] = skill.id;
-        if (skill.techs) this._collectIds(skill.techs, result);
-      });
-    }
-    if (source.techs) this._collectIds(source.techs, result);
-    return result;
-  }
+  //   if (source.categories) {
+  //     source.categories.forEach(category => result = Object.assign(result, this._flattenerFilter(category, result)));
+  //   }
+  //   if (source.skills) {
+  //     source.skills.forEach(skill => {
+  //       // result[skill.name.toLowerCase()] = skill.id;
+  //       result[skill.name] = skill.id;
+  //       if (skill.techs) this._collectIds(skill.techs, result);
+  //     });
+  //   }
+  //   if (source.techs) this._collectIds(source.techs, result);
+  //   return result;
+  // }
 
-  mapSkillsIds(needles: string[]): {ids: any[], suggestions: any[]} {
-    let criteria = new RegExp(this.delimiter + '(' + needles.join('|') + ')' + this.delimiter, 'gi');
+  // mapSkillsIds(needles: string[]): {ids: any[], suggestions: any[]} {
+  //   let criteria = new RegExp(this.delimiter + '(' + needles.join('|') + ')' + this.delimiter, 'gi');
 
-    let ids = [];
-    let suggestions = [];
-    this.skillsFlatten.replace(criteria, (match, p1) => {
-      ids.push({id: '' + this.skills[p1]});
-      suggestions.push(p1);
-      return match;
-    });
-    return {ids, suggestions};
-  }
+  //   let ids = [];
+  //   let suggestions = [];
+  //   this.skillsFlatten.replace(criteria, (match, p1) => {
+  //     ids.push({id: '' + this.skills[p1]});
+  //     suggestions.push(p1);
+  //     return match;
+  //   });
+  //   return {ids, suggestions};
+  // }
 
-  skillTreeGetAllSkills = (res): void => {
-    if (this.skills) {
-      res.setHeader('Content-Type', 'application/json');
-      res.json(this.skills);
-    } else {
-      this._getSkillTree('v2/skill/all', res, data => {
-        this.skills = this._flattenerFilter(data);
-        this.skillsFlatten = this.delimiter + Object.keys(this.skills).join(this.delimiter + this.delimiter);
-      });
-    }
-  }
+  // skillTreeGetAllSkills = (res): void => {
+  //   if (this.skills) {
+  //     res.setHeader('Content-Type', 'application/json');
+  //     res.json(this.skills);
+  //   } else {
+  //     this._getSkillTree('v2/skill/all', res, data => {
+  //       this.skills = this._flattenerFilter(data);
+  //       this.skillsFlatten = this.delimiter + Object.keys(this.skills).join(this.delimiter + this.delimiter);
+  //     });
+  //   }
+  // }
 
-  skillTreeGetUserSkills = (userId, res): void => {
-    this._getSkillTree('v2/user/' + userId + '/allSkills', res);
-  }
+  // skillTreeGetUserSkills = (userId, res): void => {
+  //   this._getSkillTree('v2/user/' + userId + '/allSkills', res);
+  // }
 
-  skillTreeGetInfo = (req, res): void => {
-    const userId = req.params.userId;
-    this._getSkillTree('v2/user/' + userId + '/info', res);
-  }
+  // skillTreeGetInfo = (req, res): void => {
+  //   const userId = req.params.userId;
+  //   this._getSkillTree('v2/user/' + userId + '/info', res);
+  // }
 
-  skillTreeGetBySkills(skills: any): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this._skillTreeLogin()
-        .catch(e => {
-          reject(e);
-        })
-        .then(() => {
-          let query = {
-            employees: [],
-            skills
-          };
-          let options = this._fillRequest(
-            this.skillTreeCookie,
-            skillTree + 'v2/searchEmployee'
-          );
-          options.body = query;
-          options.json = true;
-          delete options.form;
+  // skillTreeGetBySkills(skills: any): Promise<any> {
+  //   return new Promise((resolve, reject) => {
+  //     this._skillTreeLogin()
+  //       .catch(e => {
+  //         reject(e);
+  //       })
+  //       .then(() => {
+  //         let query = {
+  //           employees: [],
+  //           skills
+  //         };
+  //         let options = this._fillRequest(
+  //           this.skillTreeCookie,
+  //           skillTree + 'v2/searchEmployee'
+  //         );
+  //         options.body = query;
+  //         options.json = true;
+  //         delete options.form;
 
-          request.post(options, (err, response, body) => {
-            if (err) return reject(err);
-            resolve(body);
-          });
-        });
-    });
-  }
+  //         request.post(options, (err, response, body) => {
+  //           if (err) return reject(err);
+  //           resolve(body);
+  //         });
+  //       });
+  //   });
+  // }
 
   // JobVite methods
 

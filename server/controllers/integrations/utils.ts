@@ -15,3 +15,8 @@ export const login = (url: string, j_username: string, j_password: string) => {
     rejectUnauthorized: false,
   });
 }
+
+export const sendJson = (data: Object, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.json(data);
+}

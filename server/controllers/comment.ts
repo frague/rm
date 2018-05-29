@@ -21,7 +21,6 @@ export default class CommentCtrl extends BaseCtrl {
   insertChecked = (req, res) => {
     let query = req.body;
     if (query.isStatus === true && query.login) {
-      console.log('Do reset!');
       this.model.update({login: query.login}, {isStatus: false}, {multi: true}, (err, data) => {
         return this.insert(req, res);
       });
