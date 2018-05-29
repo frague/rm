@@ -1135,14 +1135,20 @@ div.bottom-corner {
         }
       }
 
+      ul {
+        padding-left: 0;
+      }
+
       dt {
-        display: inline;
+        display: inline-block;
+        padding-left: 100px;
       }
       dd {
         float: left;
         width: 90px;
         margin: 0;
         text-transform: lowercase;
+        position: absolute;
       }
     }
   }
@@ -1155,7 +1161,7 @@ div.bottom-corner {
     margin-left: -40px;
     margin-top: 50px;
     font-size: 80px;
-  } 
+  }
 }
 
 .backup {
