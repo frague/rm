@@ -22,7 +22,7 @@
             *ngFor="let initiative of getAccountInitiatives(account); let i = index"
             class="line"
             [ngClass]="getAssignmentsCount(initiative)"
-          >{{ initiative.name }}</div>
+          >{{ getInitiativeCaption(initiative) }}</div>
         </div>
       </div>
     </div>

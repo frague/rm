@@ -35,6 +35,10 @@ export class AccountsComponent extends Schedule {
     return 'an' + this.getPersonInitiativeAssignments(initiative).length;
   }
 
+  getInitiativeCaption(initiative) {
+    return initiative.name || 'Job offer accepted';
+  }
+
   getAssignment(assignment) {
     let initiative = this.initiatives[assignment.initiativeId] || {};
     let resource = this.resourcesById[assignment.resourceId] || {name: '...', grade: '...'};

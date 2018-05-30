@@ -17,7 +17,7 @@ export class InitiativeComponent implements OnInit {
   getTitle(): string {
     let involved = this.data.involvement;
     if (involved == 100) involved = '';
-    return this.data.name + (involved ? ' (' + involved + '%)' : '');
+    return (this.data.name || 'Job Offer Accepted') + (involved ? ' (' + involved + '%)' : '');
   }
 
   getStyle(): any {
@@ -30,7 +30,8 @@ export class InitiativeComponent implements OnInit {
 
   getClass() {
     return {
-      nb: billable.indexOf(this.data.billability) < 0
+      nb: billable.includes(this.data.billability),
+      accepted: this.data.billability === 'Job accepted'
     }
   }
 

@@ -12,10 +12,7 @@
       <dd>{{ getAssigneeName() }}</dd>
 
       <dt>Profile</dt>
-      <dd>
-        {{ assignee.profile }}
-        <span *ngIf="assignee.specialization"> ({{ assignee.specialization }})</span>
-      </dd>
+      <dd>{{ assignee.profile }}<span *ngIf="assignee.specialization"> ({{ assignee.specialization }})</span></dd>
 
       <hr>
 
