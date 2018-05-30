@@ -1,6 +1,22 @@
 import * as mongoose from 'mongoose';
 
 const keywordExtender = new RegExp(/\.[^\s]+$/);
+const funcValue = new RegExp(/^([a-z]+)\(/i);
+const valueModifiers = {
+  'in': (key, value, [days]) => {
+    let d = new Date();
+    d.setDate(d.getDate() + +days);
+    return { [key]: { '$gte': new Date(), '$lt': d }};
+  },
+  'after': (key, value, [days]) => {
+    let d = new Date();
+    d.setDate(d.getDate() + +days);
+    return { [key]: { '$gte': d }};
+  },
+  null: (key, value) => {
+    return { [key]: value };
+  }
+};
 
 abstract class BaseCtrl {
 
@@ -23,6 +39,9 @@ abstract class BaseCtrl {
       let value = criterion[key];
       let keyBase = key.replace(keywordExtender, '');
 
+      // Values modifiers
+      criterion = this._modifyValue(key, value);
+
       if (key === this.andKey) {
         let and = this.modifyCriteria(value, modifiers);
         let l = and.length;
@@ -30,7 +49,7 @@ abstract class BaseCtrl {
           if (l === 1) {
             or = or.concat(and);
           } else {
-            or.push({[this.andKey]: and});
+            or.push({ [this.andKey]: and });
           }
         }
         return;
@@ -39,9 +58,11 @@ abstract class BaseCtrl {
       if ((!useWhitelist && exclusions.includes(keyBase)) || (useWhitelist && !inclusions.includes(keyBase))) {
         return;
       }
+
       if (modifiers[keyBase]) {
         criterion = modifiers[keyBase](key, value);
       }
+
       if (criterion) {
         or.push(criterion);
       }
@@ -57,7 +78,7 @@ abstract class BaseCtrl {
     if (l === 1) {
       return or[0];
     }
-    return {[this.orKey]: or};
+    return { [this.orKey]: or };
   }
 
   reduceQuery(query: any) {
@@ -70,16 +91,34 @@ abstract class BaseCtrl {
   commentTransform = (key, value) => {
     if (key.indexOf('.') >= 0) {
       let [comment, source] = key.split('.', 2);
-      return {'$and': [{'comments.source': source}, {'comments.text': value}]};
+      return {'$and': [{'comments.source': source}, { 'comments.text': value }]};
     } else {
       key += '.text';
     }
-    return {[key]: value};
+    return { [key]: value };
   }
 
   _respondWithError(res, error='') {
     console.log('Error:', error);
     res.sendStatus(500);
+  }
+
+  _getParameters(value: string): string[] {
+    return value
+      .replace(funcValue, '')
+      .replace(/\)$/, '')
+      .split(',')
+      .map((p: string) => p.trim());
+  }
+
+  _modifyValue(key, value: string): any {
+    try {
+      let method = funcValue.exec(value)[1];
+      return valueModifiers[method](key, value, this._getParameters(value));
+    } catch (e) {
+      console.log('Unable to modify value', value);
+    }
+    return { [key]: value };
   }
 
   // Get all

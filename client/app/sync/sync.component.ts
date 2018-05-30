@@ -9,8 +9,8 @@ const tasks = {
     'users': {mandatory: false, dependants: {
       'visas': {mandatory: false},
       'whois': {mandatory: false},
-      'vacations': {mandatory: false},
       'assignments': {mandatory: true},
+      'vacations': {mandatory: false},
     }},
     'demand': {mandatory: false},
     'requisitions': {mandatory: false, default: false, dependants: {
