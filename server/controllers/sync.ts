@@ -167,9 +167,7 @@ export default class SyncCtrl {
         await Resource.deleteMany({});
         await Initiative.deleteMany({
           name: {
-            '$ne': {
-              '$in': ['Demand', 'Vacation']
-            }
+            '$nin': ['Demand', 'Vacation']
           }
         });
         await Assignment.deleteMany({});
