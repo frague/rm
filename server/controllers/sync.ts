@@ -174,15 +174,14 @@ export default class SyncCtrl {
 
         // Visas in wiki (passport, visa type, expiration)
         if (this._setTimer('visas')) {
-          this._visas = {};
-          await this._queryVisas()
+          this._visas = await this._queryVisas()
             .catch(error => this._setError('visas', error));
           this._getDelay('visas');
         }
 
         // Whois in wiki (skype id, room, etc.)
         if (this._setTimer('whois')) {
-          await this._queryConfluence()
+          this._whois = await this._queryConfluence()
             .catch(error => this._setError('whois', error));
           this._getDelay('whois');
         }
@@ -550,13 +549,11 @@ export default class SyncCtrl {
 
         this._addLog(whois.length + ' records fetched', 'whois');
 
-        this._whois = whois.reduce((result, u) => {
+        resolve(whois.reduce((result, u) => {
           let [pool, name, account, initiative, profile, grade, manager, location, skype, phone, room, login] = u;
           result[login] = { manager, skype, phone, room };
           return result;
-        }, {});
-
-        return resolve();
+        }, {}));
       } catch (e) {
         reject(e);
       }
