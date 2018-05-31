@@ -77,7 +77,9 @@ export default class ResourceCtrl extends BaseCtrl {
             visaL: 1,
             license: 1,
             status: 1,
-            commentsCount: 1
+            commentsCount: 1,
+            nextPr: 1,
+            payRate: 1
           }
         },
         {

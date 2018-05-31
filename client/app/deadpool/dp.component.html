@@ -28,9 +28,12 @@
       	<ul *ngIf="hasDiff(diff)">
       		<li *ngFor="let key of diff.diff|keys">
       			<b>{{ key }}:</b>
-      			{{ diff.diff[key][0]|ellipsis:'...' }}
-            &rarr;
-            {{ diff.diff[key][1]|ellipsis:'...' }}
+            <ng-container *ngIf="key !== 'payRate'">
+              {{ diff.diff[key][0]|ellipsis:'...' }}
+              &rarr;
+              {{ diff.diff[key][1]|ellipsis:'...' }}
+            </ng-container>
+              <i *ngIf="key === 'payRate'" class="fa fa-eye" [title]="diff.diff[key][0] + ' &rarr; ' + diff.diff[key][1]"></i>
           </li>
       	</ul>
         <span *ngIf="diff.diff === 1" class="joined">added</span>

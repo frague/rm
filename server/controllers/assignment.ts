@@ -201,7 +201,9 @@ export default class AssignmentCtrl extends BaseCtrl {
             login: { '$first': '$login' },
             status: { '$first': '$status' },
             commentsCount: { '$first': '$commentsCount' },
-            comments: {'$first': '$comments'}
+            comments: {'$first': '$comments'},
+            nextPr: {'$first': '$nextPr'},
+            payRate: {'$first': '$payRate'}
           }
         },
         {
@@ -238,7 +240,9 @@ export default class AssignmentCtrl extends BaseCtrl {
             canTravel: 1,
             login: 1,
             status: 1,
-            commentsCount: 1
+            commentsCount: 1,
+            nextPr: 1,
+            payRate: 1
           }
         },
         {

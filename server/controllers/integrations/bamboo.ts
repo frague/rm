@@ -42,19 +42,10 @@ export default class BambooIntegrationsCtrl {
               <field id="customPerformanceReviewDue" />
               <field id="payRate" />
             </fields>
-          </report>`.replace(/>[\s\n\r]+</g, '><')
+          </report>`.replace(/>\s+</g, '><')
         }
       );
       request.post(options, (err, response, body) => resolve(body)).on('error', reject);
     });
-  }
-
-  getAll = (req, res) => {
-    this.getPRs()
-      .then(doc => {
-        res.setHeader('Content-Type', 'application/json');
-        res.send(doc);
-      })
-      .catch(error => res.sendStatus(500));
   }
 }

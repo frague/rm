@@ -7,6 +7,7 @@ import { SocketService } from '../services/socket.service';
 const tasks = {
   mandatory: true, dependants: {
     'users': {mandatory: false, dependants: {
+      'pr': {mandatory: false},
       'visas': {mandatory: false},
       'whois': {mandatory: false},
       'assignments': {mandatory: true},

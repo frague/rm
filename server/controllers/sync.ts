@@ -41,6 +41,7 @@ export default class SyncCtrl {
   private _timers = {};
   private _tasks = [];
   private _visas = {};
+  private _prs = {};
   private _stati = {};
   private _threads = {};
 
@@ -164,6 +165,13 @@ export default class SyncCtrl {
       if (this._setTimer('users')) {
         this._threads['users'] = true;
 
+        // Next PR date in bamboo
+        if (this._setTimer('pr')) {
+          this._prs = await this._queryPRs()
+            .catch(error => this._setError('pr', error));
+          this._getDelay('pr');
+        }
+
         // Visas in wiki (passport, visa type, expiration)
         if (this._setTimer('visas')) {
           this._visas = await this._queryVisas()
@@ -180,14 +188,14 @@ export default class SyncCtrl {
 
         // Employees and their assignments
         if (this._setTimer('assignments')) {
-          await this._queryPMO()
+          await this._queryUsers()
             .catch(error => this._setError('assignments', error));
           this._getDelay('assignments');
         }
 
         // Vacations in bamboo
         if (this._setTimer('vacations')) {
-          await this._queryBamboo()
+          await this._queryVacations()
             .catch(error => this._setError('vacations', error));
           this._getDelay('vacations');
         }
@@ -199,7 +207,7 @@ export default class SyncCtrl {
     }
   };
 
-  private _queryBamboo(): Promise<any> {
+  private _queryVacations(): Promise<any> {
     let todayYear = new Date().getFullYear();
     let notFound = {};
     return new Promise(async (resolve, reject) => {
@@ -211,77 +219,97 @@ export default class SyncCtrl {
         // Create new Vacation initiative
         let _error;
         let vacation = await Initiative.findOne(
-          {name: 'Vacation'},
-          async (error, data) => {
+          { name: 'Vacation' },
+          async (error, vacation) => {
             if (error) {
               _error = error;
               return;
             }
-            if (!data) {
-              return await new Initiative({
+            if (!vacation) {
+              vacation = await new Initiative({
                 name: 'Vacation',
                 account: 'Griddynamics',
                 color: '#1ca1c0'
-              }).save();
+              }).save().catch(error => _error = error);
+              console.log('create vacation', vacation);
             } else {
-              return data;
+              console.log('vacation exists', vacation);
+              return vacation;
             }
           }
-        );
+        ).exec();
 
-        new Initiative({
-          name: 'Vacation',
-          account: 'Griddynamics',
-          color: '#1ca1c0'
-        }).save((err, vacation) => {
-          // ... and save it
-          if (err) {
-            return reject(err);
-          }
-          let vacationId = vacation._id;
+        if (_error) {
+          return reject(_error);
+        }
 
-          // Create custom method to add vacation assignment to resource
-          let addVacation = (resourceId, startDate, endDate) => {
-            // console.log('add vacation', resourceId, startDate, endDate);
-            let vac = new Assignment({
-              initiativeId: vacationId,
-              resourceId,
-              start: startDate,
-              end: endDate,
-              billability: 'Non-billable',
-              involvement: 100
-            });
-            vac.save(reject);
-          };
+        let vacationId = vacation._id;
 
-          let vacationRequests = {};
-          let vacationsCount = 0;
-          // For each timeoff
-          data.requests.request.forEach(request => {
-            // ... try to find corresponding resource
-            let name = request.employee['$t'];
-            let resource = this._peopleByName[name];
-            if (!resource) {
-              if (!notFound[name]) {
-                this._addLog('unable to add vacations for ' + name, 'bamboo');
-                notFound[name] = true;
-              }
-              return;
-            }
-            let endYear = new Date(request.end).getFullYear();
-            if (todayYear - endYear > 1) return;
-
-            // Add vacation if it is approved
-            if (request.status && request.status['$t'] === 'approved') {
-              addVacation(resource.login, request.start, request.end);
-              vacationsCount++;
-            }
+        // Create custom method to add vacation assignment to resource
+        let addVacation = (resourceId, startDate, endDate) => {
+          // console.log('add vacation', resourceId, startDate, endDate);
+          let vac = new Assignment({
+            initiativeId: vacationId,
+            resourceId,
+            start: startDate,
+            end: endDate,
+            billability: 'Non-billable',
+            involvement: 100
           });
-          this._addLog(vacationsCount + ' vacation records created', 'bamboo');
-          return resolve();
+          vac.save(reject);
+        };
+
+        let vacationRequests = {};
+        let vacationsCount = 0;
+        // For each timeoff
+        data.requests.request.forEach(request => {
+          // ... try to find corresponding resource
+          let name = request.employee['$t'];
+          let resource = this._peopleByName[name];
+          if (!resource) {
+            if (!notFound[name]) {
+              this._addLog('unable to add vacations for ' + name, 'bamboo');
+              notFound[name] = true;
+            }
+            return;
+          }
+          let endYear = new Date(request.end).getFullYear();
+          if (todayYear - endYear > 1) return;
+
+          // Add vacation if it is approved
+          if (request.status && request.status['$t'] === 'approved') {
+            addVacation(resource.login, request.start, request.end);
+            vacationsCount++;
+          }
         });
+        this._addLog(vacationsCount + ' vacation records created', 'bamboo');
+        return resolve();
       } catch (e) {
         reject(e);
+      }
+    });
+  }
+
+  private _queryPRs(): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      let _error;
+      let prs = await this.bamboo.getPRs().catch(error => _error = error);
+      if (_error) {
+        return reject(_error);
+      }
+      try {
+        prs = JSON.parse(prs)['employees']
+          .filter(employee => !!employee.customUsername)
+          .reduce((result, employee) => {
+            result[employee.customUsername] = employee;
+            return result;
+          }, {});
+          console.log(prs);
+          this._addLog(Object.keys(prs).length + ' PR records received', 'pr');
+          resolve(prs);
+      } catch (e) {
+        console.log('Error parsing PR data', e);
+        return reject(e);
       }
     });
   }
@@ -308,7 +336,7 @@ export default class SyncCtrl {
     });
   }
 
-  private async _queryPMO(): Promise<any> {
+  private async _queryUsers(): Promise<any> {
     let initiativesIds = {};
     let profilesCreated = 0;
     let hue = 0;
@@ -328,10 +356,10 @@ export default class SyncCtrl {
           result[resource.login] = resource;
           return result;
         }, {});
-        console.log(prevState);
 
         let syncVisas = this._isTaskEnabled('visas');
         let syncWhois = this._isTaskEnabled('whois');
+        let syncPRs = this._isTaskEnabled('pr');
 
         await Resource.deleteMany({});
         await Initiative.deleteMany({
@@ -354,9 +382,10 @@ export default class SyncCtrl {
           const ems = person['engineerManagers'];
           const pool = (ems && ems.length) ? ems[0].discipline : '';
           const prev = prevState[person.username] || {};
-          console.log(prev, person.login);
+
           const who = (syncWhois ? this._whois[person.username] : prev) || {};
           const visa = (syncVisas ? this._visas[person.name] : prev) || {};
+          const pr = (syncPRs ? this._prs[person.username] : prev) || {};
 
           let resource = new Resource({
             name: person.name,
@@ -374,7 +403,9 @@ export default class SyncCtrl {
             passport: visa.passport,
             visaB: visa.visaB,
             visaL: visa.visaL,
-            license: visa.license
+            license: visa.license,
+            nextPr: this._makeDate(pr.customPerformanceReviewDue),
+            payRate: pr.payRate
           });
 
           profilesCreated++;

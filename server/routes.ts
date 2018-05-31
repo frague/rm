@@ -136,8 +136,6 @@ export default function setRoutes(app) {
   router.route('/dps').get(diffCtrl.getAll);
   router.route('/dps').post(snapshotCtrl.saveDiffs);
 
-  router.route('/bamboo').get(bamboo.getAll);
-
   // Apply the routes to our application with the prefix /api
   app.use('/api', router);
 
