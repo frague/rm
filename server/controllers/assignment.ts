@@ -101,7 +101,7 @@ export default class AssignmentCtrl extends BaseCtrl {
         {
           '$lookup': {
             from: 'assignments',
-            localField: '_id',
+            localField: 'login',
             foreignField: 'resourceId',
             as: 'assignment'
           }

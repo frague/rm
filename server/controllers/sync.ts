@@ -164,14 +164,6 @@ export default class SyncCtrl {
       if (this._setTimer('users')) {
         this._threads['users'] = true;
 
-        await Resource.deleteMany({});
-        await Initiative.deleteMany({
-          name: {
-            '$nin': ['Demand', 'Vacation']
-          }
-        });
-        await Assignment.deleteMany({});
-
         // Visas in wiki (passport, visa type, expiration)
         if (this._setTimer('visas')) {
           this._visas = await this._queryVisas()
@@ -281,7 +273,7 @@ export default class SyncCtrl {
 
             // Add vacation if it is approved
             if (request.status && request.status['$t'] === 'approved') {
-              addVacation(resource._id, request.start, request.end);
+              addVacation(resource.login, request.start, request.end);
               vacationsCount++;
             }
           });
@@ -330,27 +322,41 @@ export default class SyncCtrl {
           return reject(_error);
         }
 
+        // Read previous state of resources
+        let prevState = await Resource.find({}).exec();
+        prevState = prevState.reduce((result, resource) => {
+          result[resource.login] = resource;
+          return result;
+        }, {});
+        console.log(prevState);
+
+        let syncVisas = this._isTaskEnabled('visas');
+        let syncWhois = this._isTaskEnabled('whois');
+
+        await Resource.deleteMany({});
+        await Initiative.deleteMany({
+          name: {
+            '$nin': ['Demand', 'Vacation']
+          }
+        });
+        await Assignment.deleteMany({});
+
         let initiatives = {};
         let initiativesCreators = {};
         let assignments = [];
 
         this._addLog(data.length + ' records received', 'pmo');
-        let peopleSorted = data.sort((a, b) => (a.name > b.name) ? 1 : -1);
-
-        let pools = {};
+        const peopleSorted = data.sort((a, b) => (a.name > b.name) ? 1 : -1);
 
         // For every person
         peopleSorted.forEach(person => {
           // ... determine the pool they belong to
-          let ems = person['engineerManagers'];
-          let pool = (ems && ems.length) ? ems[0].discipline : '';
-          if (!pools[pool]) {
-            console.log('*', pool);
-            pools[pool] = true;
-          }
-
-          let who = this._whois[person.username] || {};
-          let visa = this._visas[person.name] || {};
+          const ems = person['engineerManagers'];
+          const pool = (ems && ems.length) ? ems[0].discipline : '';
+          const prev = prevState[person.username] || {};
+          console.log(prev, person.login);
+          const who = (syncWhois ? this._whois[person.username] : prev) || {};
+          const visa = (syncVisas ? this._visas[person.name] : prev) || {};
 
           let resource = new Resource({
             name: person.name,
@@ -392,7 +398,7 @@ export default class SyncCtrl {
               let account = involvement.account;
               let name = account + ':' + project;
               let assignment = {
-                resourceId: resource._id,
+                resourceId: resource.login,
                 name: project,
                 account,
                 start: this._makeDate(involvement.start),

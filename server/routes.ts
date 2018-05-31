@@ -15,6 +15,7 @@ import DiffCtrl from './controllers/diff';
 import SnapshotCtrl from './controllers/snapshot';
 import CandidateCtrl from './controllers/candidate';
 import RequisitionCtrl from './controllers/requisition';
+import BambooIntegrationsCtrl from './controllers/integrations/bamboo';
 
 import Resource from './models/resource';
 import User from './models/user';
@@ -40,6 +41,8 @@ export default function setRoutes(app) {
   const candidateCtrl = new CandidateCtrl();
   const requisitionCtrl = new RequisitionCtrl();
   const skillTreeCtrl = new SkillTreeCtrl();
+
+  const bamboo = new BambooIntegrationsCtrl();
 
   // Assignments
   router.route('/assignment/:id').get(assignmentCtrl.get);
@@ -132,6 +135,8 @@ export default function setRoutes(app) {
   // Deadpool
   router.route('/dps').get(diffCtrl.getAll);
   router.route('/dps').post(snapshotCtrl.saveDiffs);
+
+  router.route('/bamboo').get(bamboo.getAll);
 
   // Apply the routes to our application with the prefix /api
   app.use('/api', router);

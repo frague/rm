@@ -3,7 +3,7 @@ import * as mongoose from 'mongoose';
 var idType = mongoose.Schema.Types.ObjectId;
 
 const assignmentSchema = new mongoose.Schema({
-  resourceId: idType,
+  resourceId: String,
   initiativeId: idType,
   start: Date,
   end: Date,
