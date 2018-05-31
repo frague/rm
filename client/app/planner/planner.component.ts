@@ -196,7 +196,14 @@ export class PlannerComponent extends Schedule {
     });
   }
 
-  getReservation(candidate: any, demand: any) {
+  getCheckStyles(candidate, demand) {
+    return {
+      matched: this.isReserved(candidate, demand),
+      preselected: demand.candidates.includes(candidate.name)
+    };
+  }
+
+  isReserved(candidate: any, demand: any) {
     return this.reserved[demand.login] === candidate.login;
   }
 

@@ -100,9 +100,9 @@
             <div
               *ngFor="let candidate of candidates"
               (click)="reserve(candidate, demand)"
-              [ngClass]="{matched: getReservation(candidate, demand)}"
+              [ngClass]="getCheckStyles(candidate, demand)"
             >
-              <i class="fa fa-check" *ngIf="getReservation(candidate, demand)"></i>&nbsp;
+              <i class="fa fa-check"></i>&nbsp;
             </div>
           </div>
         </div>

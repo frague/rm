@@ -552,10 +552,23 @@ i.initiative {
             border-left-width: 1px;
           }
 
+          i.fa {
+            display: none;
+          }
+
           &.matched {
             background-color: $primary;
             i.fa {
+              display: inline-block;
               color: $primary - #888;
+            }
+          }
+
+          &.preselected {
+            i.fa {
+              display: inline-block;
+              color: $primary - #888;
+              opacity: 0.8;
             }
           }
         }
