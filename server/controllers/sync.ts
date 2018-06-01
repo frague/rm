@@ -384,7 +384,15 @@ export default class SyncCtrl {
 
           const who = (syncWhois ? this._whois[person.username] : prev) || {};
           const visa = (syncVisas ? this._visas[person.name] : prev) || {};
-          const pr = (syncPRs ? this._prs[person.username] : prev) || {};
+          let pr = prev;
+          if (syncPRs) {
+            let newPR = this._prs[person.username] || {};
+            pr = {
+              nextPr: this._makeDate(newPR.customPerformanceReviewDue),
+              payRate: newPR.payRate,
+              birthday: this._makeDate(newPR.dateOfBirth),
+            };
+          }
 
           let resource = new Resource({
             name: person.name,
@@ -404,9 +412,9 @@ export default class SyncCtrl {
             visaB: visa.visaB,
             visaL: visa.visaL,
             license: !!visa.license,
-            nextPr: this._makeDate(pr.customPerformanceReviewDue),
+            nextPr: pr.nextPr,
             payRate: pr.payRate,
-            birthday: this._makeDate(pr.dateOfBirth),
+            birthday: pr.birthday,
           });
 
           profilesCreated++;
