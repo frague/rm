@@ -269,7 +269,7 @@ export class Schedule {
             this.resources = data;
             this.resourcesById = data.reduce((result, person) => {
               person.status = personStati[person._id];
-              result[person._id] = person;
+              result[person.login] = person;
               return result;
             }, {});
           },

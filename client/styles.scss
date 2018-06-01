@@ -374,10 +374,15 @@ i.initiative {
 
   .people, .demands, .candidates {
     i.fa {
-      font-size: 80%;
+      &.fa-plane {
+        color: $red;
+      }
+      &.fa-globe {
+        color: $cornerColor - #333;
+      }
+      // font-size: 80%;
       opacity: 0.8;
       font-weight: 100;
-      color: red;
     }
   }
 

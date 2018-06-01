@@ -30,7 +30,7 @@ export class InitiativeComponent implements OnInit {
 
   getClass() {
     return {
-      nb: billable.includes(this.data.billability),
+      nb: !billable.includes(this.data.billability),
       accepted: this.data.billability === 'Job accepted'
     }
   }

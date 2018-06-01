@@ -65,8 +65,8 @@ export class PlannerComponent extends Schedule {
             })
             .slice(0, 30)
             .map(item => {
-              let result = this.resourcesById[item._id] || {};
-              ['canTravel', 'billable'].forEach(key => result[key] = item[key] === 'true');
+              let result = this.resourcesById[item.login] || {};
+              ['canTravel', 'billable', 'onTrip'].forEach(key => result[key] = item[key] === 'true');
               return result;
             })
         :

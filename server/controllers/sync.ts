@@ -304,7 +304,6 @@ export default class SyncCtrl {
             result[employee.customUsername] = employee;
             return result;
           }, {});
-          console.log(prs);
           this._addLog(Object.keys(prs).length + ' PR records received', 'pr');
           resolve(prs);
       } catch (e) {
@@ -389,11 +388,12 @@ export default class SyncCtrl {
 
           let resource = new Resource({
             name: person.name,
-            login: person.username,
+            login: person.username || person.name,
             grade: person.grade,
             location: locationsMap[person.location],
-            profile: person.workProfile,
-            specialization: person.specialization,
+            profile: person.profile,
+            specialization: (person.specialization || '').trim(),
+            onTrip: !!person.inBusinessTrip,
             pool,
             manager: person.manager,
             benchDays: person.daysOnBench,
@@ -403,9 +403,10 @@ export default class SyncCtrl {
             passport: visa.passport,
             visaB: visa.visaB,
             visaL: visa.visaL,
-            license: visa.license,
+            license: !!visa.license,
             nextPr: this._makeDate(pr.customPerformanceReviewDue),
-            payRate: pr.payRate
+            payRate: pr.payRate,
+            birthday: this._makeDate(pr.dateOfBirth),
           });
 
           profilesCreated++;

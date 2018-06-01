@@ -38,6 +38,8 @@ const keys = [
   'visaL',
   'nextPr',
   'payRate',
+  'onTrip',
+  'birthday',
 ];
 
 const dateKeys = [
@@ -48,6 +50,7 @@ const dateKeys = [
   'visaB',
   'visaL',
   'nextPr',
+  'birthday',
 ];
 
 export default class SnapshotCtrl extends BaseCtrl {

@@ -3,7 +3,12 @@
     <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
-    <h4 class="modal-title">{{ person.name }}</h4>
+    <h4 class="modal-title">
+      {{ person.name }}
+      <ng-container *ngIf="person.onTrip">
+        (on business trip)
+      </ng-container>
+    </h4>
   </div>
   <div class="modal-body person with-image" *ngIf="person">
     <spinner [isShown]="isLoading">
@@ -47,6 +52,11 @@
 
         <dt>Driver's License</dt>
         <dd>{{ person.license }}</dd>
+
+        <ng-container *ngIf="person.birthday">
+          <dt>Birthday</dt>
+          <dd>{{ person.birthday|date }}</dd>
+        </ng-container>
 
       </dl>
     </spinner>

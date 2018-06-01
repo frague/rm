@@ -41,6 +41,7 @@ export default class BambooIntegrationsCtrl {
               <field id="customUsername" />
               <field id="customPerformanceReviewDue" />
               <field id="payRate" />
+              <field id="dateOfBirth" />
             </fields>
           </report>`.replace(/>\s+</g, '><')
         }

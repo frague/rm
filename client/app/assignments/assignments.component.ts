@@ -51,6 +51,10 @@ export class AssignmentsComponent extends Schedule {
     };
   }
 
+  isOnTrip(assignee) {
+    return assignee.onTrip === 'true';
+  }
+
   makeCaption(assignee) {
     return (assignee.grade ? assignee.grade + ', ' : '') + assignee.name;
   }

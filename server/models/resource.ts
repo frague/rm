@@ -15,9 +15,11 @@ const resourceSchema = new mongoose.Schema({
   passport: Date,
   visaB: Date,
   visaL: Date,
-  license: Boolean,
+  license: String,
   nextPr: Date,
-  payRate: String
+  payRate: String,
+  onTrip: String,
+  birthday: Date,
 });
 
 const Resource = mongoose.model('Resource', resourceSchema);

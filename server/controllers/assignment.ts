@@ -203,7 +203,9 @@ export default class AssignmentCtrl extends BaseCtrl {
             commentsCount: { '$first': '$commentsCount' },
             comments: {'$first': '$comments'},
             nextPr: {'$first': '$nextPr'},
-            payRate: {'$first': '$payRate'}
+            payRate: {'$first': '$payRate'},
+            onTrip: {'$first': '$onTrip'},
+            birthday: {'$first': '$birthday'},
           }
         },
         {
@@ -242,7 +244,9 @@ export default class AssignmentCtrl extends BaseCtrl {
             status: 1,
             commentsCount: 1,
             nextPr: 1,
-            payRate: 1
+            payRate: 1,
+            onTrip: 1,
+            birthday: 1,
           }
         },
         {
