@@ -214,5 +214,6 @@ export var candidateStates = {
   'Non-Technical Interview': '09 Non-Tech. Interview',
   'Recommended for Hiring': '10 Hiring Recommended',
   'Offer Generation': '11 Offer Generation',
-  'Offer Accepted': '12 Offer Accepted'
+  'Offer Sent': '12 Offer Sent',
+  'Offer Accepted': '13 Offer Accepted',
 };

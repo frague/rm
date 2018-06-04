@@ -26,7 +26,7 @@ export class PersonComponent {
     if (typeof person === 'string') {
       this.isLoading = true;
       this.personService.getByLogin(person).subscribe(
-        person => this.person = person, 
+        person => this.person = person,
         err => console.log(err)
       ).add(() => {
         this.isLoading = false;

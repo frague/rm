@@ -71,7 +71,7 @@ export class AssignmentsComponent extends Schedule {
         return this.demandModal.show(assignments[Object.keys(assignments)[0]][0].demand);
       }
     } else {
-      return this.personModal.show(this.resourcesById[assignee._id])
+      return this.personModal.show(this.resourcesById[assignee.login])
     }
   }
 

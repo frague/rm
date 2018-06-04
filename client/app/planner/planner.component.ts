@@ -153,7 +153,7 @@ export class PlannerComponent extends Schedule {
     if (isDemand) {
       return this.demandModal.show(resource);
     } else if (!resource.isHiree) {
-      return this.personModal.show(this.resourcesById[resource._id])
+      return this.personModal.show(this.resourcesById[resource.login])
     }
   }
 

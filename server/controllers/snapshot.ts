@@ -77,7 +77,7 @@ export default class SnapshotCtrl extends BaseCtrl {
   }
 
   makeDiff = (current, type: string) => {
-    this.model.find({type}).sort({date: 1}).limit(1).exec((err, docs) => {
+    this.model.find({ type }).sort({ date: 1 }).limit(1).exec((err, docs) => {
       if (docs.length) {
         let prev = docs[0].snapshot || {};
         let today = new Date();
@@ -93,6 +93,12 @@ export default class SnapshotCtrl extends BaseCtrl {
             title: updated['name'] || state['name'] || login,
             type
           };
+
+          if (type === 'c' && (
+              typeof diff.diff !== 'object' || Object.keys(diff.diff).length < 2
+            )) {
+            return;
+          }
 
           if (!state['_id']) {
             diff.diff = 1;
