@@ -8,7 +8,7 @@
       </tr>
     </thead>
     <tr *ngFor="let resource of items">
-      <td *ngFor="let column of keys">{{ resource[column] }}</td>
+      <td *ngFor="let column of keys">{{ resource[column]|column:column }}</td>
     </tr>
   </table>
 
