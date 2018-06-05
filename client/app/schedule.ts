@@ -86,7 +86,7 @@ export class Schedule {
   }
 
   ngOnInit() {
-    this.$query = this.bus.filterUpdated.subscribe(query => this.fetchData(query));
+    this.$query = this.bus.filterUpdated.subscribe(([query, serviceData]) => this.fetchData(query, false, serviceData));
     this.fetchData(this.bus.filterQuery, true);
   }
 
@@ -142,7 +142,7 @@ export class Schedule {
     );
   }
 
-  fetchData(query={}, fetchAll=false): Subscription {
+  fetchData(query={}, fetchAll=false, serviceData={}): Subscription {
     this.reset(fetchAll);
 
     let queryString = JSON.stringify(query);

@@ -1,38 +1,47 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
+import { Subscription, Observable } from 'rxjs';
+
+import { AssignmentService } from '../services/assignment.service';
+import { InitiativeService } from '../services/initiative.service';
 import { ResourceService } from '../services/resource.service';
-import { ToastComponent } from '../shared/toast/toast.component';
-import { BaseComponent } from '../base.component';
+import { DemandService } from '../services/demand.service';
+import { BusService } from '../services/bus.service';
+
+import { PersonComponent } from '../people/person.component';
+import { Schedule } from '../schedule';
+
+const defaultColumns = {
+  name: 'Name',
+  grade: 'Grade',
+  location: 'Location',
+  pool: 'Profile'
+};
 
 
 @Component({
   selector: 'people',
   templateUrl: './people.component.html'
 })
-export class PeopleComponent extends BaseComponent implements OnInit {
+export class PeopleComponent extends Schedule {
 
-  resources = [];
-  isLoading = true;
-  locations = ['SAR', 'SPB', 'MP', 'KHR', 'LV'];
-  pools = ['ML', 'UI'];
-
-  form = new FormGroup({
-    _id: new FormControl(''),
-    name: new FormControl('', Validators.required),
-    login: new FormControl('', Validators.required),
-    grade: new FormControl('', Validators.required),
-    location: new FormControl('', Validators.required),
-    pool: new FormControl('', Validators.required)
-  })
+  items = [];
+  columns = {};
+  keys = {};
 
   constructor(
+    assignmentService: AssignmentService,
     resourceService: ResourceService,
-    public toast: ToastComponent
+    initiativeService: InitiativeService,
+    demandService: DemandService,
+    bus: BusService
   ) {
-    super(resourceService);
+    super(assignmentService, resourceService, initiativeService, demandService, bus);
   }
 
-  ngOnInit() {
-    this.getAll();
+  fetchData(query={}, fetchAll=false, serviceData: any={}): Subscription {
+    this.columns = serviceData.columns || defaultColumns;
+    this.keys = Object.keys(this.columns);
+    return super.fetchData(query, fetchAll);
   }
+
 }

@@ -45,7 +45,7 @@ export class CandidatesComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.$query = this.bus.filterUpdated.subscribe(query => this.fetchData(query));
+    this.$query = this.bus.filterUpdated.subscribe(([query]) => this.fetchData(query));
     this.fetchData(this.bus.filterQuery);
   }
 
