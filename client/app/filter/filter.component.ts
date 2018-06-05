@@ -2,6 +2,8 @@ import { Component, EventEmitter } from '@angular/core';
 import { BusService } from '../services/bus.service';
 import { FilterService } from '../services/filter.service';
 
+const serviceKeys = ['columns', 'order', 'group'];
+
 @Component({
   selector: 'filter',
   templateUrl: './filter.component.html'
@@ -80,6 +82,14 @@ export class FilterComponent {
     this.selectedFilter = {};
   }
 
+  _parseParam(name: string, value: string = '') {
+    return value.split('|').reduce((result, value) => {
+      let [param, alias] = value.split(' as ');
+      result[param] = alias || param;
+      return result;
+    }, {});
+  }
+
   parseCriteria(event: KeyboardEvent, force=false) {
     if (event) {
       event.stopPropagation();
@@ -96,29 +106,35 @@ export class FilterComponent {
       let andOperator = [];
       let orOperator = [];
       let inOperator = {};
+      let serviceData = {};
+
       if (this.criteria) {
         this.criteria.split(',').forEach(pair => {
           let [param, operation, value]: any[] = pair.replace(/(\+{0,1}[=~])/g, '\n$1\n').split('\n', 3);
 
-          let addition = false;
-          switch (operation) {
-            case '+~':
-              addition = true;
-            case '~':
-              value = {[param]: {'$regex': value}};
-              break;
-            case '+=':
-              addition = true;
-              value = {[param]: value};
-              break;
-            case '=':
-              if (!inOperator[param]) {
-                inOperator[param] = [];
-              }
-              inOperator[param].push(value);
-              return;
+          if (serviceKeys.includes(param)) {
+            serviceData[param] = this._parseParam(param, value);
+          } else {
+            let addition = false;
+            switch (operation) {
+              case '+~':
+                addition = true;
+              case '~':
+                value = {[param]: {'$regex': value}};
+                break;
+              case '+=':
+                addition = true;
+                value = {[param]: value};
+                break;
+              case '=':
+                if (!inOperator[param]) {
+                  inOperator[param] = [];
+                }
+                inOperator[param].push(value);
+                return;
+            }
+            (addition ? orOperator : andOperator).push(value);
           }
-          (addition ? orOperator : andOperator).push(value);
         });
 
         Object.keys(inOperator).forEach(key => {
@@ -136,7 +152,7 @@ export class FilterComponent {
         this.query = {or: []};
       }
 
-      this.bus.updateQuery(this.query, this.criteria);
+      this.bus.updateQuery(this.query, this.criteria, serviceData);
       this.isHelpShown = false;
       return false;
     };

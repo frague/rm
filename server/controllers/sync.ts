@@ -117,12 +117,14 @@ export default class SyncCtrl {
     res.setHeader('Content-Type', 'application/json');
     res.sendStatus(200);
 
-    this._tasks = (req.body.tasks || '').split(',');
-    this._tasks.forEach(task => this._sendStatus(task, 'pending'));
-
+    this._tasks = [];
     this._timers = {};
     this._stati = {};
     this._threads = {};
+
+    this._tasks = (req.body.tasks || '').split(',');
+    this._tasks.forEach(task => this._sendStatus(task, 'pending'));
+
     this._setTimer('overall', false);
     try {
       this.logs = [];
