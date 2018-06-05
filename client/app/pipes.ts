@@ -4,14 +4,18 @@ import { months } from './sync/mappings';
 
 const trailingIndex = new RegExp(/^\d{2} /);
 
+const formatDate = (date: string) => {
+  if (!date) {
+    return 'Not set';
+  }
+  let d = new Date(date);
+  return [d.getDate(), months[d.getMonth()], d.getFullYear()].join(' ');
+}
+
 @Pipe({name: 'date'})
 export class PrintableDatePipe implements PipeTransform {
   transform(date: string): string {
-    if (!date) {
-      return 'Not set';
-    }
-    let d = new Date(date);
-    return [d.getDate(), months[d.getMonth()], d.getFullYear()].join(' ');
+    return formatDate(date);
   }
 }
 
@@ -51,6 +55,28 @@ export class EllipsisPipe implements PipeTransform {
 export class CutIndexPipe implements PipeTransform {
   transform(source: string) {
     return source.replace(trailingIndex, '');
+  }
+}
+
+@Pipe({name: 'column'})
+export class ColumnPipe implements PipeTransform {
+  transform(source: any, name: string) {
+    switch (name) {
+      case 'start':
+      case 'end':
+      case 'nextPr':
+      case 'passport':
+      case 'visaB':
+      case 'visaL':
+      case 'updated':
+      case 'birthday':
+        return formatDate(source);
+      case 'comments':
+        return source.map(comment => formatDate(comment.date) + ' - ' + comment.text).join('\n\n');
+      case 'status':
+        if (typeof source === 'object') return source.text;
+    }
+    return source;
   }
 }
 
