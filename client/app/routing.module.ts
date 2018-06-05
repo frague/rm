@@ -28,6 +28,7 @@ const routes: Routes = [
     children: [
       {path: 'assignments', component: AssignmentsComponent},
       {path: 'accounts', component: AccountsComponent},
+      {path: 'people', component: PeopleComponent},
       {path: 'hiring', component: CandidatesComponent},
       {path: 'planner', component: PlannerComponent},
       {path: '', redirectTo: '/assignments', pathMatch: 'full'}
