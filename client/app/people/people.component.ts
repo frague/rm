@@ -17,7 +17,6 @@ const defaultColumns = {
   pool: 'Profile'
 };
 
-
 @Component({
   selector: 'people',
   templateUrl: './people.component.html'
@@ -27,6 +26,10 @@ export class PeopleComponent extends Schedule {
   items = [];
   columns = {};
   keys = {};
+
+  private _clickability = {
+    name: this.showUser
+  };
 
   constructor(
     assignmentService: AssignmentService,
@@ -38,9 +41,31 @@ export class PeopleComponent extends Schedule {
     super(assignmentService, resourceService, initiativeService, demandService, bus);
   }
 
+  isClickable(name: string): boolean {
+    return Object.keys(this._clickability).includes(name);
+  }
+
+  getClasses(name: string) {
+    return {
+      clickable: this.isClickable(name)
+    };
+  }
+
+  click(name: string, value: any) {
+    const handler = this._clickability[name];
+    if (handler) {
+      handler(value, name);
+    }
+  }
+
+  showUser(value: any, name: string = '') {
+
+  }
+
   fetchData(query={}, fetchAll=false, serviceData: any={}): Subscription {
     this.columns = serviceData.columns || defaultColumns;
     this.keys = Object.keys(this.columns);
+    query['addComments'] = 1;
     return super.fetchData(query, fetchAll);
   }
 

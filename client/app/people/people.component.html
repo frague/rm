@@ -1,14 +1,19 @@
 <div>
   <h1>People ({{ items.length }})</h1>
 
-  <table class="table">
+  <table class="people table">
     <thead>
       <tr>
         <th *ngFor="let column of keys">{{ columns[column] }}</th>
       </tr>
     </thead>
     <tr *ngFor="let resource of items">
-      <td *ngFor="let column of keys">{{ resource[column]|column:column }}</td>
+      <td
+        *ngFor="let column of keys"
+        (click)="click(column, resource[column])"
+        [ngClass]="getClasses(column)"
+        [innerHTML]="resource|column:column|MarkdownToHtml"
+        ></td>
     </tr>
   </table>
 

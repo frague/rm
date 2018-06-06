@@ -60,8 +60,10 @@ export class CutIndexPipe implements PipeTransform {
 
 @Pipe({name: 'column'})
 export class ColumnPipe implements PipeTransform {
-  transform(source: any, name: string) {
-    switch (name) {
+  transform(line: any, name: string) {
+    let [primary, secondary] = name.split('.');
+    let value = line[primary];
+    switch (primary) {
       case 'start':
       case 'end':
       case 'nextPr':
@@ -70,13 +72,27 @@ export class ColumnPipe implements PipeTransform {
       case 'visaL':
       case 'updated':
       case 'birthday':
-        return formatDate(source);
+        return formatDate(value);
       case 'comments':
-        return source.map(comment => formatDate(comment.date) + ' - ' + comment.text).join('\n\n');
+        if (value) {
+          if (secondary) {
+            return value
+              .filter(comment => comment.source === secondary)
+              .map(comment => comment.text)
+              .join(', ')
+          }
+          return value
+            .map((comment, index) => {
+              return comment  ? (index ? '\n---\n# ' : '# ') + formatDate(comment.date) + (comment.source ? ', ' + comment.source : '') + '\n\n' + comment.text : ''
+            })
+            .join('\n\n');
+        }
       case 'status':
-        if (typeof source === 'object') return source.text;
+        if (value && typeof value === 'object') {
+          return value.text;
+        }
     }
-    return source;
+    return value;
   }
 }
 

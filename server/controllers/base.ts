@@ -112,11 +112,12 @@ abstract class BaseCtrl {
   }
 
   _modifyValue(key, value: string): any {
-    try {
-      let method = funcValue.exec(value)[1];
-      return valueModifiers[method](key, value, this._getParameters(value));
-    } catch (e) {
-      console.log('Unable to modify value', value);
+    let methodParts = funcValue.exec(value);
+    if (methodParts && methodParts.length > 0) {
+      let modifier = valueModifiers[methodParts[1]];
+      if (modifier) {
+        return modifier(key, value, this._getParameters(value));
+      }
     }
     return { [key]: value };
   }

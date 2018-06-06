@@ -34,8 +34,10 @@ export default class AssignmentCtrl extends BaseCtrl {
 
   getAll = async (req, res) => {
     let or;
+    let addComments = {};
     try {
       or = req.query.or ? JSON.parse(req.query.or) : [];
+      addComments = req.query.addComments ? {comments: 1} : {};
     } catch (e) {
       console.error('Error parsing search query: ' + req.query.or);
       return res.sendStatus(500);
@@ -44,6 +46,7 @@ export default class AssignmentCtrl extends BaseCtrl {
     let skillsList = this.filterSkills(or) || [];
 
     console.log('- Assignments -----------------------------------------------------');
+    console.log('AddComments:', addComments);
     console.log('Initial:', JSON.stringify(or));
 
     if (skillsList.length) {
@@ -68,18 +71,18 @@ export default class AssignmentCtrl extends BaseCtrl {
           console.log('With skills:', JSON.stringify(or));
         }
         let query = this.modifyCriteria(or, this.modifiers);
-        this._query(res, this.fixOr(query), suggestions);
+        this._query(res, this.fixOr(query), suggestions, addComments);
       } catch (e) {
         console.log('Error', e);
         return res.sendStatus(500);
       }
     } else {
       let query = this.modifyCriteria(or, this.modifiers);
-      this._query(res, this.fixOr(query));
+      this._query(res, this.fixOr(query), [], addComments);
     }
   }
 
-  _query = (res, query, skillsList=[]) => {
+  _query = (res, query, skillsList=[], addComments={}) => {
     console.log('Query:', JSON.stringify(query));
 
     let now = new Date();
@@ -185,8 +188,8 @@ export default class AssignmentCtrl extends BaseCtrl {
             profile: { '$first': '$profile' },
             specialization: { '$first': '$specialization' },
             pool: { '$first': '$pool' },
-            starts: { '$first': '$starts' },
-            ends: { '$first': '$ends' },
+            // starts: { '$first': '$starts' },
+            // ends: { '$first': '$ends' },
             manager: { '$first': '$manager' },
             minDate: {
               '$min': '$assignment.start'
@@ -223,7 +226,7 @@ export default class AssignmentCtrl extends BaseCtrl {
           '$match': query
         },
         {
-          '$project': {
+          '$project': Object.assign(addComments, {
             _id: 1,
             assignments: 1,
             assignmentsSet: 1,
@@ -247,7 +250,7 @@ export default class AssignmentCtrl extends BaseCtrl {
             payRate: 1,
             onTrip: 1,
             birthday: 1,
-          }
+          })
         },
         {
           '$sort': {
