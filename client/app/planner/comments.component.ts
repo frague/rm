@@ -139,6 +139,7 @@ export class CommentsComponent extends BaseComponent {
       if (this.closeAfterSaving) {
         this.modalRef.close();
       } else {
+        this.initialValue = this.form.value;
         tabs.select('comments');
         this.fetchData();
       }
