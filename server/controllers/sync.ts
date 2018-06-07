@@ -556,7 +556,7 @@ export default class SyncCtrl {
 
         let demand = {
           login: id + ':' + specs + '_' + profile + '_for_' + account.replace(/[ .:]/g, '_'),
-          name: id + '. ' + specs + ' ' + profile,
+          name: id + ' ' + specs + ' ' + profile,
           account: account,
           comment: item.comment,
           candidates: item.proposedCandidates.join(', '),

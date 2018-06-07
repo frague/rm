@@ -73,6 +73,23 @@ export class ColumnPipe implements PipeTransform {
       case 'updated':
       case 'birthday':
         return formatDate(value);
+      case 'assignments':
+        if (value) {
+          if (!secondary) {
+            secondary = 'login';
+          }
+          return Object.values(value).map((assignments: any) => {
+            if (!(assignments instanceof Array)) {
+              assignments = [assignments];
+            }
+            return assignments.map(assignment => {
+              if (assignment.demand) {
+                assignment = assignment.demand;
+              }
+              return assignment[secondary] || '';
+            }).join('\n* ');
+          }).join(', ');
+        }
       case 'comments':
         if (value) {
           if (secondary) {
@@ -92,7 +109,10 @@ export class ColumnPipe implements PipeTransform {
           return value.text;
         }
     }
-    return value;
+    if (typeof value !== 'string') {
+      value = new String(value).toString();
+    }
+    return value === 'undefined' ? '' : value;
   }
 }
 
