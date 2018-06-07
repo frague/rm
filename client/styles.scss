@@ -701,6 +701,9 @@ ul.tasks {
 }
 
 .people.table {
+  th {
+    text-transform: capitalize;
+  }
   td {
     &.clickable {
       color: $blue;

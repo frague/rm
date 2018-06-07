@@ -6,15 +6,21 @@ const valueModifiers = {
   'in': (key, value, [days]) => {
     let d = new Date();
     d.setDate(d.getDate() + +days);
-    return { [key]: { '$gte': new Date(), '$lt': d }};
+    return { '$gte': new Date(), '$lt': d };
   },
   'after': (key, value, [days]) => {
     let d = new Date();
     d.setDate(d.getDate() + +days);
-    return { [key]: { '$gte': d }};
+    return { '$gte': d };
+  },
+  'empty': (key, value) => {
+    return { '$exists': false };
+  },
+  'exists': (key, value) => {
+    return { '$exists': true };
   },
   null: (key, value) => {
-    return { [key]: value };
+    return value;
   }
 };
 
@@ -40,7 +46,7 @@ abstract class BaseCtrl {
       let keyBase = key.replace(keywordExtender, '');
 
       // Values modifiers
-      criterion = this._modifyValue(key, value);
+      value = this._modifyValue(key, value);
 
       if (key === this.andKey) {
         let and = this.modifyCriteria(value, modifiers);
@@ -119,7 +125,7 @@ abstract class BaseCtrl {
         return modifier(key, value, this._getParameters(value));
       }
     }
-    return { [key]: value };
+    return value;
   }
 
   // Get all
