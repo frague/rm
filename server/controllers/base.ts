@@ -14,10 +14,10 @@ const valueModifiers = {
     return { '$gte': d };
   },
   'empty': (key, value) => {
-    return { '$exists': false };
+    return null;
   },
   'exists': (key, value) => {
-    return { '$exists': true };
+    return { '$ne': null };
   },
   null: (key, value) => {
     return value;
@@ -47,6 +47,7 @@ abstract class BaseCtrl {
 
       // Values modifiers
       value = this._modifyValue(key, value);
+      criterion = {[key]: value};
 
       if (key === this.andKey) {
         let and = this.modifyCriteria(value, modifiers);
