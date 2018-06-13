@@ -1,6 +1,12 @@
 <div>
   <h1>People ({{ items.length }})</h1>
 
+  <person-modal></person-modal>
+
+  <demand-modal></demand-modal>
+
+  <comments-modal></comments-modal>
+
   <table class="people table">
     <thead>
       <tr>
@@ -10,10 +16,20 @@
     <tr *ngFor="let resource of items">
       <td
         *ngFor="let column of keys"
-        (click)="click(column, resource[column])"
+        (click)="click(column, resource)"
         [ngClass]="getClasses(column)"
-        [innerHTML]="resource|column:column|MarkdownToHtml"
-        ></td>
+        >
+          <div>
+            <div
+              class="corner"
+              (click)="showComments(resource, $event)"
+              *ngIf="column == 'name'"
+            >
+              <b>{{ resource.commentsCount || '' }}</b>
+            </div>
+          </div>
+          <span [innerHTML]="resource|column:column|MarkdownToHtml"></span>
+        </td>
     </tr>
   </table>
 

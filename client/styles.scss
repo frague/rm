@@ -715,6 +715,16 @@ ul.tasks {
       cursor: pointer;
     }
 
+    div {
+      float: right;
+
+      div.corner {
+        position: relative;
+        margin-top: 0;
+        top: -12px;
+      }
+    }
+
     p {
       &:first-child {
         margin-top: 0;
@@ -726,6 +736,10 @@ ul.tasks {
 
     hr {
       margin: 0.5rem 0 1rem 0;
+    }
+
+    ol, ul {
+      margin-bottom: 0;
     }
 
     h1 {

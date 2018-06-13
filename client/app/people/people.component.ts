@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Subscription, Observable } from 'rxjs';
 
 import { AssignmentService } from '../services/assignment.service';
@@ -7,6 +7,7 @@ import { ResourceService } from '../services/resource.service';
 import { DemandService } from '../services/demand.service';
 import { BusService } from '../services/bus.service';
 
+import { CommentsComponent } from '../planner/comments.component';
 import { PersonComponent } from '../people/person.component';
 import { Schedule } from '../schedule';
 
@@ -22,6 +23,8 @@ const defaultColumns = {
   templateUrl: './people.component.html'
 })
 export class PeopleComponent extends Schedule {
+
+  @ViewChild(CommentsComponent) commentsModal: CommentsComponent;
 
   items = [];
   columns = {};
@@ -51,15 +54,27 @@ export class PeopleComponent extends Schedule {
     };
   }
 
-  click(name: string, value: any) {
+  click(name: string, line: any) {
     const handler = this._clickability[name];
     if (handler) {
-      handler(value, name);
+      handler.call(this, name, line);
     }
   }
 
-  showUser(value: any, name: string = '') {
+  showUser(name: string, line: any) {
+    if (line.isDemand) {
+      let assignments = line.assignments;
+      if (assignments) {
+        return this.demandModal.show(assignments[Object.keys(assignments)[0]][0].demand);
+      }
+    } else {
+      return this.personModal.show(this.resourcesById[line.login])
+    }
+  }
 
+  showComments(candidate, event: MouseEvent) {
+    event.stopPropagation();
+    this.commentsModal.show(candidate);
   }
 
   fetchData(query={}, fetchAll=false, serviceData: any={}): Subscription {
