@@ -72,8 +72,10 @@ export default class SnapshotCtrl extends BaseCtrl {
     }, {});
   }
 
-  _saveDiffDelayed(diff: any) {
-    new Diff(diff).save();
+  _saveDiffDelayed(diff: any, type: string) {
+    if (type !== 'c' || (typeof diff.diff === 'object' && Object.keys(diff.diff).length >= 2)) {
+      new Diff(diff).save();
+    }
   }
 
   makeDiff = (current, type: string) => {
@@ -94,23 +96,17 @@ export default class SnapshotCtrl extends BaseCtrl {
             type
           };
 
-          if (type === 'c' && (
-              typeof diff.diff !== 'object' || Object.keys(diff.diff).length < 2
-            )) {
-            return;
-          }
-
           if (!state['_id']) {
             diff.diff = 1;
-            this._saveDiffDelayed(diff);
+            this._saveDiffDelayed(diff, type);
           } else if (!updated['_id']) {
             diff.diff = -1;
-            this._saveDiffDelayed(diff);
+            this._saveDiffDelayed(diff, type);
           } else {
             let fields = this._areEqual(state, updated);
             if (Object.keys(fields).length) {
               diff.diff = fields;
-              this._saveDiffDelayed(diff);
+              this._saveDiffDelayed(diff, type);
             }
           }
         });

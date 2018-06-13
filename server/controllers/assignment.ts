@@ -4,6 +4,8 @@ import Resource from '../models/resource';
 import SkillTreeCtrl from './integrations/skilltree';
 import { fakeRes } from './fakeresponse';
 
+const andKey = '$and';
+
 const skillTree = new SkillTreeCtrl();
 const skillsExpr = new RegExp(/^skills/);
 const delimiter = skillTree.delimiter;
@@ -21,7 +23,7 @@ export default class AssignmentCtrl extends BaseCtrl {
     source.forEach(item => {
       item = item || {};
       let key = Object.keys(item)[0];
-      if (key === this.andKey) {
+      if (key === andKey) {
         result = result.concat(this.filterSkills(item[key]))
       } else if (skillsExpr.test(key)) {
         let value = item[key];

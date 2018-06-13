@@ -1,35 +1,35 @@
 import * as mongoose from 'mongoose';
 
+const andKey = '$and';
+const orKey = '$or';
+
 const keywordExtender = new RegExp(/\.[^\s]+$/);
 const funcValue = new RegExp(/^([a-z]+)\(/i);
 const valueModifiers = {
   'in': (key, value, [days]) => {
     let d = new Date();
     d.setDate(d.getDate() + +days);
-    return { '$gte': new Date(), '$lt': d };
+    return[key, { '$gte': new Date(), '$lt': d }];
   },
   'after': (key, value, [days]) => {
     let d = new Date();
     d.setDate(d.getDate() + +days);
-    return { '$gte': d };
+    return [key, { '$gte': d }];
   },
   'empty': (key, value) => {
-    return null;
+    return [key, null];
   },
   'exists': (key, value) => {
-    return { '$ne': null };
+    return [key, { '$ne': null }];
   },
   null: (key, value) => {
-    return value;
+    return [key, value];
   }
 };
 
 abstract class BaseCtrl {
 
   abstract model: mongoose.Schema;
-
-  andKey = '$and';
-  orKey = '$or';
 
   cleanup = (req, res) => res.sendStatus(200);
 
@@ -46,17 +46,17 @@ abstract class BaseCtrl {
       let keyBase = key.replace(keywordExtender, '');
 
       // Values modifiers
-      value = this._modifyValue(key, value);
+      [key, value] = this._modifyValue(key, value);
       criterion = {[key]: value};
 
-      if (key === this.andKey) {
+      if (key === andKey) {
         let and = this.modifyCriteria(value, modifiers);
         let l = and.length;
         if (l) {
           if (l === 1) {
             or = or.concat(and);
           } else {
-            or.push({ [this.andKey]: and });
+            or.push({ [andKey]: and });
           }
         }
         return;
@@ -85,7 +85,7 @@ abstract class BaseCtrl {
     if (l === 1) {
       return or[0];
     }
-    return { [this.orKey]: or };
+    return { [orKey]: or };
   }
 
   reduceQuery(query: any) {
@@ -126,7 +126,7 @@ abstract class BaseCtrl {
         return modifier(key, value, this._getParameters(value));
       }
     }
-    return value;
+    return [key, value];
   }
 
   // Get all
