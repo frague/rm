@@ -531,7 +531,8 @@ export default class SyncCtrl {
       let { load, locations, accounts, grades, workProfiles, stages, types, statuses } = data;
       let destinations = data['deploy-destinations'];
 
-      const specializations = Object.values(workProfiles).reduce((result, profile: any) => {
+      const specializations = Object.keys(workProfiles).reduce((result, key: string) => {
+        let profile = workProfiles[key];
         profile.specializations.forEach(spec => result[spec.id] = spec);
         return result;
       }, {});
