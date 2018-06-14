@@ -233,9 +233,7 @@ export default class SyncCtrl {
                 account: 'Griddynamics',
                 color: '#1ca1c0'
               }).save().catch(error => _error = error);
-              console.log('create vacation', vacation);
             } else {
-              console.log('vacation exists', vacation);
               return vacation;
             }
           }
