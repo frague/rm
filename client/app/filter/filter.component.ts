@@ -32,6 +32,9 @@ export class FilterComponent {
     this.$externalCriteria = this.bus.criteriaUpdated.subscribe(criteria => {
       this.criteria = criteria;
       this.parseCriteria(null, true);
+      if (this.selectedFilter._id && this.criteria !== this.selectedFilter.filter) {
+        this.reset();
+      }
     });
   }
 
