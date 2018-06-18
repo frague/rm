@@ -554,7 +554,7 @@ export default class SyncCtrl {
         const pool = demandPoolsMap[profile + '-' + specs] || '';
 
         let demand = {
-          login: id + ':' + specs + '_' + profile + '_for_' + account.replace(/[ .:]/g, '_'),
+          login: (id + ':' + specs + '_' + profile + '_for_' + account).replace(/[ .:]/g, '_'),
           name: id + ' ' + specs + ' ' + profile,
           account: account,
           comment: item.comment,
