@@ -73,7 +73,7 @@ export class DpComponent extends BaseComponent {
   }
 
   makeDemandCaption(id: string) {
-    let account = id.replace(/^\d+:/g, '').replace(/_/g, ' ');
+    let account = id.replace(/^\d+[:_]/g, '').replace(/_/g, ' ');
     let row = id.substr(0, id.length - account.length - 1);
     return '#' + row + '. ' + account.replace('for ', '@');
   }
