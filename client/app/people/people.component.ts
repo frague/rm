@@ -81,7 +81,7 @@ export class PeopleComponent extends Schedule {
     this.columns = serviceData.columns || defaultColumns;
     this.keys = Object.keys(this.columns);
     query['addComments'] = 1;
-    return super.fetchData(query, fetchAll);
+    return super.fetchData(query, fetchAll, serviceData);
   }
 
 }

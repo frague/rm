@@ -129,6 +129,24 @@ abstract class BaseCtrl {
     return [key, value];
   }
 
+  determineOrder(req) {
+    try {
+      let orders = JSON.parse(req.query.order || '""').split(',').reduce((result, criterion) => {
+        let [param, order] = criterion.split(':');
+        console.log(param, order);
+        if (/^[\S]+$/.test(param) && +order == order) {
+          result[param] = +order;
+        }
+        return result;
+      }, {});
+      if (Object.keys(orders).length) {
+        return orders;
+      }
+    } catch (e) {
+    }
+    return { name: 1 };
+  }
+
   // Get all
   getAll = (req, res) => {
     let query = this.reduceQuery(req.query);

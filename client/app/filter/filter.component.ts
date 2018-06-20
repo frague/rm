@@ -86,11 +86,25 @@ export class FilterComponent {
   }
 
   _parseParam(name: string, value: string = '') {
-    return value.split('|').reduce((result, value) => {
-      let [param, alias] = value.split(' as ');
-      result[param] = alias || param;
-      return result;
-    }, {});
+    switch (name) {
+      case'columns':
+        return value.split('|').reduce((result, value) => {
+          let [param, alias] = value.split(' as ');
+          result[param] = alias || param;
+          return result;
+        }, {});
+      case 'order':
+        return value.split('|').reduce((result, value) => {
+          let order = 1;
+          if (value && value.charAt(0) === '-') {
+            order = -1;
+          }
+          value = value.replace(/^[+\-]/, '');
+          result.push(value + ':' + order);
+          return result;
+        }, []).join(',');
+    }
+    return true;
   }
 
   parseCriteria(event: KeyboardEvent, force=false) {
@@ -154,7 +168,6 @@ export class FilterComponent {
       } else {
         this.query = {or: []};
       }
-
       this.bus.updateQuery(this.query, this.criteria, serviceData);
       this.isHelpShown = false;
       return false;

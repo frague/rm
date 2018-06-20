@@ -18,6 +18,8 @@ export default class AssignmentCtrl extends BaseCtrl {
     comments: this.commentTransform
   };
 
+  order;
+
   filterSkills = (source: any[]): any => {
     let result = [];
     source.forEach(item => {
@@ -44,6 +46,7 @@ export default class AssignmentCtrl extends BaseCtrl {
       console.error('Error parsing search query: ' + req.query.or);
       return res.sendStatus(500);
     }
+    this.order = this.determineOrder(req);
 
     let skillsList = this.filterSkills(or) || [];
 
@@ -255,9 +258,7 @@ export default class AssignmentCtrl extends BaseCtrl {
           })
         },
         {
-          '$sort': {
-            name: 1
-          }
+          '$sort': this.order
         }
       ])
       .cursor({})

@@ -149,7 +149,8 @@ export class Schedule {
     let demandQuery = queryString.indexOf('demand') >= 0 || queryString.indexOf('comments') >= 0 ?
       this.demandService.getAll(query) : Observable.from([[]]);
 
-    return this.assignmentService.getAll(query).subscribe(data => {
+    let withOrder = Object.assign(query, { order: serviceData['order'] });
+    return this.assignmentService.getAll(withOrder).subscribe(data => {
       [this.items, this.message] = [data.data, data.message];
 
       demandQuery.subscribe(demands => {
@@ -175,6 +176,7 @@ export class Schedule {
 
         let demandAccounts = {};
         let demandResources = [];
+        let demandItems = [];
 
         demands.forEach((demand, index) => {
           let demandId = demand._id;
@@ -186,30 +188,36 @@ export class Schedule {
           }
           demandResources.push(demand);
 
-          let item = {
-            _id: demandId,
-            name: demand.name,
-            login: demand.login,
-            status: demand.status,
-            commentsCount: demand.commentsCount,
-            assignments: [{
+          if (showDemand) {
+            let item = {
               _id: demandId,
-              start: demand.start,
-              end: demand.end,
-              initiativeId,
-              resourceId: demandId,
-              billability: demand.role,
-              involvement: 100,
-              comment: demand.comment,
-              demand
-            }],
-            pool: demand.pool,
-            minDate: demand.start,
-            maxDate: demand.end,
-            isDemand: true
-          };
-          if (showDemand) this.items.push(item);
+              name: demand.name,
+              login: demand.login,
+              status: demand.status,
+              commentsCount: demand.commentsCount,
+              assignments: [{
+                _id: demandId,
+                start: demand.start,
+                end: demand.end,
+                initiativeId,
+                resourceId: demandId,
+                billability: demand.role,
+                involvement: 100,
+                comment: demand.comment,
+                demand
+              }],
+              pool: demand.pool,
+              minDate: demand.start,
+              maxDate: demand.end,
+              isDemand: true
+            };
+            demandItems.push(item);
+          }
         });
+
+        if (showDemand) {
+          this.items = demandItems.concat(this.items);
+        }
 
         this.calculate();
         let personStati = {};
@@ -230,18 +238,20 @@ export class Schedule {
           data => {
             this.initiativesData = Array.from(data);
 
-            let demandInitiative = data.find(demand => demand.name === 'Demand');
-            Object.keys(demandAccounts).forEach(account => {
-              data.push(Object.assign(
-                {},
-                demandInitiative,
-                {
-                  _id: demandAccounts[account],
-                  isDemand: true,
-                  account
-                }
-              ));
-            });
+            if (showDemand) {
+              let demandInitiative = data.find(demand => demand.name === 'Demand');
+              Object.keys(demandAccounts).forEach(account => {
+                data.push(Object.assign(
+                  {},
+                  demandInitiative,
+                  {
+                    _id: demandAccounts[account],
+                    isDemand: true,
+                    account
+                  }
+                ));
+              });
+            }
 
             this.initiatives = data.reduce((result, initiative) => {
               result[initiative._id] = initiative;
@@ -351,24 +361,10 @@ export class Schedule {
     let fromTime = this.fromDate.getTime();
     let today = new Date();
 
-    this.items = this.items.sort((a, b) => {
-      let ad = !a.isDemand;
-      let bd = !b.isDemand;
-      if (ad !== bd) {
-        return ad ? 1 : -1;
-      }
-      return (a.name > b.name) ? 1 : -1;
-    });
-
     this.items.forEach(resource => {
       if (resource.minDate && resource.minDate < this.minDate) this.minDate = resource.minDate;
       if (resource.maxDate && resource.maxDate > this.maxDate) this.maxDate = resource.maxDate;
     });
-
-    // Limiting minimal date shown
-    // if (this.minDate < fromDate) {
-    //   this.minDate = fromDate;
-    // }
 
     // Cases when assignments don't have end date set
     if (this.maxDate < today.toISOString()) {
