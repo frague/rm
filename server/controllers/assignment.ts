@@ -214,6 +214,7 @@ export default class AssignmentCtrl extends BaseCtrl {
             payRate: {'$first': '$payRate'},
             onTrip: {'$first': '$onTrip'},
             birthday: {'$first': '$birthday'},
+            bambooId: {'$first': '$bambooId'},
           }
         },
         {
@@ -255,6 +256,7 @@ export default class AssignmentCtrl extends BaseCtrl {
             payRate: 1,
             onTrip: 1,
             birthday: 1,
+            bambooId: 1,
           })
         },
         {

@@ -82,6 +82,7 @@ export default class ResourceCtrl extends BaseCtrl {
             payRate: 1,
             onTrip: 1,
             birthday: 1,
+            bambooId: 1,
           }
         },
         {

@@ -20,6 +20,7 @@ const resourceSchema = new mongoose.Schema({
   payRate: String,
   onTrip: String,
   birthday: Date,
+  bambooId: String,
 });
 
 const Resource = mongoose.model('Resource', resourceSchema);

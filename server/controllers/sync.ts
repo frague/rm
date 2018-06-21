@@ -294,6 +294,7 @@ export default class SyncCtrl {
     return new Promise(async(resolve, reject) => {
       let _error;
       let prs = await this.bamboo.getPRs().catch(error => _error = error);
+      console.log(prs);
       if (_error) {
         return reject(_error);
       }
@@ -391,6 +392,7 @@ export default class SyncCtrl {
               nextPr: this._makeDate(newPR.customPerformanceReviewDue),
               payRate: newPR.payRate,
               birthday: this._makeDate(newPR.dateOfBirth),
+              bambooId: newPR.id,
             };
           }
 
@@ -415,6 +417,7 @@ export default class SyncCtrl {
             nextPr: pr.nextPr,
             payRate: pr.payRate,
             birthday: pr.birthday,
+            bambooId: pr.bambooId,
           });
 
           profilesCreated++;
