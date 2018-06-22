@@ -98,6 +98,44 @@
           </spinner>
         </ng-template>
       </ngb-tab>
+      <ngb-tab title="Carreer" id="carreer" *ngIf="person.bambooId">
+        <ng-template ngbTabContent>
+          <spinner [isShown]="false">
+            <div class="carreer row">
+              <div class="col-md-4">
+                <h2>Grades</h2>
+                <table class="table">
+                  <tr *ngFor="let grade of carreer.grades">
+                    <td>{{ grade.customDate|date }}</td>
+                    <td>
+                      {{ grade.customGrade }}, {{ grade.customProfile }}
+                      <span *ngIf="grade.customSpecialization">/ {{ grade.customSpecialization }}</span>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <div class="col-md-4">
+                <h2>Ordinance</h2>
+                <table class="table">
+                  <tr *ngFor="let job of carreer.jobs">
+                    <td>{{ job.date|date }}</td>
+                    <td>{{ job.department }} ({{ job.reportsTo }})</td>
+                  </tr>
+                </table>
+              </div>
+              <div class="col-md-4">
+                <h2>Compensations</h2>
+                <table class="table">
+                  <tr *ngFor="let rate of carreer.compensations">
+                    <td>{{ rate.startDate|date }}</td>
+                    <td>{{ rate.rate.value }} {{ rate.rate.currency }}</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </spinner>
+        </ng-template>
+      </ngb-tab>
     </ngb-tabset>
   </div>
   <div class="modal-footer" *ngIf="isFormActive">

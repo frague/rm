@@ -2,6 +2,7 @@ import { Component, ViewChild, Input } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { CommentService} from '../services/comments.service';
 import { SkillsService} from '../services/skills.service';
+import { CarreerService} from '../services/carreer.service';
 import { BaseComponent } from '../base.component';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
@@ -39,6 +40,8 @@ export class CommentsComponent extends BaseComponent {
   skills: any = null;
   skillsInfo: any = null;
 
+  carreer: any = {};
+
   initialValue: any = empty;
   closeAfterSaving = true;
 
@@ -54,7 +57,8 @@ export class CommentsComponent extends BaseComponent {
   constructor(
     private modalService: NgbModal,
     private commentService: CommentService,
-    private skillsService: SkillsService
+    private skillsService: SkillsService,
+    private carreerService: CarreerService
   ) {
     super(commentService);
   }
@@ -66,12 +70,18 @@ export class CommentsComponent extends BaseComponent {
     this.form.reset();
     this.initialValue = empty;
 
+    console.log('Tab', this.activeTab);
+
     if (this.activeTab === 'skills' && this.skills === null) {
       this.fetchSkills();
     }
+
+    if (this.activeTab === 'carreer') {
+      this.fetchCarreer();
+    }
   }
 
-  _countSkillsDefined(skills: any) {
+  private _countSkillsDefined(skills: any) {
     let skillsDefined = 0;
     if (skills.categories && skills.categories.length) {
       skills.categories.forEach(category =>
@@ -100,16 +110,25 @@ export class CommentsComponent extends BaseComponent {
 
     this.skillsFetching = true;
 
-    this.skillsService.get(this.person.login).subscribe(
-      skills => {
+    this.skillsService.get(this.person.login)
+      .subscribe(skills => {
         this._countSkillsDefined(skills);
         this.skills = skills;
-      }
-    ).add(loaded);
+      })
+      .add(loaded);
 
-    this.skillsService.getInfo(this.person.login).subscribe(
-      info => this.skillsInfo = info
-    ).add(loaded);
+    this.skillsService.getInfo(this.person.login)
+      .subscribe(info => this.skillsInfo = info)
+      .add(loaded);
+  }
+
+  fetchCarreer() {
+    if (!this.isCarreerFetched()) {
+      this.isLoading = true;
+      this.carreerService.get(this.person.bambooId)
+        .subscribe(carreer => this.carreer = carreer)
+        .add(() => this.isLoading = false);
+    }
   }
 
   getEditedValue() {
@@ -188,6 +207,7 @@ export class CommentsComponent extends BaseComponent {
     this.items = [];
     this.skills = null;
     this.skillsInfo = null;
+    this.carreer = {};
 
     this.person = person;
     this.modalRef = this.modalService.open(this.content, {size: 'lg', beforeDismiss: () => this.isSafeToProceed()});
@@ -213,4 +233,7 @@ export class CommentsComponent extends BaseComponent {
     return person && !person.isDemand && !person.isHiree;
   }
 
+  isCarreerFetched(): boolean {
+    return Object.keys(this.carreer).length > 0;
+  }
 }

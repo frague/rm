@@ -1223,6 +1223,25 @@ div.bottom-corner {
       }
     }
   }
+
+  .carreer {
+    tr {
+      &:first-child td {
+        border-top-width: 0;
+      }
+
+      td {
+        font-size: 14px;
+        padding-left: 0.75rem;
+        padding-right: 0;
+
+        &:first-child {
+          white-space: nowrap;
+          padding-left: 0;
+        }
+      }
+    }
+  }
 }
 
 .spinner {

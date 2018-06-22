@@ -61,7 +61,7 @@ export default class BambooIntegrationsCtrl {
     return new Promise((resolve, reject) => {
       request.get(
         this._makeOptions(`employees/${employeeId}/tables/${table}`),
-        (err, response, body) => resolve(body)
+        (err, response, body) => resolve(JSON.parse(body))
       )
       .on('error', reject);
     });
@@ -79,13 +79,21 @@ export default class BambooIntegrationsCtrl {
     return this._getEmployeeTable(employeeId, 'customGrade1');
   }
 
-  // test = (req, res) => {
-  //   this.getEmployeeGrades('880')
-  //     .then(resp => {
-  //       res.setHeader('Content-Type', 'application/json');
-  //       res.json(JSON.parse(resp));
-  //       console.log(resp);
-  //     })
-  //     .catch(err => res.sendStatus(500));
-  // }
+  getCarreer = (req, res) => {
+    let { bambooId } = req.params;
+    if (bambooId != +bambooId) {
+      return res.sendStatus(500);
+    }
+
+    Promise.all([
+      this.getEmployeeJobInfo(bambooId),
+      this.getEmployeeCompensations(bambooId),
+      this.getEmployeeGrades(bambooId)
+    ])
+      .then(([jobs, compensations, grades]) => {
+        res.setHeader('Content-Type', 'application/json');
+        res.json({jobs, compensations, grades: grades[0]});
+      })
+      .catch(err => res.sendStatus(500));
+  }
 }
