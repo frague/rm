@@ -5,10 +5,20 @@ const env = process.env;
 const bamboo = 'api.bamboohr.com/api/gateway.php/griddynamics/v1/';
 
 export default class BambooIntegrationsCtrl {
-  _makeRequest(endpoint: string) {
+  private _makeRequest(endpoint: string) {
     return {
       url: 'https://' + env.BAMBOO_KEY + ':x@' + bamboo + endpoint
     };
+  }
+
+  private _makeOptions(endpoint: string, body: string = ''): object {
+    return Object.assign(
+      this._makeRequest(`${endpoint}?format=JSON`),
+      {
+        headers: {'Accept': 'application/json'},
+        body: body.replace(/>\s+</g, '><')
+      }
+    );
   }
 
   getTimeoffs = (): Promise<any> => {
@@ -31,22 +41,51 @@ export default class BambooIntegrationsCtrl {
 
   getPRs = (): Promise<any> => {
     return new Promise((resolve, reject) => {
-      let options = Object.assign(
-        this._makeRequest('reports/custom/?format=JSON'),
-        {
-          headers: {'Accept': 'application/json'},
-          body: `<report>
-            <title>PR report</title>
-            <fields>
-              <field id="customUsername" />
-              <field id="customPerformanceReviewDue" />
-              <field id="payRate" />
-              <field id="dateOfBirth" />
-            </fields>
-          </report>`.replace(/>\s+</g, '><')
-        }
+      let options = this._makeOptions(
+        'reports/custom/',
+        `<report>
+          <title>PR report</title>
+          <fields>
+            <field id="customUsername" />
+            <field id="customPerformanceReviewDue" />
+            <field id="payRate" />
+            <field id="dateOfBirth" />
+          </fields>
+        </report>`
       );
       request.post(options, (err, response, body) => resolve(body)).on('error', reject);
     });
   }
+
+  private _getEmployeeTable = (employeeId: string, table: string): Promise<any> => {
+    return new Promise((resolve, reject) => {
+      request.get(
+        this._makeOptions(`employees/${employeeId}/tables/${table}`),
+        (err, response, body) => resolve(body)
+      )
+      .on('error', reject);
+    });
+  }
+
+  getEmployeeJobInfo = (employeeId: string): Promise<any> => {
+    return this._getEmployeeTable(employeeId, 'jobInfo');
+  }
+
+  getEmployeeCompensations = (employeeId: string): Promise<any> => {
+    return this._getEmployeeTable(employeeId, 'compensation');
+  }
+
+  getEmployeeGrades = (employeeId: string): Promise<any> => {
+    return this._getEmployeeTable(employeeId, 'customGrade1');
+  }
+
+  // test = (req, res) => {
+  //   this.getEmployeeGrades('880')
+  //     .then(resp => {
+  //       res.setHeader('Content-Type', 'application/json');
+  //       res.json(JSON.parse(resp));
+  //       console.log(resp);
+  //     })
+  //     .catch(err => res.sendStatus(500));
+  // }
 }

@@ -294,7 +294,6 @@ export default class SyncCtrl {
     return new Promise(async(resolve, reject) => {
       let _error;
       let prs = await this.bamboo.getPRs().catch(error => _error = error);
-      console.log(prs);
       if (_error) {
         return reject(_error);
       }
