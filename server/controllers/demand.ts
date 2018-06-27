@@ -80,6 +80,7 @@ export default class DemandCtrl extends BaseCtrl {
             pool: 1,
             role: 1,
             profile: 1,
+            project: 1,
             start: 1,
             end: 1,
             deployment: 1,

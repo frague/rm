@@ -721,6 +721,20 @@ ul.tasks {
   }
 }
 
+.planner {
+  .account {
+    u {
+      &:before {
+        content: "@";
+      }
+      display: inline-block;
+      opacity: 0.5;
+      font-weight: 100;
+      text-decoration: none;
+    }
+  }
+}
+
 .people.table {
   th {
     text-transform: capitalize;
