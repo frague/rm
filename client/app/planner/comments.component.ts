@@ -73,7 +73,6 @@ export class CommentsComponent extends BaseComponent {
     scales: {
       yAxes: [{
         ticks: {
-          min: 0,
           stepSize: 10000
         }
       }]

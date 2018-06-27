@@ -9,6 +9,10 @@ $yellow: #FFB;
 $blue: #1CA1C0;
 $red: #FF6E27;
 
+$good: #bbe2ba;
+$average: #e8ea9a;
+$bad: #eac39a;
+
 $cornerColor: #87afb3;
 $link: #006ba2;
 
@@ -398,8 +402,21 @@ i.initiative {
       height: $plannerLineHeight;
     }
 
-    &.lines div.covered {
-      background-color: $primary;
+    &.lines div.line {
+      padding-left: 5px;
+
+      &.covered {
+        background-color: $primary;
+      }
+      &.SP {
+        border-left: solid 4px $bad;
+      }
+      &.VA {
+        border-left: solid 4px $average;
+      }
+      &.FC {
+        border-left: solid 4px $good;
+      }
     }
 
     ul.requisitions {

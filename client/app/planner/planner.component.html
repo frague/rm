@@ -29,7 +29,7 @@
           *ngFor="let demand of accountsDemand[account]"
           class="line"
           (click)="showResource(demand, true)"
-          [ngClass]="{covered: reserved[demand.login]}"
+          [ngClass]="getDemandStyles(demand)"
         >
           <div
             class="corner"
