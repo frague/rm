@@ -6,7 +6,7 @@ const billable = ['Billable', 'Soft booked', 'PTO Coverage'];
   selector: 'initiative',
   templateUrl: './initiative.component.html'
 })
-export class InitiativeComponent implements OnInit {
+export class InitiativeComponent {
   @Input() data: any = {
     color: '',
     name: 'None',
@@ -36,8 +36,5 @@ export class InitiativeComponent implements OnInit {
   }
 
   constructor() {
-  }
-
-  ngOnInit() {
   }
 }

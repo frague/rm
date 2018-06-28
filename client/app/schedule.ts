@@ -377,6 +377,9 @@ export class Schedule {
     this.maxDate = this.adjustToMonday(this.maxDate);
     let maxTime = this.maxDate.getTime();
     this.shownWeeks = Math.round((maxTime - this.minDate.getTime()) / week);
+    if (this.shownWeeks < 0) {
+      this.shownWeeks = 0;
+    }
     let minTime = this.minDate.getTime();
 
     this.items.forEach(resource => {
@@ -385,12 +388,20 @@ export class Schedule {
         if (!assignmentsGrouped[assignment.initiativeId]) {
           assignmentsGrouped[assignment.initiativeId] = [];
         }
-        if (!assignment.start) assignment.start = this.minDate;
-
-        let start = new Date(assignment.start).getTime();
+        if (!assignment.start) {
+          assignment.start = this.minDate;
+        }
+        let startDate = new Date(assignment.start);
+        let start = startDate.getTime();
         let end = assignment.end ? new Date(assignment.end).getTime() : maxTime;
         assignment.offset = (start - minTime) * dayCoefficient;
         assignment.width = (end - start + day) * dayCoefficient - 1;
+
+        if (!assignment.initiative && startDate > this.maxDate) {
+          assignment.offset = (maxTime - minTime) * dayCoefficient;
+          assignment.width = 1;
+        }
+
         assignmentsGrouped[assignment.initiativeId].push(assignment);
       });
       resource.assignments = assignmentsGrouped;
