@@ -56,7 +56,7 @@
             <ul class="requisitions" *ngIf="demand.requestId"><li *ngFor="let req of getDemandRequisitions(demand)"><a (click)="showRequisition(req, $event)">{{ req }}</a></li></ul>
             {{ getDemandAttrs(demand) }}
           </span>
-          <span [title]="demand.comment">{{ demand.comment }}</span>
+          <span [title]="demand.comment">{{ demand.comment || demand.requirements }}</span>
         </div>
       </div>
     </div>

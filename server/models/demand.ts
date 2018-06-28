@@ -18,6 +18,7 @@ const demandSchema = new mongoose.Schema({
   grades: String,
   locations: String,
   requestId: String,
+  requirements: String,
   comment: String,
   candidates: String,
   login: String
