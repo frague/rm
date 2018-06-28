@@ -203,15 +203,16 @@ export class PlannerComponent extends Schedule {
     };
   }
 
+  isReserved(candidate: any, demand: any) {
+    return this.reserved[demand.login] === candidate.login;
+  }
+
   getDemandStyles(demand: any) {
     return {
       covered: this.reserved[demand.login],
-      [demand.stage]: true
+      [demand.stage]: true,
+      warning: !demand.candidates && !demand.requestId
     };
-  }
-
-  isReserved(candidate: any, demand: any) {
-    return this.reserved[demand.login] === candidate.login;
   }
 
   getDemandCandidate(demand: any) {

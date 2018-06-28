@@ -13,6 +13,8 @@ $good: #bbe2ba;
 $average: #e8ea9a;
 $bad: #eac39a;
 
+$warning: rgba(255, 85, 0, 0.25);
+
 $cornerColor: #87afb3;
 $link: #006ba2;
 
@@ -348,7 +350,7 @@ i.initiative {
       overflow: hidden;
 
       &.an0 {
-        background-color: rgba(255, 85, 0, 0.5);
+        background-color: $warning;
         height: $lineHeight;
       }
 
@@ -407,6 +409,9 @@ i.initiative {
 
       &.covered {
         background-color: $primary;
+      }
+      &.warning {
+        background-color: $warning;
       }
       &.SP {
         border-left: solid 4px $bad;
