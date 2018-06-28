@@ -3,44 +3,55 @@
     <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
-    <h4 class="modal-title">Demand for {{ demand.profile }}</h4>
+    <h4 class="modal-title">Demand in {{ demand.account }} for {{ demand.profile }}</h4>
   </div>
   <div class="modal-body">
     <spinner [isShown]="isLoading">
-      <dl class="attributes">
-        <dt>Account</dt>
-        <dd>{{ demand.account }}</dd>
+        <div class="row">
+          <div class="col-md-5">
+            <dl class="attributes">
+              <dt>Account</dt>
+              <dd>{{ demand.account }} / {{ demand.project }}</dd>
 
-        <dt>Pool</dt>
-        <dd>{{ demand.pool }}</dd>
+              <dt>Pool</dt>
+              <dd>{{ demand.pool }}</dd>
 
-        <dt>Dates</dt>
-        <dd>{{ demand.start|date }} - {{ demand.end|date }} {{ datesDiff() }}</dd>
+              <dt>Dates</dt>
+              <dd>{{ demand.start|date }} - {{ demand.end|date }} {{ datesDiff() }}</dd>
 
-        <dt>Grades</dt>
-        <dd>{{ demand.grades }}</dd>
+              <dt>Grades</dt>
+              <dd>{{ demand.grades }}</dd>
 
-        <dt>Locations</dt>
-        <dd>{{ demand.locations }}</dd>
+              <dt>Locations</dt>
+              <dd>{{ demand.locations }}</dd>
 
-        <dt>Deployment</dt>
-        <dd>{{ demand.deployment }}</dd>
+              <dt>Deployment</dt>
+              <dd>{{ demand.deployment }}</dd>
 
-        <dt>Billability</dt>
-        <dd>{{ demand.role }}</dd>
+              <dt>Billability</dt>
+              <dd>{{ demand.role }}</dd>
 
-        <dt>Stage</dt>
-        <dd>{{ demand.stage }}</dd>
+              <dt>Stage</dt>
+              <dd>{{ demand.stage }}</dd>
+            </dl>
+          </div>
+          <div class="col-md-7">
+            <dl class="attributes">
+              <dt>Requisition</dt>
+              <dd>{{ demand.requestId }}</dd>
 
-        <dt>Requisition</dt>
-        <dd>{{ demand.requestId }}</dd>
+              <dt>Candidates</dt>
+              <dd>{{ demand.candidates }}</dd>
 
-        <dt>Candidates</dt>
-        <dd>{{ demand.candidates }}</dd>
+              <dt>Requirements</dt>
+              <dd><div class="scrollable" [innerHTML]="demand.requirements|MarkdownToHtml"></div></dd>
 
-        <dt>Comment</dt>
-        <dd><pre class="scrollable">{{ demand.comment }}</pre></dd>
-      </dl>
+              <dt>Comments</dt>
+              <dd><div class="scrollable" [innerHTML]="demand.comment|MarkdownToHtml"></div></dd>
+            </dl>
+          </div>
+        </div>
+
     </spinner>
   </div>
 </ng-template>

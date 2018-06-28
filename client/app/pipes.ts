@@ -4,18 +4,18 @@ import { months } from './sync/mappings';
 
 const trailingIndex = new RegExp(/^\d{2} /);
 
-const formatDate = (date: string) => {
+const formatDate = (date: any, cutDay=false) => {
   if (!date) {
     return 'Not set';
   }
   let d = new Date(date);
-  return [d.getDate(), months[d.getMonth()], d.getFullYear()].join(' ');
+  return [cutDay ? null : d.getDate(), months[d.getMonth()], d.getFullYear()].join(' ');
 }
 
 @Pipe({name: 'date'})
 export class PrintableDatePipe implements PipeTransform {
-  transform(date: string): string {
-    return formatDate(date);
+  transform(date: any, cutDay=false): string {
+    return formatDate(date, cutDay);
   }
 }
 

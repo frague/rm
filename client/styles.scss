@@ -9,6 +9,13 @@ $yellow: #FFB;
 $blue: #1CA1C0;
 $red: #FF6E27;
 
+$good: #bbe2ba;
+$average: #e8ea9a;
+$bad: #eac39a;
+
+$warning: rgba(255, 85, 0, 0.25);
+$dim: rgba(0, 0, 0, 0.02);
+
 $cornerColor: #87afb3;
 $link: #006ba2;
 
@@ -60,7 +67,7 @@ pre {
 }
 
 .scrollable {
-  max-height: 100px;
+  max-height: 150px;
   overflow-y: auto;
 }
 
@@ -344,7 +351,7 @@ i.initiative {
       overflow: hidden;
 
       &.an0 {
-        background-color: rgba(255, 85, 0, 0.5);
+        background-color: $warning;
         height: $lineHeight;
       }
 
@@ -398,8 +405,24 @@ i.initiative {
       height: $plannerLineHeight;
     }
 
-    &.lines div.covered {
-      background-color: $primary;
+    &.lines div.line {
+      padding-left: 5px;
+
+      &.covered {
+        background-color: $primary !important;
+      }
+      &.warning {
+        background-color: $warning;
+      }
+      &.SP {
+        border-left: solid 4px $bad;
+      }
+      &.VA {
+        border-left: solid 4px $average;
+      }
+      &.FC {
+        border-left: solid 4px $good;
+      }
     }
 
     ul.requisitions {
@@ -602,11 +625,11 @@ dl.attributes {
   dd {
     padding-left: 140px;
 
-    &:empty:after {
+    &:empty:after, &>div:empty:after {
       content: "-";
     }
 
-    ul {
+    &>ul {
       padding-left: 0px;
       margin-bottom: 0px;
 
@@ -616,6 +639,10 @@ dl.attributes {
           display: none;
         }
       }
+    }
+
+    div:not(:empty).scrollable {
+      background-color: $dim;
     }
   }
   hr {
@@ -700,6 +727,20 @@ ul.tasks {
     .account {
       border-top: solid 2px $grid;
       padding-top: 40px;
+    }
+  }
+}
+
+.planner {
+  .account {
+    u {
+      &:before {
+        content: "@";
+      }
+      display: inline-block;
+      opacity: 0.5;
+      font-weight: 100;
+      text-decoration: none;
     }
   }
 }
@@ -1232,12 +1273,10 @@ div.bottom-corner {
 
       td {
         font-size: 14px !important;
-        padding-left: 0.75rem;
-        padding-right: 0;
 
         &:first-child {
           white-space: nowrap;
-          padding-left: 0;
+          // padding-left: 0;
         }
       }
     }

@@ -102,7 +102,7 @@
         <ng-template ngbTabContent>
           <spinner [isShown]="false">
             <div class="carreer row">
-              <div class="col-md-4">
+              <div class="col-md-6">
                 <h2>Grades</h2>
                 <table class="table">
                   <tr *ngFor="let grade of carreer.grades">
@@ -114,7 +114,7 @@
                   </tr>
                 </table>
               </div>
-              <div class="col-md-4">
+              <div class="col-md-6">
                 <h2>Ordinance</h2>
                 <table class="table">
                   <tr *ngFor="let job of carreer.jobs">
@@ -123,6 +123,8 @@
                   </tr>
                 </table>
               </div>
+            </div>
+            <div class="carreer row">
               <div class="col-md-4">
                 <h2>Compensations</h2>
                 <table class="table">
@@ -131,6 +133,16 @@
                     <td>{{ rate.rate.value }} {{ rate.rate.currency }}</td>
                   </tr>
                 </table>
+              </div>
+              <div class="col-md-8">
+                <h2>&nbsp;</h2>
+                <canvas baseChart height="200"
+                  [datasets]="lineChartData"
+                  [labels]="lineChartLabels"
+                  [options]="lineChartOptions"
+                  [colors]="lineChartColors"
+                  [legend]="lineChartLegend"
+                  [chartType]="lineChartType"></canvas>
               </div>
             </div>
           </spinner>

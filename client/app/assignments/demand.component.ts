@@ -28,7 +28,7 @@ export class DemandComponent {
     } else {
       this.demand = demand;
     }
-    this.modalService.open(this.content);
+    this.modalService.open(this.content, {size: 'lg'});
   }
 
   datesDiff(): string {

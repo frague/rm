@@ -30,6 +30,7 @@ const keys = [
   'candidates',
   'start',
   'requestId',
+  'requirements',
   'role',
   'stage',
   'state',

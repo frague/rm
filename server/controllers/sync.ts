@@ -575,6 +575,7 @@ export default class SyncCtrl {
           specializations: specs,
           stage: stages[item.stageId].code,
           requestId: item.jobviteId,
+          requirements: item.requirements,
 
           pool
         };

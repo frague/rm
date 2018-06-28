@@ -5,6 +5,7 @@ import { SkillsService} from '../services/skills.service';
 import { CarreerService} from '../services/carreer.service';
 import { BaseComponent } from '../base.component';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { PrintableDatePipe } from '../pipes';
 
 const discardConfirmation = 'Are you sure you want to discard current changes?';
 const empty = {
@@ -15,6 +16,8 @@ const empty = {
   text: null,
   _id: null
 };
+
+const datePipe = new PrintableDatePipe();
 
 @Component({
   selector: 'comments-modal',
@@ -54,6 +57,40 @@ export class CommentsComponent extends BaseComponent {
     text: new FormControl('', Validators.required)
   })
 
+  // Charting data
+  // lineChart
+  public lineChartData: Array<any> = [
+    {data: [0], label: ''},
+  ];
+  public lineChartLabels: Array<any> = [''];
+  public lineChartOptions:any = {
+    responsive: true,
+    elements: {
+      point: {
+        pointStyle: 'rectRot'
+      }
+    },
+    scales: {
+      yAxes: [{
+        ticks: {
+          stepSize: 10000
+        }
+      }]
+    }
+  };
+  public lineChartColors: Array<any> = [
+    { // grey
+      backgroundColor: 'rgba(148,159,177,0.2)',
+      borderColor: 'rgba(148,159,177,1)',
+      pointBackgroundColor: 'rgba(148,159,177,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+    },
+  ];
+  public lineChartLegend: boolean = false;
+  public lineChartType: string = 'line';
+
   constructor(
     private modalService: NgbModal,
     private commentService: CommentService,
@@ -69,8 +106,6 @@ export class CommentsComponent extends BaseComponent {
     this.activeTab = e.nextId;
     this.form.reset();
     this.initialValue = empty;
-
-    console.log('Tab', this.activeTab);
 
     if (this.activeTab === 'skills' && this.skills === null) {
       this.fetchSkills();
@@ -126,7 +161,29 @@ export class CommentsComponent extends BaseComponent {
     if (!this.isCarreerFetched()) {
       this.isLoading = true;
       this.carreerService.get(this.person.bambooId)
-        .subscribe(carreer => this.carreer = carreer)
+        .subscribe(carreer => {
+          this.carreer = carreer;
+          let labels = [];
+          let result = (carreer.compensations || [])
+            .reverse()
+            .map(compensation => {
+              labels.push(datePipe.transform(compensation.startDate, true));
+              return Math.round(compensation.rate.value);
+            }
+          );
+
+          // if (result.length == 1) {
+          //   labels.push(datePipe.transform(new Date(), true));
+          //   result.push(result[0]);
+          // };
+
+          this.lineChartLabels = labels;
+          this.lineChartData = [{
+            label: 'Compensation',
+            pointRadius: 10,
+            data: result
+          }];
+        })
         .add(() => this.isLoading = false);
     }
   }

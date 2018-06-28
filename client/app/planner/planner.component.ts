@@ -207,6 +207,14 @@ export class PlannerComponent extends Schedule {
     return this.reserved[demand.login] === candidate.login;
   }
 
+  getDemandStyles(demand: any) {
+    return {
+      covered: this.reserved[demand.login],
+      [demand.stage]: true,
+      warning: !demand.candidates && !demand.requestId
+    };
+  }
+
   getDemandCandidate(demand: any) {
     return this.reserved[demand.login];
   }
