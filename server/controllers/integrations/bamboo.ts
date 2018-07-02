@@ -72,7 +72,8 @@ export default class BambooIntegrationsCtrl {
   }
 
   getEmployeeCompensations = (employeeId: string): Promise<any> => {
-    return this._getEmployeeTable(employeeId, 'compensation');
+    return this._getEmployeeTable(employeeId, 'compensation')
+      .then(table => table.sort((a, b) => (a.startDate > b.startDate) ? -1 : 1));
   }
 
   getEmployeeGrades = (employeeId: string): Promise<any> => {
