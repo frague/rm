@@ -31,6 +31,7 @@
           (click)="showResource(demand, true)"
           [ngClass]="getDemandStyles(demand)"
         >
+          <time>{{ demand.start|date:'noyear' }}</time>
           <div
             class="corner"
             (click)="showComments(demand, $event)"

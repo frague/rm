@@ -733,6 +733,17 @@ ul.tasks {
 
 .planner {
   .account {
+    time {
+      position: absolute;
+      transform: rotate(-90deg);
+      transform-origin: bottom left;
+      left: 0px;
+      margin-top: 25px;
+      opacity: 0.5;
+      font-weight: 100;
+      font-size: 12px;
+    }
+
     u {
       &:before {
         content: "@";

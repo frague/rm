@@ -167,7 +167,7 @@ export class CommentsComponent extends BaseComponent {
           let result = (carreer.compensations || [])
             .reverse()
             .map(compensation => {
-              labels.push(datePipe.transform(compensation.startDate, true));
+              labels.push(datePipe.transform(compensation.startDate, 'nodate'));
               return Math.round(compensation.rate.value);
             }
           );

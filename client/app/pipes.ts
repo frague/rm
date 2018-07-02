@@ -1,21 +1,36 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { Utils } from './utils';
-import { months } from './sync/mappings';
+import { months, monthsRoman } from './sync/mappings';
+
+type dateFormat = 'full' | 'nodate' | 'noyear';
 
 const trailingIndex = new RegExp(/^\d{2} /);
 
-const formatDate = (date: any, cutDay=false) => {
+const formatDate = (date: any, format: dateFormat = 'full') => {
   if (!date) {
     return 'Not set';
   }
   let d = new Date(date);
-  return [cutDay ? null : d.getDate(), months[d.getMonth()], d.getFullYear()].join(' ');
+  let delimiter = ' ';
+  let result;
+  switch (format) {
+    case 'nodate':
+      result = [months[d.getMonth()], d.getFullYear()];
+      break;
+    case 'noyear':
+      result = [months[d.getMonth()], d.getDate()];
+      delimiter = ', ';
+      break;
+    default:
+      result = [d.getDate(), months[d.getMonth()], d.getFullYear()];
+  }
+  return result.join(delimiter);
 }
 
 @Pipe({name: 'date'})
 export class PrintableDatePipe implements PipeTransform {
-  transform(date: any, cutDay=false): string {
-    return formatDate(date, cutDay);
+  transform(date: any, format: dateFormat = 'full'): string {
+    return formatDate(date, format);
   }
 }
 

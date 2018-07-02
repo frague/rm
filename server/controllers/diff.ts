@@ -7,7 +7,7 @@ export default class DiffCtrl extends BaseCtrl {
   getAll = (req, res) => {
     let query = this.reduceQuery(req.query);
     console.log('Finding all', query);
-    this.model.find(query).sort({date: -1}).limit(100).exec((err, docs) => {
+    this.model.find(query).sort({date: -1, subject: 1}).limit(100).exec((err, docs) => {
       if (err) {
         return console.error(err);
       }

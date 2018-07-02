@@ -67,8 +67,7 @@ export class DpComponent extends BaseComponent {
   }
 
   makeReq(id: string) {
-    let dash = id.lastIndexOf('-') + 1;
-    let requisitionId = id.substr(dash);
+    let requisitionId = id.substr(0, id.lastIndexOf('-') + 1);
     return requisitionId || '';
   }
 
