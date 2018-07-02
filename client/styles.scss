@@ -407,6 +407,7 @@ i.initiative {
 
     &.lines div.line {
       padding-left: 5px;
+      background-color: $body - #111;
 
       &.covered {
         background-color: $primary !important;
