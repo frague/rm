@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription, Observable } from 'rxjs';
 
 import { AssignmentService } from '../services/assignment.service';
@@ -20,7 +20,8 @@ const defaultColumns = {
 
 @Component({
   selector: 'people',
-  templateUrl: './people.component.html'
+  templateUrl: './people.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PeopleComponent extends Schedule {
 
@@ -39,9 +40,10 @@ export class PeopleComponent extends Schedule {
     resourceService: ResourceService,
     initiativeService: InitiativeService,
     demandService: DemandService,
-    bus: BusService
+    bus: BusService,
+    cd: ChangeDetectorRef
   ) {
-    super(assignmentService, resourceService, initiativeService, demandService, bus);
+    super(assignmentService, resourceService, initiativeService, demandService, bus, cd);
   }
 
   isClickable(name: string): boolean {

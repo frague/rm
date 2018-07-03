@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { Schedule } from '../schedule';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
@@ -21,7 +21,8 @@ const rowNumber = new RegExp(/^(\d+):/);
 
 @Component({
 	selector: 'planner',
-  templateUrl: './planner.component.html'
+  templateUrl: './planner.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlannerComponent extends Schedule {
   @ViewChild(ReportComponent) reportModal: ReportComponent;
@@ -108,9 +109,10 @@ export class PlannerComponent extends Schedule {
     initiativeService: InitiativeService,
     demandService: DemandService,
     private candidateService: CandidateService,
-    bus: BusService
+    bus: BusService,
+    cd: ChangeDetectorRef
   ) {
-    super(assignmentService, resourceService, initiativeService, demandService, bus);
+    super(assignmentService, resourceService, initiativeService, demandService, bus, cd);
   }
 
   ngOnInit() {

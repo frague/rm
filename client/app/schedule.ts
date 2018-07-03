@@ -1,4 +1,4 @@
-import { ViewChild, ElementRef } from '@angular/core';
+import { ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subscription, Observable } from 'rxjs';
 
@@ -78,7 +78,8 @@ export class Schedule {
     private resourceService: ResourceService,
     private initiativeService: InitiativeService,
     private demandService: DemandService,
-    private bus: BusService
+    private bus: BusService,
+    private cd: ChangeDetectorRef
   ) {
     this.fromDate = new Date();
     this.fromDate.setMonth(this.fromDate.getMonth() - 2);
@@ -114,6 +115,7 @@ export class Schedule {
     delete clean.width;
     delete clean.__v;
     clean.comment = clean.comment || '';
+    this.cd.markForCheck();
     return clean;
   }
 
@@ -133,6 +135,7 @@ export class Schedule {
       this.initiativesData = null;
       this.resourcesData = null;
     }
+    this.cd.markForCheck();
   }
 
   findVisibleAccounts() {
@@ -261,6 +264,7 @@ export class Schedule {
               return result;
             }, {});
             this.findVisibleAccounts();
+            this.cd.markForCheck();
           },
           error => console.log(error)
         );
@@ -282,6 +286,7 @@ export class Schedule {
               result[person.login] = person;
               return result;
             }, {});
+            this.cd.markForCheck();
           },
           error => console.log(error)
         ).add(() => this.postFetch(query));

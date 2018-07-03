@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { BaseComponent } from '../base.component';
@@ -17,7 +17,8 @@ const demandPrefix = 'Demand';
 
 @Component({
   selector: 'accounts',
-  templateUrl: './accounts.component.html'
+  templateUrl: './accounts.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccountsComponent extends Schedule {
 
@@ -26,9 +27,10 @@ export class AccountsComponent extends Schedule {
     resourceService: ResourceService,
     initiativeService: InitiativeService,
     demandService: DemandService,
-    bus: BusService
+    bus: BusService,
+    cd: ChangeDetectorRef
   ) {
-    super(assignmentService, resourceService, initiativeService, demandService, bus);
+    super(assignmentService, resourceService, initiativeService, demandService, bus, cd);
   }
 
   getAssignmentsCount(initiative) {

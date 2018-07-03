@@ -67,8 +67,7 @@ export class DpComponent extends BaseComponent {
   }
 
   makeReq(id: string) {
-    let requisitionId = id.substr(0, id.lastIndexOf('-') + 1);
-    return requisitionId || '';
+    return id.substr(0, id.lastIndexOf('-')) || '';
   }
 
   makeDemandCaption(id: string) {

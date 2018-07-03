@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ToastComponent } from '../shared/toast/toast.component';
 
@@ -16,7 +16,8 @@ const emptyItem = {assignments: []};
 
 @Component({
   selector: 'assignments',
-  templateUrl: './assignments.component.html'
+  templateUrl: './assignments.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AssignmentsComponent extends Schedule {
   @ViewChild(CommentsComponent) commentsModal: CommentsComponent;
@@ -27,9 +28,10 @@ export class AssignmentsComponent extends Schedule {
     resourceService: ResourceService,
     initiativeService: InitiativeService,
     demandService: DemandService,
-    bus: BusService
+    bus: BusService,
+    cd: ChangeDetectorRef
   ) {
-    super(assignmentService, resourceService, initiativeService, demandService, bus);
+    super(assignmentService, resourceService, initiativeService, demandService, bus, cd);
   }
 
   getAssignmentsCount(index) {
