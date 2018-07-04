@@ -44,6 +44,8 @@ export class PlannerComponent extends Schedule {
 
   accountsDemand = {};
 
+  _cd: ChangeDetectorRef;
+
   postFetch = query => {
     this.accountsDemand = {};
     let queryString = JSON.stringify(query);
@@ -99,6 +101,7 @@ export class PlannerComponent extends Schedule {
         }
         this.accountsDemand[account].push(demand);
       });
+      this._cd.markForCheck();
     });
 
   };
@@ -113,6 +116,7 @@ export class PlannerComponent extends Schedule {
     cd: ChangeDetectorRef
   ) {
     super(assignmentService, resourceService, initiativeService, demandService, bus, cd);
+    this._cd = cd;
   }
 
   ngOnInit() {
@@ -126,6 +130,7 @@ export class PlannerComponent extends Schedule {
   }
 
   scroll = (event: Event) => {
+    this._cd.markForCheck();
     if (this.boardOfFame && this.boardOfFame.nativeElement) {
       let windowOffset = window.pageYOffset;
       let element = this.boardOfFame.nativeElement;
