@@ -66,12 +66,16 @@ export class SyncComponent {
     this.isLoading = true;
     this.logs = [];
     this.stati = {};
+    let hasErrors = false;
 
     let tasksToExecute = Object.keys(this.selectedTasks).filter(key => !!this.selectedTasks[key]).join(',');
     this.syncService.goOn(tasksToExecute).subscribe(() => {
       this.socket.subscribe((log, status=null) => {
         if (status) {
           this.stati[status[0]] = status[1];
+          if (status[1] === 'error') {
+            hasErrors = true;
+          }
         }
 
         if (log) {
@@ -79,9 +83,14 @@ export class SyncComponent {
           if (log === 'done') {
             this.stati = {};
             this.socket.unsubscribe();
-            this.dpService.saveDiff().subscribe(() => {
+            if (!hasErrors) {
+              this.addLog('Diff generation...');
+              this.dpService.saveDiff().subscribe(() => {
+                this.isLoading = false;
+              });
+            } else {
               this.isLoading = false;
-            });
+            }
           }
         }
       });
