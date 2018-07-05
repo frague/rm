@@ -407,7 +407,7 @@ i.initiative {
 
     &.lines div.line {
       padding-left: 5px;
-      background-color: $body - #111;
+      background-color: $body - #070707;
 
       &.covered {
         background-color: $primary !important;
@@ -472,13 +472,15 @@ i.initiative {
         &.sticky {
           li {
             border-bottom: solid 1px $grid;
+            background-color: $body - #111;
             box-shadow: 0 10px 10px -5px rgba(0, 0, 0, 0.5);
           }
         }
 
         li {
-          background-color: $body - #111;
+          background-color: $body - #070707;
           border-right: solid 1px $grid;
+          border-top: solid 1px $grid;
           width: $demandCardWidth;
           height: $demandCardHeight;
           position: absolute;
