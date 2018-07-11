@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -20,7 +20,8 @@ const emptyRequisition = {
 
 @Component({
   selector: 'candidates',
-  templateUrl: './candidates.component.html'
+  templateUrl: './candidates.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CandidatesComponent implements OnInit {
   @ViewChild(CommentsComponent) commentsModal: CommentsComponent;
@@ -40,7 +41,8 @@ export class CandidatesComponent implements OnInit {
     private requisitionService: RequisitionService,
     private candidateService: CandidateService,
     private sanitizer: DomSanitizer,
-    private bus: BusService
+    private bus: BusService,
+    private cd: ChangeDetectorRef
   ) {
   }
 
@@ -91,6 +93,7 @@ export class CandidatesComponent implements OnInit {
           }
           return result;
         }, {});
+        this.cd.markForCheck();
       });
     })
   }
@@ -136,6 +139,7 @@ export class CandidatesComponent implements OnInit {
 
   toggleSelection(requisition) {
     this.selectedRequisitionId = this.isRequisitionSelected(requisition) ? null : requisition.requisitionId;
+    this.cd.markForCheck();
   }
 
   getCurrentStatus(candidate: any): string {
@@ -151,5 +155,4 @@ export class CandidatesComponent implements OnInit {
     event.stopPropagation();
     this.requisitionModal.show(requisition);
   }
-
 }

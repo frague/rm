@@ -1,4 +1,5 @@
 const request = require('request');
+import { candidateStates } from '../../mappings';
 
 const env = process.env;
 const jobvite = 'https://api.jobvite.com/api/v2/';
@@ -14,14 +15,24 @@ export default class JobViteIntegrationsCtrl {
     return qs;
   }
 
-	getRequisitions = (): Promise<any> => {
+  getRequisitionsCount = async (): Promise<number> => {
+    let [, count] = await this.getRequisitions(0, 1);
+    return count;
+  }
+
+	getRequisitions = (start: number, count=500): Promise<[any, number]> => {
 		return new Promise((resolve, reject) => {
+      if (start < 1) start = 1;
 			let qs;
 			try {
 				qs = this._buildQueryParams(
 			    env.JV_JOBS_KEY,
 			    env.JV_JOBS_SECRET,
-					{ jobStatus: ['Open', 'Approved', 'Draft', 'Awaiting Approval'] }
+          {
+            jobStatus: ['Open', 'Approved', 'Draft', 'Awaiting Approval', 'Filled'],
+            start,
+            count
+          }
 				);
 			} catch (e) {
 				return reject(e);
@@ -34,9 +45,10 @@ export default class JobViteIntegrationsCtrl {
 	      },
 	      (err, response, body) => {
 	        try {
+            const diapasone = '[' + start + '÷' + (start + count) + ']';
 	          body = JSON.parse(body);
-	          console.log('Total requisitions fetched:', body.total);
-	          resolve(body.requisitions);
+	          console.log('Requisitions chunk fetched ' + diapasone);
+	          resolve([body.requisitions, +body.total]);
 	        } catch (e) {
 	          console.log('Requisitions parsing error', e);
 	          reject(e);
@@ -57,7 +69,11 @@ export default class JobViteIntegrationsCtrl {
 				qs = this._buildQueryParams(
 			    env.JV_CANDIDATES_KEY,
     			env.JV_CANDIDATES_SECRET,
-					{ start, count }
+					{
+            wflowstate: Object.keys(candidateStates),
+            start,
+            count
+          }
 				);
 			} catch (e) {
 				return reject(e);
@@ -76,7 +92,7 @@ export default class JobViteIntegrationsCtrl {
             return reject(e)
           }
           if (body.status.code !== 200) return reject(body.status.messages);
-          resolve(body.candidates);
+          resolve([body.candidates, +body.total]);
         })
       		.on('error', error => {
             console.log('Candidates fetching error', error);
@@ -85,37 +101,9 @@ export default class JobViteIntegrationsCtrl {
     });
   }
 
-  getCandidatesCount = (): Promise<number> => {
-    return new Promise((resolve, reject) => {
-			let qs;
-			try {
-				qs = this._buildQueryParams(
-			    env.JV_CANDIDATES_KEY,
-    			env.JV_CANDIDATES_SECRET,
-					{ count: 1 }
-				);
-			} catch (e) {
-				return reject(e);
-			}
-      request.get(
-        jobvite + 'candidate',
-        { qs },
-        (err, response, body) => {
-          try {
-            body = JSON.parse(body);
-            let total = body.total;
-            console.log('JobVite candidates count: ' + total);
-            resolve(total);
-          } catch (e) {
-            reject('Error parsing JobVite response');
-          }
-        }
-      )
-      	.on('error', error => {
-          console.log('Unable to access JobVite candidates API', error);
-          reject(error);
-      	})
-    });
+  getCandidatesCount = async (): Promise<number> => {
+    let [, count] = await this.getCandidates(0, 1);
+    return count;
   }
 
 }

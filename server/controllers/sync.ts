@@ -27,6 +27,7 @@ import {
 } from '../mappings';
 
 const candidatesChunk = 500;
+const requisitionsChunk = 500;
 const cleanupLocation = new RegExp(/(^,\s*|,\s*$)/);
 const outdated = 1000 * 60 * 60 * 24 * 30 * 3;  // 3 months
 
@@ -613,31 +614,43 @@ export default class SyncCtrl {
   private _queryRequisitions(): Promise<string[]> {
     let result = [];
     return new Promise(async (resolve, reject) => {
-      let _error;
-      let data = await this.jv.getRequisitions().catch(error => _error = error);
-      if (_error || !data) {
-        console.log('Unable to fetch requisitions', _error);
-        return reject(_error);
-      }
+      let total = await this.jv.getRequisitionsCount();
+      let result = [];
+      let fetchers = new Array(Math.ceil(total / requisitionsChunk)).join('.').split('.').map((x, i) => {
+        let from = i * requisitionsChunk;
+        let count = from + requisitionsChunk > total ? total - from : requisitionsChunk;
+        return new Promise((res, rej) =>
+          // Using timeout to overcome calls per second API limitation
+          setTimeout(
+            () => this.jv.getRequisitions(from, count)
+              .then(([requisitions, count]) => {
+                result = result.concat(requisitions);
+                res();
+              })
+              .catch(error => rej(error)),
+            5000 * i
+          )
+        );
+      });
 
-      this._addLog(data.length + ' requisitions fetched', 'jobvite');
-      try {
-        data.forEach(req => {
-          new Requisition(req).save();
-          result.push(req.requisitionId);
+      Promise.all(fetchers)
+        .then(() => {
+          this._addLog(result.length + ' requisitions fetched', 'jobvite');
+          resolve(
+            result.map(requisition => {
+              new Requisition(requisition).save();
+              return requisition.requisitionId;
+            })
+          )
         })
-        resolve(result);
-      } catch (e) {
-        console.log('Unable to parse requisitions', e);
-        reject(e);
-      }
+        .catch(reject);
     });
   }
 
-  private async _jvGetCandidatesChunk(start: number, allowedRequisitions: string[], resolve, reject) {
-    const diapasone = '[' + start + '÷' + (start + candidatesChunk) + ']';
+  private async _jvGetCandidatesChunk(start: number, count: number, allowedRequisitions: string[], resolve, reject) {
+    const diapasone = '[' + start + '÷' + (start + count) + ']';
     let _error;
-    let data = await this.jv.getCandidates(start, candidatesChunk).catch(error => _error = error);
+    let [data, ] = await this.jv.getCandidates(start, count).catch(error => _error = error);
     if (_error) {
       console.log('Unable to fetch JobVite candidates chunk ' + diapasone, _error);
       return reject(_error);
@@ -645,6 +658,7 @@ export default class SyncCtrl {
 
     this._addLog('Candidates chunk fetched ' + diapasone, 'jobvite');
     let now = new Date().getTime();
+    let saved = 0;
     data.forEach((candidate, index) => {
       let name = candidate.lastName + ' ' + candidate.firstName;
       let job = candidate.job || {};
@@ -670,31 +684,37 @@ export default class SyncCtrl {
 
       if (
         nc.state.indexOf('Rejected') < 0
-        && nc.requisitionId
         && allowedRequisitions.includes(nc.requisitionId)
-        && updated
-        && (now - updated.getTime()) < outdated
+        // && updated
+        // && (now - updated.getTime()) < outdated
       ) {
+        saved++;
         nc.save();
       }
     });
+    console.log(saved + ' candidates saved');
     resolve();
   }
 
   private _queryCandidates(requisitionIds: string[]): Promise<any> {
     return new Promise(async (resolve, reject) => {
       let _error;
-      let count: number = await this.jv.getCandidatesCount().catch(error => _error = error);
+      let total = await this.jv.getCandidatesCount().catch(error => _error = error);
       if (_error) {
         this._addLog('Error fetching candidates count', _error);
         return reject(_error);
       };
 
-      let fetchers = new Array(40).join('.').split('.').map((x, i) =>
-        new Promise((res, rej) =>
+      this._addLog(total + ' candidates found', 'jobvite');
+
+      let fetchers = new Array(Math.ceil(total / candidatesChunk)).join('.').split('.').map((x, i) => {
+        let from = candidatesChunk * i;
+        let count = total - from < candidatesChunk ? total - from : candidatesChunk;
+        return new Promise((res, rej) =>
           // Using timeout to overcome calls per second API limitation
-          setTimeout(() => this._jvGetCandidatesChunk(count - candidatesChunk * (i + 1), requisitionIds, res, rej), 5000 * i)
-        ));
+          setTimeout(() => this._jvGetCandidatesChunk(from, count, requisitionIds, res, rej), 10000 * i)
+        );
+      });
 
       Promise.all(fetchers)
         .then(resolve)

@@ -68,7 +68,12 @@ export default class AssignmentCtrl extends BaseCtrl {
 
         if (people && people.length) {
           console.log('People', people);
-          or.push({
+          let and = or['$and'];
+          if (!and) {
+            and = [];
+            or['$and'] = and;
+          }
+          and.push({
             login: {
               '$in': people.map(person => person.user_id)
             }

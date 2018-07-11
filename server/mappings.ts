@@ -203,7 +203,6 @@ export var dePolish = {
 };
 
 export var candidateStates = {
-  'New': '01 New',
   'Screened': '02 Screened',
   'Submitted to Interviewers': '03 Interview',
   'Approved by Interviewers by CV': '04 Approved by CV',
@@ -216,4 +215,5 @@ export var candidateStates = {
   'Offer Generation': '11 Offer Generation',
   'Offer Sent': '12 Offer Sent',
   'Offer Accepted': '13 Offer Accepted',
+  'Hired': '14 Hired',
 };
