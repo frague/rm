@@ -202,6 +202,20 @@ export var dePolish = {
   'ż': 'z'
 };
 
+export const requisitionsStates = [
+  'Open',
+  'Approved',
+  'Draft',
+  'Awaiting Approval',
+  'Filled'
+];
+
+export const requisitionsAvailability = [
+  'External',
+  'Internal',
+  'Limited Acces'
+];
+
 export var candidateStates = {
   'Screened': '02 Screened',
   'Submitted to Interviewers': '03 Interview',

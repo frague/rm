@@ -136,7 +136,8 @@ export default class SyncCtrl {
         await Requisition.deleteMany({});
         this._queryRequisitions()
           .then(async (requisitionIds: string[]) => {
-            this._getDelay('requisitions')
+            this._getDelay('requisitions');
+            // console.log(JSON.stringify(requisitionIds));
 
             // JobVite candidates
             if (this._setTimer('candidates')) {
@@ -617,18 +618,20 @@ export default class SyncCtrl {
       let total = await this.jv.getRequisitionsCount();
       let result = [];
       let fetchers = new Array(Math.ceil(total / requisitionsChunk)).join('.').split('.').map((x, i) => {
-        let from = i * requisitionsChunk;
+        let from = 1 + i * requisitionsChunk;
         let count = from + requisitionsChunk > total ? total - from : requisitionsChunk;
         return new Promise((res, rej) =>
           // Using timeout to overcome calls per second API limitation
           setTimeout(
             () => this.jv.getRequisitions(from, count)
-              .then(([requisitions, count]) => {
+              .then(([requisitions, ]) => {
+                const diapasone = '[' + from + '÷' + (from + count) + ']';
+                this._addLog('Requisitions chunk fetched ' + diapasone, 'jobvite');
                 result = result.concat(requisitions);
                 res();
               })
               .catch(error => rej(error)),
-            5000 * i
+            10000 * i
           )
         );
       });
@@ -708,11 +711,14 @@ export default class SyncCtrl {
       this._addLog(total + ' candidates found', 'jobvite');
 
       let fetchers = new Array(Math.ceil(total / candidatesChunk)).join('.').split('.').map((x, i) => {
-        let from = candidatesChunk * i;
-        let count = total - from < candidatesChunk ? total - from : candidatesChunk;
+        let from = 1 + candidatesChunk * i;
+        let count = from + candidatesChunk > total ? total - from : candidatesChunk;
         return new Promise((res, rej) =>
           // Using timeout to overcome calls per second API limitation
-          setTimeout(() => this._jvGetCandidatesChunk(from, count, requisitionIds, res, rej), 10000 * i)
+          setTimeout(
+            () => this._jvGetCandidatesChunk(from, count, requisitionIds, res, rej),
+            10000 * i
+          )
         );
       });
 
