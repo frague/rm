@@ -619,13 +619,12 @@ export default class SyncCtrl {
       let result = [];
       let fetchers = new Array(Math.ceil(total / requisitionsChunk)).join('.').split('.').map((x, i) => {
         let from = 1 + i * requisitionsChunk;
-        let count = from + requisitionsChunk > total ? total - from : requisitionsChunk;
         return new Promise((res, rej) =>
           // Using timeout to overcome calls per second API limitation
           setTimeout(
-            () => this.jv.getRequisitions(from, count)
+            () => this.jv.getRequisitions(from, requisitionsChunk)
               .then(([requisitions, ]) => {
-                const diapasone = '[' + from + '÷' + (from + count) + ']';
+                const diapasone = '[' + from + '÷' + (from + requisitionsChunk - 1) + ']';
                 this._addLog('Requisitions chunk fetched ' + diapasone, 'jobvite');
                 result = result.concat(requisitions);
                 res();
@@ -639,9 +638,15 @@ export default class SyncCtrl {
       Promise.all(fetchers)
         .then(() => {
           this._addLog(result.length + ' requisitions fetched', 'jobvite');
+          let idsMet = [];
           resolve(
             result.map(requisition => {
-              new Requisition(requisition).save();
+              if (idsMet.includes(requisition.requisitionId)) {
+                console.log('Error: duplicated requisition ' + requisition.requisitionId);
+              } else {
+                new Requisition(requisition).save();
+                idsMet.push(requisition.requisitionId);
+              }
               return requisition.requisitionId;
             })
           )
@@ -651,7 +656,7 @@ export default class SyncCtrl {
   }
 
   private async _jvGetCandidatesChunk(start: number, count: number, allowedRequisitions: string[], resolve, reject) {
-    const diapasone = '[' + start + '÷' + (start + count) + ']';
+    const diapasone = '[' + start + '÷' + (start + count - 1) + ']';
     let _error;
     let [data, ] = await this.jv.getCandidates(start, count).catch(error => _error = error);
     if (_error) {
@@ -712,11 +717,10 @@ export default class SyncCtrl {
 
       let fetchers = new Array(Math.ceil(total / candidatesChunk)).join('.').split('.').map((x, i) => {
         let from = 1 + candidatesChunk * i;
-        let count = from + candidatesChunk > total ? total - from : candidatesChunk;
         return new Promise((res, rej) =>
           // Using timeout to overcome calls per second API limitation
           setTimeout(
-            () => this._jvGetCandidatesChunk(from, count, requisitionIds, res, rej),
+            () => this._jvGetCandidatesChunk(from, candidatesChunk, requisitionIds, res, rej),
             10000 * i
           )
         );
