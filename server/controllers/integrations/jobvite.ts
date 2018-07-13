@@ -30,7 +30,6 @@ export default class JobViteIntegrationsCtrl {
 	        useQuerystring: true
 	      },
 	      (err, response, body) => {
-          // const diapasone = '[' + params.start + '÷' + (params.start + params.count) + ']';
           try {
 	          body = JSON.parse(body);
 	        } catch (e) {
@@ -41,7 +40,6 @@ export default class JobViteIntegrationsCtrl {
             console.log('Error:', JSON.stringify(body.status.messages), body.status.code);
             return reject(body.status.messages);
           }
-          // console.log(item + 's chunk fetched ' + diapasone);
           resolve([body[resultKey], +body.total]);
 	      })
 	    		.on('error', error => {

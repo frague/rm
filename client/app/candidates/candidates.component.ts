@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 
 import { CommentsComponent } from '../planner/comments.component';
 import { RequisitionComponent } from './requisition.component';
@@ -56,16 +56,18 @@ export class CandidatesComponent implements OnInit {
   }
 
   fetchData(query={}): Subscription {
-    this.items = [];
-    this.requisitionCategories = {};
     this.requisitionCandidates = {};
 
     this.isCategoryFilled = {};
 
-    return this.requisitionService.getAll({}).subscribe(data => {
-      this.items = data;
-      this.items.push(emptyRequisition);
-      this.requisitionsIds = this.items.map(requisition => requisition.requisitionId);
+    let requisitionsFetcher = this.items.length ? Observable.from([[]]) : this.requisitionService.getAll({});
+
+    return requisitionsFetcher.subscribe(data => {
+      if (data.length) {
+        this.items = data;
+        this.items.push(emptyRequisition);
+        this.requisitionsIds = this.items.map(requisition => requisition.requisitionId);
+      }
 
       this.candidateService.getAll(query).subscribe(data => {
         this.allExpanded = data.length <= 100;
