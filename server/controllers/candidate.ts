@@ -68,12 +68,6 @@ export default class CandidateCtrl extends BaseCtrl {
             as: 'requisition'
           }
         },
-        // {
-        //   '$unwind': {
-        //     path: '$requisition',
-        //     preserveNullAndEmptyArrays: true
-        //   }
-        // },
         {
           '$match': query
         },
@@ -91,7 +85,7 @@ export default class CandidateCtrl extends BaseCtrl {
             requisitionId: 1,
             state: 1,
             updated: 1,
-            requisition: 1,
+            status: 1,
             _id: 1
           }
         },
