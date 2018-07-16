@@ -14,6 +14,7 @@ $average: #e8ea9a;
 $bad: #eac39a;
 
 $warning: rgba(255, 85, 0, 0.25);
+$warning-opaque: #ffd5c1;
 $dim: rgba(0, 0, 0, 0.02);
 
 $cornerColor: #87afb3;
@@ -413,7 +414,7 @@ i.initiative {
         background-color: $primary !important;
       }
       &.warning {
-        background-color: $warning;
+        background-color: $warning-opaque;
       }
       &.SP {
         border-left: solid 4px $bad;
@@ -504,7 +505,7 @@ i.initiative {
           }
 
           &.billable {
-            background-color: $danger;
+            background-color: $warning-opaque;
             &.assigned {
               background-color: $yellow;
             }
