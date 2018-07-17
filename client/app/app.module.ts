@@ -60,6 +60,9 @@ import { CandidatesComponent } from './candidates/candidates.component';
 import { RequisitionComponent } from './candidates/requisition.component';
 import { SpinnerComponent } from './shared/spinner/spinner.component';
 
+import { PersonModal } from './modal/person-modal.component';
+import { UserTabComponent } from './modal/tabs/user-tab.component';
+
 const config: SocketIoConfig = {
   url: ':3030',
   options: {}
@@ -92,7 +95,10 @@ const config: SocketIoConfig = {
     AssignmentsReportComponent,
     SkillsetComponent,
     CandidatesComponent,
-    SpinnerComponent
+    SpinnerComponent,
+
+    PersonModal,
+    UserTabComponent,
   ],
   imports: [
     RoutingModule,

@@ -1,0 +1,49 @@
+    <spinner [isShown]="isLoading">
+      <avatar [login]="person.login"></avatar>
+      <dl class="attributes">
+        <dt>Location</dt>
+        <dd>{{ person.location }}</dd>
+
+        <dt>Profile</dt>
+        <dd>
+          {{ person.profile }}
+          <span *ngIf="person.specialization"> ({{ person.specialization }})</span>
+        </dd>
+
+        <dt>Grade</dt>
+        <dd>{{ person.grade }}</dd>
+
+        <dt>Pool</dt>
+        <dd>{{ person.pool }}</dd>
+
+        <dt>Manager</dt>
+        <dd>{{ person.manager }}</dd>
+
+        <dt>Skype</dt>
+        <dd><a [href]="getSkype(person.skype)" *ngIf="person.skype">{{ person.skype }}</a></dd>
+
+        <dt>Room</dt>
+        <dd>{{ person.room }}</dd>
+
+        <dt>Phone</dt>
+        <dd>{{ person.phone }}</dd>
+
+        <dt>Visas</dt>
+        <dd>
+          <ul *ngIf="hasVisas()">
+            <li>{{ getVisaInfo('visaB', 'B1/B2') }}</li>
+            <li>{{ getVisaInfo('visaL', 'L') }}</li>
+          </ul>
+          <span *ngIf="!hasVisas()">-</span>
+        </dd>
+
+        <dt>Driver's License</dt>
+        <dd>{{ person.license }}</dd>
+
+        <ng-container *ngIf="person.birthday">
+          <dt>Birthday</dt>
+          <dd>{{ person.birthday|date }}</dd>
+        </ng-container>
+
+      </dl>
+    </spinner>
