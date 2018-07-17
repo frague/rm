@@ -1,0 +1,20 @@
+<ng-template #content let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <h4 class="modal-title">Title</h4>
+  </div>
+  <div class="comments-modal modal-body">
+    <ngb-tabset (tabChange)="tabChange($event)" #tabs="ngbTabset">
+      <ngb-tab title="User" id="user">
+        <ng-template ngbTabContent>
+          <user-tab></user-tab>
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
+  </div>
+  <div class="modal-footer">
+    Blah!
+  </div>
+</ng-template>

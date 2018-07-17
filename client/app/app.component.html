@@ -68,6 +68,8 @@
         Register
       </a>
 
+      <a class="nav-item nav-link" (click)="showModal()">Modal</a>
+
       <div class="pull-right">
         <a [routerLink]="['account']" class="nav-item nav-link" routerLinkActive="active" *ngIf="auth.loggedIn">
           <i class="fa fa-user-circle-o"></i> Account ({{auth.currentUser.username}})
@@ -83,5 +85,7 @@
   </nav>
 
   <router-outlet></router-outlet>
+
+  <person-modal-new></person-modal-new>
 
 </div>

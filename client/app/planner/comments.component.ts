@@ -1,4 +1,5 @@
 import { Component, ViewChild, Input } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { CommentService} from '../services/comments.service';
 import { SkillsService} from '../services/skills.service';
