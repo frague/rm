@@ -79,6 +79,8 @@ export default class AssignmentCtrl extends BaseCtrl {
             }
           });
           console.log('With skills:', JSON.stringify(or));
+        } else {
+          console.log('No people with selected skills were found');
         }
         let query = this.modifyCriteria(or, this.modifiers);
         this._query(res, this.fixOr(query), suggestions, addComments);
