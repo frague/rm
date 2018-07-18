@@ -4,8 +4,7 @@ import { PersonModal } from './modal/person-modal.component';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  templateUrl: './app.component.html'
 })
 export class AppComponent {
   @ViewChild(PersonModal) modal: PersonModal;
@@ -15,6 +14,6 @@ export class AppComponent {
   constructor(public auth: AuthService) {}
 
   showModal() {
-    this.modal.show();
+    this.modal.show('nbogdanov');
   };
 }

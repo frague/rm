@@ -3,18 +3,26 @@
     <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
-    <h4 class="modal-title">Title</h4>
+    <avatar [login]="person.login"></avatar>
+    <h4 class="modal-title">
+      {{ person.name }}
+      <ng-container *ngIf="person.onTrip === 'true'">
+        (on business trip)
+      </ng-container>
+    </h4>
+    <h6>
+      {{ person.grade }},
+      {{ person.profile }}
+      <span *ngIf="person.specialization"> ({{ person.specialization }})</span>
+    </h6>
   </div>
   <div class="comments-modal modal-body">
     <ngb-tabset (tabChange)="tabChange($event)" #tabs="ngbTabset">
-      <ngb-tab title="User" id="user">
+      <ngb-tab title="Profile" id="profile">
         <ng-template ngbTabContent>
-          <user-tab></user-tab>
+          <user-tab [person]="person"></user-tab>
         </ng-template>
       </ngb-tab>
     </ngb-tabset>
-  </div>
-  <div class="modal-footer">
-    Blah!
   </div>
 </ng-template>
