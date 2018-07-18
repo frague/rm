@@ -62,6 +62,8 @@ import { SpinnerComponent } from './shared/spinner/spinner.component';
 
 import { PersonModal } from './modal/person-modal.component';
 import { UserTabComponent } from './modal/tabs/user-tab.component';
+import { CommentsTabComponent } from './modal/tabs/comments-tab.component';
+import { SkillsTabComponent } from './modal/tabs/skills-tab.component';
 
 const config: SocketIoConfig = {
   url: ':3030',
@@ -98,7 +100,7 @@ const config: SocketIoConfig = {
     SpinnerComponent,
 
     PersonModal,
-    UserTabComponent,
+    UserTabComponent, CommentsTabComponent, SkillsTabComponent,
   ],
   imports: [
     RoutingModule,

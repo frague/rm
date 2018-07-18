@@ -1,13 +1,11 @@
 export abstract class BaseTabComponent {
-  onEnter() {
+  isLoading = false;
+  
+  fetchData() {
 
   }
 
-  onLeave() {
-
-  }
-
-  hasChanges() {
-    return false;
+  ngOnInit() {
+    this.fetchData();
   }
 }

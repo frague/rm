@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, EventEmitter } from '@angular/core';
 import { BaseTabComponent } from './base.component';
 import { DomSanitizer } from '@angular/platform-browser';
 import { PrintableDatePipe } from '../../pipes';
@@ -8,7 +8,7 @@ import { PrintableDatePipe } from '../../pipes';
   templateUrl: './user-tab.component.html'
 })
 export class UserTabComponent extends BaseTabComponent {
-  @Input('person') person: any = {};
+  @Input() person: any = {};
 
   constructor(
     public sanitizer: DomSanitizer,

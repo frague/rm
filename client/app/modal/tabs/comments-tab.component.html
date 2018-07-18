@@ -1,0 +1,19 @@
+<spinner [isShown]="isLoading">
+  <div class="comments">
+    <div
+      *ngFor="let comment of aggregated"
+      [ngClass]="{status: comment.isStatus}"
+    >
+      <div class="date">
+        {{ comment.date|date }}
+        <span>
+          <a (click)="delete(comment)"><i class="fa fa-trash"></i></a>
+          <a (click)="startEditing(comment, tabs)"><i class="fa fa-pencil"></i></a>
+        </span>
+      </div>
+      <h6 *ngIf="comment.source">{{ comment.source }}</h6>
+      <div [innerHTML]="comment.text|MarkdownToHtml"></div>
+    </div>
+  </div>
+  <div class="empty" *ngIf="!aggregated.length">No comments added yet</div>
+</spinner>
