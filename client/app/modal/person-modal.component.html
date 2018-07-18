@@ -23,6 +23,16 @@
           <user-tab [person]="person"></user-tab>
         </ng-template>
       </ngb-tab>
+      <ngb-tab title="Notes" id="comments">
+        <ng-template ngbTabContent>
+          <comments-tab [key]="person.login" [entity]="person"></comments-tab>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab title="Skills" id="skills">
+        <ng-template ngbTabContent>
+          <skills-tab [login]="person.login"></skills-tab>
+        </ng-template>
+      </ngb-tab>
     </ngb-tabset>
   </div>
 </ng-template>

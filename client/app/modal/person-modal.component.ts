@@ -19,9 +19,6 @@ export class PersonModal extends BaseModalComponent {
     super(modalService);
   }
 
-  fetchData() {
-  }
-
   show(person: any) {
     if (typeof person === 'string') {
       this.person = {};

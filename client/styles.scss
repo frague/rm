@@ -39,6 +39,7 @@ body {
 a {
   &, &:hover, &:visited, &:active, &:focus {
     color: $link;
+    text-decoration: none;
   }
 }
 
@@ -1317,7 +1318,7 @@ div.bottom-corner {
 }
 
 .spinner {
-  i.fa {
+  & > i.fa {
     position: absolute;
     left: 50%;
     margin-left: -40px;
