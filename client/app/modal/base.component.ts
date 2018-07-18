@@ -15,9 +15,12 @@ export abstract class BaseModalComponent {
   modalRef: any;
   content: any;
   activeTab: string;
-  tabs: any[] = [];
 
   constructor(private modalService: NgbModal) {
+    this.fetchData();
+  }
+
+  fetchData() {
   }
 
   tabChange(e) {
@@ -37,7 +40,7 @@ export abstract class BaseModalComponent {
     return true;
   }
 
-  show() {
+  open() {
     this.modalRef = this.modalService.open(this.content, {size: 'lg', beforeDismiss: () => this.isSafeToProceed()});
   }
 }
