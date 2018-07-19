@@ -11,7 +11,7 @@
       </ng-container>
     </h4>
     <h6>
-      {{ person.grade }},
+      <span class="comma-after">{{ person.grade }}</span>
       {{ person.profile }}
       <span *ngIf="person.specialization"> ({{ person.specialization }})</span>
     </h6>
@@ -31,6 +31,11 @@
       <ngb-tab title="Skills" id="skills">
         <ng-template ngbTabContent>
           <skills-tab [login]="person.login"></skills-tab>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab title="Carreer" id="carreer">
+        <ng-template ngbTabContent>
+          <carreer-tab [bambooId]="person.bambooId"></carreer-tab>
         </ng-template>
       </ngb-tab>
     </ngb-tabset>
