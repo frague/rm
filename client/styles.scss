@@ -158,6 +158,10 @@ pre {
   cursor: pointer;
 }
 
+.comma-after:not(:empty):after {
+  content: ", ";
+}
+
 .avatar {
   background-size: cover;
   border: solid 1px $grid;
@@ -225,7 +229,7 @@ pre {
   }
 
   .nav-tabs {
-    margin: 5px 0 20px 0;
+    margin: 0 0 20px 0;
 
     .nav-item {
     }
@@ -239,8 +243,12 @@ pre {
   }
 
   .tab-pane {
-    max-height: 300px;
+    height: 300px;
     overflow-y: auto;
+
+    div.row {
+      margin-right: 0px !important;
+    }
   }
 }
 
@@ -1202,116 +1210,140 @@ div.bottom-corner {
   max-height: 400px;
   overflow-y: auto;
 
-  .comments {
-    & > div {
-      padding: 10px 0 10px 100px;
-      margin: 0;
-      min-height: 52px;
+}
 
-      &.status {
-        background-color: $primary;
-      }
+.comments {
+  .new {
+    float: right;
+    padding-top: 10px;
 
-      &:nth-child(n+2) {
-        border-top: solid 1px $grid;
-      }
-
-      div.date {
-        float: left;
-        margin-left: -90px;
-        font-size: 12px;
-        font-weight: 600;
-        span {
-          display: block;
-          text-align: center;
-        }
-      }
-
-      h6:empty {
-      }
+    button {
+      position: fixed;
+      right: 40px;
+      box-shadow: 0 10px 10px -5px rgba(0, 0, 0, 0.5);
     }
   }
-
   .comment {
-    .preview {
-      overflow: auto;
-      max-height: 250px;
+    padding: 10px 0 10px 100px;
+    margin: 0;
+    min-height: 52px;
 
-      background-color: #F8F8F8;
+    &.editing {
+      height: 78px;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    &.status {
+      background-color: $primary;
+    }
+
+    &:nth-child(n+3) {
+      border-top: solid 1px $grid;
+    }
+
+    div.date {
+      float: left;
+      margin-left: -90px;
       font-size: 12px;
-      padding: 4px;
-      min-height: 190px;
-
-      p {
-        margin-bottom: 6px;
+      font-weight: 600;
+      span {
+        display: block;
+        text-align: center;
       }
+    }
+
+    h6:empty {
+    }
+  }
+  form {
+    margin-top: 15px;
+
+    .inline {
+      display: inline-block;
+    }
+  }
+}
+
+.comment {
+  .preview {
+    overflow: auto;
+    max-height: 250px;
+
+    background-color: #F8F8F8;
+    font-size: 12px;
+    padding: 4px;
+    min-height: 190px;
+
+    p {
+      margin-bottom: 6px;
+    }
+  }
+}
+
+.skills {
+  h3 {
+    font-weight: normal;
+    font-size: 20px;
+  }
+
+  div:first-child > ul {
+    padding-left: 0;
+  }
+
+  ul {
+    padding-left: 20px;
+    li {
+      list-style: none;
+    }
+    &.surveys {
+      font-size: 12px;
     }
   }
 
-  .skills {
-    h3 {
-      font-weight: normal;
-      font-size: 20px;
-    }
+  dl {
+    font-size: 14px;
 
-    div:first-child > ul {
-      padding-left: 0;
+    &.padded {
+      padding-left: 10px;
+      font-size: 12px;
+      margin-bottom: 5px;
+
+      dt {
+        font-weight: normal;
+      }
     }
 
     ul {
-      padding-left: 20px;
-      li {
-        list-style: none;
-      }
-      &.surveys {
-        font-size: 12px;
-      }
+      padding-left: 0;
     }
 
-    dl {
-      font-size: 14px;
-
-      &.padded {
-        padding-left: 10px;
-        font-size: 12px;
-        margin-bottom: 5px;
-
-        dt {
-          font-weight: normal;
-        }
-      }
-
-      ul {
-        padding-left: 0;
-      }
-
-      dt {
-        display: inline-block;
-        padding-left: 100px;
-      }
-      dd {
-        float: left;
-        width: 90px;
-        margin: 0;
-        text-transform: lowercase;
-        position: absolute;
-      }
+    dt {
+      display: inline-block;
+      padding-left: 100px;
+    }
+    dd {
+      float: left;
+      width: 90px;
+      margin: 0;
+      text-transform: lowercase;
+      position: absolute;
     }
   }
+}
 
-  .carreer {
-    tr {
-      &:first-child td {
-        border-top-width: 0;
-      }
+.carreer {
+  tr {
+    &:first-child td {
+      border-top-width: 0;
+    }
 
-      td {
-        font-size: 14px !important;
+    td {
+      font-size: 14px !important;
 
-        &:first-child {
-          white-space: nowrap;
-          // padding-left: 0;
-        }
+      &:first-child {
+        white-space: nowrap;
+        // padding-left: 0;
       }
     }
   }

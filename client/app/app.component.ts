@@ -14,6 +14,6 @@ export class AppComponent {
   constructor(public auth: AuthService) {}
 
   showModal() {
-    this.modal.show('nbogdanov');
+    this.modal.show('snovikov');
   };
 }

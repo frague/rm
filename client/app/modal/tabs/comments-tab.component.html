@@ -1,19 +1,41 @@
 <spinner [isShown]="isLoading">
   <div class="comments">
+    <div class="new" *ngIf="!isEditing()">
+      <button class="btn btn-primary" (click)="edit(getEmpty())">Add</button>
+    </div>
     <div
-      *ngFor="let comment of aggregated"
-      [ngClass]="{status: comment.isStatus}"
+      class="comment"
+      *ngFor="let comment of getVisibleRecords()"
+      [ngClass]="{status: comment.isStatus, editing: isEditing()}"
     >
       <div class="date">
         {{ comment.date|date }}
-        <span>
+        <span *ngIf="comment._id">
           <a (click)="delete(comment)"><i class="fa fa-trash"></i></a>
-          <a (click)="startEditing(comment, tabs)"><i class="fa fa-pencil"></i></a>
+          <a (click)="edit(comment)"><i class="fa fa-pencil"></i></a>
         </span>
       </div>
       <h6 *ngIf="comment.source">{{ comment.source }}</h6>
       <div [innerHTML]="comment.text|MarkdownToHtml"></div>
     </div>
+
+    <form class="form" [formGroup]="form" *ngIf="isEditing()">
+      <div class="form-group">
+        <input class="form-control" type="text" name="source" formControlName="source" placeholder="Source">
+      </div>
+      <div class="form-group">
+        <textarea class="form-control" name="text" formControlName="text" placeholder="Comment" required rows="4"></textarea>
+      </div>
+      <button type="" class="btn btn-default pull-right" (click)="discard()">Discard</button>
+      <button type="" class="btn btn-primary pull-right" (click)="save()">Save</button>
+      <div class="form-check inline">
+        <label class="form-check-label">
+          <input class="form-check-input" type="checkbox" formControlName="isStatus">
+          This should be considered as a current status
+        </label>
+      </div>
+    </form>
+
+    <div class="empty" *ngIf="!aggregated.length">No records fetched</div>
   </div>
-  <div class="empty" *ngIf="!aggregated.length">No comments added yet</div>
 </spinner>
