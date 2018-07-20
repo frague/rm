@@ -1,0 +1,22 @@
+<spinner [isShown]="isLoading">
+  <div class="history">
+    <ul class="diffs">
+      <li *ngFor="let diff of items">
+        <time>{{ diff.date|date }}</time>
+        <ul>
+          <li *ngFor="let key of diff.diff|keys">
+            <b>{{ key }}:</b>
+            <ng-container *ngIf="key !== 'payRate'">
+              {{ diff.diff[key][0]|ellipsis:'...' }}
+              &rarr;
+              {{ diff.diff[key][1]|ellipsis:'...' }}
+            </ng-container>
+            <i *ngIf="key === 'payRate'" class="fa fa-eye" [title]="diff.diff[key][0] + ' &rarr; ' + diff.diff[key][1]"></i>
+          </li>
+          <li *ngIf="diff.diff == 1">added</li>
+          <li *ngIf="diff.diff == -1">removed</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</spinner>

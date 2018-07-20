@@ -20,6 +20,11 @@
           <assignments-tab [person]="person" [assignment]="assignment"></assignments-tab>
         </ng-template>
       </ngb-tab>
+      <ngb-tab title="History" id="history">
+        <ng-template ngbTabContent>
+          <history-tab [key]="person.login"></history-tab>
+        </ng-template>
+      </ngb-tab>
     </ngb-tabset>
   </div>
 </ng-template>

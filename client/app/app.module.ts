@@ -68,6 +68,7 @@ import { CommentsTabComponent } from './modal/tabs/comments-tab.component';
 import { SkillsTabComponent } from './modal/tabs/skills-tab.component';
 import { CarreerTabComponent } from './modal/tabs/carreer-tab.component';
 import { AssignmentsTabComponent } from './modal/tabs/assignments-tab.component';
+import { HistoryTabComponent } from './modal/tabs/history-tab.component';
 
 const config: SocketIoConfig = {
   url: ':3030',
@@ -105,7 +106,7 @@ const config: SocketIoConfig = {
 
     PersonModal, AssignmentModal,
     UserTabComponent, CommentsTabComponent, SkillsTabComponent, CarreerTabComponent,
-    AssignmentsTabComponent,
+    AssignmentsTabComponent, HistoryTabComponent,
   ],
   imports: [
     RoutingModule,
