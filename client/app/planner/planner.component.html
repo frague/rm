@@ -2,9 +2,9 @@
   <div class="alert alert-info message" *ngIf="message">{{ message }}</div>
   <h1><span (click)="showReport()">Show Report</span>Demand Planning Board</h1>
 
-  <assignment-modal [resources]="resourcesById" [initiatives]="initiatives"></assignment-modal>
+  <assignment-modal-new></assignment-modal-new>
 
-  <person-modal></person-modal>
+  <person-modal-new></person-modal-new>
 
   <demand-modal></demand-modal>
 

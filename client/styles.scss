@@ -235,8 +235,14 @@ pre {
 
     a.nav-link {
       color: #888;
+      padding: 7px 20px 8px 20px;
+
       &.active {
         color: #000;
+      }
+
+      &.disabled {
+        color: #DDD;
       }
     }
   }

@@ -7,7 +7,7 @@ import { Subscription, Observable } from 'rxjs';
 
 import { DemandComponent } from '../assignments/demand.component';
 import { RequisitionComponent } from '../candidates/requisition.component';
-import { PersonComponent } from '../people/person.component';
+import { PersonModal } from '../modal/person-modal.component';
 
 const rowNumber = /^\d+$:/g;
 
@@ -18,7 +18,7 @@ const rowNumber = /^\d+$:/g;
 export class DpComponent extends BaseComponent {
   @ViewChild(DemandComponent) demandModal: DemandComponent;
   @ViewChild(RequisitionComponent) requisitionModal: RequisitionComponent;
-  @ViewChild(PersonComponent) personModal: PersonComponent;
+  @ViewChild(PersonModal) personModal: PersonModal;
 
   public form = new FormGroup({});
   types = ['r', 'd', 'c'];

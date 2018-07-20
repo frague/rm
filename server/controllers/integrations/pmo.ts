@@ -58,7 +58,10 @@ export default class PmoIntegrationsCtrl {
           let data;
           try {
             data = JSON.parse(body);
-            resolve(data.data.assignments);
+            resolve(data.data.assignments.sort((a, b) => {
+              let [da, db] = [new Date(a.start), new Date(b.start)];
+              return da < db ? 1 : -1;
+            }));
           } catch (e) {
             return reject(e);
           }

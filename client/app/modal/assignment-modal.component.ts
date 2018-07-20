@@ -23,8 +23,8 @@ export class AssignmentModal extends BaseModalComponent {
   findAssignment(assignmentId: string) {
     let assignments = this.person.assignments || [];
     this.assignment = assignments.find(assignment => assignment._id === assignmentId);
-    if (!this.assignment && assignments.length) {
-      this.assignment = assignments[0];
+    if (!this.assignment) {
+      this.assignment = assignments.length ? assignments[0] : {};
     }
   }
 

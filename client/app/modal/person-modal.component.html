@@ -28,14 +28,24 @@
           <comments-tab [key]="person.login" [entity]="person"></comments-tab>
         </ng-template>
       </ngb-tab>
+      <ngb-tab title="Assignments" id="assignments" [disabled]="!person.pmoId">
+        <ng-template ngbTabContent>
+          <assignments-tab [pmoId]="person.pmoId" [state]="state"></assignments-tab>
+        </ng-template>
+      </ngb-tab>
       <ngb-tab title="Skills" id="skills">
         <ng-template ngbTabContent>
           <skills-tab [login]="person.login" [state]="state"></skills-tab>
         </ng-template>
       </ngb-tab>
-      <ngb-tab title="Carreer" id="carreer">
+      <ngb-tab title="Carreer" id="carreer" [disabled]="!person.bambooId">
         <ng-template ngbTabContent>
           <carreer-tab [bambooId]="person.bambooId" [state]="state"></carreer-tab>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab title="History" id="history">
+        <ng-template ngbTabContent>
+          <history-tab [key]="person.login" [state]="state"></history-tab>
         </ng-template>
       </ngb-tab>
     </ngb-tabset>
