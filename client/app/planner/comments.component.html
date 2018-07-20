@@ -11,6 +11,7 @@
         <ng-template ngbTabContent>
           <div class="comments">
             <div
+              class="comment"
               *ngFor="let comment of aggregated"
               [ngClass]="{status: comment.isStatus}"
             >

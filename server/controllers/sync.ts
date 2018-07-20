@@ -23,7 +23,8 @@ import {
   locations,
   demandProfilesMap,
   demandPoolsMap,
-  candidateStates
+  candidateStates,
+  profilesInvertedMap
 } from '../mappings';
 
 const candidatesChunk = 500;
@@ -381,7 +382,11 @@ export default class SyncCtrl {
         peopleSorted.forEach(person => {
           // ... determine the pool they belong to
           const ems = person['engineerManagers'];
-          const pool = (ems && ems.length) ? ems[0].discipline : '';
+          const profile = person.profile;
+          const specialization = (person.specialization || '').trim();
+          const pool = (ems && ems.length) ?
+            ems[0].discipline :
+            ((profilesInvertedMap[profile] || {})[specialization] || '');
           const prev = prevState[person.username] || {};
 
           const who = (syncWhois ? this._whois[person.username] : prev) || {};
@@ -401,9 +406,9 @@ export default class SyncCtrl {
             name: person.name,
             login: person.username || person.name,
             grade: person.grade,
-            location: locationsMap[person.location],
-            profile: person.profile,
-            specialization: (person.specialization || '').trim(),
+            location: locationsMap[person.location] || person.location,
+            profile,
+            specialization,
             onTrip: person.inBusinessTrip,
             pool,
             manager: person.manager,
