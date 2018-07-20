@@ -8,7 +8,8 @@ import { DpService } from '../../services/dp.service';
 })
 export class HistoryTabComponent extends BaseTabComponent {
   @Input() key: any = {};
-  items: any[] = [];
+  @Input() state: any = {};
+  items: any[] = null;
 
   constructor(
     private dpService: DpService,
@@ -17,12 +18,17 @@ export class HistoryTabComponent extends BaseTabComponent {
   }
 
   fetchData() {
-    this.items = [];
-    if (!this.key) return;
+    this.items = this.getState('history', this.key);
+    if (!this.key || (this.items && this.items.length)) {
+      return;
+    }
 
     this.isLoading = true;
   	this.dpService.getAll({subject: this.key})
-      .subscribe(diffs => this.items = diffs)
+      .subscribe(diffs => {
+        this.items = diffs;
+        this.setState('history', this.key, diffs);
+      })
       .add(() => this.isLoading = false);
   }
 }

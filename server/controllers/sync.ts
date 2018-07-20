@@ -424,6 +424,7 @@ export default class SyncCtrl {
             payRate: pr.payRate,
             birthday: pr.birthday,
             bambooId: pr.bambooId,
+            pmoId: person.id,
           });
 
           profilesCreated++;

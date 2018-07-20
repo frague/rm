@@ -21,19 +21,26 @@ export class AssignmentModal extends BaseModalComponent {
   }
 
   findAssignment(assignmentId: string) {
-    this.assignment = (this.person.assignments || []).find(assignment => assignment._id === assignmentId) || {};
+    let assignments = this.person.assignments || [];
+    this.assignment = assignments.find(assignment => assignment._id === assignmentId);
+    if (!this.assignment && assignments.length) {
+      this.assignment = assignments[0];
+    }
   }
 
   show(person: any, assignmentId: string) {
     if (typeof person === 'string') {
       this.person = {};
-      this.assignmentService.getByLogin(person).subscribe(
-        person => {
-          this.person = person;
-          this.findAssignment(assignmentId);
-        },
-        err => console.log(err)
-      );
+      this.isLoading = true;
+      this.assignmentService.getByLogin(person)
+        .subscribe(
+          person => {
+            this.person = person;
+            this.findAssignment(assignmentId);
+          },
+          err => console.log(err)
+        )
+      	.add(() => this.isLoading = false);
     } else {
       this.person = person;
       this.findAssignment(assignmentId);

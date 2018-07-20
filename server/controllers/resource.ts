@@ -83,6 +83,7 @@ export default class ResourceCtrl extends BaseCtrl {
             onTrip: 1,
             birthday: 1,
             bambooId: 1,
+            pmoId: 1,
           }
         },
         {

@@ -16,6 +16,7 @@ import SnapshotCtrl from './controllers/snapshot';
 import CandidateCtrl from './controllers/candidate';
 import RequisitionCtrl from './controllers/requisition';
 import BambooIntegrationsCtrl from './controllers/integrations/bamboo';
+import PmoIntegrationsCtrl from './controllers/integrations/pmo';
 
 import Resource from './models/resource';
 import User from './models/user';
@@ -43,15 +44,17 @@ export default function setRoutes(app) {
   const skillTreeCtrl = new SkillTreeCtrl();
 
   const bamboo = new BambooIntegrationsCtrl();
+  const pmo = new PmoIntegrationsCtrl();
 
   // Assignments
-  router.route('/assignment/:id').get(assignmentCtrl.get);
+  //router.route('/assignment/:id').get(assignmentCtrl.get);
   router.route('/assignment').post(assignmentCtrl.insert);
   router.route('/assignments').get(assignmentCtrl.getAll);
   router.route('/assignment/:id').put(assignmentCtrl.update);
   router.route('/assignments/count').get(assignmentCtrl.count);
   router.route('/assignment/:id').delete(assignmentCtrl.delete);
   router.route('/assignments').delete(assignmentCtrl.deleteAll);
+  router.route('/assignment/:pmoId').get(pmo.getAssignments);
 
   // Resources
   router.route('/resources').get(resourceCtrl.getAll);

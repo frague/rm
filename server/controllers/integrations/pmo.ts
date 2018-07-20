@@ -6,6 +6,7 @@ const pmo = 'https://pmo.griddynamics.net/';
 const pmoEmployees = pmo + '/service/api/employee/active';
 const pmoAssignments = pmo + '/service/v1/people/employees';
 const pmoDemandMeta = pmo + '/service/api/internal/position/demand/';
+const pmoUserAssignments = pmo + '/api/v1/people/history/employee?id=';
 
 export default class PmoIntegrationsCtrl {
   sessionCookies = '';
@@ -42,6 +43,28 @@ export default class PmoIntegrationsCtrl {
         })
         .on('error', error => {
           console.log('Error fetching employee from PMO');
+          reject(error);
+        });
+    });
+  }
+
+  // Get employees info
+  getUserAssignments = (bambooId: string): Promise<any> => {
+    return new Promise(async (resolve, reject) => {
+      await this.login().catch(reject);
+      request.get(
+        fillRequest(this.sessionCookies, pmoUserAssignments + bambooId),
+        (error, response, body) => {
+          let data;
+          try {
+            data = JSON.parse(body);
+            resolve(data.data.assignments);
+          } catch (e) {
+            return reject(e);
+          }
+        })
+        .on('error', error => {
+          console.log('Error fetching employee assignments from PMO');
           reject(error);
         });
     });
@@ -92,6 +115,20 @@ export default class PmoIntegrationsCtrl {
       ].map((dict, index) => this.getDemandDict(dict, index).then(data => _dicts[dict] = data))
     )
       .then(() => _dicts);
+  }
+
+  getAssignments = (req, res) => {
+    let { pmoId } = req.params;
+    if (pmoId != +pmoId) {
+      return res.sendStatus(500);
+    }
+
+	this.getUserAssignments(pmoId)
+      .then(data => {
+        res.setHeader('Content-Type', 'application/json');
+        res.json(data);
+      })
+      .catch(err => res.sendStatus(500));
   }
 
 }

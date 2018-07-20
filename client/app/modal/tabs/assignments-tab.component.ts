@@ -2,29 +2,35 @@ import { Component, Input, EventEmitter } from '@angular/core';
 import { BaseTabComponent } from './base.component';
 import { DomSanitizer } from '@angular/platform-browser';
 import { PrintableDatePipe } from '../../pipes';
+import { AssignmentService } from '../../services/assignment.service';
 
 @Component({
   selector: 'assignments-tab',
   templateUrl: './assignments-tab.component.html'
 })
 export class AssignmentsTabComponent extends BaseTabComponent {
-  @Input() person: any = {};
-  @Input('assignment') shownAssignment: any = {};
+  @Input() pmoId: string = '';
+  @Input() state: any = {};
+  items: any[] = [];
 
   constructor(
-    public sanitizer: DomSanitizer,
-    private makeDate: PrintableDatePipe,
+    private assignmentService: AssignmentService,
   ) {
     super();
   }
 
-  select(assignment: any) {
-    this.shownAssignment = assignment;
-  }
+  fetchData() {
+    this.items = this.getState('assignments', this.pmoId);
+    if (this.items && this.items.length) {
+      return;
+    }
 
-  getAssignmentClass(assignment: any): Object {
-    return {
-      selected: assignment._id === this.shownAssignment._id
-    };
+    this.isLoading = true;
+  	this.assignmentService.get({_id: this.pmoId})
+      .subscribe(data => {
+        this.items = data;
+        this.setState('assignments', this.pmoId, data);
+      })
+      .add(() => this.isLoading = false);
   }
 }
