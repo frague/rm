@@ -539,48 +539,64 @@ export default class SyncCtrl {
         return result;
       }, {});
 
-      const transformLocations = (item, locations) => {
-        return item.locations.map(lid => {
-          const name = locations[lid].name;
+      const transformLocations = (item) => {
+        return item.locations.map(lId => {
+          const name = locations[lId].name;
           return locationsMap[name] || name;
         }).sort().join(', ');
       };
 
+      const transformDestinations = (item) => {
+        let d = item.deployDestinations;
+        if (d && d.length === 1 && d[0] === 1) {
+          return 'Offshore';
+        }
+        let prefix = 'On-site ' + (item.availabilityForShortTrips ? 'short' : 'long');
+        return prefix + ' (' + item.deployDestinations.map(dId => (destinations[dId] || {}).name || dId).sort().join(', ') + ')';
+      };
+
       Object.keys(load).forEach(id => {
         let item = load[id];
+        let demand, status;
 
-        const account = item.account.name;
-        const end = new Date(item.startDate);
-        end.setMonth(end.getMonth() + item.duration);
-        const profile = workProfiles[item.workProfileId].name;
-        const status = statuses[item.statusId].name;
-        const specs = item.specializations.map(sid => specializations[sid].name).join(', ');
-        const pool = demandPoolsMap[profile + '-' + specs] || '';
+        try {
+          status = statuses[item.statusId].name;
 
-        let demand = {
-          login: (id + ':' + specs + '_' + profile + '_for_' + account).replace(/[ .:]/g, '_'),
-          name: id + ' ' + specs + ' ' + profile,
-          account: account,
-          comment: item.comment,
-          candidates: item.proposedCandidates.join(', '),
-          deployment: destinations[item.deployDestinationId].name,
-          end: end.toISOString().substr(0, 10),
-          grades: item.gradeRequirements.map(rid => {
-            let grade = grades[rid];
-            return grade ? (grade.code + grade.level) : '?';
-          }).sort().join(', '),
-          locations: transformLocations(item, locations),
-          profile,
-          project: item.project.name,
-          role: types[item.typeId].billableStatus,
-          start: item.startDate,
-          specializations: specs,
-          stage: stages[item.stageId].code,
-          requestId: item.jobviteId,
-          requirements: item.requirements,
+          const account = item.account.name;
+          const end = new Date(item.startDate);
+          end.setMonth(end.getMonth() + item.duration);
 
-          pool
-        };
+          const profile = workProfiles[item.workProfileId].name;
+          const specs = item.specializations.map(sid => specializations[sid].name).join(', ');
+          const pool = demandPoolsMap[profile + '-' + specs] || '';
+
+          demand = {
+            login: (id + ':' + specs + '_' + profile + '_for_' + account).replace(/[ .:]/g, '_'),
+            name: id + ' ' + specs + ' ' + profile,
+            account: account,
+            comment: item.comment,
+            candidates: item.proposedCandidates.join(', '),
+            deployment: transformDestinations(item),
+            end: end.toISOString().substr(0, 10),
+            grades: item.gradeRequirements.map(rid => {
+              let grade = grades[rid];
+              return grade ? (grade.code + grade.level) : '?';
+            }).sort().join(', '),
+            locations: transformLocations(item),
+            profile,
+            project: item.project.name,
+            role: types[item.typeId].billableStatus,
+            start: item.startDate,
+            specializations: specs,
+            stage: stages[item.stageId].code,
+            requestId: item.jobviteId,
+            requirements: item.requirements,
+
+            pool
+          };
+        } catch (e) {
+          return reject(e);
+        }
 
         if (status === 'Active') {
           setTimeout(() => new Demand(demand).save((err, data) => {
