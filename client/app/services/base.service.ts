@@ -30,12 +30,16 @@ export class BaseService {
     return this.http.get('/api/' + this.entity + '/count').map(res => res.json());
   }
 
-  add(item: any): Observable<any> {
-    return this.http.post('/api/' + this.entity, JSON.stringify(item), this.options).map(res => res.json());
-  }
-
   get(item: any): Observable<any> {
     return this.http.get('/api/' + this.entity + '/' + item._id).map(res => res.json());
+  }
+
+  save(item: any): Observable<any> {
+    return item._id ? this.edit(item) : this.add(item);
+  }
+
+  add(item: any): Observable<any> {
+    return this.http.post('/api/' + this.entity, JSON.stringify(item), this.options).map(res => res.json());
   }
 
   edit(item: any): Observable<any> {

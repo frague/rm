@@ -80,7 +80,13 @@ export class CommentsTabComponent extends BaseTabComponent {
     this.initialValue = o;
   }
 
-  save() {}
+  save() {
+    this.commentService.save(this.form.value)
+      .subscribe(() => {
+        this.fetchData();
+        this.discard();
+      })
+  }
 
   discard() {
     this.initialValue = null;
@@ -103,5 +109,9 @@ export class CommentsTabComponent extends BaseTabComponent {
       source: '',
       text: ''
     }
+  }
+
+  isFormValid() {
+    return this.form.status !== 'INVALID';
   }
 }
