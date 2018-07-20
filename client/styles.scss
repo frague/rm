@@ -176,7 +176,6 @@ pre {
   box-shadow: 0 10px 10px -5px rgba(0, 0, 0, 0.5);
 }
 
-
 .modal-content {
   border-radius: 0;
 
@@ -248,6 +247,26 @@ pre {
 
     div.row {
       margin-right: 0px !important;
+    }
+
+    .assignments {
+      ul {
+        padding: 0;
+        font-size: 14px;
+        line-height: 2;
+
+        li {
+          list-style: none;
+
+          &.selected a {
+            font-weight: bold;
+          }
+
+          a {
+            @extend .clickable;
+          }
+        }
+      }
     }
   }
 }

@@ -61,10 +61,13 @@ import { RequisitionComponent } from './candidates/requisition.component';
 import { SpinnerComponent } from './shared/spinner/spinner.component';
 
 import { PersonModal } from './modal/person-modal.component';
+import { AssignmentModal } from './modal/assignment-modal.component';
+
 import { UserTabComponent } from './modal/tabs/user-tab.component';
 import { CommentsTabComponent } from './modal/tabs/comments-tab.component';
 import { SkillsTabComponent } from './modal/tabs/skills-tab.component';
 import { CarreerTabComponent } from './modal/tabs/carreer-tab.component';
+import { AssignmentsTabComponent } from './modal/tabs/assignments-tab.component';
 
 const config: SocketIoConfig = {
   url: ':3030',
@@ -100,8 +103,9 @@ const config: SocketIoConfig = {
     CandidatesComponent,
     SpinnerComponent,
 
-    PersonModal,
+    PersonModal, AssignmentModal,
     UserTabComponent, CommentsTabComponent, SkillsTabComponent, CarreerTabComponent,
+    AssignmentsTabComponent,
   ],
   imports: [
     RoutingModule,

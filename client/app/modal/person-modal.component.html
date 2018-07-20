@@ -30,12 +30,12 @@
       </ngb-tab>
       <ngb-tab title="Skills" id="skills">
         <ng-template ngbTabContent>
-          <skills-tab [login]="person.login"></skills-tab>
+          <skills-tab [login]="person.login" [state]="state"></skills-tab>
         </ng-template>
       </ngb-tab>
       <ngb-tab title="Carreer" id="carreer">
         <ng-template ngbTabContent>
-          <carreer-tab [bambooId]="person.bambooId"></carreer-tab>
+          <carreer-tab [bambooId]="person.bambooId" [state]="state"></carreer-tab>
         </ng-template>
       </ngb-tab>
     </ngb-tabset>

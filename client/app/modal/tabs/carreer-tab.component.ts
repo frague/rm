@@ -1,4 +1,6 @@
 import { Component, Input, EventEmitter } from '@angular/core';
+import { Observable } from 'rxjs';
+
 import { BaseTabComponent } from './base.component';
 import { DomSanitizer } from '@angular/platform-browser';
 import { PrintableDatePipe } from '../../pipes';
@@ -10,6 +12,7 @@ import { CarreerService} from '../../services/carreer.service';
 })
 export class CarreerTabComponent extends BaseTabComponent {
   @Input() bambooId: string = '';
+  @Input() state: any = {};
   carreer: any = {};
 
   public lineChart: any = {
@@ -54,38 +57,31 @@ export class CarreerTabComponent extends BaseTabComponent {
   }
 
   fetchData() {
-    if (!this.isCarreerFetched()) {
-      this.isLoading = true;
-      this.carreerService.get(this.bambooId)
-        .subscribe(carreer => {
-          this.carreer = carreer;
-          let labels = [];
-          let result = (carreer.compensations || [])
-            .reverse()
-            .map(compensation => {
-              labels.push(this.makeDate.transform(compensation.startDate, 'nodate'));
-              return Math.round(compensation.rate.value);
-            }
-          );
+    let data = this.getState('carreer', this.bambooId) || null;
+    let fetcher = data ? Observable.from([data]) : this.carreerService.get(this.bambooId);
 
-          // if (result.length == 1) {
-          //   labels.push(datePipe.transform(new Date(), true));
-          //   result.push(result[0]);
-          // };
+    this.isLoading = true;
+    fetcher
+      .subscribe((carreer: any) => {
+        this.carreer = carreer;
+        this.setState('carreer', this.bambooId, carreer);
 
-          this.lineChart.labels = labels;
-          this.lineChart.data = [{
-            label: 'Compensation',
-            pointRadius: 10,
-            data: result
-          }];
-        })
-        .add(() => this.isLoading = false);
-    }
+        let labels = [];
+        let result = (carreer.compensations || [])
+          .reverse()
+          .map(compensation => {
+            labels.push(this.makeDate.transform(compensation.startDate, 'nodate'));
+            return Math.round(compensation.rate.value);
+          }
+        );
+
+        this.lineChart.labels = labels;
+        this.lineChart.data = [{
+          label: 'Compensation',
+          pointRadius: 10,
+          data: result
+        }];
+      })
+      .add(() => this.isLoading = false);
   }
-
-  isCarreerFetched(): boolean {
-    return Object.keys(this.carreer).length > 0;
-  }
-
 }

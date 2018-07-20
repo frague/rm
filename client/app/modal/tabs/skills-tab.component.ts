@@ -8,6 +8,7 @@ import { SkillsService} from '../../services/skills.service';
 })
 export class SkillsTabComponent extends BaseTabComponent {
   @Input() login: string = '';
+  @Input() state: any = {};
   skillsFetching: boolean;
   skills: any;
   skillsInfo: any;
@@ -47,8 +48,18 @@ export class SkillsTabComponent extends BaseTabComponent {
   }
 
   fetchData() {
+    [this.skills, this.skillsInfo] = this.getState('skills', this.login) || [null, null];
+    if (this.skills && this.skillsInfo) {
+      return;
+    }
+
     let loadersCount = 2;
-    let loaded = () => this.isLoading = !!--loadersCount;
+    let loaded = () => {
+      this.isLoading = !!--loadersCount
+      if (!this.isLoading) {
+        this.setState('skills', this.login, [this.skills, this.skillsInfo]);
+      }
+    };
 
     this.isLoading = true;
 

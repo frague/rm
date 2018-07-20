@@ -1,19 +1,19 @@
 import { Component, ViewChild } from '@angular/core';
 import { AuthService } from './services/auth.service';
-import { PersonModal } from './modal/person-modal.component';
+import { AssignmentModal } from './modal/assignment-modal.component';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html'
 })
 export class AppComponent {
-  @ViewChild(PersonModal) modal: PersonModal;
+  @ViewChild(AssignmentModal) modal: AssignmentModal;
 
   isFilterVisible = true;
 
   constructor(public auth: AuthService) {}
 
   showModal() {
-    this.modal.show('snovikov');
+    this.modal.show('dpanchenko', '5b5181f3a715f34793813046');
   };
 }

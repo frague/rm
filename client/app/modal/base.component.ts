@@ -1,10 +1,12 @@
 import { BaseComponent } from '../base.component';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, ModalDismissReasons, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 
 export abstract class BaseModalComponent {
   modalRef: any;
   content: any;
-  _state: Object = {};
+  state: Object = {};
+  isLarge = false;
+  private baseOptions = {beforeDismiss: () => this.isSafeToProceed()};
 
   constructor(private modalService: NgbModal) {
   }
@@ -18,6 +20,7 @@ export abstract class BaseModalComponent {
   }
 
   open() {
-    this.modalRef = this.modalService.open(this.content, {size: 'lg', beforeDismiss: () => this.isSafeToProceed()});
+    let options: NgbModalOptions = Object.assign(this.isLarge ? {size: 'lg'} : {}, this.baseOptions);
+    this.modalRef = this.modalService.open(this.content, options);
   }
 }

@@ -11,6 +11,7 @@ import { ResourceService } from '../services/resource.service';
 export class PersonModal extends BaseModalComponent {
   @ViewChild('content') content;
   person: any = {};
+  isLarge = true;
 
   constructor(
     modalService: NgbModal,
