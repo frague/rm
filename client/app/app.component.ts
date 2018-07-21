@@ -14,6 +14,6 @@ export class AppComponent {
   constructor(public auth: AuthService) {}
 
   showModal() {
-    this.modal.show('dpanchenko', '5b5181f3a715f34793813046');
+    // this.modal.show();
   };
 }

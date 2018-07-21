@@ -425,12 +425,14 @@ export class Schedule {
     this.todayCaption = this.makeDateCaption(today);
   }
 
-  showAssignment(login: string, assignment: any, event: MouseEvent) {
+  showAssignment(assignment: any, event: MouseEvent) {
     event.stopPropagation();
     if (assignment.demand) {
       this.demandModal.show(assignment.demand);
     } else {
-      this.assignmentModal.show(login, assignment._id)
+      let assignee = this.resourcesById[assignment.resourceId] || {};
+      assignee.assignments = [assignment];
+      this.assignmentModal.show(assignee);
     }
   };
 

@@ -56,7 +56,7 @@
             <initiative
               *ngFor="let assignment of assignmentsGroup"
               [data]="getAssignment(assignment)"
-              (click)="showAssignment(assignee.login, assignment, $event)"
+              (click)="showAssignment(assignment, $event)"
             ></initiative>
           </span>
         </div>
