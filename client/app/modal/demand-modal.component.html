@@ -1,0 +1,22 @@
+<ng-template #content let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <h4 class="modal-title">
+      Demand for {{ demand.profile }}
+    </h4>
+    <h6>
+      in {{ demand.account }}
+    </h6>
+  </div>
+  <div class="comments-modal modal-body">
+    <ngb-tabset (tabChange)="tabChange($event)" #tabs="ngbTabset" *ngIf="!isLoading">
+      <ngb-tab title="Details" id="assignment">
+        <ng-template ngbTabContent>
+          <demand-tab [demand]="demand"></demand-tab>
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
+  </div>
+</ng-template>

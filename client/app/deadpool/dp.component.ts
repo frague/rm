@@ -5,7 +5,7 @@ import { DpService } from '../services/dp.service';
 import { PrintableDatePipe } from '../pipes';
 import { Subscription, Observable } from 'rxjs';
 
-import { DemandComponent } from '../assignments/demand.component';
+import { DemandModal } from '../modal/demand-modal.component';
 import { RequisitionComponent } from '../candidates/requisition.component';
 import { PersonModal } from '../modal/person-modal.component';
 
@@ -16,7 +16,7 @@ const rowNumber = /^\d+$:/g;
   templateUrl: './dp.component.html'
 })
 export class DpComponent extends BaseComponent {
-  @ViewChild(DemandComponent) demandModal: DemandComponent;
+  @ViewChild(DemandModal) demandModal: DemandModal;
   @ViewChild(RequisitionComponent) requisitionModal: RequisitionComponent;
   @ViewChild(PersonModal) personModal: PersonModal;
 

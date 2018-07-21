@@ -1,6 +1,5 @@
-import { Component, ViewChild, ViewChildren, Input } from '@angular/core';
+import { Component, ViewChild, Input } from '@angular/core';
 import { BaseModalComponent } from './base.component';
-import { UserTabComponent } from './tabs/user-tab.component';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ResourceService } from '../services/resource.service';
 

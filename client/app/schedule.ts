@@ -7,7 +7,7 @@ import { Utils } from './utils';
 
 import { PersonModal } from './modal/person-modal.component';
 import { AssignmentModal } from './modal/assignment-modal.component';
-import { DemandComponent } from './assignments/demand.component';
+import { DemandModal } from './modal/demand-modal.component';
 
 import { AssignmentService } from './services/assignment.service';
 import { InitiativeService } from './services/initiative.service';
@@ -26,7 +26,7 @@ const demandCriteria = new RegExp(/\{['"]{0,1}(demand[.a-z]*)['"]{0,1}:['"]{0,1}
 
 export class Schedule {
 
-  @ViewChild(DemandComponent) demandModal: DemandComponent;
+  @ViewChild(DemandModal) demandModal: DemandModal;
   @ViewChild(PersonModal) personModal: PersonModal;
   @ViewChild(AssignmentModal) assignmentModal: AssignmentModal;
 
