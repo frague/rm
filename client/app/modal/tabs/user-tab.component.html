@@ -34,7 +34,7 @@
       <div class="col-md-6">
         <dl class="attributes">
           <dt>Email</dt>
-          <dd><a [href]="'mailto:' + getEmail()">{{ getEmail() }}</a></dd>
+          <dd><a [href]="getEmail()">{{ getEmail() }}</a></dd>
 
           <dt>Skype</dt>
           <dd><a [href]="getSkype()" *ngIf="person.skype">{{ person.skype }}</a></dd>

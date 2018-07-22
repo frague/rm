@@ -36,8 +36,9 @@ export class UserTabComponent extends BaseTabComponent {
   }
 
   getEmail() {
-    return this.person.login ?
-      this.person.login + '@griddynamics.com' :
+    let login = this.person.login;
+    return login && login.indexOf(' ') < 0 ?
+      this.sanitizer.bypassSecurityTrustUrl('mailto:' + this.person.login + '@griddynamics.com'):
       '';
   }
 }
