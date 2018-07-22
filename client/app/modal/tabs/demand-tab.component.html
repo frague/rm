@@ -1,8 +1,11 @@
 <div class="demand row">
-  <div class="col-md-5">
+  <div class="col-md-6">
     <dl class="attributes">
       <dt>Account</dt>
-      <dd>{{ demand.account }} / {{ demand.project }}</dd>
+      <dd>{{ demand.account }}</dd>
+
+      <dt>Initiative</dt>
+      <dd>{{ demand.project }}</dd>
 
       <dt>Pool</dt>
       <dd>{{ demand.pool }}</dd>
@@ -26,8 +29,14 @@
       <dd>{{ demand.stage }}</dd>
     </dl>
   </div>
-  <div class="col-md-7">
+  <div class="col-md-6">
     <dl class="attributes">
+      <dt>Profile</dt>
+      <dd>
+        {{ demand.profile }}
+        <span class="bracketed">{{ demand.specializations }}</span>
+      </dd>
+
       <dt>Requisition</dt>
       <dd>{{ demand.requestId }}</dd>
 
@@ -35,10 +44,10 @@
       <dd>{{ demand.candidates }}</dd>
 
       <dt>Requirements</dt>
-      <dd><div class="scrollable" [innerHTML]="demand.requirements|MarkdownToHtml"></div></dd>
+      <dd class="full-width"><div class="scrollable" [innerHTML]="demand.requirements|MarkdownToHtml"></div></dd>
 
       <dt>Comments</dt>
-      <dd><div class="scrollable" [innerHTML]="demand.comment|MarkdownToHtml"></div></dd>
+      <dd class="full-width"><div class="scrollable" [innerHTML]="demand.comment|MarkdownToHtml"></div></dd>
     </dl>
   </div>
 </div>

@@ -3,11 +3,12 @@
     <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
+    <div class="stage" [ngClass]="demand.stage">{{ demand.stage }}</div>
     <h4 class="modal-title">
-      Demand for {{ demand.profile }}
+      Demand for {{ demand.specializations }} {{ demand.profile }}
     </h4>
     <h6>
-      in {{ demand.account }}
+      on {{ demand.project }} project of {{ demand.account }} account
     </h6>
   </div>
   <div class="comments-modal modal-body">
@@ -15,6 +16,16 @@
       <ngb-tab title="Details" id="assignment">
         <ng-template ngbTabContent>
           <demand-tab [demand]="demand"></demand-tab>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab title="Notes" id="notes">
+        <ng-template ngbTabContent>
+          <comments-tab [key]="demand.login"></comments-tab>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab title="History" id="history">
+        <ng-template ngbTabContent>
+          <history-tab [key]="demand.login"></history-tab>
         </ng-template>
       </ngb-tab>
     </ngb-tabset>

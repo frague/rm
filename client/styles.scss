@@ -162,6 +162,16 @@ pre {
   content: ", ";
 }
 
+.bracketed:not(:empty) {
+  &:before {
+    content: " (";
+  }
+
+  &:after {
+    content: ")";
+  }
+}
+
 .avatar {
   background-size: cover;
   border: solid 1px $grid;
@@ -180,11 +190,27 @@ pre {
   border-radius: 0;
 
   .modal-header {
-    .avatar {
+    .avatar, .stage {
       width: 80px;
       height: 80px;
       float: left;
       margin-right: 15px;
+    }
+
+    .stage {
+      text-align: center;
+      font-size: 54px;
+      font-weight: 100;
+
+      &.FC {
+        background-color: $good;
+      }
+      &.VA {
+        background-color: $average;
+      }
+      &.SP {
+        background-color: $bad;
+      }
     }
 
     h4.modal-title {
@@ -300,6 +326,9 @@ pre {
           }
         }
       }
+    }
+
+    .demand {
     }
   }
 }
@@ -711,6 +740,13 @@ dl.attributes {
       content: "-";
     }
 
+    &.full-width {
+      display: inline-block;
+      padding-left: 0;
+      width: 100%;
+      margin-top: 10px;
+    }
+
     &>ul {
       padding-left: 0px;
       margin-bottom: 0px;
@@ -723,7 +759,7 @@ dl.attributes {
       }
     }
 
-    div:not(:empty).scrollable {
+    div.scrollable {
       background-color: $dim;
     }
   }
