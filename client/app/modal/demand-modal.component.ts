@@ -33,4 +33,9 @@ export class DemandModal extends BaseModalComponent {
     }
     this.open();
   }
+
+  getId() {
+    let [num, ] = (this.demand.login || '_').split('_');
+    return num;
+  }
 }

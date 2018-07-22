@@ -199,8 +199,9 @@ pre {
 
     .stage {
       text-align: center;
-      font-size: 54px;
+      font-size: 41px;
       font-weight: 100;
+      line-height: 2;
 
       &.FC {
         background-color: $good;
