@@ -5,7 +5,6 @@ import { Observable } from 'rxjs';
 
 
 import { ReportComponent } from './report.component';
-import { CommentsComponent } from './comments.component';
 import { DemandPlanComponent } from './demandplan.component';
 import { RequisitionComponent } from '../candidates/requisition.component';
 
@@ -26,7 +25,6 @@ const rowNumber = new RegExp(/^(\d+):/);
 })
 export class PlannerComponent extends Schedule {
   @ViewChild(ReportComponent) reportModal: ReportComponent;
-  @ViewChild(CommentsComponent) commentsModal: CommentsComponent;
   @ViewChild(DemandPlanComponent) demandPlan: DemandPlanComponent;
   @ViewChild(RequisitionComponent) requisitionModal: RequisitionComponent;
   @ViewChild('sticky') boardOfFame: ElementRef;
@@ -156,11 +154,11 @@ export class PlannerComponent extends Schedule {
     return demand.name;
   }
 
-  showResource(resource: any, isDemand=false) {
+  showResource(item: any, isDemand=false) {
     if (isDemand) {
-      return this.demandModal.show(resource);
-    } else if (!resource.isHiree) {
-      return this.personModal.show(this.resourcesById[resource.login])
+      return this.demandModal.show(item);
+    } else if (!item.isHiree) {
+      return this.personModal.show(this.resourcesById[item.login]);
     }
   }
 
@@ -173,9 +171,14 @@ export class PlannerComponent extends Schedule {
     this.requisitionModal.show(requisitionId);
   }
 
-  showComments(candidate, event: MouseEvent) {
+  showComments(item, event: MouseEvent) {
     event.stopPropagation();
-    this.commentsModal.show(candidate);
+    if (item.stage) {
+      // Only demand entity always contains "stage" key
+      return this.demandModal.show(item, 'notes');
+    } else if (!item.isHiree) {
+      return this.personModal.show(this.resourcesById[item.login], 'comments');
+    }
   }
 
   reserve(candidate: any, demand: any) {

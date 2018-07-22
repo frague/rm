@@ -12,7 +12,7 @@
     </h6>
   </div>
   <div class="comments-modal modal-body">
-    <ngb-tabset (tabChange)="tabChange($event)" #tabs="ngbTabset" *ngIf="!isLoading">
+    <ngb-tabset (tabChange)="tabChange($event)" #tabs="ngbTabset" *ngIf="!isLoading" [activeId]="activeId">
       <ngb-tab title="Details" id="assignment">
         <ng-template ngbTabContent>
           <demand-tab [demand]="demand"></demand-tab>

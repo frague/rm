@@ -19,16 +19,19 @@ export class PersonModal extends BaseModalComponent {
     super(modalService);
   }
 
-  show(person: any) {
+  show(person: any, tabName = '') {
     if (typeof person === 'string') {
+      this.isLoading = true;
       this.person = {};
-      this.personService.getByLogin(person).subscribe(
-        person => this.person = person,
-        err => console.log(err)
-      );
+      this.personService.getByLogin(person)
+        .subscribe(
+          person => this.person = person,
+          err => console.log(err)
+        )
+        .add(() => this.isLoading = false);
     } else {
       this.person = person;
     }
-    this.open();
+    this.open(tabName);
   }
 }

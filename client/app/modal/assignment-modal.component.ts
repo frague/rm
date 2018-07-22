@@ -19,9 +19,9 @@ export class AssignmentModal extends BaseModalComponent {
     super(modalService);
   }
 
-  show(person: any) {
+  show(person: any, tabName = '') {
     this.person = person;
     this.assignment = person.assignments[0];
-    this.open();
+    this.open(tabName);
   }
 }

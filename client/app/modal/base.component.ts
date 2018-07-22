@@ -7,6 +7,8 @@ export abstract class BaseModalComponent {
   content: any;
   state: Object = {};
   isLarge = false;
+  activeId = '';
+
   private baseOptions = {beforeDismiss: () => this.isSafeToProceed()};
 
   constructor(private modalService: NgbModal) {
@@ -20,7 +22,8 @@ export abstract class BaseModalComponent {
     return true;
   }
 
-  open() {
+  open(activeId = '') {
+    this.activeId = activeId;
     let options: NgbModalOptions = Object.assign(this.isLarge ? {size: 'lg'} : {}, this.baseOptions);
     this.modalRef = this.modalService.open(this.content, options);
   }

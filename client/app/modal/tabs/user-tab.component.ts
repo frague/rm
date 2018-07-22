@@ -34,11 +34,4 @@ export class UserTabComponent extends BaseTabComponent {
       this.sanitizer.bypassSecurityTrustUrl('skype:' + this.person.skype + '?chat') :
       '';
   }
-
-  getEmail() {
-    let login = this.person.login;
-    return login && login.indexOf(' ') < 0 ?
-      this.sanitizer.bypassSecurityTrustUrl('mailto:' + this.person.login + '@griddynamics.com'):
-      '';
-  }
 }

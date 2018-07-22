@@ -17,7 +17,7 @@
     </h6>
   </div>
   <div class="comments-modal modal-body">
-    <ngb-tabset (tabChange)="tabChange($event)" #tabs="ngbTabset">
+    <ngb-tabset (tabChange)="tabChange($event)" #tabs="ngbTabset" [activeId]="activeId" *ngIf="!isLoading">
       <ngb-tab title="Profile" id="profile">
         <ng-template ngbTabContent>
           <user-tab [person]="person"></user-tab>

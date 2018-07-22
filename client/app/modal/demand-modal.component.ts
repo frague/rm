@@ -19,7 +19,7 @@ export class DemandModal extends BaseModalComponent {
     super(modalService);
   }
 
-  show(demand: any) {
+  show(demand: any, tabName = '') {
     if (typeof demand === 'string') {
       this.isLoading = true;
       this.demandService.get({_id: demand})
@@ -31,7 +31,7 @@ export class DemandModal extends BaseModalComponent {
     } else {
       this.demand = demand;
     }
-    this.open();
+    this.open(tabName);
   }
 
   getId() {
