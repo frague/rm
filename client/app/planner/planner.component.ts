@@ -43,8 +43,15 @@ export class PlannerComponent extends Schedule {
 
   _cd: ChangeDetectorRef;
 
-  postFetch = query => {
+  private _reset() {
+    this.demands = [];
+    this.candidates = [];
+    this.hirees = [];
     this.accountsDemand = {};
+  }
+
+  postFetch = query => {
+    this._reset();
     let queryString = JSON.stringify(query);
     let candidatesQuery = queryString.indexOf('candidate.') >= 0 || queryString.indexOf('comments.') >= 0 ?
       this.candidateService.getAll(query) : Observable.from([[]]);
