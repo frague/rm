@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription, Observable } from 'rxjs';
 
 import { CommentsComponent } from '../planner/comments.component';
-import { RequisitionComponent } from './requisition.component';
+import { RequisitionModal } from '../modal/requisition-modal.component';
 
 import { RequisitionService } from '../services/requisition.service';
 import { CandidateService } from '../services/candidate.service';
@@ -25,7 +25,7 @@ const emptyRequisition = {
 })
 export class CandidatesComponent implements OnInit {
   @ViewChild(CommentsComponent) commentsModal: CommentsComponent;
-  @ViewChild(RequisitionComponent) requisitionModal: RequisitionComponent;
+  @ViewChild(RequisitionModal) requisitionModal: RequisitionModal;
 
   items = [];
   requisitionsIds = [];

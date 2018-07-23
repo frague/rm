@@ -6,6 +6,8 @@
 
   <requisition-modal></requisition-modal>
 
+  <requisition-modal-new></requisition-modal-new>
+
   <div class="requisitions" *ngIf="getRequisitions().length">
     <ng-container *ngFor="let category of getCategories()">
       <h3 *ngIf="isCategoryFilled[category]">{{ category }}</h3>

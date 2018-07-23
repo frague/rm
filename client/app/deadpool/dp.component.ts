@@ -6,7 +6,7 @@ import { PrintableDatePipe } from '../pipes';
 import { Subscription, Observable } from 'rxjs';
 
 import { DemandModal } from '../modal/demand-modal.component';
-import { RequisitionComponent } from '../candidates/requisition.component';
+import { RequisitionModal } from '../modal/requisition-modal.component';
 import { PersonModal } from '../modal/person-modal.component';
 
 const rowNumber = /^\d+$:/g;
@@ -17,7 +17,7 @@ const rowNumber = /^\d+$:/g;
 })
 export class DpComponent extends BaseComponent {
   @ViewChild(DemandModal) demandModal: DemandModal;
-  @ViewChild(RequisitionComponent) requisitionModal: RequisitionComponent;
+  @ViewChild(RequisitionModal) requisitionModal: RequisitionModal;
   @ViewChild(PersonModal) personModal: PersonModal;
 
   public form = new FormGroup({});
