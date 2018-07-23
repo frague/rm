@@ -64,6 +64,7 @@ import { PersonModal } from './modal/person-modal.component';
 import { AssignmentModal } from './modal/assignment-modal.component';
 import { DemandModal } from './modal/demand-modal.component';
 import { RequisitionModal } from './modal/requisition-modal.component';
+import { CommentsModal } from './modal/comments-modal.component';
 
 import { UserTabComponent } from './modal/tabs/user-tab.component';
 import { CommentsTabComponent } from './modal/tabs/comments-tab.component';
@@ -110,7 +111,7 @@ const config: SocketIoConfig = {
     CandidatesComponent,
     SpinnerComponent,
 
-    PersonModal, AssignmentModal, DemandModal, RequisitionModal,
+    PersonModal, AssignmentModal, DemandModal, RequisitionModal, CommentsModal,
     UserTabComponent, CommentsTabComponent, SkillsTabComponent, CarreerTabComponent,
     AssignmentTabComponent, AssignmentsTabComponent, HistoryTabComponent, DemandTabComponent,
     RequisitionTabComponent, CandidatesTabComponent,

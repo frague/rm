@@ -3,7 +3,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription, Observable } from 'rxjs';
 
-import { CommentsComponent } from '../planner/comments.component';
+import { CommentsModal } from '../modal/comments-modal.component';
 import { RequisitionModal } from '../modal/requisition-modal.component';
 
 import { RequisitionService } from '../services/requisition.service';
@@ -24,7 +24,7 @@ const emptyRequisition = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CandidatesComponent implements OnInit {
-  @ViewChild(CommentsComponent) commentsModal: CommentsComponent;
+  @ViewChild(CommentsModal) commentsModal: CommentsModal;
   @ViewChild(RequisitionModal) requisitionModal: RequisitionModal;
 
   items = [];
@@ -150,7 +150,7 @@ export class CandidatesComponent implements OnInit {
 
   showComments(candidate, event: MouseEvent) {
     event.stopPropagation();
-    this.commentsModal.show(candidate);
+    this.commentsModal.show(candidate.login, candidate.name);
   }
 
   showRequisition(requisition, event: MouseEvent) {
