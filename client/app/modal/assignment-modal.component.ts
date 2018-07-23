@@ -4,7 +4,7 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { AssignmentService } from '../services/assignment.service';
 
 @Component({
-  selector: 'assignment-modal-new',
+  selector: 'assignment-modal',
   templateUrl: './assignment-modal.component.html'
 })
 export class AssignmentModal extends BaseModalComponent {

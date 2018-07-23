@@ -4,7 +4,7 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { RequisitionService } from '../services/requisition.service';
 
 @Component({
-  selector: 'requisition-modal-new',
+  selector: 'requisition-modal',
   templateUrl: './requisition-modal.component.html'
 })
 export class RequisitionModal extends BaseModalComponent {

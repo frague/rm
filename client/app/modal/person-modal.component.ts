@@ -4,7 +4,7 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ResourceService } from '../services/resource.service';
 
 @Component({
-  selector: 'person-modal-new',
+  selector: 'person-modal',
   templateUrl: './person-modal.component.html'
 })
 export class PersonModal extends BaseModalComponent {

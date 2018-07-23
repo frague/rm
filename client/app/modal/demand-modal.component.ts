@@ -4,7 +4,7 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { DemandService } from '../services/demand.service';
 
 @Component({
-  selector: 'demand-modal-new',
+  selector: 'demand-modal',
   templateUrl: './demand-modal.component.html'
 })
 export class DemandModal extends BaseModalComponent {

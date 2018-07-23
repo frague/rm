@@ -4,7 +4,7 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { CommentService } from '../services/comments.service';
 
 @Component({
-  selector: 'comments-modal-new',
+  selector: 'comments-modal',
   templateUrl: './comments-modal.component.html'
 })
 export class CommentsModal extends BaseModalComponent {

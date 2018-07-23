@@ -41,23 +41,18 @@ import { LogoutComponent } from './logout/logout.component';
 import { AccountComponent } from './account/account.component';
 import { AdminComponent } from './admin/admin.component';
 import { NotFoundComponent } from './not-found/not-found.component';
-import { PersonComponent } from './people/person.component';
-import { AssignmentComponent } from './assignments/assignment.component';
 import { AccountsComponent } from './accounts/accounts.component';
-import { DemandComponent } from './assignments/demand.component';
 import { PrintableDatePipe, AvatarUrlPipe, RangePipe, KeysPipe, EllipsisPipe, CutIndexPipe, ColumnPipe } from './pipes';
 import { FilterComponent } from './filter/filter.component';
 import { FilteringPanelComponent } from './filter/filteringpanel.component';
 import { PlannerComponent } from './planner/planner.component';
 import { ReportComponent } from './planner/report.component';
-import { CommentsComponent } from './planner/comments.component';
 import { DemandPlanComponent } from './planner/demandplan.component';
 import { DpComponent } from './deadpool/dp.component';
 import { AvatarComponent } from './people/avatar.component';
 import { AssignmentsReportComponent } from './assignments/report.component';
 import { SkillsetComponent } from './planner/skillset.component';
 import { CandidatesComponent } from './candidates/candidates.component';
-import { RequisitionComponent } from './candidates/requisition.component';
 import { SpinnerComponent } from './shared/spinner/spinner.component';
 
 import { PersonModal } from './modal/person-modal.component';
@@ -96,14 +91,10 @@ const config: SocketIoConfig = {
     AdminComponent,
     NotFoundComponent,
     SyncComponent, TaskComponent,
-    PersonComponent,
-    AssignmentComponent,
     AccountsComponent,
-    DemandComponent,
     PrintableDatePipe, AvatarUrlPipe, RangePipe, KeysPipe, EllipsisPipe,
     FilterComponent, FilteringPanelComponent, CutIndexPipe, ColumnPipe,
-    PlannerComponent, ReportComponent, CommentsComponent, DemandPlanComponent,
-    RequisitionComponent,
+    PlannerComponent, ReportComponent, DemandPlanComponent,
     DpComponent,
     AvatarComponent,
     AssignmentsReportComponent,

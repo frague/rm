@@ -3,10 +3,9 @@ import { Schedule } from '../schedule';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
 
-
 import { ReportComponent } from './report.component';
 import { DemandPlanComponent } from './demandplan.component';
-import { RequisitionComponent } from '../candidates/requisition.component';
+import { RequisitionModal } from '../modal/requisition-modal.component';
 
 import { AssignmentService } from '../services/assignment.service';
 import { InitiativeService } from '../services/initiative.service';
@@ -26,7 +25,7 @@ const rowNumber = new RegExp(/^(\d+):/);
 export class PlannerComponent extends Schedule {
   @ViewChild(ReportComponent) reportModal: ReportComponent;
   @ViewChild(DemandPlanComponent) demandPlan: DemandPlanComponent;
-  @ViewChild(RequisitionComponent) requisitionModal: RequisitionComponent;
+  @ViewChild(RequisitionModal) requisitionModal: RequisitionModal;
   @ViewChild('sticky') boardOfFame: ElementRef;
   bofOffset: any = 'auto';
 

@@ -9,8 +9,6 @@ import { ResourceService } from '../services/resource.service';
 import { DemandService } from '../services/demand.service';
 import { BusService } from '../services/bus.service';
 
-import { PersonComponent } from '../people/person.component';
-
 import { Schedule } from '../schedule';
 
 const demandPrefix = 'Demand';
