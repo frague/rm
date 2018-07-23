@@ -3,7 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import { ToastComponent } from '../shared/toast/toast.component';
 
 import { Schedule } from '../schedule';
-import { CommentsComponent } from '../planner/comments.component';
 import { AssignmentsReportComponent } from './report.component';
 
 import { AssignmentService } from '../services/assignment.service';
@@ -20,7 +19,6 @@ const emptyItem = {assignments: []};
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AssignmentsComponent extends Schedule {
-  @ViewChild(CommentsComponent) commentsModal: CommentsComponent;
   @ViewChild(AssignmentsReportComponent) reportModal: AssignmentsReportComponent;
 
   constructor(
@@ -63,7 +61,7 @@ export class AssignmentsComponent extends Schedule {
 
   showComments(candidate, event: MouseEvent) {
     event.stopPropagation();
-    this.commentsModal.show(candidate);
+    return this.personModal.show(this.resourcesById[candidate.login], 'comments');
   }
 
   showResource(assignee: any) {

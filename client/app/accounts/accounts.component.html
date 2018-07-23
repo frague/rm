@@ -2,7 +2,7 @@
   <div class="alert alert-info message" *ngIf="message">{{ message }}</div>
   <h1>Accounts</h1>
 
-  <assignment-modal [resources]="resourcesById" [initiatives]="initiatives"></assignment-modal>
+  <assignment-modal></assignment-modal>
 
   <person-modal></person-modal>
 
@@ -44,9 +44,9 @@
             class="line"
             [ngClass]="getAssignmentsCount(initiative)"
           >
-            <span *ngFor="let personId of getPersonInitiativeAssignments(initiative)">
+            <span *ngFor="let login of getPersonInitiativeAssignments(initiative)">
               <initiative
-                *ngFor="let assignment of initiativeAssignments[initiative._id][personId]"
+                *ngFor="let assignment of initiativeAssignments[initiative._id][login]"
                 [data]="getAssignment(assignment)"
                 (click)="showAssignment(assignment, $event)"
               ></initiative>

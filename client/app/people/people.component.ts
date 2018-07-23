@@ -7,8 +7,7 @@ import { ResourceService } from '../services/resource.service';
 import { DemandService } from '../services/demand.service';
 import { BusService } from '../services/bus.service';
 
-import { CommentsComponent } from '../planner/comments.component';
-import { PersonComponent } from '../people/person.component';
+import { PersonModal } from '../modal/person-modal.component';
 import { Schedule } from '../schedule';
 
 const defaultColumns = {
@@ -24,9 +23,6 @@ const defaultColumns = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PeopleComponent extends Schedule {
-
-  @ViewChild(CommentsComponent) commentsModal: CommentsComponent;
-
   items = [];
   columns = {};
   keys = {};
@@ -76,7 +72,7 @@ export class PeopleComponent extends Schedule {
 
   showComments(candidate, event: MouseEvent) {
     event.stopPropagation();
-    this.commentsModal.show(candidate);
+    this.personModal.show(candidate.login, 'comments');
   }
 
   fetchData(query={}, fetchAll=false, serviceData: any={}): Subscription {

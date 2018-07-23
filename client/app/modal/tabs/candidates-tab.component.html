@@ -1,0 +1,21 @@
+<spinner [isShown]="isLoading">
+  <h4>Requisition candidates</h4>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Status</th>
+        <th>Location</th>
+        <th><i class="fa fa-external-link-square"></i></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let candidate of candidates">
+        <td>{{ candidate.name }}</td>
+        <td>{{ candidate.state }}, {{ candidate.updated|date }}</td>
+        <td>{{ candidate.location }}</td>
+        <td><a [href]="getJvcandidatesLink(candidate)"><i class="fa fa-external-link-square"></i></a></td>
+      </tr>
+    </tbody>
+  </table>
+</spinner>

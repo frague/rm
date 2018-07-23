@@ -5,9 +5,9 @@ import { Subscription, Observable } from 'rxjs';
 import { BaseComponent } from './base.component';
 import { Utils } from './utils';
 
-import { PersonComponent } from './people/person.component';
-import { AssignmentComponent } from './assignments/assignment.component';
-import { DemandComponent } from './assignments/demand.component';
+import { PersonModal } from './modal/person-modal.component';
+import { AssignmentModal } from './modal/assignment-modal.component';
+import { DemandModal } from './modal/demand-modal.component';
 
 import { AssignmentService } from './services/assignment.service';
 import { InitiativeService } from './services/initiative.service';
@@ -26,9 +26,9 @@ const demandCriteria = new RegExp(/\{['"]{0,1}(demand[.a-z]*)['"]{0,1}:['"]{0,1}
 
 export class Schedule {
 
-  @ViewChild(DemandComponent) demandModal: DemandComponent;
-  @ViewChild(PersonComponent) personModal: PersonComponent;
-  @ViewChild(AssignmentComponent) assignmentModal: AssignmentComponent;
+  @ViewChild(DemandModal) demandModal: DemandModal;
+  @ViewChild(PersonModal) personModal: PersonModal;
+  @ViewChild(AssignmentModal) assignmentModal: AssignmentModal;
 
   @ViewChild('schedule') schedule: ElementRef;
 
@@ -230,7 +230,7 @@ export class Schedule {
 
           Object.keys(resource.assignments).forEach(initiativeId => {
             this.initiativeAssignments[initiativeId] = (this.initiativeAssignments[initiativeId] || {});
-            this.initiativeAssignments[initiativeId][resource._id] = resource.assignments[initiativeId];
+            this.initiativeAssignments[initiativeId][resource.login] = resource.assignments[initiativeId];
 
             this.visibleInitiatives[initiativeId] = true;
           });
@@ -430,7 +430,9 @@ export class Schedule {
     if (assignment.demand) {
       this.demandModal.show(assignment.demand);
     } else {
-      this.assignmentModal.show(this.cleanup(assignment))
+      let assignee = this.resourcesById[assignment.resourceId] || {};
+      assignee.assignments = [assignment];
+      this.assignmentModal.show(assignee);
     }
   };
 

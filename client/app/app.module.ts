@@ -41,24 +41,36 @@ import { LogoutComponent } from './logout/logout.component';
 import { AccountComponent } from './account/account.component';
 import { AdminComponent } from './admin/admin.component';
 import { NotFoundComponent } from './not-found/not-found.component';
-import { PersonComponent } from './people/person.component';
-import { AssignmentComponent } from './assignments/assignment.component';
 import { AccountsComponent } from './accounts/accounts.component';
-import { DemandComponent } from './assignments/demand.component';
 import { PrintableDatePipe, AvatarUrlPipe, RangePipe, KeysPipe, EllipsisPipe, CutIndexPipe, ColumnPipe } from './pipes';
 import { FilterComponent } from './filter/filter.component';
 import { FilteringPanelComponent } from './filter/filteringpanel.component';
 import { PlannerComponent } from './planner/planner.component';
 import { ReportComponent } from './planner/report.component';
-import { CommentsComponent } from './planner/comments.component';
 import { DemandPlanComponent } from './planner/demandplan.component';
 import { DpComponent } from './deadpool/dp.component';
 import { AvatarComponent } from './people/avatar.component';
 import { AssignmentsReportComponent } from './assignments/report.component';
 import { SkillsetComponent } from './planner/skillset.component';
 import { CandidatesComponent } from './candidates/candidates.component';
-import { RequisitionComponent } from './candidates/requisition.component';
 import { SpinnerComponent } from './shared/spinner/spinner.component';
+
+import { PersonModal } from './modal/person-modal.component';
+import { AssignmentModal } from './modal/assignment-modal.component';
+import { DemandModal } from './modal/demand-modal.component';
+import { RequisitionModal } from './modal/requisition-modal.component';
+import { CommentsModal } from './modal/comments-modal.component';
+
+import { UserTabComponent } from './modal/tabs/user-tab.component';
+import { CommentsTabComponent } from './modal/tabs/comments-tab.component';
+import { SkillsTabComponent } from './modal/tabs/skills-tab.component';
+import { CarreerTabComponent } from './modal/tabs/carreer-tab.component';
+import { AssignmentTabComponent } from './modal/tabs/assignment-tab.component';
+import { AssignmentsTabComponent } from './modal/tabs/assignments-tab.component';
+import { HistoryTabComponent } from './modal/tabs/history-tab.component';
+import { DemandTabComponent } from './modal/tabs/demand-tab.component';
+import { RequisitionTabComponent } from './modal/tabs/requisition-tab.component';
+import { CandidatesTabComponent } from './modal/tabs/candidates-tab.component';
 
 const config: SocketIoConfig = {
   url: ':3030',
@@ -79,20 +91,21 @@ const config: SocketIoConfig = {
     AdminComponent,
     NotFoundComponent,
     SyncComponent, TaskComponent,
-    PersonComponent,
-    AssignmentComponent,
     AccountsComponent,
-    DemandComponent,
     PrintableDatePipe, AvatarUrlPipe, RangePipe, KeysPipe, EllipsisPipe,
     FilterComponent, FilteringPanelComponent, CutIndexPipe, ColumnPipe,
-    PlannerComponent, ReportComponent, CommentsComponent, DemandPlanComponent,
-    RequisitionComponent,
+    PlannerComponent, ReportComponent, DemandPlanComponent,
     DpComponent,
     AvatarComponent,
     AssignmentsReportComponent,
     SkillsetComponent,
     CandidatesComponent,
-    SpinnerComponent
+    SpinnerComponent,
+
+    PersonModal, AssignmentModal, DemandModal, RequisitionModal, CommentsModal,
+    UserTabComponent, CommentsTabComponent, SkillsTabComponent, CarreerTabComponent,
+    AssignmentTabComponent, AssignmentsTabComponent, HistoryTabComponent, DemandTabComponent,
+    RequisitionTabComponent, CandidatesTabComponent,
   ],
   imports: [
     RoutingModule,

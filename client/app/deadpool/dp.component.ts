@@ -5,9 +5,9 @@ import { DpService } from '../services/dp.service';
 import { PrintableDatePipe } from '../pipes';
 import { Subscription, Observable } from 'rxjs';
 
-import { DemandComponent } from '../assignments/demand.component';
-import { RequisitionComponent } from '../candidates/requisition.component';
-import { PersonComponent } from '../people/person.component';
+import { DemandModal } from '../modal/demand-modal.component';
+import { RequisitionModal } from '../modal/requisition-modal.component';
+import { PersonModal } from '../modal/person-modal.component';
 
 const rowNumber = /^\d+$:/g;
 
@@ -16,9 +16,9 @@ const rowNumber = /^\d+$:/g;
   templateUrl: './dp.component.html'
 })
 export class DpComponent extends BaseComponent {
-  @ViewChild(DemandComponent) demandModal: DemandComponent;
-  @ViewChild(RequisitionComponent) requisitionModal: RequisitionComponent;
-  @ViewChild(PersonComponent) personModal: PersonComponent;
+  @ViewChild(DemandModal) demandModal: DemandModal;
+  @ViewChild(RequisitionModal) requisitionModal: RequisitionModal;
+  @ViewChild(PersonModal) personModal: PersonModal;
 
   public form = new FormGroup({});
   types = ['r', 'd', 'c'];

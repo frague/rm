@@ -1,0 +1,20 @@
+<spinner [isShown]="isLoading">
+  <div class="assignments">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Initiative</th>
+          <th>Dates</th>
+          <th>Involvement</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let assignment of items">
+          <td>{{ assignment.account }} ({{ assignment.project }})</td>
+          <td>{{ assignment.start|date }} - {{ assignment.finish|date }}</td>
+          <td>{{ assignment.status }} {{ assignment.involvement }}%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</spinner>

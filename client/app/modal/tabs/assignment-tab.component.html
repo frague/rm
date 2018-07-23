@@ -1,0 +1,21 @@
+<div class="assignment">
+  <dl class="attributes">
+    <dt>Account</dt>
+    <dd>{{ assignment.account }}</dd>
+
+    <dt>Initiative</dt>
+    <dd>{{ assignment.initiative }}</dd>
+
+    <dt>Dates</dt>
+    <dd>{{ assignment.start|date }} - {{ assignment.end|date }}</dd>
+
+    <dt>Billability</dt>
+    <dd>{{ assignment.billability }}</dd>
+
+    <dt>Involvement</dt>
+    <dd>{{ assignment.involvement }}%</dd>
+
+    <dt>Comment</dt>
+    <dd>{{ assignment.comment }}</dd>
+  </dl>
+</div>

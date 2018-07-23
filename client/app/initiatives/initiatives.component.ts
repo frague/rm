@@ -10,7 +10,6 @@ import { AssignmentService } from '../services/assignment.service';
 @Component({
   selector: 'initiatives',
   templateUrl: './initiatives.component.html',
-  styleUrls: ['./initiatives.component.scss']
 })
 export class InitiativesComponent extends BaseComponent implements OnInit {
 

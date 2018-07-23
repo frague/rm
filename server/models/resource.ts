@@ -21,6 +21,7 @@ const resourceSchema = new mongoose.Schema({
   onTrip: String,
   birthday: Date,
   bambooId: String,
+  pmoId: String,
 });
 
 const Resource = mongoose.model('Resource', resourceSchema);

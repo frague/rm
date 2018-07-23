@@ -222,6 +222,7 @@ export default class AssignmentCtrl extends BaseCtrl {
             onTrip: {'$first': '$onTrip'},
             birthday: {'$first': '$birthday'},
             bambooId: {'$first': '$bambooId'},
+            pmoId: {'$first': '$pmoId'},
           }
         },
         {
@@ -264,6 +265,7 @@ export default class AssignmentCtrl extends BaseCtrl {
             onTrip: 1,
             birthday: 1,
             bambooId: 1,
+            pmoId: 1,
           })
         },
         {

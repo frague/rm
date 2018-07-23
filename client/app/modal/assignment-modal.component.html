@@ -1,0 +1,35 @@
+<ng-template #content let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <avatar [login]="person.login"></avatar>
+    <h4 class="modal-title">
+      Assignments of {{ person.name }}
+    </h4>
+    <h6>
+      <span class="comma-after">{{ person.grade }}</span>
+      {{ person.profile }}
+      <span *ngIf="person.specialization"> ({{ person.specialization }})</span>
+    </h6>
+  </div>
+  <div class="comments-modal modal-body">
+    <ngb-tabset (tabChange)="tabChange($event)" #tabs="ngbTabset" *ngIf="!isLoading" [activeId]="activeId">
+      <ngb-tab title="Details" id="assignment">
+        <ng-template ngbTabContent>
+          <assignment-tab [assignment]="assignment"></assignment-tab>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab title="All" id="assignments">
+        <ng-template ngbTabContent>
+          <assignments-tab [pmoId]="person.pmoId" [state]="state"></assignments-tab>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab title="History" id="history">
+        <ng-template ngbTabContent>
+          <history-tab [key]="person.login" [state]="state"></history-tab>
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
+  </div>
+</ng-template>
