@@ -1,6 +1,6 @@
+<h1>Synchronize</h1>
 <div class="row">
-  <div class="col-md-6">
-    <h1>Synchronize</h1>
+  <div class="col-md-4 col-lg-3">
     <ul class="tasks">
       <li>
         <task name="cleanup" [props]="tasks" [stati]="stati" (setState)="collectTasks($event)"></task>
@@ -13,17 +13,22 @@
     >
       Sync
     </button>
+  </div>
+  <div class="col-md-8 col-lg-9">
     <div class="log" #log>
       <ol>
         <li *ngFor="let log of logs">{{ log }}</li>
       </ol>
     </div>
   </div>
-  <div class="col-md-6 backup">
+</div>
+<div class="backup-restore row">
+  <div class="col-md-6">
     <h1>Backup</h1>
     <a href="/api/backup" target="blank">Download users comments backup file</a>
-
-    <h1 class="restore">Restore</h1>
+  </div>
+  <div class="col-md-6">
+    <h1>Restore</h1>
     <form class="form" [formGroup]="form" (ngSubmit)="onSubmit()">
       <div class="form-group">
         <label for="backup">Restore users comments from the backup file:</label>
