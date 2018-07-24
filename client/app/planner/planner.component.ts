@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { ReportComponent } from './report.component';
 import { DemandPlanComponent } from './demandplan.component';
 import { RequisitionModal } from '../modal/requisition-modal.component';
-import { CommentsModal } from '../modal/comments-modal.component';
+import { CandidateModal } from '../modal/candidate-modal.component';
 
 import { AssignmentService } from '../services/assignment.service';
 import { InitiativeService } from '../services/initiative.service';
@@ -27,7 +27,7 @@ export class PlannerComponent extends Schedule {
   @ViewChild(ReportComponent) reportModal: ReportComponent;
   @ViewChild(DemandPlanComponent) demandPlan: DemandPlanComponent;
   @ViewChild(RequisitionModal) requisitionModal: RequisitionModal;
-  @ViewChild(CommentsModal) commentsModal: CommentsModal;
+  @ViewChild(CandidateModal) candidateModal: CandidateModal;
   @ViewChild('sticky') boardOfFame: ElementRef;
   bofOffset: any = 'auto';
 
@@ -164,9 +164,11 @@ export class PlannerComponent extends Schedule {
 
   showResource(item: any, isDemand=false) {
     if (isDemand) {
-      return this.demandModal.show(item);
+      this.demandModal.show(item);
     } else if (!item.isHiree) {
-      return this.personModal.show(this.resourcesById[item.login]);
+      this.personModal.show(this.resourcesById[item.login]);
+    } else {
+      this.candidateModal.show(item);
     }
   }
 
@@ -187,7 +189,7 @@ export class PlannerComponent extends Schedule {
     } else if (!item.isHiree) {
       this.personModal.show(this.resourcesById[item.login], 'comments');
     } else {
-      this.commentsModal.show(item.login, item.name);
+      this.candidateModal.show(item, 'comments');
     }
   }
 
@@ -252,7 +254,7 @@ export class PlannerComponent extends Schedule {
   }
 
   isOnsite(demand) {
-    return demand.deployment.toLowerCase().indexOf('onsite') >= 0;
+    return demand.deployment.toLowerCase().indexOf('on-site') >= 0;
   }
 
   getCandidateCaption(candidate): string {
