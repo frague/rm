@@ -22,9 +22,13 @@
             </span>
           </div>
           <div class="col-md-4" (click)="toggleSelection(requisition)">
+            <i class="fa" [ngClass]="getStateClass(requisition.jobState)"></i>
             {{ requisition.title }}
           </div>
-          <div class="col-md-3">
+          <div class="col-md-1">
+            {{ requisition.jobState }}
+          </div>
+          <div class="col-md-2">
             {{ requisition.department }}
           </div>
           <div class="col-md-3">
@@ -32,10 +36,10 @@
             {{ requisition.location }}
           </div>
         </div>
-        <ng-container *ngIf="isRequisitionSelected(requisition)">
+        <div class="candidates" *ngIf="isRequisitionSelected(requisition)">
           <div
             *ngFor="let candidate of requisitionCandidates[requisition.requisitionId]"
-            class="candidate row"
+            class="row"
           >
             <div class="col-md-2">
               <div
@@ -61,7 +65,7 @@
               {{ candidate.location }}
             </div>
           </div>
-        </ng-container>
+        </div>
       </ng-container>
     </ng-container>
   </div>

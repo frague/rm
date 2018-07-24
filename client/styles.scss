@@ -976,33 +976,36 @@ ul.tasks {
     }
   }
 
-  div.candidate {
-    min-height: $lineHeight;
-    border-top: solid 1px $grid;
-    margin: 0;
-    background-color: $body + #222;
-
+  div.candidates {
     & > div {
-      white-space: nowrap;
-      overflow: hidden;
-      padding-top: 2px;
+      min-height: $lineHeight;
+      border-top: solid 1px $grid;
+      margin: 0;
+      background-color: $body + #222;
 
-      a {
-        @extend .clickable;
-      }
 
-      &:first-child {
-        .corner {
-          overflow: visible;
-          top: 1px;
-        }
-      }
+      & > div {
+        white-space: nowrap;
+        overflow: hidden;
+        padding-top: 2px;
 
-      &:last-child {
         a {
-          display: inline-block;
-          float: right;
-          color: $link + #444;
+          @extend .clickable;
+        }
+
+        &:first-child {
+          .corner {
+            overflow: visible;
+            top: 1px;
+          }
+        }
+
+        &:last-child {
+          a {
+            display: inline-block;
+            float: right;
+            color: $link + #444;
+          }
         }
       }
     }

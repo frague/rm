@@ -20,7 +20,6 @@ export class CandidateModal extends BaseModalComponent {
   }
 
   show(candidate: any = {}, tabName = '') {
-    console.log(candidate);
     if (typeof candidate === 'string') {
       this.isLoading = true;
       this.candidateService.getByLogin(candidate)

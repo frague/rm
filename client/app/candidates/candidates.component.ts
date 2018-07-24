@@ -130,6 +130,14 @@ export class CandidatesComponent implements OnInit {
     }
   }
 
+  getStateClass(state) {
+    return {
+      'Filled': 'fa-check',
+      'Draft': 'fa-pencil',
+      'Open': 'fa-search',
+    }[state];
+  }
+
   getRequisitionDetails(requisition): string {
     if (!requisition) {
       return '';
