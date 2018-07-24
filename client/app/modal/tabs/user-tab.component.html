@@ -19,20 +19,22 @@
           <dt>Manager</dt>
           <dd>{{ person.manager }}</dd>
 
-          <dt>Visas</dt>
-          <dd><ul *ngIf="hasVisas()">
-              <li>{{ getVisaInfo('visaB', 'B1/B2') }}</li>
-              <li>{{ getVisaInfo('visaL', 'L') }}</li>
-            </ul></dd>
-
-          <dt>Driver's License</dt>
-          <dd>{{ person.license }}</dd>
+          <ng-container *ngIf="person.payRate">
+            <dt>Pay Rate</dt>
+            <dd><i class="fa fa-eye" title="{{ person.payRate }}"></i></dd>
+          </ng-container>
 
         </dl>
 
       </div>
       <div class="col-md-6">
         <dl class="attributes">
+          <dt>Visas</dt>
+          <dd><ul *ngIf="hasVisas()">
+              <li>{{ getVisaInfo('visaB', 'B1/B2') }}</li>
+              <li>{{ getVisaInfo('visaL', 'L') }}</li>
+            </ul></dd>
+
           <dt>Skype</dt>
           <dd><a [href]="getSkype()" *ngIf="person.skype">{{ person.skype }}</a></dd>
 
@@ -46,6 +48,9 @@
             <dt>Birthday</dt>
             <dd>{{ person.birthday|date }}</dd>
           </ng-container>
+
+          <dt>Driver's License</dt>
+          <dd>{{ person.license }}</dd>
         </dl>
       </div>
     </spinner>
