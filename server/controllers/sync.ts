@@ -14,7 +14,6 @@ import { IO } from '../io';
 import { fakeRes } from './fakeresponse';
 
 import * as convert from 'color-convert';
-// import * as Confluence from 'confluence-api';
 import {
   replaceFromMap,
   accountsMap,
@@ -24,7 +23,8 @@ import {
   demandProfilesMap,
   demandPoolsMap,
   candidateStates,
-  profilesInvertedMap
+  profilesInvertedMap,
+  requisitionsLocations
 } from '../mappings';
 
 const candidatesChunk = 500;
@@ -634,6 +634,16 @@ export default class SyncCtrl {
     });
   };
 
+  private _convertLocations(locations: string = ''): string {
+    return locations.split('/')
+      .map((l: string) => {
+        l = l.trim();
+        return requisitionsLocations[l] || l
+      })
+      .sort()
+      .join(', ');
+  }
+
   private _queryRequisitions(): Promise<string[]> {
     let result = [];
     return new Promise(async (resolve, reject) => {
@@ -666,6 +676,10 @@ export default class SyncCtrl {
               if (idsMet.includes(requisition.requisitionId)) {
                 console.log('Error: duplicated requisition ' + requisition.requisitionId);
               } else {
+                delete requisition.jobLocations;
+                delete requisition.__v;
+                requisition.location = this._convertLocations(requisition.location);
+                
                 new Requisition(requisition).save();
                 idsMet.push(requisition.requisitionId);
               }

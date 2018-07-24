@@ -216,6 +216,35 @@ export const requisitionsAvailability = [
   'Limited Acces'
 ];
 
+export const requisitionsLocations = {
+  'All Offshore': 'BEL, KHR, KR, LV, SAR, SPB',
+  'Belgrade, Serbia': 'BEL',
+  'Kharkov, Ukraine': 'KHR',
+  'Krakow, Poland': 'KR',
+  'Lviv, Ukraine': 'LV',
+  'Saratov, Russia': 'SAR',
+  'St. Petersburg, Russia': 'SPB',
+  'Atlanta, GA, US': 'MP',
+  'Austin, TX, US': 'MP',
+  'Cork, Ireland': 'MP',
+  'Cupertino, CA, US': 'MP',
+  'Dallas, TX, US': 'MP',
+  'Houston, TX, US': 'MP',
+  'Irving, TX, US': 'MP',
+  'Madison, WI, US': 'MP',
+  'Milpitas, CA, US': 'MP',
+  'Milwaukee, WI, US': 'MP',
+  'Mountain View, CA, US': 'MP',
+  'New York City, NY, US': 'MP',
+  'Phoenix, AZ': 'MP',
+  'Pittsburgh, PA, US': 'MP',
+  'Pleasanton, CA, US': 'MP',
+  'Redwood City, CA, US': 'MP',
+  'San Francisco, CA, US': 'MP',
+  'San Ramon, CA, US': 'MP',
+  'Sunnyvale, CA, US': 'MP',
+};
+
 export var candidateStates = {
   'Screened': '02 Screened',
   'Submitted to Interviewers': '03 Interview',

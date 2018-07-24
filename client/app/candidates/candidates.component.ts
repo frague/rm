@@ -6,6 +6,7 @@ import { Subscription, Observable } from 'rxjs';
 import { CommentsModal } from '../modal/comments-modal.component';
 import { CandidateModal } from '../modal/candidate-modal.component';
 import { RequisitionModal } from '../modal/requisition-modal.component';
+import { DemandModal } from '../modal/demand-modal.component';
 
 import { RequisitionService } from '../services/requisition.service';
 import { CandidateService } from '../services/candidate.service';
@@ -28,6 +29,7 @@ export class CandidatesComponent implements OnInit {
   @ViewChild(CommentsModal) commentsModal: CommentsModal;
   @ViewChild(CandidateModal) candidateModal: CandidateModal;
   @ViewChild(RequisitionModal) requisitionModal: RequisitionModal;
+  @ViewChild(DemandModal) demandModal: DemandModal;
 
   items = [];
   requisitionsIds = [];
@@ -166,5 +168,33 @@ export class CandidatesComponent implements OnInit {
   showRequisition(requisition, event: MouseEvent) {
     event.stopPropagation();
     this.requisitionModal.show(requisition);
+  }
+
+  hasAlert(requisition) {
+    return requisition.demandLocations && requisition.demandLocations !== requisition.location;
+  }
+
+  getRequisitionClasses(requisition) {
+    return {
+      'selected': this.isRequisitionSelected(requisition),
+      'warning': this.hasAlert(requisition)
+    };
+  }
+
+  getStatusStyle(requisition) {
+    return {
+      'Filled': 'fa-check',
+      'Open': 'fa-search',
+      'Draft': 'fa-pencil',
+      'Hold': 'fa-clock-o',
+    }[requisition.jobState];
+  }
+
+  getDemandStyle(requisition) {
+    return this.hasAlert(requisition) ? 'fa-exclamation-triangle' : 'fa-id-card';
+  }
+
+  showDemand(requisition) {
+    this.demandModal.show(requisition.demandLogin);
   }
 }

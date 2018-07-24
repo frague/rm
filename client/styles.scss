@@ -929,7 +929,7 @@ ul.tasks {
     padding-top: 8px;
   }
 
-  div.requisition {
+  & > div {
     min-height: $lineHeight;
     border-top: solid 1px $grid;
     margin: 0;
@@ -938,7 +938,22 @@ ul.tasks {
     &.selected {
       box-shadow: 0 10px 10px -5px rgba(0,0,0,0.5);
       position: relative;
-      // background-color: $body - #111;
+    }
+
+    &.warning {
+      background-color: $bad;
+    }
+
+    .fa-check {
+      color: $good;
+    }
+
+    .fa-pencil {
+      color: $body - #222;
+    }
+
+    .fa-exclamation-triangle {
+      color: $red;
     }
 
     div {
@@ -946,6 +961,11 @@ ul.tasks {
       &:first-child {
         a {
           color: $link;
+
+          &.demand {
+            position: absolute;
+            margin-left: 100px;
+          }
         }
 
         i.fa-caret-down {
@@ -976,36 +996,35 @@ ul.tasks {
     }
   }
 
-  div.candidates {
+  div.candidate {
+    min-height: $lineHeight;
+    border-top: solid 1px $grid;
+    margin: 0;
+    padding-top: 0;
+    background-color: $body + #222;
+
+
     & > div {
-      min-height: $lineHeight;
-      border-top: solid 1px $grid;
-      margin: 0;
-      background-color: $body + #222;
+      white-space: nowrap;
+      overflow: hidden;
+      padding-top: 2px;
 
+      a {
+        @extend .clickable;
+      }
 
-      & > div {
-        white-space: nowrap;
-        overflow: hidden;
-        padding-top: 2px;
+      &:first-child {
+        .corner {
+          overflow: visible;
+          top: 1px;
+        }
+      }
 
+      &:last-child {
         a {
-          @extend .clickable;
-        }
-
-        &:first-child {
-          .corner {
-            overflow: visible;
-            top: 1px;
-          }
-        }
-
-        &:last-child {
-          a {
-            display: inline-block;
-            float: right;
-            color: $link + #444;
-          }
+          display: inline-block;
+          float: right;
+          color: $link + #444;
         }
       }
     }
