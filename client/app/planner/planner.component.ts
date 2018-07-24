@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { ReportComponent } from './report.component';
 import { DemandPlanComponent } from './demandplan.component';
 import { RequisitionModal } from '../modal/requisition-modal.component';
+import { CommentsModal } from '../modal/comments-modal.component';
 
 import { AssignmentService } from '../services/assignment.service';
 import { InitiativeService } from '../services/initiative.service';
@@ -26,6 +27,7 @@ export class PlannerComponent extends Schedule {
   @ViewChild(ReportComponent) reportModal: ReportComponent;
   @ViewChild(DemandPlanComponent) demandPlan: DemandPlanComponent;
   @ViewChild(RequisitionModal) requisitionModal: RequisitionModal;
+  @ViewChild(CommentsModal) commentsModal: CommentsModal;
   @ViewChild('sticky') boardOfFame: ElementRef;
   bofOffset: any = 'auto';
 
@@ -181,9 +183,11 @@ export class PlannerComponent extends Schedule {
     event.stopPropagation();
     if (item.stage) {
       // Only demand entity always contains "stage" key
-      return this.demandModal.show(item, 'notes');
+      this.demandModal.show(item, 'notes');
     } else if (!item.isHiree) {
-      return this.personModal.show(this.resourcesById[item.login], 'comments');
+      this.personModal.show(this.resourcesById[item.login], 'comments');
+    } else {
+      this.commentsModal.show(item.login, item.name);
     }
   }
 
