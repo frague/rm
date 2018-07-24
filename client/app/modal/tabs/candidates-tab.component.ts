@@ -1,7 +1,7 @@
 import { Component, Input, EventEmitter } from '@angular/core';
 import { BaseTabComponent } from './base.component';
 import { DomSanitizer } from '@angular/platform-browser';
-import { jobViteRequisition } from '../../consts';
+import { jobViteCandidate } from '../../consts';
 import { CandidateService } from '../../services/candidate.service';
 
 @Component({
@@ -28,7 +28,7 @@ export class CandidatesTabComponent extends BaseTabComponent {
     }
   }
 
-  getJvcandidatesLink(candidate) {
-    return this.sanitizer.bypassSecurityTrustUrl(jobViteRequisition + candidate.applicationId);
+  getJvApplicationLink(candidate) {
+    return this.sanitizer.bypassSecurityTrustUrl(jobViteCandidate + candidate.applicationId);
   }
 }

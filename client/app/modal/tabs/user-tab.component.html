@@ -1,56 +1,58 @@
-    <spinner [isShown]="isLoading">
-      <div class="col-md-6">
-        <dl class="attributes">
-          <dt>Location</dt>
-          <dd>{{ person.location }}</dd>
+<spinner [isShown]="isLoading">
+  <div class="user row">
+    <div class="col-md-6">
+      <dl class="attributes">
+        <dt>Location</dt>
+        <dd>{{ person.location }}</dd>
 
-          <dt>Profile</dt>
-          <dd>
-            {{ person.profile }}
-            <span *ngIf="person.specialization"> ({{ person.specialization }})</span>
-          </dd>
+        <dt>Profile</dt>
+        <dd>
+          {{ person.profile }}
+          <span *ngIf="person.specialization"> ({{ person.specialization }})</span>
+        </dd>
 
-          <dt>Grade</dt>
-          <dd>{{ person.grade }}</dd>
+        <dt>Grade</dt>
+        <dd>{{ person.grade }}</dd>
 
-          <dt>Pool</dt>
-          <dd>{{ person.pool }}</dd>
+        <dt>Pool</dt>
+        <dd>{{ person.pool }}</dd>
 
-          <dt>Manager</dt>
-          <dd>{{ person.manager }}</dd>
+        <dt>Manager</dt>
+        <dd>{{ person.manager }}</dd>
 
-          <ng-container *ngIf="person.payRate">
-            <dt>Pay Rate</dt>
-            <dd><i class="fa fa-eye" title="{{ person.payRate }}"></i></dd>
-          </ng-container>
+        <ng-container *ngIf="person.payRate">
+          <dt>Pay Rate</dt>
+          <dd><i class="fa fa-eye" title="{{ person.payRate }}"></i></dd>
+        </ng-container>
 
-        </dl>
+      </dl>
 
-      </div>
-      <div class="col-md-6">
-        <dl class="attributes">
-          <dt>Visas</dt>
-          <dd><ul *ngIf="hasVisas()">
-              <li>{{ getVisaInfo('visaB', 'B1/B2') }}</li>
-              <li>{{ getVisaInfo('visaL', 'L') }}</li>
-            </ul></dd>
+    </div>
+    <div class="col-md-6">
+      <dl class="attributes">
+        <dt>Visas</dt>
+        <dd><ul *ngIf="hasVisas()">
+            <li>{{ getVisaInfo('visaB', 'B1/B2') }}</li>
+            <li>{{ getVisaInfo('visaL', 'L') }}</li>
+          </ul></dd>
 
-          <dt>Skype</dt>
-          <dd><a [href]="getSkype()" *ngIf="person.skype">{{ person.skype }}</a></dd>
+        <dt>Skype</dt>
+        <dd><a [href]="getSkype()" *ngIf="person.skype">{{ person.skype }}</a></dd>
 
-          <dt>Room</dt>
-          <dd>{{ person.room }}</dd>
+        <dt>Room</dt>
+        <dd>{{ person.room }}</dd>
 
-          <dt>Phone</dt>
-          <dd>{{ person.phone }}</dd>
+        <dt>Phone</dt>
+        <dd>{{ person.phone }}</dd>
 
-          <ng-container *ngIf="person.birthday">
-            <dt>Birthday</dt>
-            <dd>{{ person.birthday|date }}</dd>
-          </ng-container>
+        <ng-container *ngIf="person.birthday">
+          <dt>Birthday</dt>
+          <dd>{{ person.birthday|date }}</dd>
+        </ng-container>
 
-          <dt>Driver's License</dt>
-          <dd>{{ person.license }}</dd>
-        </dl>
-      </div>
-    </spinner>
+        <dt>Driver's License</dt>
+        <dd>{{ person.license }}</dd>
+      </dl>
+    </div>
+  </div>
+</spinner>

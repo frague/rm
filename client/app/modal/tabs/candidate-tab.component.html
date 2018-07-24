@@ -1,0 +1,34 @@
+<spinner [isShown]="isLoading">
+  <div class="candidate row">
+    <div class="col-md-6">
+      <dl class="attributes">
+        <dt>Name</dt>
+        <dd>{{ candidate.name }}</dd>
+
+        <dt>Location</dt>
+        <dd>{{ candidate.location }}</dd>
+
+        <dt>Profile</dt>
+        <dd>{{ candidate.profile }}</dd>
+
+        <dt>State</dt>
+        <dd>{{ candidate.state }}</dd>
+
+        <dt>Requisition</dt>
+        <dd>{{ candidate.requisitionId }}</dd>
+
+        <dt>Application</dt>
+        <dd>
+          <a [href]="getJvApplicationLink(candidate)" target="_blank">
+            JobVite <i class="fa fa-external-link-square"></i>
+          </a>
+        </dd>
+
+        <dt>Last update</dt>
+        <dd>{{ candidate.updated|date }}</dd>
+
+      </dl>
+
+    </div>
+  </div>
+</spinner>

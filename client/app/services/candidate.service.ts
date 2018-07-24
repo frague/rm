@@ -16,4 +16,13 @@ export class CandidateService extends BaseService {
       .map(res => {
         return (res && res.length) ? res : [];
       });
-  }}
+  }
+
+  getByLogin(login: string): Observable<any> {
+    return this
+      .getAll({or: [{'$and':[{'candidate.login': login}]}]})
+      .map(res => {
+        return (res && res.length) ? res[0] : {};
+      });
+  }
+}

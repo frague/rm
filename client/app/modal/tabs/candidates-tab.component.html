@@ -14,7 +14,7 @@
         <td>{{ candidate.name }}</td>
         <td>{{ candidate.state }}, {{ candidate.updated|date }}</td>
         <td>{{ candidate.location }}</td>
-        <td><a [href]="getJvcandidatesLink(candidate)"><i class="fa fa-external-link-square"></i></a></td>
+        <td><a [href]="getJvApplicationLink(candidate)" target="_blank"><i class="fa fa-external-link-square"></i></a></td>
       </tr>
     </tbody>
   </table>

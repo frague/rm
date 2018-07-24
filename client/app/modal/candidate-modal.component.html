@@ -1,0 +1,30 @@
+<ng-template #content let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <h4 class="modal-title">
+      JobVite candidate {{ candidate.name }}
+    </h4>
+    <h6>{{ candidate.state }}</h6>
+  </div>
+  <div class="comments-modal modal-body">
+    <ngb-tabset (tabChange)="tabChange($event)" #tabs="ngbTabset" *ngIf="!isLoading" [activeId]="activeId">
+      <ngb-tab title="Profile" id="profile">
+        <ng-template ngbTabContent>
+          <candidate-tab [candidate]="candidate"></candidate-tab>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab title="Comments" id="comments">
+        <ng-template ngbTabContent>
+          <comments-tab [key]="candidate.login"></comments-tab>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab title="History" id="history">
+        <ng-template ngbTabContent>
+          <history-tab [key]="candidate.login"></history-tab>
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
+  </div>
+</ng-template>

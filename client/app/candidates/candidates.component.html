@@ -4,6 +4,8 @@
 
   <comments-modal></comments-modal>
 
+  <candidate-modal></candidate-modal>
+
   <requisition-modal></requisition-modal>
 
   <div class="requisitions" *ngIf="getRequisitions().length">
@@ -38,7 +40,7 @@
             <div class="col-md-2">
               <div
                 class="corner"
-                (click)="showComments(candidate, $event)"
+                (click)="showModal(candidate, $event, 'comments')"
                 [ngClass]="{'has-status': candidate.status}"
                 container="body"
                 placement="top-left"
@@ -46,7 +48,7 @@
               >
                 <b>{{ candidate.commentsCount || '' }}</b>
               </div>
-              {{ candidate.name }}
+              <a (click)="showModal(candidate, $event)">{{ candidate.name }}</a>
             </div>
             <div class="col-md-3">
               {{ candidate.state|cutIndex }}

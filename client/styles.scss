@@ -938,7 +938,7 @@ ul.tasks {
     &.selected {
       box-shadow: 0 10px 10px -5px rgba(0,0,0,0.5);
       position: relative;
-      background-color: $body - #111;
+      // background-color: $body - #111;
     }
 
     div {
@@ -986,6 +986,10 @@ ul.tasks {
       white-space: nowrap;
       overflow: hidden;
       padding-top: 2px;
+
+      a {
+        @extend .clickable;
+      }
 
       &:first-child {
         .corner {
@@ -1053,7 +1057,7 @@ div.bottom-corner {
 }
 
 .log {
-  height: 200px;
+  height: 250px;
   overflow-y: auto;
   overflow-x: none;
   border: solid 1px $grid;
@@ -1448,10 +1452,8 @@ div.bottom-corner {
   }
 }
 
-.backup {
-  h1.restore {
-    margin-top: 40px;
-  }
+.backup-restore {
+  margin-top: 40px;
 }
 
 .deadpool {

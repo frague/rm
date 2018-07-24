@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription, Observable } from 'rxjs';
 
 import { CommentsModal } from '../modal/comments-modal.component';
+import { CandidateModal } from '../modal/candidate-modal.component';
 import { RequisitionModal } from '../modal/requisition-modal.component';
 
 import { RequisitionService } from '../services/requisition.service';
@@ -25,6 +26,7 @@ const emptyRequisition = {
 })
 export class CandidatesComponent implements OnInit {
   @ViewChild(CommentsModal) commentsModal: CommentsModal;
+  @ViewChild(CandidateModal) candidateModal: CandidateModal;
   @ViewChild(RequisitionModal) requisitionModal: RequisitionModal;
 
   items = [];
@@ -148,9 +150,9 @@ export class CandidatesComponent implements OnInit {
     return (candidate && candidate.status) ? candidate.status.text : '';
   }
 
-  showComments(candidate, event: MouseEvent) {
+  showModal(candidate, event: MouseEvent, tabName='') {
     event.stopPropagation();
-    this.commentsModal.show(candidate.login, candidate.name);
+    this.candidateModal.show(candidate, tabName);
   }
 
   showRequisition(requisition, event: MouseEvent) {

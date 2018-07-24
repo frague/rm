@@ -60,6 +60,7 @@ import { AssignmentModal } from './modal/assignment-modal.component';
 import { DemandModal } from './modal/demand-modal.component';
 import { RequisitionModal } from './modal/requisition-modal.component';
 import { CommentsModal } from './modal/comments-modal.component';
+import { CandidateModal } from './modal/candidate-modal.component';
 
 import { UserTabComponent } from './modal/tabs/user-tab.component';
 import { CommentsTabComponent } from './modal/tabs/comments-tab.component';
@@ -71,6 +72,7 @@ import { HistoryTabComponent } from './modal/tabs/history-tab.component';
 import { DemandTabComponent } from './modal/tabs/demand-tab.component';
 import { RequisitionTabComponent } from './modal/tabs/requisition-tab.component';
 import { CandidatesTabComponent } from './modal/tabs/candidates-tab.component';
+import { CandidateTabComponent } from './modal/tabs/candidate-tab.component';
 
 const config: SocketIoConfig = {
   url: ':3030',
@@ -102,10 +104,11 @@ const config: SocketIoConfig = {
     CandidatesComponent,
     SpinnerComponent,
 
-    PersonModal, AssignmentModal, DemandModal, RequisitionModal, CommentsModal,
+    PersonModal, AssignmentModal, DemandModal, RequisitionModal, CommentsModal, CandidateModal,
+
     UserTabComponent, CommentsTabComponent, SkillsTabComponent, CarreerTabComponent,
     AssignmentTabComponent, AssignmentsTabComponent, HistoryTabComponent, DemandTabComponent,
-    RequisitionTabComponent, CandidatesTabComponent,
+    RequisitionTabComponent, CandidatesTabComponent, CandidateTabComponent,
   ],
   imports: [
     RoutingModule,
