@@ -1368,7 +1368,16 @@ div.bottom-corner {
       }
     }
 
-    h6:empty {
+    h6 {
+      &:empty {}
+
+      & + div {
+        p, ul, ol {
+          &:last-child {
+            margin-bottom: 0;
+          }
+        }
+      }
     }
   }
   form {
