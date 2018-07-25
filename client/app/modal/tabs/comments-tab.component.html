@@ -36,6 +36,6 @@
       </div>
     </form>
 
-    <div class="empty" *ngIf="!aggregated.length">No records found</div>
+    <div class="empty" *ngIf="!aggregated || !aggregated.length">No records found</div>
   </div>
 </spinner>
