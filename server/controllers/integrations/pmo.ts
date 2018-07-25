@@ -126,7 +126,7 @@ export default class PmoIntegrationsCtrl {
       return res.sendStatus(500);
     }
 
-	this.getUserAssignments(pmoId)
+	  this.getUserAssignments(pmoId)
       .then(data => {
         res.setHeader('Content-Type', 'application/json');
         res.json(data);

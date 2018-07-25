@@ -256,7 +256,7 @@ export default class SyncCtrl {
             resourceId,
             start: startDate,
             end: endDate,
-            billability: 'Non-billable',
+            billability: 'Funded',
             involvement: 100
           });
           vac.save(reject);
@@ -452,7 +452,7 @@ export default class SyncCtrl {
                 name: project,
                 account,
                 start: this._makeDate(involvement.start),
-                end: this._makeDate(involvement.end, true),
+                end: this._makeDate(involvement.finish, true),
                 billability: involvement.status,
                 involvement: involvement.involvement,
                 comment: involvement.comment
