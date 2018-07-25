@@ -679,7 +679,7 @@ export default class SyncCtrl {
                 delete requisition.jobLocations;
                 delete requisition.__v;
                 requisition.location = this._convertLocations(requisition.location);
-                
+
                 new Requisition(requisition).save();
                 idsMet.push(requisition.requisitionId);
               }
@@ -710,7 +710,7 @@ export default class SyncCtrl {
       let applicationJob = application.job || {};
       let state = candidateStates[application.workflowState];
       let requisitionId = applicationJob.requisitionId || '';
-      let login = requisitionId + '-' + (candidate.firstName + '_' + candidate.lastName).toLowerCase().replace(/\./g, '_');
+      let login = requisitionId + '-' + (candidate.firstName + '_' + candidate.lastName).toLowerCase().replace(/[\.\-]/g, '_');
       let updated = application.lastUpdatedDate ? new Date(application.lastUpdatedDate) : null;
 
       let nc = new Candidate({
