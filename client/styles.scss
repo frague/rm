@@ -90,34 +90,40 @@ pre {
   outline-width: 0px !important;
   border-radius: 0;
   color: $body - #777;
+  background-color: $body - #111;
 
-  &:hover, &:active, &:visited, &:focus, &:focus:active {
-    background-color: $body - #111 !important;
+  &:hover, &:active, &:visited, &:focus, &:focus:active, &:disabled {
+    color: $body - #777;
+    background-color: $body - #222;
   }
 
   &.btn-primary {
-    background-color: $primary;
-    border-color: $primary - #111;
-    &:hover {
-      background-color: $primary - #111;
+    &, &:disabled {
+      background-color: $primary;
       border-color: $primary - #111;
-    }
-    &:active, &:focus, &:focus:active {
-      background-color: $primary - #222;
-      border-color: $primary - #111;
+      &:hover {
+        background-color: $primary - #111;
+        border-color: $primary - #111;
+      }
+      &:active, &:focus, &:focus:active {
+        background-color: $primary - #222;
+        border-color: $primary - #111;
+      }
     }
   }
 
   &.btn-danger {
-    background-color: $danger;
-    border-color: $danger - #111;
-    &:hover {
-      background-color: $danger - #111;
+    &, &:disabled {
+      background-color: $danger;
       border-color: $danger - #111;
-    }
-    &:active, &:focus, &:focus:active {
-      background-color: $danger - #222;
-      border-color: $danger - #111;
+      &:hover {
+        background-color: $danger - #111;
+        border-color: $danger - #111;
+      }
+      &:active, &:focus, &:focus:active {
+        background-color: $danger - #222;
+        border-color: $danger - #111;
+      }
     }
   }
 
