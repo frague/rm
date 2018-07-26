@@ -71,7 +71,19 @@ export default class JobViteIntegrationsCtrl {
     return this._getItems('job', params, 'requisitions');
   };
 
+  _twoDigits(value: number): string {
+    return (+value < 10 ? '0' : '') + value;
+  }
+
+  _makeDate(d: Date): string {
+    return this._twoDigits(1 + d.getMonth()) + '-' + this._twoDigits(d.getDate()) + '-' + d.getFullYear();
+  }
+
   getCandidates = (start: number, count=500): Promise<[any, number]> => {
+    let d = new Date();
+    d.setFullYear(d.getFullYear() - 1);
+    let datestart = this._makeDate(d);
+
     if (start < 1) start = 1;
 		let params;
 		try {
@@ -81,7 +93,8 @@ export default class JobViteIntegrationsCtrl {
 				{
           wflowstate: Object.keys(candidateStates),
           start,
-          count
+          count,
+          datestart
         }
 			);
 		} catch (e) {
