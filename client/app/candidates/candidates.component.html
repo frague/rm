@@ -1,4 +1,4 @@
-<comments-modal></comments-modal>
+<candidate-modal></candidate-modal>
 
 <requisition-modal></requisition-modal>
 
@@ -12,9 +12,9 @@
     <ng-container *ngFor="let category of getCategories()">
       <h3 *ngIf="isCategoryFilled[category]">{{ category }}</h3>
       <ng-container *ngFor="let requisition of requisitionCategories[category]">
-        <div 
-          class="row" 
-          *ngIf="requisitionCandidates[requisition.requisitionId] && requisitionCandidates[requisition.requisitionId].length" 
+        <div
+          class="row"
+          *ngIf="requisitionCandidates[requisition.requisitionId] && requisitionCandidates[requisition.requisitionId].length"
           [ngClass]="getRequisitionClasses(requisition)"
         >
           <div class="col-md-2">
@@ -47,11 +47,12 @@
           <div
             *ngFor="let candidate of requisitionCandidates[requisition.requisitionId]"
             class="candidate row"
+            (click)="showCandidate(candidate, $event)"
           >
             <div class="col-md-2">
               <div
                 class="corner"
-                (click)="showComments(candidate, $event)"
+                (click)="showCandidate(candidate, $event, 'comments')"
                 [ngClass]="{'has-status': candidate.status}"
                 container="body"
                 placement="top-left"

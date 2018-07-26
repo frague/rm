@@ -3,7 +3,6 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription, Observable } from 'rxjs';
 
-import { CommentsModal } from '../modal/comments-modal.component';
 import { CandidateModal } from '../modal/candidate-modal.component';
 import { RequisitionModal } from '../modal/requisition-modal.component';
 import { DemandModal } from '../modal/demand-modal.component';
@@ -26,7 +25,6 @@ const emptyRequisition = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CandidatesComponent implements OnInit {
-  @ViewChild(CommentsModal) commentsModal: CommentsModal;
   @ViewChild(CandidateModal) candidateModal: CandidateModal;
   @ViewChild(RequisitionModal) requisitionModal: RequisitionModal;
   @ViewChild(DemandModal) demandModal: DemandModal;
@@ -160,7 +158,7 @@ export class CandidatesComponent implements OnInit {
     return (candidate && candidate.status) ? candidate.status.text : '';
   }
 
-  showModal(candidate, event: MouseEvent, tabName='') {
+  showCandidate(candidate, event: MouseEvent, tabName='') {
     event.stopPropagation();
     this.candidateModal.show(candidate, tabName);
   }
