@@ -94,7 +94,6 @@ export default class JobViteIntegrationsCtrl {
           wflowstate: Object.keys(candidateStates),
           start,
           count,
-          datestart
         }
 			);
 		} catch (e) {
