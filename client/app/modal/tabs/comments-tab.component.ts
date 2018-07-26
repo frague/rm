@@ -55,16 +55,22 @@ export class CommentsTabComponent extends BaseTabComponent {
       .add(() => this.isLoading = false);
   }
 
+  _confirmDeletion() {
+    return confirm('Are you sure you want to delete this note?\nYou won\'t be able to undo that.');
+  }
+
   delete(item: any) {
-    let isStatus = item.isStatus;
-    return this.commentService.delete(item)
-      .subscribe(() => {
-        if (isStatus) {
-          this.entity.status = null;
-        }
-        this.entity.commentsCount--;
-        this.fetchData();
-      });
+    if (this._confirmDeletion()) {
+      let isStatus = item.isStatus;
+      return this.commentService.delete(item)
+        .subscribe(() => {
+          if (isStatus) {
+            this.entity.status = null;
+          }
+          this.entity.commentsCount--;
+          this.fetchData();
+        });
+    }
   }
 
   edit(item: any) {
