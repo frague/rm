@@ -4,6 +4,8 @@
 
 <person-modal></person-modal>
 
+<candidate-modal></candidate-modal>
+
 <div class="deadpool row">
   <div class="col-md-4" *ngFor="let type of types">
     <h3>{{ typeNames[type] }}</h3>
@@ -23,7 +25,7 @@
         </span>
       	<span *ngIf="type === 'c'">
           <a (click)="showRequisition(diff)">{{ makeReq(diff.subject) }}</a>:
-          {{ diff.title }}
+          <a (click)="showCandidate(diff)">{{ diff.title }}</a>
         </span>
       	<ul *ngIf="hasDiff(diff)">
       		<li *ngFor="let key of diff.diff|keys">
