@@ -15,9 +15,9 @@
           <requisition-tab [requisition]="requisition"></requisition-tab>
         </ng-template>
       </ngb-tab>
-      <ngb-tab title="Notes" id="notes">
+      <ngb-tab title="Notes" id="comments">
         <ng-template ngbTabContent>
-          <comments-tab [key]="requisition.requisitionId"></comments-tab>
+          <comments-tab [key]="requisition.requisitionId" [callback]="callback"></comments-tab>
         </ng-template>
       </ngb-tab>
       <ngb-tab title="Candidates" id="candidates">

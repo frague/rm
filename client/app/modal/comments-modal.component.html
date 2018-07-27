@@ -11,7 +11,7 @@
     <ngb-tabset (tabChange)="tabChange($event)" #tabs="ngbTabset" *ngIf="!isLoading" [activeId]="activeId">
       <ngb-tab title="Comments" id="comments">
         <ng-template ngbTabContent>
-          <comments-tab [key]="key"></comments-tab>
+          <comments-tab [key]="key" [callback]="callback"></comments-tab>
         </ng-template>
       </ngb-tab>
     </ngb-tabset>

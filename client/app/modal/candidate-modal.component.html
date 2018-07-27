@@ -17,7 +17,7 @@
       </ngb-tab>
       <ngb-tab title="Comments" id="comments">
         <ng-template ngbTabContent>
-          <comments-tab [key]="candidate.login"></comments-tab>
+          <comments-tab [key]="candidate.login" [callback]="callback"></comments-tab>
         </ng-template>
       </ngb-tab>
       <ngb-tab title="History" id="history">

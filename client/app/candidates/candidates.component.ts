@@ -158,9 +158,15 @@ export class CandidatesComponent implements OnInit {
     return (candidate && candidate.status) ? candidate.status.text : '';
   }
 
-  showCandidate(candidate, event: MouseEvent, tabName='') {
-    event.stopPropagation();
-    this.candidateModal.show(candidate, tabName);
+  showCandidate(candidate, showComments=false, event: MouseEvent = null) {
+    if (event) {
+      event.stopPropagation();
+    }
+    this.candidateModal.show(candidate, showComments && 'comments')
+      .subscribe(({status, commentsCount}) => {
+        [candidate.status, candidate.commentsCount] = [status, commentsCount];
+        this.cd.markForCheck();
+      });
   }
 
   showRequisition(requisition, event: MouseEvent) {

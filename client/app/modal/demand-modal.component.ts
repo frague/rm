@@ -1,6 +1,7 @@
 import { Component, ViewChild, Input } from '@angular/core';
-import { BaseModalComponent } from './base.component';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { Subject } from 'rxjs';
+import { BaseModalComponent } from './base.component';
 import { DemandService } from '../services/demand.service';
 
 @Component({
@@ -19,7 +20,7 @@ export class DemandModal extends BaseModalComponent {
     super(modalService);
   }
 
-  show(demand: any, tabName = '') {
+  show(demand: any, tabName = ''): Subject<any> {
     if (typeof demand === 'string') {
       this.isLoading = true;
       this.demandService.get({_id: demand})
@@ -31,7 +32,7 @@ export class DemandModal extends BaseModalComponent {
     } else {
       this.demand = demand;
     }
-    this.open(tabName);
+    return this.open(tabName);
   }
 
   getId() {

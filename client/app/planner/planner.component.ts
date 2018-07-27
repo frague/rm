@@ -107,7 +107,7 @@ export class PlannerComponent extends Schedule {
         }
         this.accountsDemand[account].push(demand);
       });
-      this._cd.markForCheck();
+      this.markForCheck();
     });
 
   };
@@ -136,7 +136,7 @@ export class PlannerComponent extends Schedule {
   }
 
   scroll = (event: Event) => {
-    this._cd.markForCheck();
+    this.markForCheck();
     if (this.boardOfFame && this.boardOfFame.nativeElement) {
       let windowOffset = window.pageYOffset;
       let element = this.boardOfFame.nativeElement;
@@ -162,35 +162,8 @@ export class PlannerComponent extends Schedule {
     return demand.name;
   }
 
-  showResource(item: any, isDemand=false) {
-    if (isDemand) {
-      this.demandModal.show(item);
-    } else if (!item.isHiree) {
-      this.personModal.show(this.resourcesById[item.login]);
-    } else {
-      this.candidateModal.show(item);
-    }
-  }
-
   showReport() {
     this.reportModal.show(this.reserved);
-  }
-
-  showRequisition(requisitionId: string, e: MouseEvent) {
-    e.cancelBubble = true;
-    this.requisitionModal.show(requisitionId);
-  }
-
-  showComments(item, event: MouseEvent) {
-    event.stopPropagation();
-    if (item.stage) {
-      // Only demand entity always contains "stage" key
-      this.demandModal.show(item, 'notes');
-    } else if (!item.isHiree) {
-      this.personModal.show(this.resourcesById[item.login], 'comments');
-    } else {
-      this.candidateModal.show(item, 'comments');
-    }
   }
 
   reserve(candidate: any, demand: any) {

@@ -1,6 +1,7 @@
 import { Component, ViewChild, Input } from '@angular/core';
-import { BaseModalComponent } from './base.component';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { Subject } from 'rxjs';
+import { BaseModalComponent } from './base.component';
 import { CandidateService } from '../services/candidate.service';
 
 @Component({
@@ -19,7 +20,7 @@ export class CandidateModal extends BaseModalComponent {
     super(modalService);
   }
 
-  show(candidate: any = {}, tabName = '') {
+  show(candidate: any = {}, tabName = ''): Subject<any> {
     if (typeof candidate === 'string') {
       this.isLoading = true;
       this.candidateService.getByLogin(candidate)
@@ -28,6 +29,6 @@ export class CandidateModal extends BaseModalComponent {
     } else {
       this.candidate = candidate;
     }
-    this.open(tabName);
+    return this.open(tabName);
   }
 }

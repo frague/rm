@@ -22,7 +22,8 @@
           <div>
             <div
               class="corner"
-              (click)="showComments(resource, $event)"
+              [ngClass]="{'has-status': resource.status}"
+              (click)="showResource(resource, true, $event)"
               *ngIf="column == 'name'"
             >
               <b>{{ resource.commentsCount || '' }}</b>

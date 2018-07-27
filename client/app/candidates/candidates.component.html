@@ -47,12 +47,12 @@
           <div
             *ngFor="let candidate of requisitionCandidates[requisition.requisitionId]"
             class="candidate row"
-            (click)="showCandidate(candidate, $event)"
+            (click)="showCandidate(candidate)"
           >
             <div class="col-md-2">
               <div
                 class="corner"
-                (click)="showCandidate(candidate, $event, 'comments')"
+                (click)="showCandidate(candidate, true, $event)"
                 [ngClass]="{'has-status': candidate.status}"
                 container="body"
                 placement="top-left"

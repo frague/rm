@@ -60,14 +60,7 @@ export class PeopleComponent extends Schedule {
   }
 
   showUser(name: string, line: any) {
-    if (line.isDemand) {
-      let assignments = line.assignments;
-      if (assignments) {
-        return this.demandModal.show(assignments[Object.keys(assignments)[0]][0].demand);
-      }
-    } else {
-      return this.personModal.show(this.resourcesById[line.login])
-    }
+    return this.showResource(line);
   }
 
   showComments(candidate, event: MouseEvent) {
@@ -81,5 +74,4 @@ export class PeopleComponent extends Schedule {
     query['addComments'] = 1;
     return super.fetchData(query, fetchAll, serviceData);
   }
-
 }

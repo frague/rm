@@ -245,7 +245,7 @@ export const requisitionsLocations = {
   'Sunnyvale, CA, US': 'US',
 };
 
-export var candidateStates = {
+export const candidateStates = {
   'Screened': '02 Screened',
   'Submitted to Interviewers': '03 Interview',
   'Approved by Interviewers by CV': '04 Approved by CV',
@@ -259,4 +259,11 @@ export var candidateStates = {
   'Offer Sent': '12 Offer Sent',
   'Offer Accepted': '13 Offer Accepted',
   'Hired': '14 Hired',
+};
+
+export const demandStatusesMap = {
+  'Active': 'Open',
+  'Softbooked': 'Open',
+  'Staffed internally': 'Filled',
+  'Staffed externally': 'Filled'
 };

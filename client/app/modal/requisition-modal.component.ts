@@ -1,6 +1,7 @@
 import { Component, ViewChild, Input } from '@angular/core';
-import { BaseModalComponent } from './base.component';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { Subject } from 'rxjs';
+import { BaseModalComponent } from './base.component';
 import { RequisitionService } from '../services/requisition.service';
 
 @Component({
@@ -19,7 +20,7 @@ export class RequisitionModal extends BaseModalComponent {
     super(modalService);
   }
 
-  show(requisition: any, tabName = '') {
+  show(requisition: any, tabName = ''): Subject<any> {
     if (typeof requisition === 'string') {
       this.isLoading = true;
       this.requisitionService.get(requisition)
@@ -31,6 +32,6 @@ export class RequisitionModal extends BaseModalComponent {
     } else {
       this.requisition = requisition;
     }
-    this.open(tabName);
+    return this.open(tabName);
   }
 }

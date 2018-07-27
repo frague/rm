@@ -59,19 +59,10 @@ export class AssignmentsComponent extends Schedule {
     return (assignee.grade ? assignee.grade + ', ' : '') + assignee.name;
   }
 
-  showComments(candidate, event: MouseEvent) {
-    event.stopPropagation();
-    return this.personModal.show(this.resourcesById[candidate.login], 'comments');
-  }
-
-  showResource(assignee: any) {
-    if (assignee.isDemand) {
-      let assignments = assignee.assignments;
-      if (assignments) {
-        return this.demandModal.show(assignments[Object.keys(assignments)[0]][0].demand);
-      }
-    } else {
-      return this.personModal.show(this.resourcesById[assignee.login])
+  getDemandFrom(item) {
+    let assignments = item.assignments;
+    if (assignments) {
+      return [item, assignments[Object.keys(assignments)[0]][0].demand];
     }
   }
 

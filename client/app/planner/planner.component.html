@@ -28,13 +28,13 @@
         <div
           *ngFor="let demand of accountsDemand[account]"
           class="line"
-          (click)="showResource(demand, true)"
+          (click)="showResource(demand)"
           [ngClass]="getDemandStyles(demand)"
         >
           <time>{{ demand.start|date:'noyear' }}</time>
           <div
             class="corner"
-            (click)="showComments(demand, $event)"
+            (click)="showResource(demand, true, $event)"
             [ngClass]="{'has-status': demand.status}"
             container="body"
             placement="top-left"
@@ -85,7 +85,7 @@
               container="body"
               placement="top-right"
               [ngbTooltip]="getCurrentStatus(candidate)"
-              (click)="showComments(candidate, $event)"
+              (click)="showResource(candidate, true, $event)"
             >
               <div
                 class="corner"

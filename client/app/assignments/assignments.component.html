@@ -27,7 +27,7 @@
       >
         <div
           class="corner"
-          (click)="showComments(assignee, $event)"
+          (click)="showResource(assignee, true, $event)"
           [ngClass]="{'has-status': assignee.status}"
           container="body"
           placement="top-left"
@@ -52,11 +52,11 @@
         </ol>
 
         <div *ngFor="let assignee of items; let i = index" class="line" [ngClass]="getAssignmentsCount(i)">
-          <span *ngFor="let assignmentsGroup of getAssignmentsGroups(assignee.assignments, assignee)" >
+          <span *ngFor="let assignmentsGroup of getAssignmentsGroups(assignee.assignments)">
             <initiative
               *ngFor="let assignment of assignmentsGroup"
               [data]="getAssignment(assignment)"
-              (click)="showAssignment(assignment, $event)"
+              (click)="showAssignment(assignment, assignee, $event)"
             ></initiative>
           </span>
         </div>

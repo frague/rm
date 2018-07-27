@@ -1,6 +1,7 @@
 import { Component, ViewChild, Input } from '@angular/core';
-import { BaseModalComponent } from './base.component';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { Subject } from 'rxjs';
+import { BaseModalComponent } from './base.component';
 import { CommentService } from '../services/comments.service';
 
 @Component({
@@ -19,9 +20,9 @@ export class CommentsModal extends BaseModalComponent {
     super(modalService);
   }
 
-  show(key = '', title = '') {
+  show(key = '', title = ''): Subject<any> {
     this.title = title;
     this.key = key;
-    this.open();
+    return this.open();
   }
 }

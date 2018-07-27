@@ -25,7 +25,7 @@
       </ngb-tab>
       <ngb-tab title="Notes" id="comments">
         <ng-template ngbTabContent>
-          <comments-tab [key]="person.login" [entity]="person"></comments-tab>
+          <comments-tab [key]="person.login" [callback]="callback"></comments-tab>
         </ng-template>
       </ngb-tab>
       <ngb-tab title="Assignments" id="assignments" [disabled]="!person.pmoId">

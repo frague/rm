@@ -18,9 +18,9 @@
           <demand-tab [demand]="demand"></demand-tab>
         </ng-template>
       </ngb-tab>
-      <ngb-tab title="Notes" id="notes">
+      <ngb-tab title="Notes" id="comments">
         <ng-template ngbTabContent>
-          <comments-tab [key]="demand.login"></comments-tab>
+          <comments-tab [key]="demand.login" [callback]="callback"></comments-tab>
         </ng-template>
       </ngb-tab>
       <ngb-tab title="History" id="history">

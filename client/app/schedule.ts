@@ -8,6 +8,8 @@ import { Utils } from './utils';
 import { PersonModal } from './modal/person-modal.component';
 import { AssignmentModal } from './modal/assignment-modal.component';
 import { DemandModal } from './modal/demand-modal.component';
+import { RequisitionModal } from './modal/requisition-modal.component';
+import { CandidateModal } from './modal/candidate-modal.component';
 
 import { AssignmentService } from './services/assignment.service';
 import { InitiativeService } from './services/initiative.service';
@@ -29,6 +31,8 @@ export class Schedule {
   @ViewChild(DemandModal) demandModal: DemandModal;
   @ViewChild(PersonModal) personModal: PersonModal;
   @ViewChild(AssignmentModal) assignmentModal: AssignmentModal;
+  @ViewChild(RequisitionModal) requisitionModal: RequisitionModal;
+  @ViewChild(CandidateModal) candidateModal: CandidateModal;
 
   @ViewChild('schedule') schedule: ElementRef;
 
@@ -100,6 +104,10 @@ export class Schedule {
 
   ngOnDestroy() {
     this.$query.unsubscribe();
+  }
+
+  markForCheck() {
+    this.cd.markForCheck();
   }
 
   private _push(collection: any, key: string, item: any, makeUnique=true) {
@@ -331,7 +339,7 @@ export class Schedule {
     return (this.accountInitiatives[account] || []).filter((initiative: any) => !!this.visibleInitiatives[initiative._id]);
   }
 
-  getAssignmentsGroups(assignments: any, assignee: any) {
+  getAssignmentsGroups(assignments: any) {
     if (!this.isCalculated) return [];
     return Object.values(assignments);
   }
@@ -425,16 +433,64 @@ export class Schedule {
     this.todayCaption = this.makeDateCaption(today);
   }
 
-  showAssignment(assignment: any, event: MouseEvent) {
+  showAssignment(assignment: any, assignee: any, event: MouseEvent) {
+    if (typeof assignee === 'string') {
+      assignee = this.resourcesById[assignee];
+    }
     event.stopPropagation();
     if (assignment.demand) {
-      this.demandModal.show(assignment.demand);
+      this.showResource(assignee || assignment.demand);
     } else {
-      let assignee = this.resourcesById[assignment.resourceId] || {};
-      assignee.assignments = [assignment];
-      this.assignmentModal.show(assignee);
+      let dummy = Object.assign({}, assignee, {assignments: [assignment]});
+      this.assignmentModal.show(dummy);
     }
   };
+
+  showRequisition(requisitionId: string, e: MouseEvent) {
+    e.cancelBubble = true;
+    this.requisitionModal.show(requisitionId);
+  }
+
+  _showModal(entity, source, modal: {show: Function}, showComments=false) {
+    if (!entity || !source) {
+      return;
+    }
+
+    modal.show(source, showComments && 'comments')
+      .subscribe(({status, commentsCount}) => {
+        [entity.status, entity.commentsCount] = [status, commentsCount];
+        this.markForCheck();
+      });
+  }
+
+  getDemandFrom(item: any) {
+    return [item, item];
+  }
+
+  getPersonFrom(item: any) {
+    return [item, this.resourcesById[item.login]];
+  }
+
+  getCandidateFrom(item: any) {
+    return [item, item];
+  }
+
+  showResource(item, showComments=false, event: MouseEvent = null) {
+    if (event) {
+      event.stopPropagation();
+    }
+    if (item.stage || item.isDemand) {
+      // Only demand entity always contains "stage" key
+      let [entity, source] = this.getDemandFrom(item);
+      return this._showModal(entity, source, this.demandModal, showComments);
+    } else if (!item.isHiree) {
+      let [entity, source] = this.getPersonFrom(item);
+      return this._showModal(entity, source, this.personModal, showComments);
+    } else {
+      let [entity, source] = this.getCandidateFrom(item);
+      return this._showModal(entity, source, this.candidateModal, showComments);
+    }
+  }
 
   isOnsite(assignee: any) {
     if (assignee.isDemand) {
