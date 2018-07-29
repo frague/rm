@@ -22,10 +22,20 @@ export class DemandPlanComponent {
   ) {}
 
   ngOnInit() {
-    this.demandPlans.getAll().subscribe(data => this.plans = data.reduce((result, plan) => {
-      result[plan._id] = plan;
-      return result;
-    }, {}));
+    this.demandPlans.getAll().subscribe(data => {
+      let criteria = this.bus.criteria;
+      let selectedPlan = null;
+      this.plans = data.reduce((result, plan) => {
+          result[plan._id] = plan;
+          if (criteria === plan.filter) {
+            selectedPlan = plan;
+          }
+          return result;
+        }, {});
+      if (selectedPlan) {
+        this.select(selectedPlan);
+      }
+    });
   }
 
   getPlans() {
