@@ -33,7 +33,7 @@ export class DemandPlanComponent {
           return result;
         }, {});
       if (selectedPlan) {
-        this.select(selectedPlan);
+        this.select(selectedPlan, false);
       }
     });
   }
@@ -72,10 +72,12 @@ export class DemandPlanComponent {
     });
   }
 
-  select(plan) {
+  select(plan, updateCriteria=true) {
     this.selectedPlan = plan;
     this.title = plan.title;
-    this.bus.criteriaUpdated.emit(plan.filter);
+    if (updateCriteria) {
+      this.bus.criteriaUpdated.emit(plan.filter);
+    }
     this.planHasChanged.emit({rows: plan.rows, logins: plan.logins});
   }
 
