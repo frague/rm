@@ -12,7 +12,7 @@
     </h4>
     <h6>
       <span class="comma-after">{{ person.grade }}</span>
-      {{ person.profile }}
+      {{ person.profile || '-' }}
       <span *ngIf="person.specialization"> ({{ person.specialization }})</span>
     </h6>
   </div>

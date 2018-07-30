@@ -6,10 +6,7 @@
         <dd>{{ person.location }}</dd>
 
         <dt>Profile</dt>
-        <dd>
-          {{ person.profile }}
-          <span *ngIf="person.specialization"> ({{ person.specialization }})</span>
-        </dd>
+        <dd>{{ person.profile }}<span *ngIf="person.specialization"> ({{ person.specialization }})</span></dd>
 
         <dt>Grade</dt>
         <dd>{{ person.grade }}</dd>
