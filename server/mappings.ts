@@ -213,7 +213,7 @@ export const requisitionsStates = [
 export const requisitionsAvailability = [
   'External',
   'Internal',
-  'Limited Acces'
+  'Limited Access'
 ];
 
 export const requisitionsLocations = {
