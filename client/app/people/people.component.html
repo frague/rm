@@ -29,7 +29,7 @@
               <b>{{ resource.commentsCount || '' }}</b>
             </div>
           </div>
-          <span [innerHTML]="resource|column:column|MarkdownToHtml"></span>
+          <span [innerHTML]="resource|column:column|markdown"></span>
         </td>
     </tr>
   </table>

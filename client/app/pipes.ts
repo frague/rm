@@ -1,6 +1,15 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import * as marked from 'marked';
 import { Utils } from './utils';
 import { months, monthsRoman } from './sync/mappings';
+
+// Custom markdown renderer for links
+var renderer = new marked.Renderer();
+renderer.link = function (href: string, title: string, text: string) {
+  return `<a href="${href}" title="${title}" target="_blank">${text}</a> <i class="fa fa-external-link-square"></i>`;
+};
+marked.setOptions({renderer});
+//
 
 type dateFormat = 'full' | 'nodate' | 'noyear';
 
@@ -31,13 +40,6 @@ const formatDate = (date: any, format: dateFormat = 'full') => {
 export class PrintableDatePipe implements PipeTransform {
   transform(date: any, format: dateFormat = 'full'): string {
     return formatDate(date, format);
-  }
-}
-
-@Pipe({name: 'avatarUrl'})
-export class AvatarUrlPipe implements PipeTransform {
-  transform(login: string): string {
-    return 'https://in.griddynamics.net/service/photos/' + login + '.jpg';
   }
 }
 
@@ -131,4 +133,11 @@ export class ColumnPipe implements PipeTransform {
   }
 }
 
+@Pipe({name: 'markdown'})
+export class MarkdownPipe implements PipeTransform {
+  transform(source: string) {
+    if (!source) return '';
+    return marked(source);
+  }
+}
 

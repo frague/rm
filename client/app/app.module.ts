@@ -4,7 +4,6 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { RoutingModule } from './routing.module';
 import { SharedModule } from './shared/shared.module';
-import { MarkdownToHtmlModule } from 'markdown-to-html-pipe';
 import { SocketIoModule, SocketIoConfig } from 'ng-socket-io';
 import { ChartsModule } from 'ng4-charts/ng4-charts';
 
@@ -42,7 +41,7 @@ import { AccountComponent } from './account/account.component';
 import { AdminComponent } from './admin/admin.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { AccountsComponent } from './accounts/accounts.component';
-import { PrintableDatePipe, AvatarUrlPipe, RangePipe, KeysPipe, EllipsisPipe, CutIndexPipe, ColumnPipe } from './pipes';
+import { PrintableDatePipe, RangePipe, KeysPipe, EllipsisPipe, CutIndexPipe, ColumnPipe, MarkdownPipe } from './pipes';
 import { FilterComponent } from './filter/filter.component';
 import { FilteringPanelComponent } from './filter/filteringpanel.component';
 import { PlannerComponent } from './planner/planner.component';
@@ -94,7 +93,7 @@ const config: SocketIoConfig = {
     NotFoundComponent,
     SyncComponent, TaskComponent,
     AccountsComponent,
-    PrintableDatePipe, AvatarUrlPipe, RangePipe, KeysPipe, EllipsisPipe,
+    PrintableDatePipe, RangePipe, KeysPipe, EllipsisPipe, MarkdownPipe,
     FilterComponent, FilteringPanelComponent, CutIndexPipe, ColumnPipe,
     PlannerComponent, ReportComponent, DemandPlanComponent,
     DpComponent,
@@ -115,7 +114,6 @@ const config: SocketIoConfig = {
     HttpClientModule,
     ChartsModule,
     SharedModule,
-    MarkdownToHtmlModule,
     NgbModule.forRoot(),
     SocketIoModule.forRoot(config)
   ],
@@ -139,7 +137,7 @@ const config: SocketIoConfig = {
     RequisitionService,
     CandidateService,
     CarreerService,
-    PrintableDatePipe, AvatarUrlPipe
+    PrintableDatePipe,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]

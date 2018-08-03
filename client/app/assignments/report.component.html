@@ -32,7 +32,7 @@
             <td>{{ assignment.billability }}</td>
             <td>{{ assignment.involvement || 0 }}%</td>
             <td [rowSpan]="person.assignmentsCount || 1" *ngIf="!i" class="neutral">
-              <div *ngIf="person.status" [innerHTML]="person.status.text|MarkdownToHtml"></div>
+              <div *ngIf="person.status" [innerHTML]="person.status.text|markdown"></div>
             </td>
           </tr>
         </tbody>

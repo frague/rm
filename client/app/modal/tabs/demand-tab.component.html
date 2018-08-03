@@ -44,10 +44,10 @@
       <dd>{{ demand.candidates }}</dd>
 
       <dt>Requirements</dt>
-      <dd class="full-width"><div class="scrollable" [innerHTML]="demand.requirements|MarkdownToHtml"></div></dd>
+      <dd class="full-width"><div class="scrollable" [innerHTML]="demand.requirements|markdown"></div></dd>
 
       <dt>Comments</dt>
-      <dd class="full-width"><div class="scrollable" [innerHTML]="demand.comment|MarkdownToHtml"></div></dd>
+      <dd class="full-width"><div class="scrollable" [innerHTML]="demand.comment|markdown"></div></dd>
     </dl>
   </div>
 </div>

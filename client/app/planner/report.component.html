@@ -29,7 +29,7 @@
             </th>
             <td
               *ngFor="let value of getCandidate(demand)"
-              [innerHTML]="value|MarkdownToHtml"
+              [innerHTML]="value|markdown"
             ></td>
           </tr>
         </tbody>

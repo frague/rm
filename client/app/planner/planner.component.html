@@ -93,7 +93,7 @@
               >
                 <b>{{ candidate.commentsCount || '' }}</b>
               </div>
-              <span [innerHTML]="getCurrentStatus(candidate)|MarkdownToHtml"></span>
+              <span [innerHTML]="getCurrentStatus(candidate)|markdown"></span>
             </div>
           </li>
         </ol>
