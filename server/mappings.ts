@@ -246,6 +246,7 @@ export const requisitionsLocations = {
 };
 
 export const candidateStates = {
+  'Pre-Screening Test': '01 Prescreening',
   'Screened': '02 Screened',
   'Submitted to Interviewers': '03 Interview',
   'Approved by Interviewers by CV': '04 Approved by CV',
