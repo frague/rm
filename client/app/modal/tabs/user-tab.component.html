@@ -17,6 +17,9 @@
         <dt>Manager</dt>
         <dd>{{ person.manager }}</dd>
 
+        <dt>Next PR</dt>
+        <dd>{{ person.nextPr|date }}</dd>
+
         <ng-container *ngIf="person.payRate">
           <dt>Pay Rate</dt>
           <dd><i class="fa fa-eye" title="{{ person.payRate }}"></i></dd>
