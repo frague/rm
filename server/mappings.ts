@@ -164,6 +164,7 @@ export var locationsMap = {
   'Menlo Park': 'US',
   'Kharkov': 'KHR',
   'Krakow': 'KR',
+  'Kyiv': 'KY',
   'Lviv': 'LV',
   'Belgrade': 'BEL'
 };
