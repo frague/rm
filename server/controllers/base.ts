@@ -215,14 +215,23 @@ abstract class BaseCtrl {
     });
   }
 
+  // Delete some
+  deleteMany = (criterion: any): Promise<any> => {
+    return new Promise((resolve, reject) => {
+      this.model.remove(criterion, err => {
+        if (err) {
+          return reject(err);
+        }
+        resolve();
+      });
+    });
+  }
+
   // Delete all
   deleteAll = (req, res) => {
-    this.model.remove({}, (err) => {
-      if (err) {
-        return this._respondWithError(res, err);
-      }
-      res.sendStatus(200);
-    });
+    this.deleteMany({})
+      .then(res.sendStatus(200))
+      .catch(err => this._respondWithError(res, err));
   }
 }
 

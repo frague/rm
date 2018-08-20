@@ -92,7 +92,7 @@ export class Schedule {
 
   ngOnInit() {
     this.$query = this.bus.filterUpdated.subscribe(([query, serviceData]) => this.fetchData(query, false, serviceData));
-    this.fetchData(this.bus.filterQuery, true);
+    this.fetchData(this.bus.filterQuery, true, this.bus.serviceData);
   }
 
   ngAfterViewChecked() {
