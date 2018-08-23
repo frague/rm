@@ -127,21 +127,31 @@ export class FilterComponent {
 
       if (this.criteria) {
         this.criteria.split(',').forEach(pair => {
-          let [param, operation, value]: any[] = pair.replace(/(\+{0,1}[=~])/g, '\n$1\n').split('\n', 3);
-
+          let [param, operation, value]: any[] = pair.replace(/([+!]{0,1}[=~])/g, '\n$1\n').split('\n', 3);
+          if (!operation && !value) {
+            [param, operation, value] = ['name', '~', param];
+          }
           if (serviceKeys.includes(param)) {
             serviceData[param] = this._parseParam(param, value);
           } else {
             let addition = false;
+            // let regexValue = {'$regex': value, '$options': 'i'};
+            let regexValue = `/${value}/i`;
             switch (operation) {
               case '+~':
                 addition = true;
               case '~':
-                value = {[param]: {'$regex': value}};
+                value = {[param]: regexValue};
                 break;
               case '+=':
                 addition = true;
                 value = {[param]: value};
+                break;
+              // case '!~':
+              //   value = {[param]: {'$nin': [regexValue]}};
+              //   break;
+              case '!=':
+                value = {[param]: {'$ne': value}};
                 break;
               case '=':
                 if (!inOperator[param]) {

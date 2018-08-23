@@ -47,6 +47,9 @@ abstract class BaseCtrl {
 
       // Values modifiers
       [key, value] = this._modifyValue(key, value);
+      if (!value.indexOf('/')) {
+        value = new RegExp(value.replace(/^\/([^\/]+)\/i$/, '$1'), 'i');
+      }
       criterion = {[key]: value};
 
       if (key === andKey) {
