@@ -1,7 +1,6 @@
 import Demand from '../models/demand';
 import BaseCtrl from './base';
 
-
 export default class DemandCtrl extends BaseCtrl {
   model = Demand;
 

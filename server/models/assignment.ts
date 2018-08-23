@@ -4,7 +4,7 @@ var idType = mongoose.Schema.Types.ObjectId;
 
 const assignmentSchema = new mongoose.Schema({
   resourceId: String,
-  initiativeId: idType,
+  initiativeId: String,
   start: Date,
   end: Date,
   billability: String,

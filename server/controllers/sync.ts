@@ -217,27 +217,25 @@ export default class SyncCtrl {
     let notFound = {};
     return new Promise(async (resolve, reject) => {
       try {
-        // Request timeoffs from the Bamboo
-        let data = await this.bamboo.getTimeoffs().catch(reject);
-        this._addLog('received vacations information', 'bamboo');
-
         // Create new Vacation initiative
         let _error;
-        let vacation = await Initiative.findOne(
+
+        Initiative.findOne(
           { name: 'Vacation' },
-          async (error, vacation) => {
+          (error, existingVacation) => {
             if (error) {
               _error = error;
               return;
             }
-            if (!vacation) {
-              vacation = await new Initiative({
+            if (!existingVacation) {
+              new Initiative({
+                _id: 'vacation',
                 name: 'Vacation',
                 account: 'Griddynamics',
                 color: '#1ca1c0'
-              }).save().catch(error => _error = error);
-            } else {
-              return vacation;
+              })
+                .save()
+                .catch(error => _error = error);
             }
           }
         ).exec();
@@ -246,13 +244,22 @@ export default class SyncCtrl {
           return reject(_error);
         }
 
-        let vacationId = vacation._id;
+        // Request timeoffs from the Bamboo
+        let data = await this.bamboo.getTimeoffs().catch(error => _error = error);
+        if (_error) {
+          return reject(_error);
+        }
+
+        await Initiative.deleteMany({ _id: 'vacation' });
+        await Assignment.deleteMany({ initiativeId: 'vacation' });
+
+        this._addLog('received vacations information', 'bamboo');
 
         // Create custom method to add vacation assignment to resource
         let addVacation = (resourceId, startDate, endDate) => {
           // console.log('add vacation', resourceId, startDate, endDate);
           let vac = new Assignment({
-            initiativeId: vacationId,
+            initiativeId: 'vacation',
             resourceId,
             start: startDate,
             end: endDate,
@@ -271,7 +278,7 @@ export default class SyncCtrl {
           let resource = this._peopleByName[name];
           if (!resource) {
             if (!notFound[name]) {
-              this._addLog('unable to add vacations for ' + name, 'bamboo');
+              console.log('unable to add vacations for ' + name);
               notFound[name] = true;
             }
             return;
@@ -365,11 +372,15 @@ export default class SyncCtrl {
 
         await Resource.deleteMany({});
         await Initiative.deleteMany({
-          name: {
-            '$nin': ['Demand', 'Vacation']
+          _id: {
+            '$nin': ['vacation', 'demand']
           }
         });
-        await Assignment.deleteMany({});
+        await Assignment.deleteMany({
+          initiativeId: {
+            '$nin': ['vacation', 'demand']
+          }
+        });
 
         let initiatives = {};
         let initiativesCreators = {};
@@ -472,7 +483,9 @@ export default class SyncCtrl {
               } else {
                 // ... otherwise new Initiative should be created
                 hue = (hue + 10) % 360;
+                let _id = (account + '_' + project).toLowerCase().replace(/[^a-z]/g, '_');
                 let initiative = {
+                  _id,
                   name: project,
                   account,
                   color: '#' + convert.hsl.hex(hue, 50, 80)
@@ -521,6 +534,7 @@ export default class SyncCtrl {
       (err, data) => {
         if (err || !data) {
           new Initiative({
+            _id: 'demand',
             name: 'Demand',
             account: 'Griddynamics',
             color: '#FF5050'
