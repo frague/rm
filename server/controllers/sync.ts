@@ -221,7 +221,7 @@ export default class SyncCtrl {
         let _error;
 
         Initiative.findOne(
-          { name: 'Vacation' },
+          { _id: 'vacation' },
           (error, existingVacation) => {
             if (error) {
               _error = error;
@@ -250,7 +250,6 @@ export default class SyncCtrl {
           return reject(_error);
         }
 
-        await Initiative.deleteMany({ _id: 'vacation' });
         await Assignment.deleteMany({ initiativeId: 'vacation' });
 
         this._addLog('received vacations information', 'bamboo');
@@ -528,11 +527,14 @@ export default class SyncCtrl {
   }
 
   private _queryDemand(): Promise<any> {
+    let _error;
+
     // Create new initiative to show demand (if not exists)
     Initiative.findOne(
-      {name: 'Demand'},
-      (err, data) => {
-        if (err || !data) {
+      { _id: 'demand' },
+      (error, demand) => {
+        if (!demand) {
+          _error = error;
           new Initiative({
             _id: 'demand',
             name: 'Demand',
@@ -544,7 +546,6 @@ export default class SyncCtrl {
     );
 
     return new Promise(async (resolve, reject) => {
-      let _error;
       let data = await this.PMO.getDemandDicts().catch(error => _error = error);
       if (_error) {
         return reject(_error);
