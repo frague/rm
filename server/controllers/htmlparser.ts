@@ -47,39 +47,43 @@ export var htmlParse = (html: string) => {
     }
   }
   return Object.keys(locations).reduce((visas, location) => {
-    let tableMarkup = locations[location].split(table)[2];
-    let colMap = visasCols[location];
-    let isPoland = location === 'Krakw';
-    tableMarkup
-      .split(tr)
-      .map(line => stripTags(line.replace(/<\/td>/g, '|')))
-      .forEach(line => {
-        let cols = line.replace(/\s*\|\s*/g, '|').split('|');
-        if (cols.length >= 4) {
-          let visa: any = {};
-          colMap.forEach((colName, index) => visa[colName] = cols[index]);
-          visa.name = visa.name.trim();
-          visa.passport = makeDate(visa.passport);
-          visa.visaB = matchDate(visa.visaB);
-          visa.visaL = matchDate(visa.visaL);
+    let tableMarkup = (locations[location].split(table) || ['', '', ''])[2];
+    if (tableMarkup) {
+      let colMap = visasCols[location];
+      let isPoland = location === 'Krakw';
+      tableMarkup
+        .split(tr)
+        .map(line => stripTags(line.replace(/<\/td>/g, '|')))
+        .forEach(line => {
+          let cols = line.replace(/\s*\|\s*/g, '|').split('|');
+          if (cols.length >= 4) {
+            let visa: any = {};
+            colMap.forEach((colName, index) => visa[colName] = cols[index]);
+            visa.name = visa.name.trim();
+            visa.passport = makeDate(visa.passport);
+            visa.visaB = matchDate(visa.visaB);
+            visa.visaL = matchDate(visa.visaL);
 
-          if (isPoland) {
-            visa.name = visa.name.replace(/[^\w ]/g, char => dePolish[char] || char);
-            if (visa.visasType) {
-              (visa.visasType.match(types) || []).forEach((type, index) =>
-                visa[typesMap[type]] = matchDate(visa.visasExpirations.substr(index * 11, 11))
-              );
+            if (isPoland) {
+              visa.name = visa.name.replace(/[^\w ]/g, char => dePolish[char] || char);
+              if (visa.visasType) {
+                (visa.visasType.match(types) || []).forEach((type, index) =>
+                  visa[typesMap[type]] = matchDate(visa.visasExpirations.substr(index * 11, 11))
+                );
+              }
+              delete visa['visasType'];
+              delete visa['visasExpirations'];
             }
-            delete visa['visasType'];
-            delete visa['visasExpirations'];
-          }
-          delete visa[''];
+            delete visa[''];
 
-          if (visa.name.match(name)) {
-            visas[visa.name] = visa;
+            if (visa.name.match(name)) {
+              visas[visa.name] = visa;
+            }
           }
-        }
-      });
+        });
+    } else {
+      console.log('Unable to parse visas for', location);
+    }
 
     return visas;
   }, {});
