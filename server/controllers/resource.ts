@@ -73,8 +73,6 @@ export default class ResourceCtrl extends BaseCtrl {
             phone: 1,
             room: 1,
             passport: 1,
-            visaB: 1,
-            visaL: 1,
             license: 1,
             status: 1,
             commentsCount: 1,
@@ -84,6 +82,7 @@ export default class ResourceCtrl extends BaseCtrl {
             birthday: 1,
             bambooId: 1,
             pmoId: 1,
+            visas: 1,
           }
         },
         {

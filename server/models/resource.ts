@@ -22,6 +22,7 @@ const resourceSchema = new mongoose.Schema({
   birthday: Date,
   bambooId: String,
   pmoId: String,
+  visas: Array,
 });
 
 const Resource = mongoose.model('Resource', resourceSchema);

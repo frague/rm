@@ -143,6 +143,27 @@ export default class AssignmentCtrl extends BaseCtrl {
         },
         {
           '$addFields': {
+            'activeUsVisa': {
+              '$arrayElemAt': [
+                {
+                  '$filter': {
+                    input: '$visas',
+                    as: 'visa',
+                    cond: {
+                      '$and': [
+                        {'$eq': ['$$visa.isUs', true]},
+                        {'$ne': ['$$visa.till', null]}
+                      ]
+                    }
+                  }
+                },
+                0
+              ]
+            }
+          }
+        },
+        {
+          '$addFields': {
             'assignment.account': '$initiative.account',
             'assignment.initiative': '$initiative.name',
             'assignment.billable': {
@@ -161,13 +182,10 @@ export default class AssignmentCtrl extends BaseCtrl {
                 else: 'false'
               }
             },
-            'canTravel': {
+            canTravel: {
               '$cond': {
                 if: {
-                  '$or': [
-                    {'$gt': ['$visaB', now]},
-                    {'$gt': ['$visaL', now]}
-                  ]
+                  '$gt': ['$activeUsVisa.till', now]
                 },
                 then: 'true',
                 else: 'false'
@@ -200,8 +218,6 @@ export default class AssignmentCtrl extends BaseCtrl {
             profile: { '$first': '$profile' },
             specialization: { '$first': '$specialization' },
             pool: { '$first': '$pool' },
-            // starts: { '$first': '$starts' },
-            // ends: { '$first': '$ends' },
             manager: { '$first': '$manager' },
             minDate: {
               '$min': '$assignment.start'
@@ -223,6 +239,7 @@ export default class AssignmentCtrl extends BaseCtrl {
             birthday: {'$first': '$birthday'},
             bambooId: {'$first': '$bambooId'},
             pmoId: {'$first': '$pmoId'},
+            activeUsVisa: {'$first': '$activeUsVisa'}
           }
         },
         {
@@ -266,6 +283,7 @@ export default class AssignmentCtrl extends BaseCtrl {
             birthday: 1,
             bambooId: 1,
             pmoId: 1,
+            activeUsVisa: 1
           })
         },
         {

@@ -85,11 +85,14 @@ export class ColumnPipe implements PipeTransform {
       case 'end':
       case 'nextPr':
       case 'passport':
-      case 'visaB':
-      case 'visaL':
       case 'updated':
       case 'birthday':
         return formatDate(value);
+      case 'activeUsVisa':
+        if (value) {
+          return `**${value.type}**: ${formatDate(value.till)}`;
+        }
+        return '';
       case 'assignments':
         if (value) {
           if (!secondary) {
@@ -107,6 +110,7 @@ export class ColumnPipe implements PipeTransform {
             }).join('\n* ');
           }).join(', ');
         }
+        return '';
       case 'comments':
         if (value) {
           if (secondary) {

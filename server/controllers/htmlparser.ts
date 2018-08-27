@@ -1,7 +1,9 @@
 import { visasCols, dePolish } from '../mappings';
 
-const tag = new RegExp(/<[\/a-z]+[^>]*>/, 'gi');
-
+const tag = new RegExp(/<\/*[a-z]+[^>]*>/, 'gi');
+const paragraph = new RegExp(/<[\/]*p>/, 'gi');
+const tild = new RegExp(/~/, 'g');
+const deTild = new RegExp(/(^~|~$)/, 'g');
 
 const amp = new RegExp(/&[a-z]+;/, 'gi');
 const whiteSpace = new RegExp(/\s+/, 'gi');
@@ -9,17 +11,28 @@ const h3 = new RegExp(/<([/]?h3)[^>]*>/, 'gi');
 const table = new RegExp(/<([/]?table)[^>]*>/, 'gi');
 const tr = new RegExp(/(<[/]?tr[^>]*>){1,2}/, 'gi');
 const tick = new RegExp(/<img[^>]+check\.png[^>]*>/, 'gi');
-const date = new RegExp(/(\d{1,2}\s*[a-z]{3}\s*\d{4})/, 'i');
+const date = new RegExp(/(\d{1,2}\s*[a-z]{3,}\s*\d{4})/, 'i');
 const name = new RegExp(/^[a-z]+ [a-z]+$/, 'i');
 const types = new RegExp(/(B1\/B2|L1)/, 'ig');
 const typesMap = {'L1': 'visaL', 'B1/B2': 'visaB'};
+const visaTypes = {
+  'B1/B2': /\/B2/,
+  'B1 in lieu of H1B': /lieu/,
+  'L1': /L\s*1/,
+  'Polish': /VWP/,
+  'Schengen': /schengen/i
+};
+const usTypes = ['B1/B2', 'B1 in lieu of H1B', 'L1'];
+const visaTypesKeys = Object.keys(visaTypes);
 
 var stripTags = (html: string) => {
   return html
     .replace(tick, '1')
+    .replace(deTild, '')
     .replace(tag, '')
     .replace(amp, '')
-    .replace(whiteSpace, ' ');
+    .replace(whiteSpace, ' ')
+    .replace(paragraph, '~');
 }
 
 var makeDate = (dateString: string) => {
@@ -35,6 +48,18 @@ var makeDate = (dateString: string) => {
 var matchDate = (haystack: string) => {
   if (!haystack) return '';
   return makeDate((haystack.match(date) || ['', ''])[1]);
+}
+
+var addVisa = (where, type, till) => {
+  if (!type) return;
+  let foundType = visaTypesKeys.find(typeName => visaTypes[typeName].test(type));
+  if (!foundType) return;
+  let d = matchDate(till);
+  where.push({
+    type: foundType,
+    till: d ? new Date(d) : null,
+    isUs: usTypes.includes(foundType)
+  });
 }
 
 export var htmlParse = (html: string) => {
@@ -58,26 +83,32 @@ export var htmlParse = (html: string) => {
           let cols = line.replace(/\s*\|\s*/g, '|').split('|');
           if (cols.length >= 4) {
             let visa: any = {};
-            colMap.forEach((colName, index) => visa[colName] = cols[index]);
-            visa.name = visa.name.trim();
-            visa.passport = makeDate(visa.passport);
-            visa.visaB = matchDate(visa.visaB);
-            visa.visaL = matchDate(visa.visaL);
-
+            colMap.forEach((colName, index) => {
+              colName.split('|').forEach(col => visa[col] = cols[index]);
+            });
+            visa.name = visa.name.trim().replace(tild, '');
             if (isPoland) {
               visa.name = visa.name.replace(/[^\w ]/g, char => dePolish[char] || char);
-              if (visa.visasType) {
-                (visa.visasType.match(types) || []).forEach((type, index) =>
-                  visa[typesMap[type]] = matchDate(visa.visasExpirations.substr(index * 11, 11))
-                );
-              }
-              delete visa['visasType'];
-              delete visa['visasExpirations'];
             }
-            delete visa[''];
+            visa.passport = makeDate(visa.passport);
+            visa.visas = [];
+
+            [1, 2, 3].forEach(visaN => {
+              let [type, till] = [visa[`type${visaN}`], visa[`till${visaN}`]];
+              if (type && till) {
+                let [types, tills] = [type.split('~'), till.split('~')];
+                types.forEach((type, index) => {
+                  addVisa(visa.visas, type, tills[index]);
+                });
+              }
+            });
 
             if (visa.name.match(name)) {
-              visas[visa.name] = visa;
+              visas[visa.name] = {
+                visas: visa.visas,
+                passport: visa.passport,
+                license: visa.license
+              };
             }
           }
         });

@@ -31,9 +31,9 @@
     <div class="col-md-6">
       <dl class="attributes">
         <dt>Visas</dt>
-        <dd><ul *ngIf="hasVisas()">
-            <li>{{ getVisaInfo('visaB', 'B1/B2') }}</li>
-            <li>{{ getVisaInfo('visaL', 'L') }}</li>
+        <dd><ul *ngIf="hasVisas()" class="visas">
+            <li *ngFor="let visa of person.visas">
+              <span>{{ visa.type }}</span> {{ visa.till|date }}</li>
           </ul></dd>
 
         <dt>Skype</dt>

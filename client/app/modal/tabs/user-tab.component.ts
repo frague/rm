@@ -18,15 +18,7 @@ export class UserTabComponent extends BaseTabComponent {
   }
 
   hasVisas() {
-    return this.person.visaB || this.person.visaL;
-  }
-
-  getVisaInfo(key: string, title: string) {
-    let till = this.person[key];
-    if (till) {
-      return title + ' till ' + this.makeDate.transform(till);
-    }
-    return '';
+    return this.person.visas && this.person.visas.length;
   }
 
   getSkype() {

@@ -768,6 +768,12 @@ dl.attributes {
       }
     }
 
+    .visas span {
+      display: inline-block;
+      font-weight: 300;
+      width: 150px;
+    }
+
     div.scrollable {
       background-color: $dim;
     }
