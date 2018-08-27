@@ -175,7 +175,8 @@ export default class AssignmentCtrl extends BaseCtrl {
                         {'$gte': ['$assignment.end', now]},
                         {'$eq': ['$assignment.end', null]}
                       ]
-                    }
+                    },
+                    {'$gt': ['$assignment.involvement', 0]}
                   ]
                 },
                 then: 'true',
