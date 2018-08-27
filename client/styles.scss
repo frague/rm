@@ -1,13 +1,13 @@
 $body: #f5feff;
 
-$primary: #DFD;
-$danger: #FDD;
-$grid: #AAA;
+$primary: #dfd;
+$danger: #fdd;
+$grid: #aaa;
 
-$green: #DFD;
-$yellow: #FFB;
-$blue: #1CA1C0;
-$red: #FF6E27;
+$green: #dfd;
+$yellow: #ffb;
+$blue: #1ca1c0;
+$red: #ff6e27;
 
 $good: #bbe2ba;
 $average: #e8ea9a;
@@ -37,7 +37,11 @@ body {
 }
 
 a {
-  &, &:hover, &:visited, &:active, &:focus {
+  &,
+  &:hover,
+  &:visited,
+  &:active,
+  &:focus {
     color: $link;
     text-decoration: none;
   }
@@ -92,20 +96,28 @@ pre {
   color: $body - #777;
   background-color: $body - #111;
 
-  &:hover, &:active, &:visited, &:focus, &:focus:active, &:disabled {
+  &:hover,
+  &:active,
+  &:visited,
+  &:focus,
+  &:focus:active,
+  &:disabled {
     color: $body - #777;
     background-color: $body - #222;
   }
 
   &.btn-primary {
-    &, &:disabled {
+    &,
+    &:disabled {
       background-color: $primary;
       border-color: $primary - #111;
       &:hover {
         background-color: $primary - #111;
         border-color: $primary - #111;
       }
-      &:active, &:focus, &:focus:active {
+      &:active,
+      &:focus,
+      &:focus:active {
         background-color: $primary - #222;
         border-color: $primary - #111;
       }
@@ -113,25 +125,30 @@ pre {
   }
 
   &.btn-danger {
-    &, &:disabled {
+    &,
+    &:disabled {
       background-color: $danger;
       border-color: $danger - #111;
       &:hover {
         background-color: $danger - #111;
         border-color: $danger - #111;
       }
-      &:active, &:focus, &:focus:active {
+      &:active,
+      &:focus,
+      &:focus:active {
         background-color: $danger - #222;
         border-color: $danger - #111;
       }
     }
   }
 
-  &:disabled, &.disabled {
+  &:disabled,
+  &.disabled {
     color: $body - #222;
     opacity: 1;
 
-    &, &:hover {
+    &,
+    &:hover {
       background-color: $body + #040404;
     }
   }
@@ -196,7 +213,8 @@ pre {
   border-radius: 0;
 
   .modal-header {
-    .avatar, .stage {
+    .avatar,
+    .stage {
       width: 80px;
       height: 80px;
       float: left;
@@ -276,7 +294,7 @@ pre {
       }
 
       &.disabled {
-        color: #DDD;
+        color: #ddd;
       }
     }
   }
@@ -318,7 +336,7 @@ pre {
           list-style: none;
           padding: 15px 0;
 
-          &:nth-child(n+2) {
+          &:nth-child(n + 2) {
             border-top: solid 1px $grid;
           }
 
@@ -350,7 +368,7 @@ pre {
 }
 
 .modal-backdrop.fade {
-    opacity: 0.2;
+  opacity: 0.2;
 }
 
 .modal-dialog {
@@ -367,9 +385,9 @@ pre {
     font-size: 12px;
     font-weight: 200;
     border: solid 1px $grid;
-    background-color: #FFF;
+    background-color: #fff;
     color: #000;
-    box-shadow: 2px 2px 2px rgba(0,0,0,0.5);
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
   }
 }
 
@@ -385,7 +403,7 @@ i.deadpool {
   width: 18px;
   height: 30px;
   display: inline-block;
-  background: url(assets/deadpool.png) no-repeat ;
+  background: url(assets/deadpool.png) no-repeat;
   background-size: contain;
   opacity: 0.5;
 
@@ -413,7 +431,9 @@ i.initiative {
   }
 }
 
-.assignments, .accounts, .planner {
+.assignments,
+.accounts,
+.planner {
   max-height: 200px;
   // border: solid 1px $grid;
 
@@ -436,28 +456,32 @@ i.initiative {
 
         &.today {
           color: red;
-          border-color: #F88;
+          border-color: #f88;
         }
         &.marker {
           color: #000;
-          border-color: #CCC;
+          border-color: #ccc;
         }
-        &.today, &.marker {
+        &.today,
+        &.marker {
           margin-left: -2px;
           position: absolute;
           width: auto;
           font-weight: 600;
-          background-color: #FFF;
+          background-color: #fff;
           border: solid 1px;
           border-width: 1px 1px 1px 2px;
           padding-top: 0px;
-          box-shadow: 2px 2px 2px rgba(0,0,0,0.5);
+          box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
         }
       }
     }
   }
 
-  .people, .schedule > div, .candidates, .demands {
+  .people,
+  .schedule > div,
+  .candidates,
+  .demands {
     padding-top: 20px;
 
     div.line {
@@ -473,7 +497,7 @@ i.initiative {
       }
 
       @for $i from 0 through 100 {
-        &.an#{$i+1} {
+        &.an#{$i + 1} {
           height: $lineHeight + ($i * ($lineHeight - 2));
         }
         span:nth-child(#{$i + 1}) i {
@@ -495,12 +519,17 @@ i.initiative {
     }
   }
 
-  .people, .schedule, .candidates, .demands {
+  .people,
+  .schedule,
+  .candidates,
+  .demands {
     padding-left: 0;
     padding-right: 0;
   }
 
-  .people, .demands, .candidates {
+  .people,
+  .demands,
+  .candidates {
     i.fa {
       &.fa-plane {
         color: $red;
@@ -557,7 +586,7 @@ i.initiative {
       display: inline-block;
 
       li {
-        &:nth-child(n+2):before {
+        &:nth-child(n + 2):before {
           content: ", ";
         }
         list-style: none;
@@ -729,9 +758,13 @@ i.initiative {
   }
 }
 
-.assignments, .planner {
-  .people, .demands, .candidates {
-    .line, .lines {
+.assignments,
+.planner {
+  .people,
+  .demands,
+  .candidates {
+    .line,
+    .lines {
       @extend .clickable;
     }
   }
@@ -745,7 +778,8 @@ dl.attributes {
   dd {
     padding-left: 140px;
 
-    &:empty:after, &>div:empty:after {
+    &:empty:after,
+    & > div:empty:after {
       content: "-";
     }
 
@@ -756,7 +790,7 @@ dl.attributes {
       margin-top: 10px;
     }
 
-    &>ul {
+    & > ul {
       padding-left: 0px;
       margin-bottom: 0px;
 
@@ -785,12 +819,12 @@ dl.attributes {
 
 .form-row {
   .form-group {
-      &:first-child {
-        padding-left: 0px;
-      }
-      &:last-child {
-        padding-right: 0px;
-      }
+    &:first-child {
+      padding-left: 0px;
+    }
+    &:last-child {
+      padding-right: 0px;
+    }
   }
 }
 
@@ -827,8 +861,10 @@ ul.tasks {
   }
 }
 
-.accounts, .planner {
-  .people, .demands {
+.accounts,
+.planner {
+  .people,
+  .demands {
     .account {
       border-top: solid 2px $grid;
 
@@ -856,7 +892,8 @@ ul.tasks {
       }
     }
   }
-  .schedule, .candidates {
+  .schedule,
+  .candidates {
     .account {
       border-top: solid 2px $grid;
       padding-top: 40px;
@@ -923,7 +960,8 @@ ul.tasks {
       margin: 0.5rem 0 1rem 0;
     }
 
-    ol, ul {
+    ol,
+    ul {
       margin-bottom: 0;
     }
 
@@ -950,7 +988,7 @@ ul.tasks {
     padding-top: 2px;
 
     &.selected {
-      box-shadow: 0 10px 10px -5px rgba(0,0,0,0.5);
+      box-shadow: 0 10px 10px -5px rgba(0, 0, 0, 0.5);
       position: relative;
     }
 
@@ -985,10 +1023,10 @@ ul.tasks {
         i.fa-caret-down {
           position: relative;
           right: 2px;
-
         }
 
-        i.fa-caret-down, i.fa-caret-right {
+        i.fa-caret-down,
+        i.fa-caret-right {
           width: 10px;
         }
 
@@ -1016,7 +1054,6 @@ ul.tasks {
     margin: 0;
     padding-top: 0;
     background-color: $body + #222;
-
 
     & > div {
       white-space: nowrap;
@@ -1063,7 +1100,7 @@ div.corner {
     position: relative;
     bottom: 26px;
     right: 14px;
-    color: #FFF;
+    color: #fff;
   }
 
   &.has-status {
@@ -1117,7 +1154,6 @@ div.bottom-corner {
   .dropdown-toggle::after {
     margin-left: 0px;
   }
-
 }
 
 .help {
@@ -1178,7 +1214,9 @@ div.bottom-corner {
   max-height: 450px;
   overflow: auto;
 
-  table, td, th {
+  table,
+  td,
+  th {
     font-size: 12px;
     border: solid $grid;
   }
@@ -1198,10 +1236,11 @@ div.bottom-corner {
     tr {
       th {
         font-weight: 400;
-        background-color: #EEE;
+        background-color: #eee;
       }
 
-      td, th {
+      td,
+      th {
         padding: 4px;
         border-width: 1px 0 0 1px;
 
@@ -1210,7 +1249,8 @@ div.bottom-corner {
           font-weight: 600;
         }
 
-        strong, p {
+        strong,
+        p {
           margin-bottom: 4px;
         }
       }
@@ -1220,7 +1260,7 @@ div.bottom-corner {
   &.demand table {
     thead {
       th {
-        &:nth-child(n+2) {
+        &:nth-child(n + 2) {
           text-align: center;
         }
         &:nth-child(1) {
@@ -1229,7 +1269,9 @@ div.bottom-corner {
         &:nth-child(2) {
           width: 15%;
         }
-        &:nth-child(3), &:nth-child(4), &:nth-child(5) {
+        &:nth-child(3),
+        &:nth-child(4),
+        &:nth-child(5) {
           width: 1%;
         }
         &:last-child {
@@ -1251,7 +1293,8 @@ div.bottom-corner {
     }
 
     tr {
-      &:last-child td, &:last-child th {
+      &:last-child td,
+      &:last-child th {
         border-bottom-width: 1px;
       }
 
@@ -1259,7 +1302,9 @@ div.bottom-corner {
         font-weight: 100;
         text-align: left;
 
-        &:nth-child(3), &:nth-child(4), &:nth-child(5) {
+        &:nth-child(3),
+        &:nth-child(4),
+        &:nth-child(5) {
           text-align: center;
         }
 
@@ -1279,7 +1324,7 @@ div.bottom-corner {
         &:nth-child(1) {
           width: 20%;
         }
-        &:nth-last-child(-n+4) {
+        &:nth-last-child(-n + 4) {
           width: 100px;
         }
         &:last-child {
@@ -1293,10 +1338,11 @@ div.bottom-corner {
         background-color: $green;
       }
       &.non td {
-        background-color: #FED;
+        background-color: #fed;
       }
 
-      &:last-child td, &:last-child th {
+      &:last-child td,
+      &:last-child th {
         // border-bottom-width: 1px;
       }
 
@@ -1306,18 +1352,19 @@ div.bottom-corner {
         }
       }
 
-      th, td {
-          border-bottom-width: 1px;
+      th,
+      td {
+        border-bottom-width: 1px;
       }
 
       td {
         font-weight: 100;
 
         &.neutral {
-          background-color: #EEE;
+          background-color: #eee;
         }
 
-        &:nth-last-child(-n+4) {
+        &:nth-last-child(-n + 4) {
           text-align: center;
         }
 
@@ -1333,12 +1380,10 @@ div.bottom-corner {
   }
 }
 
-
 .comments-modal {
   min-height: 300px;
   max-height: 400px;
   overflow-y: auto;
-
 }
 
 .comments {
@@ -1367,7 +1412,7 @@ div.bottom-corner {
       background-color: $primary;
     }
 
-    &:nth-child(n+3) {
+    &:nth-child(n + 3) {
       border-top: solid 1px $grid;
     }
 
@@ -1383,10 +1428,13 @@ div.bottom-corner {
     }
 
     h6 {
-      &:empty {}
+      &:empty {
+      }
 
       & + div {
-        p, ul, ol {
+        p,
+        ul,
+        ol {
           &:last-child {
             margin-bottom: 0;
           }
@@ -1408,7 +1456,7 @@ div.bottom-corner {
     overflow: auto;
     max-height: 250px;
 
-    background-color: #F8F8F8;
+    background-color: #f8f8f8;
     font-size: 12px;
     padding: 4px;
     min-height: 190px;
