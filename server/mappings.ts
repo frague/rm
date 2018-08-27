@@ -178,8 +178,8 @@ export var visasCols = {
   'Kharkiv': ['', 'name', '', 'passport', 'type1', 'till1', 'type2', 'till2', 'license'],
   'Saratov': ['name', '', 'passport', 'type1|till1', 'type2|till2', 'type3|till3', 'license'],
   'Saint-Petersburg': ['name', '', 'passport', 'type1|till1', 'type2|till2', 'type3|till3', 'license'],
-  'LVIV': ['', 'name', '', 'passport', 'type1', 'till1', 'type2', 'type2', 'license'],
-  'Krakw': ['', 'name', '', 'passport', 'type1', 'till2', 'license']
+  'LVIV': ['', 'name', '', 'passport', 'type1', 'till1', 'type2', 'till2', 'license'],
+  'Krakw': ['', 'name', '', 'passport', 'type1', 'till1', 'license']
 };
 
 export var dePolish = {

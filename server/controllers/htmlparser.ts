@@ -11,7 +11,7 @@ const h3 = new RegExp(/<([/]?h3)[^>]*>/, 'gi');
 const table = new RegExp(/<([/]?table)[^>]*>/, 'gi');
 const tr = new RegExp(/(<[/]?tr[^>]*>){1,2}/, 'gi');
 const tick = new RegExp(/<img[^>]+check\.png[^>]*>/, 'gi');
-const date = new RegExp(/(\d{1,2}\s*[a-z]{3,}\s*\d{4})/, 'i');
+const date = new RegExp(/(\d{1,2}[\s\-]*[a-z]{3,}[\s\-]*\d{4})/, 'i');
 const name = new RegExp(/^[a-z]+ [a-z]+$/, 'i');
 const types = new RegExp(/(B1\/B2|L1)/, 'ig');
 const typesMap = {'L1': 'visaL', 'B1/B2': 'visaB'};
@@ -22,7 +22,7 @@ const visaTypes = {
   'Polish': /VWP/,
   'Schengen': /schengen/i
 };
-const usTypes = ['B1/B2', 'B1 in lieu of H1B', 'L1'];
+const usTypes = ['B1/B2', 'L1', 'B1 in lieu of H1B'];
 const visaTypesKeys = Object.keys(visaTypes);
 
 var stripTags = (html: string) => {
@@ -98,7 +98,7 @@ export var htmlParse = (html: string) => {
               if (type && till) {
                 let [types, tills] = [type.split('~'), till.split('~')];
                 types.forEach((type, index) => {
-                  addVisa(visa.visas, type, tills[index]);
+                  addVisa(visa.visas, type || usTypes[visaN - 1], tills[index]);
                 });
               }
             });

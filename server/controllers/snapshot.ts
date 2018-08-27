@@ -35,8 +35,6 @@ const keys = [
   'stage',
   'state',
   'updated',
-  // 'visaB',
-  // 'visaL',
   'visas',
   'nextPr',
   'payRate',
@@ -55,6 +53,16 @@ const dateKeys = [
   'birthday',
 ];
 
+const deeps = {
+  visas: (value: any) => {
+    return (value || []).sort((a, b) => a.type > b.type).map(visa => `${visa.type} - ${redate(visa.till)}`).join(', ')
+  }
+};
+
+const deepsKeys = Object.keys(deeps);
+
+const redate = (c: Date) => c ? c.toISOString().substr(0, 10) : '';
+
 export default class SnapshotCtrl extends BaseCtrl {
   model = Snapshot;
 
@@ -62,10 +70,10 @@ export default class SnapshotCtrl extends BaseCtrl {
     return keys.reduce((result, key) => {
       let [c, d] = [a[key], b[key]];
       if (dateKeys.includes(key)) {
-        [c, d] = [
-          c ? c.toISOString().substr(0, 10) : '',
-          d ? d.toISOString().substr(0, 10) : ''
-        ];
+        [c, d] = [redate(c), redate(d)];
+      } else if (deepsKeys.includes(key)) {
+        let modifier = deeps[key];
+        [c, d] = [modifier(c), modifier(d)];
       }
       if (c !== d) {
         result[key] = [c, d];
