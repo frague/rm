@@ -17,7 +17,7 @@ const types = new RegExp(/(B1\/B2|L1)/, 'ig');
 const typesMap = {'L1': 'visaL', 'B1/B2': 'visaB'};
 const visaTypes = {
   'B1/B2': /\/B2/,
-  'B1 in lieu of H1B': /lieu/,
+  'B-1 in lieu of H-1b': /lieu/,
   'L1': /L\s*1/,
   'Polish': /VWP/,
   'Schengen': /schengen/i

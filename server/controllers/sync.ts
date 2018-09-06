@@ -170,13 +170,6 @@ export default class SyncCtrl {
       if (this._setTimer('users')) {
         this._threads['users'] = true;
 
-        // Next PR date in bamboo
-        if (this._setTimer('pr')) {
-          this._prs = await this._queryPRs()
-            .catch(error => this._setError('pr', error));
-          this._getDelay('pr');
-        }
-
         // Visas in wiki (passport, visa type, expiration)
         if (this._setTimer('visas')) {
           this._visas = await this._queryVisas()
@@ -184,7 +177,14 @@ export default class SyncCtrl {
           this._getDelay('visas');
         }
 
-        // Whois in wiki (skype id, room, etc.)
+        // Next PR date, pay rates, visas status in bamboo
+        if (this._setTimer('pr')) {
+          this._prs = await this._queryPRs()
+            .catch(error => this._setError('pr', error));
+          this._getDelay('pr');
+        }
+
+        // Whois on wiki (skype id, room, etc.)
         if (this._setTimer('whois')) {
           this._whois = await this._queryConfluence()
             .catch(error => this._setError('whois', error));
@@ -404,12 +404,38 @@ export default class SyncCtrl {
           let pr = prev;
           if (syncPRs) {
             let newPR = this._prs[person.username] || {};
+            let visaType = newPR.customVisaType;
             pr = {
               nextPr: this._makeDate(newPR.customPerformanceReviewDue),
               payRate: newPR.payRate,
               birthday: this._makeDate(newPR.dateOfBirth),
               bambooId: newPR.id,
             };
+
+            // Visas are received from two sources: wiki and bamboo.
+            // Latter contains more relevant information and should have higher priority
+            if (visaType) {
+              let activeVisa = {
+                type: visaType,
+                isUs: true,
+                till: new Date(newPR.customVisaExpirationDate)
+              };
+
+              let updated = false;
+              if (!visa.visas) {
+                visa.visas = [];
+              } else {
+                visa.visas.forEach((v, index) => {
+                  if (v.type === visaType) {
+                    v.till = activeVisa.till;
+                    updated = true;
+                  }
+                });
+              }
+              if (!updated) {
+                visa.visas.push(activeVisa);
+              }
+            }
           }
 
           let resource = new Resource({
