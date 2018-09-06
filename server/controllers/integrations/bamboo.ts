@@ -50,12 +50,23 @@ export default class BambooIntegrationsCtrl {
             <field id="customPerformanceReviewDue" />
             <field id="payRate" />
             <field id="dateOfBirth" />
+            <field id="4593" />
+            <field id="4595" />
           </fields>
         </report>`
       );
       request.post(options, (err, response, body) => resolve(body)).on('error', reject);
     });
   }
+
+  // getReport = (req, res) => {
+  //   this.getPRs()
+  //     .then(data => {
+  //       res.setHeader('Content-Type', 'application/json');
+  //       res.send(data);
+  //     })
+  //     .catch(err => res.sendStatus(500));
+  // }
 
   private _getEmployeeTable = (employeeId: string, table: string): Promise<any> => {
     return new Promise((resolve, reject) => {

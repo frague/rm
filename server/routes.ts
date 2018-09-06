@@ -126,6 +126,7 @@ export default function setRoutes(app) {
 
   // Sync
   router.route('/sync').post(syncCtrl.sync);
+  // router.route('/report').get(bamboo.getReport);
 
   // Skill Tree
   router.route('/skills/:userId').get(skillTreeCtrl.querySkills);
