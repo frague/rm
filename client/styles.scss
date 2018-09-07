@@ -1558,6 +1558,12 @@ div.bottom-corner {
       border-bottom: solid 1px $grid;
     }
 
+    i.fa {
+      position: relative;
+      bottom: 2px;
+      font-size: 90%;
+    }
+
     div.date {
       margin-bottom: 10px;
 

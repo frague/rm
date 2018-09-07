@@ -108,4 +108,8 @@ export class DpComponent extends BaseComponent {
   hasDiff(diff: any) {
     return diff.diff !== 1 && diff.diff !== -1;
   }
+
+  isNewcomer(subject: string) {
+    return subject.indexOf(' ') >= 0;
+  }
 }

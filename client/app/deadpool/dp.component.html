@@ -14,6 +14,7 @@
 
       <div *ngFor="let diff of diffs[type][date]">
         <span *ngIf="type === 'r'">
+          <i class="fa fa-plug" *ngIf="isNewcomer(diff.subject)"></i>
           <a (click)="showPerson(diff)">
             {{ diff.title|ellipsis:diff.subject }}
           </a>
