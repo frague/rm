@@ -72,6 +72,20 @@ pre {
   font: inherit;
 }
 
+.striked {
+  position: relative;
+
+  &:before {
+    position: absolute;
+    content: "";
+    left: 0;
+    top: 50%;
+    right: 0;
+    border-top: solid 2px $red;
+    transform:rotate(-5deg);
+  }
+}
+
 .scrollable {
   max-height: 150px;
   overflow-y: auto;
@@ -810,17 +824,7 @@ dl.attributes {
         text-align: right;
 
         &.expired {
-          position: relative;
-
-          &:before {
-            position: absolute;
-            content: "";
-            left: 0;
-            top: 50%;
-            right: 0;
-            border-top: solid 2px $red;
-            transform:rotate(-5deg);
-          }
+          @extend .striked;
         }
       }
     }

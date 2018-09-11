@@ -113,7 +113,7 @@ export default class DemandCtrl extends BaseCtrl {
                 then: {
                   '$arrayElemAt': ['$req.jobState', 0]
                 },
-                else: '-'
+                else: null
               }
             } },
           }

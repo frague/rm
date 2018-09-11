@@ -241,4 +241,12 @@ export class PlannerComponent extends Schedule {
   makeDemandCaption(id: string) {
     return '#' + id.replace(rowNumber, '$1. ').replace(/_/g, ' ').replace(/ for .+$/, '');
   }
+
+  showReqStatus(demand, index) {
+    let state = (demand.requisitionsStates || {})[index];
+    return {
+      'text-danger': !state,
+      'striked': state && state !== 'Open'
+    };
+  }
 }
