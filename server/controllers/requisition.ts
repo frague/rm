@@ -14,21 +14,36 @@ export default class RequisitionCtrl extends BaseCtrl {
         {
           '$lookup': {
             from: 'demands',
-            localField: 'requisitionId',
-            foreignField: 'requestId',
-            as: 'demandLocations'
+            let: {
+              id: '$requisitionId',
+            },
+            pipeline: [
+              {
+                '$match': {
+                  '$expr': {
+                    '$gte': [
+                      {
+                        '$indexOfBytes': ['$requestId', '$$id']
+                      },
+                      0
+                    ]
+                  },
+                }
+              }
+            ],
+            as: 'demand'
           }
         },
         {
           '$unwind': {
-            path: '$demandLocations',
+            path: '$demand',
             preserveNullAndEmptyArrays: true
           }
         },
         {
           '$addFields': {
-            'demandLogin': '$demandLocations.login',
-            'demandLocations': '$demandLocations.locations'
+            'demandLogin': '$demand.login',
+            'demandLocations': '$demand.locations'
           }
         },
         {
@@ -50,6 +65,7 @@ export default class RequisitionCtrl extends BaseCtrl {
             postingType: { '$first': '$postingType' },
             requisitionId: { '$first': '$requisitionId' },
             title: { '$first': '$title' },
+            demand: { '$push': '$demand'}
           }
         },
         {
@@ -64,12 +80,5 @@ export default class RequisitionCtrl extends BaseCtrl {
         console.log('Error', error);
         return res.sendStatus(500);
       });
-
-      // .find(query)
-      // .sort({requisitionId: 1})
-      // .exec((err, docs) => {
-      //   if (err) { return console.error(err); }
-      //   res.json(docs);
-      // });
   }
 }
