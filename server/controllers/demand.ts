@@ -66,35 +66,60 @@ export default class DemandCtrl extends BaseCtrl {
                 },
                 0
               ]
-            }
+            },
+            requisition: {'$split': ['$requestId', ',']}
+          }
+        },
+        {
+          '$unwind': {
+            path: '$requisition',
+            preserveNullAndEmptyArrays: true
+          }
+        },
+        {
+          '$lookup': {
+            from: 'requisitions',
+            localField: 'requisition',
+            foreignField: 'requisitionId',
+            as: 'req'
+          }
+        },
+        {
+          '$group': {
+            _id: '$_id',
+            account: { '$first': '$account' },
+            name: { '$first': '$name' },
+            pool: { '$first': '$pool' },
+            role: { '$first': '$role' },
+            profile: { '$first': '$profile' },
+            project: { '$first': '$project' },
+            start: { '$first': '$start' },
+            end: { '$first': '$end' },
+            deployment: { '$first': '$deployment' },
+            stage: { '$first': '$stage' },
+            grades: { '$first': '$grades' },
+            locations: { '$first': '$locations' },
+            requestId: { '$first': '$requestId' },
+            requirements: { '$first': '$requirements' },
+            comment: { '$first': '$comment' },
+            specializations: { '$first': '$specializations' },
+            candidates: { '$first': '$candidates' },
+            login: { '$first': '$login' },
+            commentsCount: { '$first': '$commentsCount' },
+            status: { '$first': '$status' },
+            requisitionsStates: { '$push': {
+              '$cond': {
+                if: '$req',
+                then: {
+                  '$arrayElemAt': ['$req.jobState', 0]
+                },
+                else: '-'
+              }
+            } },
           }
         },
         {
           '$match': query
-        },
-        {
-          '$project': {
-            account: 1,
-            name: 1,
-            pool: 1,
-            role: 1,
-            profile: 1,
-            project: 1,
-            start: 1,
-            end: 1,
-            deployment: 1,
-            stage: 1,
-            grades: 1,
-            locations: 1,
-            requestId: 1,
-            requirements: 1,
-            comment: 1,
-            specializations: 1,
-            candidates: 1,
-            login: 1,
-            commentsCount: 1,
-            status: 1
-          }
         },
         {
           '$sort': {
