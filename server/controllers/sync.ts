@@ -418,7 +418,7 @@ export default class SyncCtrl {
               let activeVisa = {
                 type: visaType,
                 isUs: true,
-                till: new Date(newPR.customVisaExpirationDate)
+                till: !!newPR.customVisaExpirationDate ? new Date(newPR.customVisaExpirationDate) : null
               };
 
               let updated = false;
