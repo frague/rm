@@ -802,10 +802,27 @@ dl.attributes {
       }
     }
 
-    .visas span {
-      display: inline-block;
-      font-weight: 300;
-      width: 150px;
+    .visas {
+      span {
+        display: inline-block;
+        float: right;
+        padding: 0 4px;
+        text-align: right;
+
+        &.expired {
+          position: relative;
+
+          &:before {
+            position: absolute;
+            content: "";
+            left: 0;
+            top: 50%;
+            right: 0;
+            border-top: solid 2px $red;
+            transform:rotate(-5deg);
+          }
+        }
+      }
     }
 
     div.scrollable {

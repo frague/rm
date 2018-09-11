@@ -3,6 +3,8 @@ import { BaseTabComponent } from './base.component';
 import { DomSanitizer } from '@angular/platform-browser';
 import { PrintableDatePipe } from '../../pipes';
 
+const now = new Date();
+
 @Component({
   selector: 'user-tab',
   templateUrl: './user-tab.component.html'
@@ -19,6 +21,10 @@ export class UserTabComponent extends BaseTabComponent {
 
   hasVisas() {
     return this.person.visas && this.person.visas.length;
+  }
+
+  isExpired(date) {
+    return (date && new Date(date) < now);
   }
 
   getSkype() {

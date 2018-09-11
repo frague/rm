@@ -33,7 +33,7 @@
         <dt>Visas</dt>
         <dd><ul *ngIf="hasVisas()" class="visas">
             <li *ngFor="let visa of person.visas">
-              <span>{{ visa.type }}</span> {{ visa.till|date }}</li>
+              {{ visa.type }}<span [ngClass]="{expired: isExpired(visa.till)}">{{ visa.till|date }}</span></li>
           </ul></dd>
 
         <dt>Skype</dt>
