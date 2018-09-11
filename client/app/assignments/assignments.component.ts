@@ -11,6 +11,8 @@ import { ResourceService } from '../services/resource.service';
 import { DemandService } from '../services/demand.service';
 import { BusService } from '../services/bus.service';
 
+import { Utils } from '../utils';
+
 const emptyItem = {assignments: []};
 
 @Component({
@@ -52,7 +54,7 @@ export class AssignmentsComponent extends Schedule {
   }
 
   isOnTrip(assignee) {
-    return assignee.onTrip === 'true';
+    return Utils.isTrue(assignee.onTrip);
   }
 
   makeCaption(assignee) {

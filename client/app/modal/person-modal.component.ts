@@ -3,6 +3,7 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
 import { BaseModalComponent } from './base.component';
 import { ResourceService } from '../services/resource.service';
+import { Utils } from '../utils';
 
 @Component({
   selector: 'person-modal',
@@ -18,6 +19,10 @@ export class PersonModal extends BaseModalComponent {
     private personService: ResourceService
   ) {
     super(modalService);
+  }
+
+  isTrue(value): boolean {
+    return Utils.isTrue(value);
   }
 
   show(person: any, tabName = ''): Subject<any> {

@@ -152,7 +152,8 @@ export default class AssignmentCtrl extends BaseCtrl {
                     cond: {
                       '$and': [
                         {'$eq': ['$$visa.isUs', true]},
-                        {'$ne': ['$$visa.till', null]}
+                        {'$ne': ['$$visa.till', null]},
+                        {'$gt': ['$$visa.till', now]}
                       ]
                     }
                   }
@@ -220,16 +221,10 @@ export default class AssignmentCtrl extends BaseCtrl {
             specialization: { '$first': '$specialization' },
             pool: { '$first': '$pool' },
             manager: { '$first': '$manager' },
-            minDate: {
-              '$min': '$assignment.start'
-            },
-            maxDate: {
-              '$max': '$assignment.end'
-            },
-            billable: {
-              '$max': '$assignment.billable'
-            },
-            canTravel: { '$first': '$canTravel' },
+            minDate: {'$min': '$assignment.start'},
+            maxDate: {'$max': '$assignment.end'},
+            billable: {'$max': '$assignment.billable'},
+            canTravel: { '$max': '$canTravel' },
             login: { '$first': '$login' },
             status: { '$first': '$status' },
             commentsCount: { '$first': '$commentsCount' },

@@ -1,6 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import * as marked from 'marked';
-import { Utils } from './utils';
 import { months, monthsRoman } from './sync/mappings';
 
 // Custom markdown renderer for links

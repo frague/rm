@@ -6,8 +6,8 @@
     <avatar [login]="person.login"></avatar>
     <h4 class="modal-title">
       {{ person.name }}
-      <ng-container *ngIf="person.onTrip === 'true'">
-        (on business trip)
+      <ng-container *ngIf="isTrue(person.onTrip)">
+        (on a business trip)
       </ng-container>
     </h4>
     <h6>
