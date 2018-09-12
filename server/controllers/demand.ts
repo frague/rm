@@ -67,7 +67,9 @@ export default class DemandCtrl extends BaseCtrl {
                 0
               ]
             },
-            requisition: {'$split': ['$requestId', ',']}
+            requisition: {
+              '$split': ['$requestId', ',']
+            }
           }
         },
         {
@@ -79,9 +81,23 @@ export default class DemandCtrl extends BaseCtrl {
         {
           '$lookup': {
             from: 'requisitions',
-            localField: 'requisition',
-            foreignField: 'requisitionId',
-            as: 'req'
+            let: {
+              id: {
+                '$trim': {
+                  input: '$requisition'
+                }
+              }
+            },
+            pipeline: [
+              {
+                '$match': {
+                  '$expr': {
+                    '$eq': ['$$id', '$requisitionId']
+                  }
+                }
+              }
+            ],
+            as: 'requisition'
           }
         },
         {
@@ -108,14 +124,8 @@ export default class DemandCtrl extends BaseCtrl {
             commentsCount: { '$first': '$commentsCount' },
             status: { '$first': '$status' },
             requisitionsStates: { '$push': {
-              '$cond': {
-                if: '$req',
-                then: {
-                  '$arrayElemAt': ['$req.jobState', 0]
-                },
-                else: null
-              }
-            } },
+              '$arrayElemAt': ['$requisition.jobState', 0]
+            }},
           }
         },
         {

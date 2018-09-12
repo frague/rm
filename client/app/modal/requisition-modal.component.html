@@ -9,7 +9,7 @@
     <h6>{{ requisition.title }} in {{ requisition.location }}</h6>
   </div>
   <div class="comments-modal modal-body">
-    <ngb-tabset (tabChange)="tabChange($event)" #tabs="ngbTabset" *ngIf="!isLoading" [activeId]="activeId">
+    <ngb-tabset (tabChange)="tabChange($event)" #tabs="ngbTabset" *ngIf="!isLoading && !error" [activeId]="activeId">
       <ngb-tab title="Details" id="assignment">
         <ng-template ngbTabContent>
           <requisition-tab [requisition]="requisition"></requisition-tab>

@@ -12,6 +12,7 @@ export class RequisitionModal extends BaseModalComponent {
   isLarge = true;
   @ViewChild('content') content;
   requisition: any = {};
+  error = false;
 
   constructor(
     modalService: NgbModal,
@@ -20,13 +21,32 @@ export class RequisitionModal extends BaseModalComponent {
     super(modalService);
   }
 
+  showError(data) {
+    this.error = true;
+    this.requisition = {
+      requisitionId: data,
+      title: `Failed to fetch requisition data`
+    };
+  }
+
   show(requisition: any, tabName = ''): Subject<any> {
+    this.error = false;
     if (typeof requisition === 'string') {
       this.isLoading = true;
       this.requisitionService.get(requisition)
         .subscribe(
-          requisition => this.requisition = requisition || {},
-          error => console.log(error)
+          data => {
+            if (!data || !data.requisitionId) {
+              this.showError(requisition);
+            } else {
+              this.requisition = data;
+            }
+          },
+          error => {
+            console.log(error);
+            this.error = true;
+            this.showError(requisition);
+          }
         )
         .add(() => this.isLoading = false);
     } else {

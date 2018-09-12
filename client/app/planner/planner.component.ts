@@ -17,6 +17,7 @@ import { BusService } from '../services/bus.service';
 
 const stripIndex = new RegExp(/^\d{2} /);
 const rowNumber = new RegExp(/^(\d+):/);
+const allowedStates = ['Open', 'Approved'];
 
 @Component({
 	selector: 'planner',
@@ -246,7 +247,7 @@ export class PlannerComponent extends Schedule {
     let state = (demand.requisitionsStates || {})[index];
     return {
       'text-danger': !state,
-      'striked': state && state !== 'Open'
+      'striked': state && !allowedStates.includes(state)
     };
   }
 }

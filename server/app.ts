@@ -19,17 +19,22 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(morgan('dev'));
 
+const mongoOptions = {
+  useMongoClient: true,
+  promiseLibrary: global.Promise
+};
+
 if (process.env.NODE_ENV === 'test') {
-  mongoose.connect(process.env.MONGODB_TEST_URI);
+  mongoose.connect(process.env.MONGODB_TEST_URI, mongoOptions);
 } else {
-  mongoose.connect(process.env.MONGODB_URI);
+  mongoose.connect(process.env.MONGODB_URI, mongoOptions);
 }
 
 const server = httpServer.createServer(app);
 IO.initialize(server);
 
 const db = mongoose.connection;
-(<any>mongoose).Promise = global.Promise;
+// (<any>mongoose).Promise = global.Promise;
 
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
