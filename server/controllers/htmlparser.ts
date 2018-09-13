@@ -22,7 +22,7 @@ const visaTypes = {
   'Polish': /VWP/,
   'Schengen': /schengen/i
 };
-const usTypes = ['B1/B2', 'L1', 'B1 in lieu of H1B'];
+const usTypes = ['B1/B2', 'L1', 'B1 in lieu of H1B', 'B-1 in lieu of H-1b'];
 const visaTypesKeys = Object.keys(visaTypes);
 
 var stripTags = (html: string) => {
