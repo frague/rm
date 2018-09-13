@@ -19,19 +19,15 @@
           *ngFor="let column of keys"
           (click)="click(column, resource)"
           [ngClass]="getClasses(column)"
-          >
-            <div>
+          ><div *ngIf="column == 'name'">
               <div
                 class="corner"
                 [ngClass]="{'has-status': resource.status}"
                 (click)="showResource(resource, true, $event)"
-                *ngIf="column == 'name'"
               >
                 <b>{{ resource.commentsCount || '' }}</b>
               </div>
-            </div>
-            <span [innerHTML]="resource|column:column|markdown"></span>
-          </td>
+            </div><span [innerHTML]="resource|column:column|markdown" *ngIf="resource|column:column"></span></td>
       </tr>
     </tbody>
   </table>

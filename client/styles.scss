@@ -958,6 +958,10 @@ ul.tasks {
       }
 
       td {
+        &:empty:after {
+          content: "-";
+        }
+
         &.clickable {
           color: $blue;
           text-decoration: underline;
