@@ -34,7 +34,7 @@ const server = httpServer.createServer(app);
 IO.initialize(server);
 
 const db = mongoose.connection;
-// (<any>mongoose).Promise = global.Promise;
+(<any>mongoose).Promise = global.Promise;
 
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
