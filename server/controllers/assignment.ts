@@ -144,22 +144,24 @@ export default class AssignmentCtrl extends BaseCtrl {
         {
           '$addFields': {
             'activeUsVisa': {
-              '$arrayElemAt': [
-                {
-                  '$filter': {
-                    input: '$visas',
-                    as: 'visa',
-                    cond: {
+              '$reduce': {
+                input: '$visas',
+                initialValue: null,
+                in: {
+                  '$cond': {
+                    if: {
                       '$and': [
-                        {'$eq': ['$$visa.isUs', true]},
-                        {'$ne': ['$$visa.till', null]},
-                        {'$gt': ['$$visa.till', now]}
+                        {'$gt': ['$$this.isUs', 0]},
+                        {'$gt': ['$$this.isUs', '$$value.isUs']},
+                        {'$ne': ['$$this.till', null]},
+                        {'$gt': ['$$this.till', now]},
                       ]
-                    }
+                    },
+                    then: '$$this',
+                    else: '$$value'
                   }
-                },
-                0
-              ]
+                }
+              }
             }
           }
         },
