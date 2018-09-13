@@ -14,8 +14,8 @@ dotenv.load({ path: '.env' });
 app.set('port', (process.env.PORT || 3030));
 
 app.use('/', express.static(path.join(__dirname, '../public')));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({limit: '1mb', extended: true}));
+app.use(bodyParser.urlencoded({limit: '1mb', extended: true}));
 
 app.use(morgan('dev'));
 

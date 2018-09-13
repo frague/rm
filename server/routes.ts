@@ -17,6 +17,7 @@ import CandidateCtrl from './controllers/candidate';
 import RequisitionCtrl from './controllers/requisition';
 import BambooIntegrationsCtrl from './controllers/integrations/bamboo';
 import PmoIntegrationsCtrl from './controllers/integrations/pmo';
+import BackupCtrl from './controllers/backup';
 
 import Resource from './models/resource';
 import User from './models/user';
@@ -45,6 +46,8 @@ export default function setRoutes(app) {
 
   const bamboo = new BambooIntegrationsCtrl();
   const pmo = new PmoIntegrationsCtrl();
+
+  const backupCtrl = new BackupCtrl();
 
   // Assignments
   //router.route('/assignment/:id').get(assignmentCtrl.get);
@@ -133,8 +136,8 @@ export default function setRoutes(app) {
   router.route('/skills/:userId/info').get(skillTreeCtrl.queryUsersInfo);
 
   // Backup and restore
-  router.route('/backup').get(commentCtrl.download);
-  router.route('/restore').post(upload.single('backup'), commentCtrl.restore);
+  router.route('/backup').get(backupCtrl.download);
+  router.route('/restore').post(upload.single('backup'), backupCtrl.restore);
 
   // Deadpool
   router.route('/dps').get(diffCtrl.getAll);
