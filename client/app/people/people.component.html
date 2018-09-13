@@ -13,25 +13,27 @@
         <th *ngFor="let column of keys">{{ columns[column] }}</th>
       </tr>
     </thead>
-    <tr *ngFor="let resource of items">
-      <td
-        *ngFor="let column of keys"
-        (click)="click(column, resource)"
-        [ngClass]="getClasses(column)"
-        >
-          <div>
-            <div
-              class="corner"
-              [ngClass]="{'has-status': resource.status}"
-              (click)="showResource(resource, true, $event)"
-              *ngIf="column == 'name'"
-            >
-              <b>{{ resource.commentsCount || '' }}</b>
+    <tbody>
+      <tr *ngFor="let resource of items">
+        <td
+          *ngFor="let column of keys"
+          (click)="click(column, resource)"
+          [ngClass]="getClasses(column)"
+          >
+            <div>
+              <div
+                class="corner"
+                [ngClass]="{'has-status': resource.status}"
+                (click)="showResource(resource, true, $event)"
+                *ngIf="column == 'name'"
+              >
+                <b>{{ resource.commentsCount || '' }}</b>
+              </div>
             </div>
-          </div>
-          <span [innerHTML]="resource|column:column|markdown"></span>
-        </td>
-    </tr>
+            <span [innerHTML]="resource|column:column|markdown"></span>
+          </td>
+      </tr>
+    </tbody>
   </table>
 
 </div>
