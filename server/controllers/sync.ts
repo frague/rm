@@ -13,6 +13,8 @@ import JobViteIntegrationsCtrl from './integrations/jobvite';
 import { IO } from '../io';
 import { fakeRes } from './fakeresponse';
 
+import { usPriorities } from './htmlparser';
+
 import * as convert from 'color-convert';
 import {
   replaceFromMap,
@@ -418,7 +420,7 @@ export default class SyncCtrl {
             if (visaType) {
               let activeVisa = {
                 type: visaType,
-                isUs: true,
+                isUs: usPriorities[visaType] || 0,
                 till: !!newPR.customVisaExpirationDate ? new Date(newPR.customVisaExpirationDate) : null
               };
 

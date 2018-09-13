@@ -22,7 +22,16 @@ const visaTypes = {
   'Polish': /VWP/,
   'Schengen': /schengen/i
 };
-const usTypes = ['B1/B2', 'L1', 'B1 in lieu of H1B', 'B-1 in lieu of H-1b'];
+
+export const usPriorities = {
+  'B1/B2': 1,
+  'B1 in lieu of H1B': 2,
+  'B-1 in lieu of H-1b': 2,
+  'L1': 3,
+  'H-1b': 4,
+};
+
+const usTypes = Object.keys(usPriorities);
 const visaTypesKeys = Object.keys(visaTypes);
 
 var stripTags = (html: string) => {
@@ -58,7 +67,7 @@ var addVisa = (where, type, till) => {
   where.push({
     type: foundType,
     till: d ? new Date(d) : null,
-    isUs: usTypes.includes(foundType)
+    isUs: usPriorities[foundType] || 0
   });
 }
 
