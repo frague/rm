@@ -22,21 +22,21 @@ export default class BambooIntegrationsCtrl {
   }
 
   getTimeoffs = (): Promise<any> => {
-  	return new Promise((resolve, reject) => {
-	    let data = [];
-	    return request.get(this._makeRequest('time_off/requests/'))
-	      .on('data', chunk => {
-	        data.push(chunk);
-	      })
-	      .on('end', () => {
-	        let body = parser.toJson(Buffer.concat(data).toString());
-	        resolve(JSON.parse(body));
-	      })
-	      .on('error', error => {
-	        console.log('Error getting bamboo time offs');
-	        reject(error);
-	      });
-  	});
+    return new Promise((resolve, reject) => {
+      let data = [];
+      return request.get(this._makeRequest('time_off/requests/'))
+        .on('data', chunk => {
+          data.push(chunk);
+        })
+        .on('end', () => {
+          let body = parser.toJson(Buffer.concat(data).toString());
+          resolve(JSON.parse(body));
+        })
+        .on('error', error => {
+          console.log('Error getting bamboo time offs');
+          reject(error);
+        });
+    });
   };
 
   getPRs = (): Promise<any> => {
@@ -46,7 +46,8 @@ export default class BambooIntegrationsCtrl {
         `<report>
           <title>PR report</title>
           <fields>
-            <field id="customUsername" />
+            <field id="firstName" />
+            <field id="lastName" />
             <field id="customPerformanceReviewDue" />
             <field id="payRate" />
             <field id="dateOfBirth" />

@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-
-const billable = ['Billable', 'Soft booked', 'PTO Coverage'];
+import { Utils } from '../utils';
 
 @Component({
   selector: 'initiative',
@@ -10,7 +9,7 @@ export class InitiativeComponent {
   @Input() data: any = {
     color: '',
     name: 'None',
-    billability: '',
+    billable: false,
     imvolvement: 100
   };
 
@@ -30,7 +29,7 @@ export class InitiativeComponent {
 
   getClass() {
     return {
-      nb: !billable.includes(this.data.billability),
+      nb: !Utils.isTrue(this.data.billable),
       accepted: this.data.billability === 'Job accepted'
     }
   }

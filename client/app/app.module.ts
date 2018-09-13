@@ -30,7 +30,6 @@ import { CarreerService } from './services/carreer.service';
 import { AppComponent } from './app.component';
 import { SyncComponent } from './sync/sync.component';
 import { TaskComponent } from './sync/task.component';
-import { InitiativesComponent } from './initiatives/initiatives.component';
 import { InitiativeComponent } from './initiatives/initiative.component';
 import { AssignmentsComponent } from './assignments/assignments.component';
 import { PeopleComponent } from './people/people.component';
@@ -81,7 +80,6 @@ const config: SocketIoConfig = {
 @NgModule({
   declarations: [
     AppComponent,
-    InitiativesComponent,
     InitiativeComponent,
     AssignmentsComponent,
     PeopleComponent,

@@ -46,7 +46,7 @@ export class AssignmentsComponent extends Schedule {
       name: (demand ? (initiative.account + (demand.comment ? ': ' + demand.comment : '')) : initiative.name),
       account: initiative.account,
       color: initiative.color,
-      billability: assignment.billability,
+      billable: (demand || assignment).billable,
       involvement: assignment.involvement,
       offset: assignment.offset,
       width: assignment.width

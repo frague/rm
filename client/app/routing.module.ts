@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
-import { InitiativesComponent } from './initiatives/initiatives.component';
 import { AssignmentsComponent } from './assignments/assignments.component';
 import { PeopleComponent } from './people/people.component';
 import { RegisterComponent } from './register/register.component';

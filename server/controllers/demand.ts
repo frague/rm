@@ -26,6 +26,7 @@ export default class DemandCtrl extends BaseCtrl {
   }
 
   getAll = (req, res) => {
+    let now = new Date();
     let or;
     try {
       or = req.query.or ? JSON.parse(req.query.or) : [];
@@ -69,6 +70,15 @@ export default class DemandCtrl extends BaseCtrl {
             },
             requisition: {
               '$split': ['$requestId', ',']
+            },
+            billable: {
+              '$cond': {
+                if: {
+                  '$in': ['$role', ['Billable', 'Soft booked', 'PTO Coverage', 'Funded']]
+                },
+                then: 'true',
+                else: 'false'
+              }
             }
           }
         },
@@ -123,6 +133,7 @@ export default class DemandCtrl extends BaseCtrl {
             login: { '$first': '$login' },
             commentsCount: { '$first': '$commentsCount' },
             status: { '$first': '$status' },
+            billable: { '$first': '$billable' },
             requisitionsStates: { '$push': {
               '$arrayElemAt': ['$requisition.jobState', 0]
             }},

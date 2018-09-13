@@ -308,15 +308,15 @@ export default class SyncCtrl {
       }
       try {
         prs = JSON.parse(prs)['employees']
-          .filter(employee => !!employee.customUsername)
+          .filter(employee => !!employee.lastName)
           .reduce((result, employee) => {
-            result[employee.customUsername] = employee;
+            result[employee.lastName + ' ' + employee.firstName] = employee;
             return result;
           }, {});
-          this._addLog(Object.keys(prs).length + ' PR records received', 'pr');
+          this._addLog(Object.keys(prs).length + ' employees records received', 'pr');
           resolve(prs);
       } catch (e) {
-        console.log('Error parsing PR data', e);
+        console.log('Error parsing employees data', e);
         return reject(e);
       }
     });
@@ -403,11 +403,12 @@ export default class SyncCtrl {
           const visa = (syncVisas ? this._visas[person.name] : prev) || {};
           let pr = prev;
           if (syncPRs) {
-            let newPR = this._prs[person.username] || {};
+            let newPR = this._prs[person.name] || {};
             let visaType = newPR.customVisaType;
+            let payRate = newPR.payRate;
             pr = {
               nextPr: this._makeDate(newPR.customPerformanceReviewDue),
-              payRate: newPR.payRate,
+              payRate: payRate && payRate.charAt(0) !== ' ' ? payRate : null,
               birthday: this._makeDate(newPR.dateOfBirth),
               bambooId: newPR.id,
             };
