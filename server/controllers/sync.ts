@@ -346,6 +346,10 @@ export default class SyncCtrl {
     });
   }
 
+  private _formatPayRate(source: string): string {
+    return source.replace(/^(\d+)(\.\d+)/, '$1');
+  }
+
   private async _queryUsers(): Promise<any> {
     let initiativesIds = {};
     let profilesCreated = 0;
@@ -410,7 +414,7 @@ export default class SyncCtrl {
             let payRate = newPR.payRate;
             pr = {
               nextPr: this._makeDate(newPR.customPerformanceReviewDue),
-              payRate: payRate && payRate.charAt(0) !== ' ' ? payRate : null,
+              payRate: payRate && payRate.charAt(0) !== ' ' ? this._formatPayRate(payRate) : null,
               birthday: this._makeDate(newPR.dateOfBirth),
               bambooId: newPR.id,
             };
