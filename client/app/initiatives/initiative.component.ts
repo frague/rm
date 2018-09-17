@@ -30,7 +30,7 @@ export class InitiativeComponent {
   getClass() {
     return {
       nb: !Utils.isTrue(this.data.billable),
-      accepted: this.data.billability === 'Job accepted'
+      accepted: !this.data.name
     }
   }
 
