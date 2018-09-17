@@ -178,12 +178,6 @@ export default class AssignmentCtrl extends BaseCtrl {
                 if: {
                   '$and': [
                     {'$in': ['$assignment.billability', ['Billable', 'Soft booked', 'PTO Coverage', 'Funded']]},
-                    {'$lte': ['$assignment.start', now]},
-                    {'$or': [
-                        {'$gte': ['$assignment.end', now]},
-                        {'$eq': ['$assignment.end', null]}
-                      ]
-                    },
                     {'$gt': ['$assignment.involvement', 0]}
                   ]
                 },
@@ -217,6 +211,28 @@ export default class AssignmentCtrl extends BaseCtrl {
           }
         },
         {
+          '$addFields': {
+            'assignment.billableNow': {
+              '$cond': {
+                if: {
+                  '$and': [
+                    {'$eq': ['$assignment.billable', 'true']},
+                    {'$lte': ['$assignment.start', now]},
+                    {'$or': [
+                        {'$gte': ['$assignment.end', now]},
+                        {'$eq': ['$assignment.end', null]}
+                      ]
+                    },
+                    {'$gt': ['$assignment.involvement', 0]}
+                  ]
+                },
+                then: 'true',
+                else: 'false'
+              }
+            }
+          }
+        },
+        {
           '$group': {
             _id: '$_id',
             assignments: { '$push': '$assignment' },
@@ -230,7 +246,7 @@ export default class AssignmentCtrl extends BaseCtrl {
             manager: { '$first': '$manager' },
             minDate: {'$min': '$assignment.start'},
             maxDate: {'$max': '$assignment.end'},
-            billable: {'$max': '$assignment.billable'},
+            billable: {'$max': '$assignment.billableNow'},
             canTravel: { '$max': '$canTravel' },
             login: { '$first': '$login' },
             status: { '$first': '$status' },
