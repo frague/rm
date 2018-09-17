@@ -160,8 +160,16 @@ export class Schedule {
     let demandQuery = queryString.indexOf('demand') >= 0 || queryString.indexOf('comments') >= 0 ?
       this.demandService.getAll(query) : Observable.from([[]]);
 
-    let withOrder = Object.assign(query, { order: serviceData['order'] });
-    return this.assignmentService.getAll(withOrder).subscribe(data => {
+    let shift = serviceData['shift'];
+    let withModifiers = Object.assign(query, {
+      order: serviceData['order'],
+      shift
+    });
+    if (shift) {
+      this.setShiftMarker(shift);
+    }
+
+    return this.assignmentService.getAll(withModifiers).subscribe(data => {
       [this.items, this.message] = [data.data, data.message];
 
       demandQuery.subscribe(demands => {
@@ -319,6 +327,11 @@ export class Schedule {
   setMarker(event: MouseEvent) {
     this.markerDateOffset = event.offsetX;
     this.markerDateCaption = this.makeDateCaption(new Date(this.minDate.getTime() + this.markerDateOffset * day / dayWidth));
+  }
+
+  setShiftMarker(offset: number) {
+    this.markerDateOffset = this.todayOffset + offset * dayWidth;
+    this.markerDateCaption = `+${offset} days`;
   }
 
   getScheduleStyles() {

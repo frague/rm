@@ -1187,6 +1187,32 @@ div.bottom-corner {
   .dropdown-toggle::after {
     margin-left: 0px;
   }
+
+  small {
+    white-space: nowrap;
+
+    ul.times {
+      padding-left: 0;
+
+      &, & li {
+        display: inline;
+        list-style: none;
+
+      }
+
+      li {
+        @extend .clickable;
+
+        a.active {
+          color: $red;
+        }
+
+        &:nth-last-child(n+2):after {
+          content: ", ";
+        }
+      }
+    }
+  }
 }
 
 .help {

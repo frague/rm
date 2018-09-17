@@ -19,6 +19,7 @@ export default class AssignmentCtrl extends BaseCtrl {
   };
 
   order;
+  shift;
 
   filterSkills = (source: any[]): any => {
     let result = [];
@@ -47,6 +48,7 @@ export default class AssignmentCtrl extends BaseCtrl {
       return res.sendStatus(500);
     }
     this.order = this.determineOrder(req);
+    this.shift = +JSON.parse(req.query.shift || '0');
 
     let skillsList = this.filterSkills(or) || [];
 
@@ -98,6 +100,8 @@ export default class AssignmentCtrl extends BaseCtrl {
     console.log('Query:', JSON.stringify(query));
 
     let now = new Date();
+    now.setDate(this.shift + now.getDate());
+
     let cursor = Resource
       .aggregate([
         {

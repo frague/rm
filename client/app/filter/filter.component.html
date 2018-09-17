@@ -14,6 +14,14 @@
         [(ngModel)]="criteria"
       >
     </div>
+    <small class="pull-right form-text text-muted">
+      <i class="fa fa-clock-o"></i> Shift days:
+      <ul class="times">
+        <li *ngFor="let days of [7, 14, 21, 30, 60, 120]">
+          <a [ngClass]="{active: timeShift===days}" (click)="setTimeShift(days)">{{ days }}</a></li>
+        <li><a (click)="timeShift=0">&times;</a></li>
+      </ul>
+    </small>
 	  <small class="form-text text-muted">
       <i class="fa fa-info-circle clickable" (click)="toggleHelp()"></i>
       Filtering query

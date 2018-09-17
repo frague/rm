@@ -17,6 +17,8 @@ export class FilterComponent {
   $externalCriteria;
   isHelpShown = false;
 
+  timeShift = 0;
+
   constructor(
     private bus: BusService,
     private filter: FilterService
@@ -123,7 +125,9 @@ export class FilterComponent {
       let andOperator = [];
       let orOperator = [];
       let inOperator = {};
-      let serviceData = {};
+      let serviceData = {
+        'shift': this.timeShift
+      };
 
       if (this.criteria) {
         this.criteria.split(',').forEach(pair => {
@@ -190,5 +194,10 @@ export class FilterComponent {
       let appendix = (prefix ? prefix + '.' : '') + srcElement['innerText'];
       this.criteria += (!this.criteria || this.criteria.endsWith(',') ? '' : ',') + appendix;
     }
+  }
+
+  setTimeShift(shift: number) {
+    this.timeShift = shift;
+    this.parseCriteria(null, true);
   }
 }
