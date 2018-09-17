@@ -165,9 +165,6 @@ export class Schedule {
       order: serviceData['order'],
       shift
     });
-    if (shift) {
-      this.setShiftMarker(shift);
-    }
 
     return this.assignmentService.getAll(withModifiers).subscribe(data => {
       [this.items, this.message] = [data.data, data.message];
@@ -239,6 +236,10 @@ export class Schedule {
         }
 
         this.calculate();
+        if (shift) {
+          this.setShiftMarker(shift);
+        }
+
         let personStati = {};
 
         this.items.forEach(resource => {
