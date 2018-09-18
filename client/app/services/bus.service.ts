@@ -7,6 +7,7 @@ export class BusService {
 
   public filterUpdated: EventEmitter<any> = new EventEmitter();
   public criteriaUpdated: EventEmitter<string> = new EventEmitter();
+  public timeShiftUpdated: EventEmitter<number> = new EventEmitter();
 
   updateQuery(query: any, criteria: string, serviceData = {}) {
     this.criteria = criteria;

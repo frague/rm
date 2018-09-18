@@ -22,8 +22,8 @@
         <li><a (click)="setTimeShift(0)">&times;</a></li>
       </ul>
     </small>
-	  <small class="form-text text-muted">
-      <i class="fa fa-info-circle clickable" (click)="toggleHelp()"></i>
+	  <small class="form-text text-muted clickable" (click)="toggleHelp()">
+      <i class="fa fa-info-circle clickable"></i>
       Filtering query
     </small>
 	</div>
@@ -72,6 +72,10 @@
           <li>~= or equal</li>
           <li>~+ or regexp</li>
           <li>, separator</li>
+          <li>empty() empty</li>
+          <li>exists() not empty</li>
+          <li>in(days) date in range</li>
+          <li>after(days) date shift</li>
         </ul>
 
         <h4>Examples:</h4>
@@ -81,6 +85,8 @@
           <li>A~ab &rarr; A==/ab/</li>
           <li>A=1,B+=2 &rarr; A==1 || B==2</li>
           <li>A=1,B=2,C+=3 &rarr; (A==1 && B==2)||C==3</li>
+          <li>nextPr=in(30)</li>
+          <li>activeUsVisa.till=after(365)</li>
         </ul>
       </div>
       <div class="col-sm-6 col-md-3 col-lg-2">
@@ -95,6 +101,9 @@
           <li>specialization</li>
           <li>manager</li>
           <li>canTravel</li>
+          <li>billable</li>
+          <li>onTrip</li>
+          <li>activeUsVisa</li>
         </ul>
 
         <h4>Examples:</h4>
@@ -102,6 +111,7 @@
           <li>login=iivanov</li>
           <li>name~Ivanov</li>
           <li>grade~T[23]</li>
+          <li>canTravel=true</li>
         </ul>
       </div>
       <div class="col-sm-6 col-md-3 col-lg-2">

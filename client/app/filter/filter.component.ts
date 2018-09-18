@@ -15,6 +15,7 @@ export class FilterComponent {
   filters = {};
   title = '';
   $externalCriteria;
+  $externalTimeShift;
   isHelpShown = false;
 
   timeShift = 0;
@@ -38,10 +39,11 @@ export class FilterComponent {
         this.reset();
       }
     });
+    this.$externalTimeShift = this.bus.timeShiftUpdated.subscribe((shift: number) => this.setTimeShift(shift));
   }
 
   ngOnDestroy() {
-    this.$externalCriteria.unsubscribe();
+    [this.$externalCriteria, this.$externalTimeShift].forEach($s => $s.unsubscribe());
   }
 
   getFilters() {

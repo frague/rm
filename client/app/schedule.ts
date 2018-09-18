@@ -53,6 +53,7 @@ export class Schedule {
 
   isScrolled = false;
   isCalculated = false;
+  isLoading = false;
 
   items = [];
   resources = [];
@@ -143,7 +144,7 @@ export class Schedule {
       this.initiativesData = null;
       this.resourcesData = null;
     }
-    this.cd.markForCheck();
+    // this.cd.markForCheck();
   }
 
   findVisibleAccounts() {
@@ -154,8 +155,7 @@ export class Schedule {
   }
 
   fetchData(query={}, fetchAll=false, serviceData={}): Subscription {
-    this.reset(fetchAll);
-
+    this.isLoading = true;
     let queryString = JSON.stringify(query);
     let demandQuery = queryString.indexOf('demand') >= 0 || queryString.indexOf('comments') >= 0 ?
       this.demandService.getAll(query) : Observable.from([[]]);
@@ -167,6 +167,8 @@ export class Schedule {
     });
 
     return this.assignmentService.getAll(withModifiers).subscribe(data => {
+      this.reset(fetchAll);
+
       [this.items, this.message] = [data.data, data.message];
 
       demandQuery.subscribe(demands => {
@@ -314,7 +316,8 @@ export class Schedule {
 
       });
 
-    });
+    })
+      .add(() => this.isLoading = false);
   }
 
   makeCaptionStyles(offset: number): Object {
@@ -327,12 +330,22 @@ export class Schedule {
 
   setMarker(event: MouseEvent) {
     this.markerDateOffset = event.offsetX;
-    this.markerDateCaption = this.makeDateCaption(new Date(this.minDate.getTime() + this.markerDateOffset * day / dayWidth));
+    let days = Math.round((this.markerDateOffset - this.todayOffset) / dayWidth);
+    // let markerDate = new Date(this.minDate.getTime() + this.markerDateOffset * day / dayWidth);
+    // this.markerDateCaption = this.makeDateCaption();
+    days = days > 0 ? days : 0;
+    this.setShiftMarker(days);
+    this.bus.timeShiftUpdated.emit(days);
   }
 
   setShiftMarker(offset: number) {
-    this.markerDateOffset = this.todayOffset + offset * dayWidth;
-    this.markerDateCaption = `+${offset} days`;
+    if (offset) {
+      this.markerDateOffset = this.todayOffset + offset * dayWidth;
+      this.markerDateCaption = `+${offset} days`;
+    } else {
+      this.markerDateOffset = -10;
+      this.markerDateCaption = '';
+    }
   }
 
   getScheduleStyles() {
