@@ -174,14 +174,9 @@ export class CandidatesComponent implements OnInit {
     this.requisitionModal.show(requisition);
   }
 
-  hasAlert(requisition) {
-    return requisition.demandLocations && requisition.demandLocations !== requisition.location;
-  }
-
   getRequisitionClasses(requisition) {
     return {
       'selected': this.isRequisitionSelected(requisition),
-      'warning': this.hasAlert(requisition)
     };
   }
 
@@ -191,14 +186,23 @@ export class CandidatesComponent implements OnInit {
       'Open': 'fa-search',
       'Draft': 'fa-pencil',
       'Hold': 'fa-clock-o',
+      'Awaiting Approval': 'fa-hourglass-2'
     }[requisition.jobState];
   }
 
-  getDemandStyle(requisition) {
-    return this.hasAlert(requisition) ? 'fa-exclamation-triangle' : 'fa-id-card';
+  getDemandStyle(requisition, demand) {
+    let l = demand.locations.join(', ');
+    let alert = l !== requisition.location;
+    return  {
+      'fa-exclamation-triangle': alert && demand.login,
+      'fa-id-card': !alert,
+      'fa-times red': !demand.login
+     };
   }
 
-  showDemand(requisition) {
-    this.demandModal.show(requisition.demandLogin);
+  showDemand(demand) {
+    if (demand.id) {
+      this.demandModal.show(demand.id);
+    }
   }
 }

@@ -18,6 +18,7 @@ import RequisitionCtrl from './controllers/requisition';
 import BambooIntegrationsCtrl from './controllers/integrations/bamboo';
 import PmoIntegrationsCtrl from './controllers/integrations/pmo';
 import BackupCtrl from './controllers/backup';
+import RequisitionDemandCtrl from './controllers/requisitionDemand';
 
 import Resource from './models/resource';
 import User from './models/user';
@@ -43,6 +44,7 @@ export default function setRoutes(app) {
   const candidateCtrl = new CandidateCtrl();
   const requisitionCtrl = new RequisitionCtrl();
   const skillTreeCtrl = new SkillTreeCtrl();
+  const requisitionDemandCtrl = new RequisitionDemandCtrl();
 
   const bamboo = new BambooIntegrationsCtrl();
   const pmo = new PmoIntegrationsCtrl();
@@ -126,6 +128,14 @@ export default function setRoutes(app) {
   router.route('/filter/:id').put(filterCtrl.update);
   router.route('/filters').delete(filterCtrl.deleteAll);
   router.route('/filter/:id').delete(filterCtrl.delete);
+
+  // Requisition Demands
+  router.route('/rds').get(requisitionDemandCtrl.getAll);
+  router.route('/rd').post(requisitionDemandCtrl.insert);
+  router.route('/rd/:id').get(requisitionDemandCtrl.get);
+  router.route('/rd/:id').put(requisitionDemandCtrl.update);
+  router.route('/rds').delete(requisitionDemandCtrl.deleteAll);
+  router.route('/rd/:id').delete(requisitionDemandCtrl.delete);
 
   // Sync
   router.route('/sync').post(syncCtrl.sync);

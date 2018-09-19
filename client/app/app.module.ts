@@ -26,6 +26,7 @@ import { SkillsService } from './services/skills.service';
 import { RequisitionService } from './services/requisition.service';
 import { CandidateService } from './services/candidate.service';
 import { CarreerService } from './services/carreer.service';
+import { RequisitionDemandService } from './services/requisitionDemand.service';
 
 import { AppComponent } from './app.component';
 import { SyncComponent } from './sync/sync.component';
@@ -135,6 +136,8 @@ const config: SocketIoConfig = {
     RequisitionService,
     CandidateService,
     CarreerService,
+    RequisitionDemandService,
+    
     PrintableDatePipe,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

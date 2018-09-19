@@ -4,6 +4,7 @@ import Assignment from '../models/assignment';
 import Demand from '../models/demand';
 import Candidate from '../models/candidate';
 import Requisition from '../models/requisition';
+import RequisitionDemand from '../models/requisitionDemand';
 
 import PmoIntegrationsCtrl from './integrations/pmo';
 import ConfluenceIntegrationsCtrl from './integrations/confluence';
@@ -33,6 +34,7 @@ const candidatesChunk = 500;
 const requisitionsChunk = 500;
 const cleanupLocation = new RegExp(/(^,\s*|,\s*$)/);
 const outdated = 1000 * 60 * 60 * 24 * 30 * 3;  // 3 months
+const reqId = new RegExp(/^.*(GD\d+).*$/, 'i');
 
 export default class SyncCtrl {
 
@@ -578,6 +580,15 @@ export default class SyncCtrl {
     );
 
     return new Promise(async (resolve, reject) => {
+      // Keep demand to requisition relationships
+      let rd = await RequisitionDemand.find({}).exec();
+      rd = rd.reduce((result, req) => {
+        result[req.requisitionId] = req;
+        return result;
+      }, {});
+      let newRd = {};
+      let now = new Date();
+
       let data = await this.PMO.getDemandDicts().catch(error => _error = error);
       if (_error) {
         return reject(_error);
@@ -611,6 +622,11 @@ export default class SyncCtrl {
       Object.keys(load).forEach(id => {
         let item = load[id];
         let demand, status;
+        const requestId = (item.jobviteId || '')
+          .split(',')
+          .map((id: string) => 
+             (id || '').toUpperCase().replace(reqId, '$1')
+          );
 
         try {
           status = statuses[item.statusId].name;
@@ -642,13 +658,32 @@ export default class SyncCtrl {
             start: item.startDate,
             specializations: specs,
             stage: stages[item.stageId].code,
-            requestId: (item.jobviteId || '').split(',').map((id: string) => (id || '').trim().toUpperCase()),
+            requestId,
             requirements: item.requirements,
 
             pool
           };
         } catch (e) {
           return reject(e);
+        }
+
+        if (requestId && requestId.length) {
+          requestId
+            .filter(requisitionId => !!requisitionId)
+            .forEach(requisitionId => {
+              let r = rd[requisitionId];
+              if (!r) {
+                r = {
+                  requisitionId,
+                  demandIds: [],
+                  updated: now
+                };
+              }
+            if (!r.demandIds.includes(demand.login)) {
+              r.demandIds.push(demand.login);
+              newRd[requisitionId] = r;
+            }
+          });
         }
 
         if (status === 'Active') {
@@ -658,6 +693,8 @@ export default class SyncCtrl {
         }
 
       });
+
+      Object.keys(newRd).forEach(r => new RequisitionDemand(newRd[r]).save());
 
       return resolve();
     });

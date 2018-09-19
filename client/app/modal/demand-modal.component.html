@@ -7,12 +7,12 @@
     <h4 class="modal-title">
       Demand for {{ demand.specializations }} {{ demand.profile }}
     </h4>
-    <h6>
+    <h6 *ngIf="!notFound">
       on {{ demand.project }} project of {{ demand.account }} account
     </h6>
   </div>
   <div class="comments-modal modal-body">
-    <ngb-tabset (tabChange)="tabChange($event)" #tabs="ngbTabset" *ngIf="!isLoading" [activeId]="activeId">
+    <ngb-tabset (tabChange)="tabChange($event)" #tabs="ngbTabset" *ngIf="!isLoading && !notFound" [activeId]="activeId">
       <ngb-tab title="Details" id="assignment">
         <ng-template ngbTabContent>
           <demand-tab [demand]="demand"></demand-tab>
@@ -29,5 +29,6 @@
         </ng-template>
       </ngb-tab>
     </ngb-tabset>
+    <div *ngIf="notFound">Demand #{{ getId() }} not found</div>
   </div>
 </ng-template>

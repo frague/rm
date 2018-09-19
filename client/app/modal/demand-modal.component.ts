@@ -12,6 +12,7 @@ export class DemandModal extends BaseModalComponent {
   isLarge = true;
   @ViewChild('content') content;
   demand: any = {};
+  notFound = false;
 
   constructor(
     modalService: NgbModal,
@@ -21,11 +22,23 @@ export class DemandModal extends BaseModalComponent {
   }
 
   show(demand: any, tabName = ''): Subject<any> {
+    this.notFound = false;
     if (typeof demand === 'string') {
       this.isLoading = true;
       this.demandService.get({_id: demand})
         .subscribe(
-          demand => this.demand = demand || {},
+          result => {
+            if (result) {
+              this.demand = result;
+            } else {
+              this.notFound = true;
+              this.demand = result || {
+                login: demand,
+                stage: 'X',
+                profile: 'a requisition'
+              }
+            }
+          },
           error => console.log(error)
         )
         .add(() => this.isLoading = false);

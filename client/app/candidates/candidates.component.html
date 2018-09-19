@@ -14,17 +14,20 @@
       <ng-container *ngFor="let requisition of requisitionCategories[category]">
         <div
           class="row"
-          *ngIf="requisitionCandidates[requisition.requisitionId] && requisitionCandidates[requisition.requisitionId].length"
           [ngClass]="getRequisitionClasses(requisition)"
         >
           <div class="col-md-2">
-            <a (click)="showDemand(requisition)" *ngIf="requisition.demandLogin" class="demand">
-              <i class="fa" [ngClass]="getDemandStyle(requisition)" [title]="requisition.demandLocations"></i>
-            </a>
+            <ul *ngIf="requisition.demands && requisition.demands.length">
+              <li *ngFor="let demand of requisition.demands">
+                <a (click)="showDemand(demand)">
+                  <i class="fa" [ngClass]="getDemandStyle(requisition, demand)"></i>
+                </a>
+              </li>
+            </ul>
             <i class="fa" [ngClass]="getRequisitionClass(requisition)" (click)="toggleSelection(requisition)"></i>
             <a (click)="showRequisition(requisition, $event)">{{ requisition.requisitionId }}</a>
             <span>
-              {{ requisitionCandidates[requisition.requisitionId].length }}
+              {{ requisitionCandidates[requisition.requisitionId] ? requisitionCandidates[requisition.requisitionId].length : 0 }}
               <i class="fa fa-male"></i>
             </span>
           </div>

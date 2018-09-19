@@ -13,32 +13,48 @@ export default class RequisitionCtrl extends BaseCtrl {
       .aggregate([
         {
           '$lookup': {
-            from: 'demands',
-            let: {
-              id: '$requisitionId',
-            },
-            pipeline: [
-              {
-                '$match': {
-                  '$expr': {
-                    '$in': ['$$id', '$requestId']
-                  },
-                }
-              }
-            ],
-            as: 'demand'
-          }
-        },
-        {
-          '$unwind': {
-            path: '$demand',
-            preserveNullAndEmptyArrays: true
+            from: 'requisitiondemands',
+            localField: 'requisitionId',
+            foreignField: 'requisitionId',
+            as: 'rd'
           }
         },
         {
           '$addFields': {
-            'demandLogin': '$demand.login',
-            'demandLocations': '$demand.locations'
+            demandLogin: {
+              '$arrayElemAt': ['$rd.demandIds', 0]
+            }
+          }
+        },
+        {
+          '$unwind': {
+            path: '$demandLogin',
+            preserveNullAndEmptyArrays: true
+          }
+        },
+        {
+          '$lookup': {
+            from: 'demands',
+            localField: 'demandLogin',
+            foreignField: 'login',
+            as: 'demand'
+          }
+        },
+        {
+          '$addFields': {
+            'd': {
+              '$cond': {
+                if: '$demandLogin',
+                then: {
+                  id: '$demandLogin',
+                  login: {
+                    '$arrayElemAt': ['$demand.login', 0]
+                  },
+                  locations: '$demand.locations',
+                },
+                else: null
+              }
+            }
           }
         },
         {
@@ -48,8 +64,8 @@ export default class RequisitionCtrl extends BaseCtrl {
           '$group': {
             _id: '$_id',
             category: { '$first': '$category' },
-            demandLogin: { '$first': '$demandLogin' },
-            demandLocations: { '$first': '$demandLocations' },
+            demandLogins: { '$push': '$demandLogin' },
+            demands: { '$push': '$d' },
             department: { '$first': '$department' },
             detailLink: { '$first': '$detailLink' },
             eId: { '$first': '$eId' },
@@ -60,7 +76,21 @@ export default class RequisitionCtrl extends BaseCtrl {
             postingType: { '$first': '$postingType' },
             requisitionId: { '$first': '$requisitionId' },
             title: { '$first': '$title' },
-            demand: { '$push': '$demand'}
+          }
+        },
+        {
+          '$addFields': {
+            demands: {
+              '$setDifference': ['$demands', [null]]
+              // '$concatArrays': [
+              //   {'$setDifference': ['$demands', [null]]},
+              //   [{
+              //     id: '1111_AA',
+              //     login: null,
+              //     locations: ['SAR'],
+              //   }]
+              // ]
+            }
           }
         },
         {
