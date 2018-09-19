@@ -21,12 +21,7 @@ export default class RequisitionCtrl extends BaseCtrl {
               {
                 '$match': {
                   '$expr': {
-                    '$gte': [
-                      {
-                        '$indexOfBytes': ['$requestId', '$$id']
-                      },
-                      0
-                    ]
+                    '$in': ['$$id', '$requestId']
                   },
                 }
               }

@@ -54,7 +54,7 @@
           <i class="fa fa-plane" *ngIf="isOnsite(demand)"></i>
           {{ demand.name }} <u>{{ demand.project }}</u>
           <span>
-            <ul class="requisitions" *ngIf="demand.requestId"><li *ngFor="let req of getDemandRequisitions(demand);let i = index"><a (click)="showRequisition(req, $event)" [ngClass]="showReqStatus(demand, i)">{{ req }}</a></li></ul>
+            <ul class="requisitions" *ngIf="demand.requestId.length"><li *ngFor="let req of getDemandRequisitions(demand);let i = index"><a (click)="showRequisition(req, $event)" [ngClass]="showReqStatus(demand, i)">{{ req }}</a></li></ul>
             {{ getDemandAttrs(demand) }}
           </span>
           <span [title]="demand.comment">{{ demand.comment || demand.requirements }}</span>

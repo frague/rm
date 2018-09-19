@@ -17,10 +17,10 @@ const demandSchema = new mongoose.Schema({
   stage: String,
   grades: String,
   locations: String,
-  requestId: String,
+  requestId: [String],
   requirements: String,
   comment: String,
-  candidates: String,
+  candidates: [String],
   login: String
 });
 

@@ -68,9 +68,6 @@ export default class DemandCtrl extends BaseCtrl {
                 0
               ]
             },
-            requisition: {
-              '$split': ['$requestId', ',']
-            },
             billable: {
               '$cond': {
                 if: {
@@ -84,7 +81,7 @@ export default class DemandCtrl extends BaseCtrl {
         },
         {
           '$unwind': {
-            path: '$requisition',
+            path: '$requestId',
             preserveNullAndEmptyArrays: true
           }
         },
@@ -92,11 +89,7 @@ export default class DemandCtrl extends BaseCtrl {
           '$lookup': {
             from: 'requisitions',
             let: {
-              id: {
-                '$trim': {
-                  input: '$requisition'
-                }
-              }
+              id: '$requestId'
             },
             pipeline: [
               {
@@ -125,7 +118,7 @@ export default class DemandCtrl extends BaseCtrl {
             stage: { '$first': '$stage' },
             grades: { '$first': '$grades' },
             locations: { '$first': '$locations' },
-            requestId: { '$first': '$requestId' },
+            requestId: { '$push': '$requestId' },
             requirements: { '$first': '$requirements' },
             comment: { '$first': '$comment' },
             specializations: { '$first': '$specializations' },
@@ -137,6 +130,19 @@ export default class DemandCtrl extends BaseCtrl {
             requisitionsStates: { '$push': {
               '$arrayElemAt': ['$requisition.jobState', 0]
             }},
+          }
+        },
+        {
+          '$addFields': {
+            requestId: {
+              '$cond': {
+                if: {
+                  '$eq': ['$requestId', ['']]
+                },
+                then: [],
+                else: '$requestId'
+              }
+            }
           }
         },
         {

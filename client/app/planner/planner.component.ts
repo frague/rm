@@ -220,7 +220,7 @@ export class PlannerComponent extends Schedule {
   }
 
   getDemandRequisitions(demand) {
-    return (demand.requestId || '').split(',').map(req => (req || '').trim());
+    return (demand.requestId || []);
   }
 
   isAssigned(candidate: any) {

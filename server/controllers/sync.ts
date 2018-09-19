@@ -628,7 +628,7 @@ export default class SyncCtrl {
             name: id + ' ' + specs + ' ' + profile,
             account: account,
             comment: item.comment,
-            candidates: item.proposedCandidates.join(', '),
+            candidates: item.proposedCandidates.map(candidate => candidate.name),
             deployment: transformDestinations(item),
             end: end.toISOString().substr(0, 10),
             grades: item.gradeRequirements.map(rid => {
@@ -642,7 +642,7 @@ export default class SyncCtrl {
             start: item.startDate,
             specializations: specs,
             stage: stages[item.stageId].code,
-            requestId: item.jobviteId,
+            requestId: (item.jobviteId || '').split(',').map((id: string) => (id || '').trim().toUpperCase()),
             requirements: item.requirements,
 
             pool
