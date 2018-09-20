@@ -7,7 +7,6 @@ import { CandidateModal } from '../modal/candidate-modal.component';
 import { RequisitionModal } from '../modal/requisition-modal.component';
 import { DemandModal } from '../modal/demand-modal.component';
 
-import { RequisitionService } from '../services/requisition.service';
 import { CandidateService } from '../services/candidate.service';
 import { BusService } from '../services/bus.service';
 
@@ -31,7 +30,7 @@ export class CandidatesComponent implements OnInit {
 
   items = [];
   requisitionsIds = [];
-  requisitionCategories = {};
+  categoryRequisitions = {};
   requisitionCandidates = {};
   isCategoryFilled = {};
   selectedRequisitionId = null;
@@ -40,7 +39,6 @@ export class CandidatesComponent implements OnInit {
   private $query;
 
   constructor(
-    private requisitionService: RequisitionService,
     private candidateService: CandidateService,
     private sanitizer: DomSanitizer,
     private bus: BusService,
@@ -58,52 +56,26 @@ export class CandidatesComponent implements OnInit {
   }
 
   fetchData(query={}): Subscription {
-    this.requisitionCandidates = {};
+    this.allExpanded = false;
 
-    this.isCategoryFilled = {};
-
-    let requisitionsFetcher = this.items.length ? Observable.from([[]]) : this.requisitionService.getAll({});
-
-    return requisitionsFetcher.subscribe(data => {
-      if (data.length) {
+    return this.candidateService.getAll(query).subscribe(data => {
         this.items = data;
-        this.items.push(emptyRequisition);
-        this.requisitionsIds = this.items.map(requisition => requisition.requisitionId);
-      }
 
-      this.candidateService.getAll(query).subscribe(data => {
-        this.allExpanded = data.length <= 100;
-
-        // Group candidates by requisition
-        this.requisitionCandidates = data.reduce((result, candidate) => {
-          candidate.isHiree = true;
-          if (!this.requisitionsIds.includes(candidate.requisitionId)) {
-            candidate.requisitionId = emptyRequisition.requisitionId;
-          }
-          result[candidate.requisitionId] = result[candidate.requisitionId] || [];
-          result[candidate.requisitionId].push(candidate);
-          return result;
-        }, []);
-
-        this.requisitionCategories = this.items.reduce((result, requisition) => {
+        this.categoryRequisitions = this.items.reduce((result, requisition) => {
           let category = requisition.category;
           if (!result[category]) {
             result[category] = [requisition];
           } else {
             result[category].push(requisition);
           }
-          if (!this.isCategoryFilled[category]) {
-            this.isCategoryFilled[category] = (this.requisitionCandidates[requisition.requisitionId] || []).length > 0;
-          }
           return result;
         }, {});
         this.cd.markForCheck();
       });
-    })
   }
 
   getCategories() {
-    return Object.keys(this.requisitionCategories).sort();
+    return Object.keys(this.categoryRequisitions).sort();
   }
 
   getRequisitions() {
@@ -119,11 +91,16 @@ export class CandidatesComponent implements OnInit {
   }
 
   isRequisitionSelected(requisition) {
-    return this.allExpanded || requisition.requisitionId === this.selectedRequisitionId;
+    let isEmpty = !requisition.candidates || !requisition.candidates.length;
+    return !isEmpty && (this.allExpanded || requisition.requisitionId === this.selectedRequisitionId);
   }
 
   getRequisitionClass(requisition) {
     let isSelected = this.isRequisitionSelected(requisition);
+    let isEmpty = !requisition.candidates || !requisition.candidates.length;
+    if (isEmpty) {
+      return '';
+    }
     return {
       'fa-caret-right': !isSelected,
       'fa-caret-down': isSelected
@@ -196,7 +173,7 @@ export class CandidatesComponent implements OnInit {
     return  {
       'fa-exclamation-triangle': alert && demand.login,
       'fa-id-card': !alert,
-      'fa-times red': !demand.login
+      'fa-times': !demand.login
      };
   }
 

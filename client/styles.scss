@@ -1056,15 +1056,15 @@ ul.tasks {
       background-color: $bad;
     }
 
+    .fa {
+      color: $body - #444;
+    }
+
     .fa-check {
       color: $good;
     }
 
-    .fa-pencil {
-      color: $body - #222;
-    }
-
-    .fa-exclamation-triangle {
+    .fa-exclamation-triangle, .fa-times {
       color: $red;
     }
 
@@ -1102,8 +1102,7 @@ ul.tasks {
           right: 2px;
         }
 
-        i.fa-caret-down,
-        i.fa-caret-right {
+        i.fa {
           width: 10px;
         }
 
