@@ -69,7 +69,7 @@ export class EllipsisPipe implements PipeTransform {
 
 @Pipe({name: 'cutIndex'})
 export class CutIndexPipe implements PipeTransform {
-  transform(source: string) {
+  transform(source: string = '') {
     return source.replace(trailingIndex, '');
   }
 }

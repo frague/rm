@@ -10,8 +10,8 @@
 
   <div class="requisitions" *ngIf="getRequisitions().length">
     <ng-container *ngFor="let category of getCategories()">
-      <h3 *ngIf="isCategoryFilled[category]">{{ category }}</h3>
-      <ng-container *ngFor="let requisition of requisitionCategories[category]">
+      <h3>{{ category }}</h3>
+      <ng-container *ngFor="let requisition of categoryRequisitions[category]">
         <div
           class="row"
           [ngClass]="getRequisitionClasses(requisition)"
@@ -27,7 +27,7 @@
             <i class="fa" [ngClass]="getRequisitionClass(requisition)" (click)="toggleSelection(requisition)"></i>
             <a (click)="showRequisition(requisition, $event)">{{ requisition.requisitionId }}</a>
             <span>
-              {{ requisitionCandidates[requisition.requisitionId] ? requisitionCandidates[requisition.requisitionId].length : 0 }}
+              {{ requisition.candidates ? requisition.candidates.length : 0 }}
               <i class="fa fa-male"></i>
             </span>
           </div>
@@ -48,7 +48,7 @@
         </div>
         <ng-container *ngIf="isRequisitionSelected(requisition)">
           <div
-            *ngFor="let candidate of requisitionCandidates[requisition.requisitionId]"
+            *ngFor="let candidate of requisition.candidates"
             class="candidate row"
             (click)="showCandidate(candidate)"
           >
