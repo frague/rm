@@ -633,7 +633,7 @@ export default class SyncCtrl {
 
           const account = item.account.name;
           const end = new Date(item.startDate);
-          end.setMonth(end.getMonth() + item.duration);
+          end.setDate(end.getDate() + item.duration * 7);
 
           const profile = workProfiles[item.workProfileId].name;
           const specs = item.specializations.map(sid => specializations[sid].name).join(', ');
