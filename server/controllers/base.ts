@@ -70,7 +70,7 @@ abstract class BaseCtrl {
       }
 
       if (modifiers[keyBase]) {
-        criterion = modifiers[keyBase](key, value);
+        criterion = modifiers[keyBase].bind(this)(key, value);
       }
 
       if (criterion) {
@@ -98,7 +98,7 @@ abstract class BaseCtrl {
     }, {});
   }
 
-  commentTransform = (key, value) => {
+  commentTransform(key, value) {
     if (key.indexOf('.') >= 0) {
       let [comment, source] = key.split('.', 2);
       return {'$and': [{'comments.source': source}, { 'comments.text': value }]};
