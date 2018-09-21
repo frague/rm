@@ -1082,7 +1082,7 @@ ul.tasks {
 
             @for $i from 0 through 3 {
               &:nth-child(#{$i + 1}) {
-                margin-top: $i * 4px;
+                margin-top: $i * 1px;
                 margin-left: $i * 12px;
               }
             }

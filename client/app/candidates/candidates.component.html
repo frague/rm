@@ -19,7 +19,7 @@
           <div class="col-md-2">
             <ul *ngIf="requisition.demands && requisition.demands.length">
               <li *ngFor="let demand of requisition.demands">
-                <a (click)="showDemand(demand)">
+                <a (click)="showDemand(demand, requisition)">
                   <i class="fa" [ngClass]="getDemandStyle(requisition, demand)"></i>
                 </a>
               </li>

@@ -12,6 +12,7 @@ export class DemandModal extends BaseModalComponent {
   isLarge = true;
   @ViewChild('content') content;
   demand: any = {};
+  requisition = null;
   notFound = false;
 
   constructor(
@@ -21,7 +22,9 @@ export class DemandModal extends BaseModalComponent {
     super(modalService);
   }
 
-  show(demand: any, tabName = ''): Subject<any> {
+  show(demand: any, tabName = '', requisition = null): Subject<any> {
+    this.requisition = requisition;
+
     this.notFound = false;
     if (typeof demand === 'string') {
       this.isLoading = true;

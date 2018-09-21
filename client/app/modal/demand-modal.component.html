@@ -28,7 +28,12 @@
           <history-tab [key]="demand.login"></history-tab>
         </ng-template>
       </ngb-tab>
+      <ngb-tab title="Requisition" id="discrepancies" *ngIf="requisition">
+        <ng-template ngbTabContent>
+          <demand-requisition-tab [demand]="demand" [requisition]="requisition"></demand-requisition-tab>
+        </ng-template>
+      </ngb-tab>
     </ngb-tabset>
-    <div *ngIf="notFound">Demand #{{ getId() }} not found</div>
+    <div *ngIf="notFound">Active demand #{{ getId() }} not found</div>
   </div>
 </ng-template>

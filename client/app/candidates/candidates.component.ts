@@ -178,9 +178,9 @@ export class CandidatesComponent implements OnInit {
      };
   }
 
-  showDemand(demand) {
+  showDemand(demand, requisition) {
     if (demand.id) {
-      this.demandModal.show(demand.id);
+      this.demandModal.show(demand.id, 'discrepancies', requisition);
     }
   }
 }
