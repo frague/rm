@@ -22,6 +22,10 @@ export class DemandModal extends BaseModalComponent {
     super(modalService);
   }
 
+  compareWithReqiuisition() {
+    
+  }
+
   show(demand: any, tabName = '', requisition = null): Subject<any> {
     this.requisition = requisition;
 

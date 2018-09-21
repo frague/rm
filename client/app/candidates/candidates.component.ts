@@ -18,6 +18,8 @@ const emptyRequisition = {
   requisitionId: ''
 };
 
+const closedStates = ['Filled', 'Closed', 'Cancelled', 'On hold'];
+
 @Component({
   selector: 'candidates',
   templateUrl: './candidates.component.html',
@@ -55,22 +57,47 @@ export class CandidatesComponent implements OnInit {
     this.$query.unsubscribe();
   }
 
+  private _compare(demand, requisition): string {
+    let result = [];
+
+    // Set of locations differs
+    let [d, r] = [
+      demand.locations.sort().join(', '),
+      requisition.location
+    ];
+    if (d !== r) {
+      result.push(`Locations: ${r} vs ${d}`);
+    }
+
+    // Equally open or closed (filled)
+    [d, r] = [!!demand.login, !closedStates.includes(requisition.jobState)];
+    if (d !== r) {
+      result.push(`States: ${r} vs ${d}`);
+    }
+    return result.join('\n');
+  }
+
   fetchData(query={}): Subscription {
     this.allExpanded = false;
 
     return this.candidateService.getAll(query).subscribe(data => {
-        this.items = data;
         this.allExpanded = data && data.length <= 10;
 
-        this.categoryRequisitions = this.items.reduce((result, requisition) => {
+        this.categoryRequisitions = data.reduce((result, requisition) => {
           let category = requisition.category;
           if (!result[category]) {
             result[category] = [requisition];
           } else {
             result[category].push(requisition);
           }
+          if (requisition.demands) {
+            requisition.demands.forEach(demand => demand.comparison = this._compare(demand, requisition));
+          }
           return result;
         }, {});
+
+
+        this.items = data;
         this.cd.markForCheck();
       });
   }
@@ -168,13 +195,12 @@ export class CandidatesComponent implements OnInit {
     }[requisition.jobState];
   }
 
-  getDemandStyle(requisition, demand) {
-    let l = demand.locations.join(', ');
-    let alert = l !== requisition.location;
+  getDemandStyle(demand) {
+    let alert = !!demand.comparison;
     return  {
-      'fa-exclamation-triangle': alert && demand.login,
+      'fa-exclamation-triangle': alert,
       'fa-id-card': !alert,
-      'fa-times': !demand.login
+      // 'fa-times': !demand.login
      };
   }
 
