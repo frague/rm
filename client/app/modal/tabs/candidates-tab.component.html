@@ -10,7 +10,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let candidate of candidates">
+      <tr *ngFor="let candidate of getCandidates()">
         <td>{{ candidate.name }}</td>
         <td>{{ candidate.state }}, {{ candidate.updated|date }}</td>
         <td>{{ candidate.location }}</td>

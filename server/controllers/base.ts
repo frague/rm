@@ -98,12 +98,13 @@ abstract class BaseCtrl {
     }, {});
   }
 
-  commentTransform(key, value) {
+  commentTransform(key, value, prefix='') {
+    prefix = prefix ? `${prefix}.` : prefix;
     if (key.indexOf('.') >= 0) {
       let [comment, source] = key.split('.', 2);
-      return {'$and': [{'comments.source': source}, { 'comments.text': value }]};
+      return {'$and': [{[`${prefix}comments.source`]: source}, { [`${prefix}comments.text`]: value }]};
     } else {
-      key += '.text';
+      key = `${prefix}${key}.text`;
     }
     return { [key]: value };
   }

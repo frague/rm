@@ -17,7 +17,7 @@ export default class CandidateCtrl extends BaseCtrl {
   }
 
   candidateCommentTransform(key, value) {
-    return this.commentTransform('candidate.' + key, value);
+    return this.commentTransform(key, value, 'candidate');
   }
 
   // Get all

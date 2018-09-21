@@ -10,7 +10,7 @@ import { CandidateService } from '../../services/candidate.service';
 })
 export class CandidatesTabComponent extends BaseTabComponent {
   @Input() requisitionId: string = '';
-  candidates = [];
+  requisitions = [];
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -19,11 +19,15 @@ export class CandidatesTabComponent extends BaseTabComponent {
     super();
   }
 
+  getCandidates() {
+    return (this.requisitions && this.requisitions.length) ? this.requisitions[0].candidates : [];
+  }
+
   fetchData() {
     if (this.requisitionId) {
       this.isLoading = true;
       this.candidateService.getByRequisition(this.requisitionId)
-        .subscribe(candidates => this.candidates = candidates)
+        .subscribe(candidates => this.requisitions = candidates)
         .add(() => this.isLoading = false);
     }
   }

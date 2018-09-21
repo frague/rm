@@ -18,6 +18,7 @@ import { BusService } from '../services/bus.service';
 const stripIndex = new RegExp(/^\d{2} /);
 const rowNumber = new RegExp(/^(\d+):/);
 const allowedStates = ['Open', 'Approved'];
+const candidatesQueryKeys = ['requisition', 'candidate', 'comments'];
 
 @Component({
 	selector: 'planner',
@@ -37,8 +38,6 @@ export class PlannerComponent extends Schedule {
   candidates = [];
   candidatesCount = 0;
 
-  hirees = [];
-
   reserved = {};
   deserved = {};
 
@@ -49,19 +48,16 @@ export class PlannerComponent extends Schedule {
   private _reset() {
     this.demands = [];
     this.candidates = [];
-    this.hirees = [];
     this.accountsDemand = {};
   }
 
   postFetch = query => {
     this._reset();
     let queryString = JSON.stringify(query);
-    let candidatesQuery = queryString.indexOf('candidate.') >= 0 || queryString.indexOf('comments.') >= 0 ?
+    let candidatesQuery = candidatesQueryKeys.some(key => queryString.indexOf(key + '.') >= 0) ?
       this.candidateService.getAll(query) : Observable.from([[]]);
 
     candidatesQuery.subscribe(data => {
-      this.hirees = data;
-
       this.candidates = Object.keys(query).length
         ?
           this.items
@@ -82,9 +78,11 @@ export class PlannerComponent extends Schedule {
         :
           [];
 
-      this.hirees.slice(0, 20).forEach(hiree => {
-        hiree.isHiree = true;
-        this.candidates.push(hiree)
+      data.slice(0, 20).forEach(requisition => {
+        requisition.candidates.forEach(candidate => {
+          candidate.isHiree = true;
+          this.candidates.push(candidate);
+        });
       });
 
       this.candidatesCount = this.candidates.length;

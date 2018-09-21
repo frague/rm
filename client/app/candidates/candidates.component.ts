@@ -60,6 +60,7 @@ export class CandidatesComponent implements OnInit {
 
     return this.candidateService.getAll(query).subscribe(data => {
         this.items = data;
+        this.allExpanded = data && data.length <= 10;
 
         this.categoryRequisitions = this.items.reduce((result, requisition) => {
           let category = requisition.category;
