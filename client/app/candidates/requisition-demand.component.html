@@ -1,0 +1,5 @@
+<ul *ngIf="demands">
+  <li *ngFor="let demand of demands" [ngClass]="getDemandStyle(demand)">
+    <a (click)="showDemandModal(demand)" [title]="demand.comparison">{{ getId(demand) }}</a>
+  </li>
+</ul>

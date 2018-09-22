@@ -1041,6 +1041,14 @@ ul.tasks {
     padding-top: 8px;
   }
 
+  demands {
+    ul li {
+      border: solid 1px $body - #111;
+      border-radius: 4px;
+      background-color: white;
+    }
+  }
+
   & > div {
     min-height: $lineHeight;
     border-top: solid 1px $grid;
@@ -1075,20 +1083,27 @@ ul.tasks {
           margin-left: 100px;
           padding: 0;
           position: absolute;
+          white-space: nowrap;
+          z-index: 10;
+
+          &:hover {
+            top: -2px;
+
+            li {
+              @extend .shadow;
+              margin: 0 !important;
+            }
+          }
 
           li {
-            position: absolute;
+            width: 40px;
+            text-align: center;
+            display: inline-block;
             list-style: none;
+            transition: margin 0.3s ease;
 
-            @for $i from 0 through 3 {
-              &:nth-child(#{$i + 1}) {
-                margin-top: $i * 1px;
-                margin-left: $i * 12px;
-              }
-            }
-
-            a {
-
+            &:nth-child(n+2) {
+              margin-left: -38px;
             }
           }
         }
