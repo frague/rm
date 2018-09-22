@@ -11,13 +11,10 @@ export class RequisitionDemandComponent {
   @Output() showDemand: EventEmitter<string> = new EventEmitter();
 
   getDemandStyle(demand) {
-    let alert = !!demand.comparison;
-    return  {
-      'red': alert,
-      // 'fa-id-car': !alert,
-      // 'fa-times': !demand.login
-     };
+    let problem = !!demand.comparison;
+    return  { problem };
   }
+  
   getId(demand) {
     let id = demand.id || '';
     [id, ] = id.split('_');

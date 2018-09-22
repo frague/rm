@@ -1042,11 +1042,49 @@ ul.tasks {
   }
 
   demands {
-    ul li {
-      border: solid 1px $body - #111;
-      border-radius: 4px;
-      background-color: white;
+    ul {
+      position: absolute;
+      white-space: nowrap;
+      z-index: 10;
+      top: -1px;
+
+      &:hover {
+        top: -2px;
+
+        li {
+          @extend .shadow;
+          margin: 0 1px !important;
+        }
+      }
+
+      li {
+        width: 40px;
+        font-size: 12px;
+        text-align: center;
+        display: inline-block;
+        list-style: none;
+        border: solid 1px $grid;
+        border-radius: 4px;
+        background-color: white;
+        transition: margin 0.3s ease;
+
+        &:nth-child(n+2) {
+          margin-left: -38px;
+        }
+
+        &.problem {
+          background-color: $danger;
+          a {
+            color: $red;
+          }
+        }
+
+        a {
+          font-weight: 100;
+        }
+      }
     }
+
   }
 
   & > div {
@@ -1080,32 +1118,8 @@ ul.tasks {
       @extend .clickable;
       &:first-child {
         ul {
-          margin-left: 100px;
+          margin-left: 85px;
           padding: 0;
-          position: absolute;
-          white-space: nowrap;
-          z-index: 10;
-
-          &:hover {
-            top: -2px;
-
-            li {
-              @extend .shadow;
-              margin: 0 !important;
-            }
-          }
-
-          li {
-            width: 40px;
-            text-align: center;
-            display: inline-block;
-            list-style: none;
-            transition: margin 0.3s ease;
-
-            &:nth-child(n+2) {
-              margin-left: -38px;
-            }
-          }
         }
 
         a {

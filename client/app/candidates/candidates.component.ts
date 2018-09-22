@@ -19,6 +19,10 @@ const emptyRequisition = {
 };
 
 const closedStates = ['Filled', 'Closed', 'Cancelled', 'On hold'];
+const states = {
+  true: 'Active',
+  false: 'Inactive'
+};
 
 @Component({
   selector: 'candidates',
@@ -72,7 +76,7 @@ export class CandidatesComponent implements OnInit {
     // Equally open or closed (filled)
     [d, r] = [!!demand.login, !closedStates.includes(requisition.jobState)];
     if (d !== r) {
-      result.push(`States: ${r} vs ${d}`);
+      result.push(`States: ${states[r]} vs ${states[d]}`);
     }
     return result.join('\n');
   }
@@ -193,15 +197,6 @@ export class CandidatesComponent implements OnInit {
       'Hold': 'fa-clock-o',
       'Awaiting Approval': 'fa-hourglass-2'
     }[requisition.jobState];
-  }
-
-  getDemandStyle(demand) {
-    let alert = !!demand.comparison;
-    return  {
-      'fa-exclamation-triangle': alert,
-      'fa-id-card': !alert,
-      // 'fa-times': !demand.login
-     };
   }
 
   showDemand(demand, requisition) {
