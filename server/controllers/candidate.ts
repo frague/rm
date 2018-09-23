@@ -86,6 +86,11 @@ export default class CandidateCtrl extends BaseCtrl {
           '$match': query
         },
         {
+          '$sort': {
+            'candidate.updated': -1
+          }
+        },
+        {
           '$group': {
             _id: '$_id',
             category: {'$first': '$category'},
@@ -173,12 +178,23 @@ export default class CandidateCtrl extends BaseCtrl {
             },
             candidates: {
               '$setDifference': ['$candidates', [{comments: [], commentsCount: 0}]]
+            },
+            index: {
+              '$convert': {
+                input: {
+                  '$ltrim': {
+                    input: '$requisitionId',
+                    chars: 'GDHR-'
+                  }
+                },
+                to: 'decimal'
+              }
             }
           }
         },
         {
           '$sort': {
-            requisitionId: 1
+            index: -1
           }
         },
         {

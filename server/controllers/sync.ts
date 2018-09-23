@@ -580,12 +580,7 @@ export default class SyncCtrl {
     );
 
     return new Promise(async (resolve, reject) => {
-      // Keep demand to requisition relationships
-      let rd = await RequisitionDemand.find({}).exec();
-      rd = rd.reduce((result, req) => {
-        result[req.requisitionId] = req;
-        return result;
-      }, {});
+      await RequisitionDemand.deleteMany({}).exec();
       let newRd = {};
       let now = new Date();
 
@@ -671,7 +666,7 @@ export default class SyncCtrl {
           requestId
             .filter(requisitionId => !!requisitionId)
             .forEach(requisitionId => {
-              let r = rd[requisitionId];
+              let r = newRd[requisitionId];
               if (!r) {
                 r = {
                   requisitionId,
