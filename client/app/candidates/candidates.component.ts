@@ -70,13 +70,13 @@ export class CandidatesComponent implements OnInit {
       requisition.location
     ];
     if (d !== r) {
-      result.push(`Locations: ${r} vs ${d}`);
+      result.push(`Locations: requisition - ${r}, demand - ${d}`);
     }
 
     // Equally open or closed (filled)
     [d, r] = [!!demand.login, !closedStates.includes(requisition.jobState)];
     if (d !== r) {
-      result.push(`States: ${states[r]} vs ${states[d]}`);
+      result.push(`States: requisition - ${states[r]}, demand - ${states[d]}`);
     }
     return result.join('\n');
   }
@@ -199,9 +199,9 @@ export class CandidatesComponent implements OnInit {
     }[requisition.jobState];
   }
 
-  showDemand(demand, requisition) {
+  showDemand(demand, diff) {
     if (demand.id) {
-      this.demandModal.show(demand.id, 'discrepancies', requisition);
+      this.demandModal.show(demand.id, demand.comparison ? 'discrepancies' : '', demand.comparison);
     }
   }
 }

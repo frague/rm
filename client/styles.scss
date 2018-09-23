@@ -1079,6 +1079,13 @@ ul.tasks {
           }
         }
 
+        &.no-demand {
+          background-color: $red;
+          a {
+            color: white;
+          }
+        }
+
         a {
           font-weight: 100;
         }

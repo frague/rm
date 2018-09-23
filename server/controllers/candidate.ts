@@ -4,6 +4,7 @@ import BaseCtrl from './base';
 
 export default class CandidateCtrl extends BaseCtrl {
   model = Candidate;
+  limit = 1000;
 
   modifiers = {
     include: ['requisition', 'candidate', 'comments'],
@@ -31,6 +32,7 @@ export default class CandidateCtrl extends BaseCtrl {
     }
 
     let query = this.fixOr(this.modifyCriteria(or, this.modifiers));
+    this.limit = Object.keys(query).length ? 1000 : 100;
 
     console.log('- Requisitions & Candidates -------------------------------------------');
     console.log('Initial:', JSON.stringify(or));
@@ -178,6 +180,9 @@ export default class CandidateCtrl extends BaseCtrl {
           '$sort': {
             requisitionId: 1
           }
+        },
+        {
+          '$limit': this.limit
         }
       ]
     )

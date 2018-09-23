@@ -12,6 +12,5 @@ const isDate = new RegExp(/^[12]\d{3}\-/);
   templateUrl: './demand-requisition-tab.component.html'
 })
 export class DemandRequisitionTabComponent extends BaseTabComponent {
-  @Input() demand = {};
-  @Input() requisition = {};
+  @Input() comparison = null;
 }

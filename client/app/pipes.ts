@@ -57,6 +57,15 @@ export class KeysPipe implements PipeTransform {
   }
 }
 
+@Pipe({name: 'split'})
+export class SplitPipe implements PipeTransform {
+  transform(source: string, divider: string): string[] {
+    console.log(source, divider);
+    if (!source || !divider) return [source];
+    return source.split(divider);
+  }
+}
+
 @Pipe({name: 'ellipsis'})
 export class EllipsisPipe implements PipeTransform {
   transform(source: any, ifEmpty: string): string {

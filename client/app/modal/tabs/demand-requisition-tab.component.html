@@ -1,5 +1,7 @@
-<spinner [isShown]="isLoading">
-  <div class="demand-requisition">
-    <div class="empty" *ngIf="!aggregated || !aggregated.length">No records found</div>
-  </div>
-</spinner>
+<div class="demand-requisition">
+  <ul>
+      <li *ngFor="let diff of comparison|split:'\n'">
+          {{ diff }}
+      </li>
+  </ul>
+</div>

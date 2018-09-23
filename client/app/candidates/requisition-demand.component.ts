@@ -11,8 +11,12 @@ export class RequisitionDemandComponent {
   @Output() showDemand: EventEmitter<string> = new EventEmitter();
 
   getDemandStyle(demand) {
-    let problem = !!demand.comparison;
-    return  { problem };
+    let demandIsOpen = demand.login === demand.id;
+    let problem = !!demand.comparison && demandIsOpen;
+    return  { 
+      problem,
+      'no-demand': !demandIsOpen
+    };
   }
   
   getId(demand) {

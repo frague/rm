@@ -4,6 +4,12 @@ import { Subject } from 'rxjs';
 import { BaseModalComponent } from './base.component';
 import { DemandService } from '../services/demand.service';
 
+const closedStates = ['Filled', 'Closed', 'Cancelled', 'On hold'];
+const states = {
+  true: 'Active',
+  false: 'Inactive'
+};
+
 @Component({
   selector: 'demand-modal',
   templateUrl: './demand-modal.component.html'
@@ -12,7 +18,7 @@ export class DemandModal extends BaseModalComponent {
   isLarge = true;
   @ViewChild('content') content;
   demand: any = {};
-  requisition = null;
+  requisitionDiff = null;
   notFound = false;
 
   constructor(
@@ -22,12 +28,8 @@ export class DemandModal extends BaseModalComponent {
     super(modalService);
   }
 
-  compareWithReqiuisition() {
-    
-  }
-
-  show(demand: any, tabName = '', requisition = null): Subject<any> {
-    this.requisition = requisition;
+  show(demand: any, tabName = '', diff = null): Subject<any> {
+    this.requisitionDiff = diff;
 
     this.notFound = false;
     if (typeof demand === 'string') {

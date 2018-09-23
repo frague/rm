@@ -28,9 +28,9 @@
           <history-tab [key]="demand.login"></history-tab>
         </ng-template>
       </ngb-tab>
-      <ngb-tab title="Requisition" id="discrepancies" *ngIf="requisition">
+      <ngb-tab title="Requisition" id="discrepancies" *ngIf="requisitionDiff">
         <ng-template ngbTabContent>
-          <demand-requisition-tab [demand]="demand" [requisition]="requisition"></demand-requisition-tab>
+          <demand-requisition-tab [comparison]="requisitionDiff"></demand-requisition-tab>
         </ng-template>
       </ngb-tab>
     </ngb-tabset>
