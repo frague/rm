@@ -645,7 +645,7 @@ i.initiative {
         z-index: 100;
 
         &.sticky {
-          li {
+          & > li {
             @extend .shadow;
             border-bottom: solid 1px $grid;
             background-color: $body - #111;
