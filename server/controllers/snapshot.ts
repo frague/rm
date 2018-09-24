@@ -85,7 +85,11 @@ export default class SnapshotCtrl extends BaseCtrl {
   }
 
   _saveDiffDelayed(diff: any, type: string) {
-    if (type !== 'c' || (typeof diff.diff === 'object' && Object.keys(diff.diff).length >= 2)) {
+    if (type !== 'c' || (
+      typeof diff.diff === 'object' &&
+      Object.keys(diff.diff).length >= 2 &&
+      diff.diff.updated[0] <= diff.diff.updated[1]
+    )) {
       new Diff(diff).save();
     }
   }
