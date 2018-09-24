@@ -110,7 +110,7 @@ export default function setRoutes(app) {
   router.route('/candidates').get(candidateCtrl.getAll);
 
   // Reqiusitions
-  // router.route('/requisitions').get(requisitionCtrl.getAll);
+  router.route('/requisitions').get(requisitionCtrl.getAll);
 
   // Users
   router.route('/login').post(userCtrl.login);
