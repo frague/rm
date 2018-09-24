@@ -20,8 +20,8 @@
             <demands [demands]="requisition.demands" (showDemand)="showDemand($event, requisition)"></demands>
             <i class="fa" [ngClass]="getRequisitionClass(requisition)" (click)="toggleSelection(requisition)"></i>
             <a (click)="showRequisition(requisition, $event)">{{ requisition.requisitionId }}</a>
-            <span>
-              {{ requisition.candidates ? requisition.candidates.length : 0 }}
+            <span *ngIf="requisition.candidates && requisition.candidates.length">
+              {{ requisition.candidates.length }}
               <i class="fa fa-male"></i>
             </span>
           </div>

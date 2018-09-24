@@ -205,7 +205,7 @@ export class PlannerComponent extends Schedule {
     return {
       covered: this.reserved[demand.login],
       [demand.stage]: true,
-      warning: !demand.candidates && !demand.requestId
+      warning: (!demand.candidates || !demand.candidates.length) && (!demand.requestId || !demand.requestId.length)
     };
   }
 

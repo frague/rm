@@ -137,6 +137,13 @@ export class ColumnPipe implements PipeTransform {
         if (value && typeof value === 'object') {
           return value.text;
         }
+      case 'demand':
+        value = (value && secondary) ? value[secondary] : '';
+        switch (secondary) {
+          case 'start':
+          case 'end':
+            return formatDate(value);
+        }
     }
     if (typeof value !== 'string') {
       value = new String(value).toString();
