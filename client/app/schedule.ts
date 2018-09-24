@@ -227,7 +227,8 @@ export class Schedule {
               pool: demand.pool,
               minDate: demand.start,
               maxDate: demand.end,
-              isDemand: true
+              isDemand: true,
+              demand
             };
             demandItems.push(item);
           }
