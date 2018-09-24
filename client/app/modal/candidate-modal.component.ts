@@ -21,10 +21,13 @@ export class CandidateModal extends BaseModalComponent {
   }
 
   show(candidate: any = {}, tabName = ''): Subject<any> {
+    this.candidate = {};
     if (typeof candidate === 'string') {
       this.isLoading = true;
       this.candidateService.getByLogin(candidate)
-        .subscribe(candidate => this.candidate = candidate)
+        .subscribe(requisition => {
+          this.candidate = (requisition.candidates || [{}])[0];
+        })
         .add(() => this.isLoading = false);
     } else {
       this.candidate = candidate;

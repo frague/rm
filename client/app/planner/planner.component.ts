@@ -210,7 +210,7 @@ export class PlannerComponent extends Schedule {
   }
 
   getDemandCandidate(demand: any) {
-    return this.reserved[demand.login];
+    return [].concat(this.reserved[demand.login], demand.candidates).filter(c => !!c).join(', ');
   }
 
   getDemandAttrs(demand) {
