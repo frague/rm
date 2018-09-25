@@ -1,14 +1,32 @@
 <spinner [isShown]="isLoading">
+  <h2>Surveys</h2>
+  <div class="skills row" *ngIf="skillsInfo">
+    <ng-container *ngFor="let state of surveyStates|keys">
+      <div class="col-md-6" *ngIf="skillsInfo.surveys[state]">
+        <h3>{{ surveyStates[state] }}</h3>
+        <ul *ngIf="skillsInfo.surveys" class="surveys">
+          <li *ngFor="let survey of skillsInfo.surveys[state]">
+            <b>{{ survey.grade_id }}
+            {{ survey.name }}</b>:
+            {{ survey.declared_percent }}% declared,
+            {{ survey.approved_percent }}% approved
+          </li>
+        </ul>
+      </div>
+    </ng-container>
+  </div>
+  <hr />
+  <h2>Skills</h2>
   <div class="skills row">
-    <div class="col-md-7">
+    <div class="col-md-6" *ngFor="let half of [true, false]">
       <ul class="categories" *ngIf="skills && skills.skillsDefined">
-        <ng-container *ngFor="let category of skills.categories">
+        <ng-container *ngFor="let category of getCategoriesHalf(half)">
           <li *ngIf="category.skillsDefined">
-            <h2>{{ category.name }}</h2>
+            <h3>{{ category.name }}</h3>
             <ul *ngIf="category.categories">
               <ng-container *ngFor="let sub of category.categories">
                 <li *ngIf="sub.skillsDefined">
-                  <h3>{{ sub.name }}</h3>
+                  <h4>{{ sub.name }}</h4>
                   <skillset [skills]="sub.skills"></skillset>
                 </li>
               </ng-container>
@@ -19,20 +37,6 @@
       </ul>
     </div>
     <div class="col-md-5" *ngIf="skillsInfo">
-      <h2>Surveys</h2>
-      <ng-container *ngFor="let state of surveyStates|keys">
-        <ng-container *ngIf="skillsInfo.surveys[state]">
-          <h3>{{ surveyStates[state] }}</h3>
-          <ul *ngIf="skillsInfo.surveys" class="surveys">
-            <li *ngFor="let survey of skillsInfo.surveys[state]">
-              <b>{{ survey.grade_id }}
-              {{ survey.name }}</b>:
-              {{ survey.declared_percent }}% declared,
-              {{ survey.approved_percent }}% approved
-            </li>
-          </ul>
-        </ng-container>
-      </ng-container>
     </div>
   </div>
 </spinner>

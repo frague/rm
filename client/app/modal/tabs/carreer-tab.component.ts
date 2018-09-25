@@ -14,6 +14,7 @@ export class CarreerTabComponent extends BaseTabComponent {
   @Input() bambooId: string = '';
   @Input() state: any = {};
   carreer: any = {};
+  isForbidden = false;
 
   public lineChart: any = {
     labels: [''],
@@ -61,8 +62,16 @@ export class CarreerTabComponent extends BaseTabComponent {
     let fetcher = data ? Observable.from([data]) : this.carreerService.get(this.bambooId);
 
     this.isLoading = true;
+    this.isForbidden = false;
+
     fetcher
       .subscribe((carreer: any) => {
+        let jobs = carreer.jobs;
+        if (!jobs || !jobs.length || !jobs[0].date) {
+          this.isForbidden = true;
+          return;
+        }
+
         this.carreer = carreer;
         this.setState('carreer', this.bambooId, carreer);
 
@@ -71,7 +80,7 @@ export class CarreerTabComponent extends BaseTabComponent {
           .reverse()
           .map(compensation => {
             labels.push(this.makeDate.transform(compensation.startDate, 'nodate'));
-            return Math.round(compensation.rate.value);
+            return compensation.rate ? Math.round(compensation.rate.value) : '-';
           }
         );
 

@@ -24,6 +24,15 @@ export class SkillsTabComponent extends BaseTabComponent {
     super();
   }
 
+  getCategoriesHalf(getFirst=true): string[] {
+    let categories= (this.skills || {}).categories || [];
+    let l = Math.ceil(categories.length / 2);
+    if (!l) {
+      return [];
+    }
+    return getFirst ? categories.slice(0, l) : categories.slice(l);
+  }
+
   private _countSkillsDefined(skills: any) {
     let skillsDefined = 0;
     if (skills.categories && skills.categories.length) {
