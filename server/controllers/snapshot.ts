@@ -88,7 +88,7 @@ export default class SnapshotCtrl extends BaseCtrl {
     if (type !== 'c' || (
       typeof diff.diff === 'object' &&
       Object.keys(diff.diff).length >= 2 &&
-      diff.diff.updated[0] <= diff.diff.updated[1]
+      (diff.diff.updated || [0])[0] <= (diff.diff.updated || [0, 1])[1]
     )) {
       new Diff(diff).save();
     }

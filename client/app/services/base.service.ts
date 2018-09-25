@@ -31,7 +31,7 @@ export class BaseService {
   }
 
   get(item: any): Observable<any> {
-    return this.http.get('/api/' + this.entity + '/' + item._id).map(res => res.json());
+    return this.http.get('/api/' + this.entity + '/' + (item._id || item)).map(res => res.json());
   }
 
   save(item: any): Observable<any> {

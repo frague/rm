@@ -25,8 +25,8 @@ export class CandidateModal extends BaseModalComponent {
     if (typeof candidate === 'string') {
       this.isLoading = true;
       this.candidateService.getByLogin(candidate)
-        .subscribe(requisition => {
-          this.candidate = (requisition.candidates || [{}])[0];
+        .subscribe(candidate => {
+          this.candidate = candidate;
         })
         .add(() => this.isLoading = false);
     } else {

@@ -7,7 +7,7 @@ import { CandidateModal } from '../modal/candidate-modal.component';
 import { RequisitionModal } from '../modal/requisition-modal.component';
 import { DemandModal } from '../modal/demand-modal.component';
 
-import { CandidateService } from '../services/candidate.service';
+import { RequisitionService } from '../services/requisition.service';
 import { BusService } from '../services/bus.service';
 
 import { jobViteRequisition, jobViteCandidate } from '../consts';
@@ -45,7 +45,7 @@ export class CandidatesComponent implements OnInit {
   private $query;
 
   constructor(
-    private candidateService: CandidateService,
+    private requisitionService: RequisitionService,
     private sanitizer: DomSanitizer,
     private bus: BusService,
     private cd: ChangeDetectorRef
@@ -84,7 +84,7 @@ export class CandidatesComponent implements OnInit {
   fetchData(query={}): Subscription {
     this.allExpanded = false;
 
-    return this.candidateService.getAll(query).subscribe(data => {
+    return this.requisitionService.getAll(query).subscribe(data => {
         this.allExpanded = data && data.length <= 10;
 
         this.categoryRequisitions = data.reduce((result, requisition) => {

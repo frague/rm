@@ -11,8 +11,4 @@ export class RequisitionService extends BaseService {
   constructor(http: Http) {
     super(entity, http);
   }
-
-  get(item: string): Observable<any> {
-    return this.getAll({requisitionId: item}).map((results: any[]) => results.length ? results[0] : {});
-  }
 }

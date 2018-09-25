@@ -7,18 +7,18 @@ export default class CandidateCtrl extends BaseCtrl {
   limit = 1000;
 
   modifiers = {
-    include: ['requisition', 'candidate', 'comments'],
-    requisition: this.requisitionTransform,
-    comments: this.candidateCommentTransform
+    include: ['comments'],
+    comments: this.commentTransform
   };
 
-  requisitionTransform(key, value) {
-    key = key.replace('requisition.', '');
-    return {[key]: value};
-  }
+  candidatesModifiers = {
+    include: ['candidate'],
+    candidate: this.candidateTransform,
+  };
 
-  candidateCommentTransform(key, value) {
-    return this.commentTransform(key, value, 'candidate');
+  candidateTransform(key, value) {
+    key = key.replace('candidate.', '');
+    return {[key]: value};
   }
 
   // Get all
@@ -28,49 +28,40 @@ export default class CandidateCtrl extends BaseCtrl {
       or = req.query.or ? JSON.parse(req.query.or) : [];
     } catch (e) {
       console.error('Error parsing search query: ' + req.query.or);
-      return res.status(500);
+      return res.sendStatus(500);
     }
 
+    let candidatesQuery = this.fixOr(this.modifyCriteria(or, this.candidatesModifiers));
     let query = this.fixOr(this.modifyCriteria(or, this.modifiers));
+
     this.limit = Object.keys(query).length ? 1000 : 100;
 
-    console.log('- Requisitions & Candidates -------------------------------------------');
+    console.log('- Candidates ---------------------------------------------------');
     console.log('Initial:', JSON.stringify(or));
-    console.log('Query:', JSON.stringify(query));
+    console.log('Query:', JSON.stringify(candidatesQuery));
+    console.log('Comments query:', JSON.stringify(query));
 
-    Requisition
+    this.model
       .aggregate([
         {
-          '$lookup': {
-            from: 'candidates',
-            localField: 'requisitionId',
-            foreignField: 'requisitionId',
-            as: 'candidate'
-          }
+          '$match': candidatesQuery
         },
-        {
-          '$unwind': {
-            path: '$candidate',
-            preserveNullAndEmptyArrays: true
-          }
-        },
-
         {
           '$lookup': {
             from: 'comments',
-            localField: 'candidate.login',
+            localField: 'login',
             foreignField: 'login',
-            as: 'candidate.comments'
+            as: 'comments'
           }
         },
         {
           '$addFields': {
-            'candidate.commentsCount': {'$size': '$candidate.comments'},
-            'candidate.status': {
+            commentsCount: {'$size': '$comments'},
+            status: {
               '$arrayElemAt': [
                 {
                   '$filter': {
-                    input: '$candidate.comments',
+                    input: '$comments',
                     as: 'status',
                     cond: {
                       '$eq': ['$$status.isStatus', true]
@@ -86,119 +77,28 @@ export default class CandidateCtrl extends BaseCtrl {
           '$match': query
         },
         {
-          '$sort': {
-            'candidate.updated': -1
-          }
-        },
-        {
-          '$group': {
-            _id: '$_id',
-            category: {'$first': '$category'},
-            department: {'$first': '$department'},
-            detailLink: {'$first': '$detailLink'},
-            internalOnly: {'$first': '$internalOnly'},
-            jobState: {'$first': '$jobState'},
-            jobType: {'$first': '$jobType'},
-            location: {'$first': '$location'},
-            postingType: {'$first': '$postingType'},
-            requisitionId: {'$first': '$requisitionId'},
-            eId: {'$first': '$eId'},
-            title: {'$first': '$title'},
-            candidates: {'$push': '$candidate'},
-          }
-        },
-        {
-          '$lookup': {
-            from: 'requisitiondemands',
-            localField: 'requisitionId',
-            foreignField: 'requisitionId',
-            as: 'rd'
-          }
-        },
-        {
-          '$addFields': {
-            demandLogin: {
-              '$arrayElemAt': ['$rd.demandIds', 0]
-            }
-          }
-        },
-        {
-          '$unwind': {
-            path: '$demandLogin',
-            preserveNullAndEmptyArrays: true
-          }
-        },
-        {
-          '$lookup': {
-            from: 'demands',
-            localField: 'demandLogin',
-            foreignField: 'login',
-            as: 'demand'
-          }
-        },
-        {
-          '$addFields': {
-            'd': {
-              '$cond': {
-                if: '$demandLogin',
-                then: {
-                  id: '$demandLogin',
-                  login: {
-                    '$arrayElemAt': ['$demand.login', 0]
-                  },
-                  locations: '$demand.locations',
-                },
-                else: null
-              }
-            }
-          }
-        },
-        {
-          '$group': {
-            _id: '$_id',
-            category: { '$first': '$category' },
-            demands: { '$push': '$d' },
-            department: { '$first': '$department' },
-            detailLink: { '$first': '$detailLink' },
-            eId: { '$first': '$eId' },
-            internalOnly: { '$first': '$internalOnly' },
-            jobState: { '$first': '$jobState' },
-            jobType: { '$first': '$jobType' },
-            location: { '$first': '$location' },
-            postingType: { '$first': '$postingType' },
-            requisitionId: { '$first': '$requisitionId' },
-            title: { '$first': '$title' },
-            candidates: {'$first': '$candidates'},
-          }
-        },
-        {
-          '$addFields': {
-            demands: {
-              '$setDifference': ['$demands', [null]]
-            },
-            candidates: {
-              '$setDifference': ['$candidates', [{comments: [], commentsCount: 0}]]
-            },
-            index: {
-              '$convert': {
-                input: {
-                  '$ltrim': {
-                    input: '$requisitionId',
-                    chars: 'GDHR-'
-                  }
-                },
-                to: 'decimal'
-              }
-            }
+          '$project': {
+            applicationId: 1,
+            city: 1,
+            comments: 1,
+            commentsCount: 1,
+            country: 1,
+            location: 1,
+            login: 1,
+            name: 1,
+            profile: 1,
+            requisitionId: 1,
+            state: 1,
+            updated: 1,
+            status: 1,
+            _id: 1
           }
         },
         {
           '$sort': {
-            index: -1
+            updated: -1,
+            state: -1,
           }
-        },
-        {
-          '$limit': this.limit
         }
       ]
     )

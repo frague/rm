@@ -789,7 +789,7 @@ export default class SyncCtrl {
       let applicationJob = application.job || {};
       let state = candidateStates[application.workflowState];
       let requisitionId = applicationJob.requisitionId || '';
-      let login = requisitionId + '-' + (candidate.firstName + '_' + candidate.lastName).toLowerCase().replace(/[\.\-]/g, '_');
+      let login = [requisitionId, name.replace(/[^a-z]/gi, '_').toLowerCase(), application.eId].join('-');
       let updated = application.lastUpdatedDate ? new Date(application.lastUpdatedDate) : null;
 
       let nc = new Candidate({

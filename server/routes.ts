@@ -111,6 +111,7 @@ export default function setRoutes(app) {
 
   // Reqiusitions
   router.route('/requisitions').get(requisitionCtrl.getAll);
+  router.route('/requisition/:id').get(requisitionCtrl.get);
 
   // Users
   router.route('/login').post(userCtrl.login);

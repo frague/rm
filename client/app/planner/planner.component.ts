@@ -78,11 +78,9 @@ export class PlannerComponent extends Schedule {
         :
           [];
 
-      data.slice(0, 20).forEach(requisition => {
-        requisition.candidates.forEach(candidate => {
-          candidate.isHiree = true;
-          this.candidates.push(candidate);
-        });
+      data.slice(0, 20).forEach(candidate => {
+        candidate.isHiree = true;
+        this.candidates.push(candidate);
       });
 
       this.candidatesCount = this.candidates.length;
