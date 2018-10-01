@@ -26,6 +26,7 @@ export class PeopleComponent extends Schedule {
   items = [];
   columns = {};
   keys = {};
+  isPrintable = false;
 
   private _clickability = {
     name: this.showUser
@@ -73,5 +74,13 @@ export class PeopleComponent extends Schedule {
     this.keys = Object.keys(this.columns);
     query['addComments'] = 1;
     return super.fetchData(query, fetchAll, serviceData);
+  }
+
+  getPrintableClass() {
+    return this.isPrintable && 'printable';
+  }
+
+  togglePrintable() {
+    this.isPrintable = !this.isPrintable;
   }
 }

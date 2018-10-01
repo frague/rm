@@ -974,59 +974,102 @@ ul.tasks {
   }
 }
 
-.people.table {
-  th {
-    text-transform: capitalize;
-  }
-  tbody {
-    tr {
-      &:nth-child(odd) {
-        background-color: $body - #080808;
+.people {
+  &.printable {
+    h1 i {
+      color: $body - #777;
+    }
+    table {
+      thead, tbody {
+        tr {
+          background-color: #FFF;
+
+          &:nth-child(odd) {
+            background-color: #FFF;
+          }
+        }
       }
+      tbody {
+        tr {
+          td {
+            div.corner {
+              display: none;
+            }
 
-      td {
-        &:empty:after {
-          content: "-";
-        }
-
-        &.clickable {
-          color: $blue;
-          text-decoration: underline;
-          cursor: pointer;
-        }
-
-        div {
-          float: right;
-
-          div.corner {
-            position: relative;
-            margin-top: 0;
-            top: -12px;
+            &.clickable {
+              text-decoration: none;
+              color: #000;
+              cursor: default;
+            }
           }
         }
+      }
+    }
+  }
 
-        p {
-          &:first-child {
-            margin-top: 0;
+  h1 {
+    i {
+      @extend .clickable;
+      float: right;
+      font-size: 16px;
+      color: $body - #222;
+    }
+  }
+
+  .table {
+    th {
+      text-transform: capitalize;
+    }
+    tbody {
+      tr {
+        &:nth-child(odd) {
+          background-color: $body - #080808;
+        }
+
+        td {
+          &:empty:after {
+            content: "-";
           }
 
-          margin-top: 1rem;
-          margin-bottom: 0;
-        }
+          &.clickable {
+            color: $blue;
+            text-decoration: underline;
+            cursor: pointer;
+          }
 
-        hr {
-          margin: 0.5rem 0 1rem 0;
-        }
+          div {
+            float: right;
 
-        ol,
-        ul {
-          margin-bottom: 0;
-        }
+            div.corner {
+              position: relative;
+              margin-top: 0;
+              top: -12px;
+            }
+          }
 
-        h1 {
-          font-size: 20px;
-          margin: 0;
-          padding: 0;
+          p {
+            &:first-child {
+              margin-top: 0;
+            }
+
+            margin-top: 1rem;
+            margin-bottom: 0;
+          }
+
+          hr {
+            margin: 0.5rem 0 1rem 0;
+          }
+
+          ol,
+          ul {
+            margin-bottom: 0;
+          }
+
+          h1 {
+            font-size: 20px;
+            margin: 0;
+            padding: 0;
+          }
         }
       }
     }

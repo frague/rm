@@ -1,5 +1,8 @@
-<div>
-  <h1>People ({{ items.length }})</h1>
+<div class="people" [ngClass]="getPrintableClass()">
+  <h1>
+    <i class="fa fa-print" (click)="togglePrintable()"></i>
+    People ({{ items.length }})
+  </h1>
 
   <person-modal></person-modal>
 
