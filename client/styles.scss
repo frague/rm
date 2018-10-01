@@ -1249,11 +1249,18 @@ div.bottom-corner {
   background-color: $body - #040404;
   margin-top: 20px;
 
+  &.error {
+    border-color: $danger;
+  }
+
   ol {
     padding: 4px 15px;
 
     li {
       list-style: none;
+      &.error {
+        color: $danger;
+      }
     }
   }
 }

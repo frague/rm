@@ -33,6 +33,7 @@ export class SyncComponent {
   logs = [];
   isLoading = false;
   stati = {};
+  hasErrors = false;
 
   public get tasks(): any {
     return tasks;
@@ -52,7 +53,10 @@ export class SyncComponent {
   }
 
   private addLog(text: string, source='') {
-    this.logs.push((source ? source + ': ' : '') + text);
+    let line = (source ? source + ': ' : '') + text;
+    this.logs.push(line);
+    this.hasErrors = this.hasErrors || line.indexOf('rror') > 0;
+
     if (this.logWindow) {
       this.logWindow.nativeElement.scrollBy(0, 50);
     }
@@ -126,5 +130,11 @@ export class SyncComponent {
     this.syncService.restore(formModel).subscribe(() => {
       this.isLoading = false;
     });
+  }
+
+  getLogStyle(log: string) {
+    return {
+      error: log.indexOf('rror') > 0
+    };
   }
 }
