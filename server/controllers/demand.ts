@@ -128,8 +128,12 @@ export default class DemandCtrl extends BaseCtrl {
             status: { '$first': '$status' },
             billable: { '$first': '$billable' },
             requisitionsStates: { '$push': {
-              '$arrayElemAt': ['$requisition.jobState', 0]
-            }},
+              '$cond': {
+                if: {'$gt': [{'$size': '$requisition.jobState'}, 0]},
+                then: {'$arrayElemAt': ['$requisition.jobState', 0]},
+                else: null
+              }
+            }}
           }
         },
         {

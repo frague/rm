@@ -10,7 +10,7 @@
 
   <comments-modal></comments-modal>
 
-  <table class="people table">
+  <table [ngClass]="!isPrintable && 'table'">
     <thead>
       <tr>
         <th *ngFor="let column of keys">{{ columns[column] }}</th>
