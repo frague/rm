@@ -22,6 +22,9 @@ const valueModifiers = {
   'exists': (key, value) => {
     return [key, { '$ne': null }];
   },
+  'not': (key, value, [compValue]) => {
+    return [key, { '$ne': compValue }];
+  },
   null: (key, value) => {
     return [key, value];
   }
