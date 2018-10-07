@@ -43,6 +43,8 @@ export class PlannerComponent extends Schedule {
 
   accountsDemand = {};
 
+  columns = ['pool', 'billable', 'onTrip', 'canTravel'];
+
   _cd: ChangeDetectorRef;
 
   private _reset() {

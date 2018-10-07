@@ -13,7 +13,7 @@
   <table [ngClass]="!isPrintable && 'table'">
     <thead>
       <tr>
-        <th *ngFor="let column of keys">{{ columns[column] }}</th>
+        <th *ngFor="let column of keys">{{ tableColumns[column] }}</th>
       </tr>
     </thead>
     <tbody>

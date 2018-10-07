@@ -78,6 +78,8 @@ export class Schedule {
 
   private $query;
 
+  columns = [];
+
   constructor(
     private assignmentService: AssignmentService,
     private resourceService: ResourceService,
@@ -163,6 +165,7 @@ export class Schedule {
     let shift = serviceData['shift'];
     let withModifiers = Object.assign(query, {
       order: serviceData['order'],
+      columns: this.columns.concat(Object.keys(serviceData['columns'] || {})).join(','),
       shift
     });
 

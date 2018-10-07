@@ -24,7 +24,7 @@ const defaultColumns = {
 })
 export class PeopleComponent extends Schedule {
   items = [];
-  columns = {};
+  tableColumns = {};
   keys = {};
   isPrintable = false;
 
@@ -70,8 +70,8 @@ export class PeopleComponent extends Schedule {
   }
 
   fetchData(query={}, fetchAll=false, serviceData: any={}): Subscription {
-    this.columns = serviceData.columns || defaultColumns;
-    this.keys = Object.keys(this.columns);
+    this.tableColumns = serviceData.columns || defaultColumns;
+    this.keys = Object.keys(this.tableColumns);
     query['addComments'] = 1;
     return super.fetchData(query, fetchAll, serviceData);
   }

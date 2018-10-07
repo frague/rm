@@ -33,7 +33,7 @@ abstract class BaseCtrl {
 
   cleanup = (req, res) => res.sendStatus(200);
 
-  modifyCriteria(criteria: any[], modifiers: any = {}): any[] {
+  modifyCriteria(criteria: any[], modifiers: any = {}, group = []): any[] {
     let or = [];
     let inclusions = modifiers.include || [];
     let useWhitelist = inclusions.length > 0;
@@ -53,7 +53,7 @@ abstract class BaseCtrl {
       criterion = {[key]: value};
 
       if (key === andKey) {
-        let and = this.modifyCriteria(value, modifiers);
+        let and = this.modifyCriteria(value, modifiers, group);
         let l = and.length;
         if (l) {
           if (l === 1) {
@@ -63,6 +63,11 @@ abstract class BaseCtrl {
           }
         }
         return;
+      } else {
+        let [topKey, ] = key.split('.', 2);
+        if (!group.includes(topKey)) {
+          group.push(topKey);
+        }
       }
 
       if ((!useWhitelist && exclusions.includes(keyBase)) || (useWhitelist && !inclusions.includes(keyBase))) {
@@ -133,6 +138,10 @@ abstract class BaseCtrl {
     return [key, value];
   }
 
+  _addGroup(group = {}, column: string) {
+    group[column] = { '$first': `$${column}` };
+  }
+
   determineOrder(req) {
     try {
       let orders = JSON.parse(req.query.order || '""').split(',').reduce((result, criterion) => {
@@ -149,6 +158,10 @@ abstract class BaseCtrl {
     } catch (e) {
     }
     return { name: 1 };
+  }
+
+  determineColumns(req): string[] {
+    return JSON.parse(req.query.columns || '""').split(',');
   }
 
   // Get all

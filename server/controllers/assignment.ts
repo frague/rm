@@ -10,6 +10,22 @@ const skillTree = new SkillTreeCtrl();
 const skillsExpr = new RegExp(/^skills/);
 const delimiter = skillTree.delimiter;
 
+const defaultColumns = [
+  'assignments',
+  'assignmentsSet',
+  'login',
+  'name',
+  'grade',
+  'minDate',
+  'maxDate',
+  'billable',
+  'canTravel',
+  'status',
+  'commentsCount',
+  'comments'
+];
+const columnName = new RegExp(/^[a-z.]+$/, 'ig');
+
 export default class AssignmentCtrl extends BaseCtrl {
   model = Assignment;
 
@@ -39,10 +55,10 @@ export default class AssignmentCtrl extends BaseCtrl {
 
   getAll = async (req, res) => {
     let or;
-    let addComments = {};
+    let columns = [], group = [];
     try {
       or = req.query.or ? JSON.parse(req.query.or) : [];
-      addComments = req.query.addComments ? {comments: 1} : {};
+      columns = this.determineColumns(req);
     } catch (e) {
       console.error('Error parsing search query: ' + req.query.or);
       return res.sendStatus(500);
@@ -53,7 +69,7 @@ export default class AssignmentCtrl extends BaseCtrl {
     let skillsList = this.filterSkills(or) || [];
 
     console.log('- Assignments -----------------------------------------------------');
-    console.log('AddComments:', addComments);
+    console.log('Extra columns:', columns);
     console.log('Initial:', JSON.stringify(or));
 
     if (skillsList.length) {
@@ -74,7 +90,7 @@ export default class AssignmentCtrl extends BaseCtrl {
             and = [];
             or[0][andKey] = and;
           }
-          console.log(JSON.stringify(and), JSON.stringify(or));
+          // console.log(JSON.stringify(and), JSON.stringify(or));
           and.push({
             login: {
               '$in': people.map(person => person.user_id)
@@ -84,23 +100,39 @@ export default class AssignmentCtrl extends BaseCtrl {
         } else {
           console.log('No people with selected skills were found');
         }
-        let query = this.modifyCriteria(or, this.modifiers);
-        this._query(res, this.fixOr(query), suggestions, addComments);
+        let query = this.modifyCriteria(or, this.modifiers, group);
+        this._query(res, this.fixOr(query), suggestions, columns, group);
       } catch (e) {
         console.log('Error', e);
         return res.sendStatus(500);
       }
     } else {
-      let query = this.modifyCriteria(or, this.modifiers);
-      this._query(res, this.fixOr(query), [], addComments);
+      let query = this.modifyCriteria(or, this.modifiers, group);
+      this._query(res, this.fixOr(query), [], columns, group);
     }
   }
 
-  _query = (res, query, skillsList=[], addComments={}) => {
+  _query = (res, query, skillsList=[], columns=[], group=[]) => {
     console.log('Query:', JSON.stringify(query));
 
     let now = new Date();
     now.setDate(this.shift + now.getDate());
+
+    // Extended columns information
+    group = group.reduce((result, column) => {
+      this._addGroup(result, column);
+      return result;
+    }, {});
+
+    let project = {};
+    columns.forEach(column => {
+      if (!defaultColumns.includes(column) && columnName.test(column)) {
+        this._addGroup(group, column);
+        project[column] = 1;
+      }
+    });
+    console.log('Group:', group);
+    console.log('Project:', project);
 
     let cursor = Resource
       .aggregate([
@@ -233,17 +265,17 @@ export default class AssignmentCtrl extends BaseCtrl {
           }
         },
         {
-          '$group': {
+          '$group': Object.assign(group, {
             _id: '$_id',
             assignments: { '$push': '$assignment' },
             assignmentsSet: { '$max': '$assignment._id' },
             name: { '$first': '$name' },
             grade: { '$first': '$grade' },
-            location: { '$first': '$location' },
-            profile: { '$first': '$profile' },
-            specialization: { '$first': '$specialization' },
-            pool: { '$first': '$pool' },
-            manager: { '$first': '$manager' },
+            // location: { '$first': '$location' },
+            // profile: { '$first': '$profile' },
+            // specialization: { '$first': '$specialization' },
+            // pool: { '$first': '$pool' },
+            // manager: { '$first': '$manager' },
             minDate: {'$min': '$assignment.start'},
             maxDate: {'$max': '$assignment.end'},
             billable: {'$max': '$assignment.billableNow'},
@@ -252,14 +284,14 @@ export default class AssignmentCtrl extends BaseCtrl {
             status: { '$first': '$status' },
             commentsCount: { '$first': '$commentsCount' },
             comments: {'$first': '$comments'},
-            nextPr: {'$first': '$nextPr'},
-            payRate: {'$first': '$payRate'},
-            onTrip: {'$first': '$onTrip'},
-            birthday: {'$first': '$birthday'},
-            bambooId: {'$first': '$bambooId'},
-            pmoId: {'$first': '$pmoId'},
-            activeUsVisa: {'$first': '$activeUsVisa'}
-          }
+            // nextPr: {'$first': '$nextPr'},
+            // payRate: {'$first': '$payRate'},
+            // onTrip: {'$first': '$onTrip'},
+            // birthday: {'$first': '$birthday'},
+            // bambooId: {'$first': '$bambooId'},
+            // pmoId: {'$first': '$pmoId'},
+            // activeUsVisa: {'$first': '$activeUsVisa'}
+          })
         },
         {
           '$addFields': {
@@ -276,19 +308,19 @@ export default class AssignmentCtrl extends BaseCtrl {
           '$match': query
         },
         {
-          '$project': Object.assign(addComments, {
+          '$project': Object.assign(project, {
             _id: 1,
             assignments: 1,
             assignmentsSet: 1,
             name: 1,
             grade: 1,
-            location: 1,
-            profile: 1,
-            specialization: 1,
-            pool: 1,
+            // location: 1,
+            // profile: 1,
+            // specialization: 1,
+            // pool: 1,
             starts: 1,
             ends: 1,
-            manager: 1,
+            // manager: 1,
             minDate: 1,
             maxDate: 1,
             billable: 1,
@@ -296,13 +328,13 @@ export default class AssignmentCtrl extends BaseCtrl {
             login: 1,
             status: 1,
             commentsCount: 1,
-            nextPr: 1,
-            payRate: 1,
-            onTrip: 1,
-            birthday: 1,
-            bambooId: 1,
-            pmoId: 1,
-            activeUsVisa: 1
+            // nextPr: 1,
+            // payRate: 1,
+            // onTrip: 1,
+            // birthday: 1,
+            // bambooId: 1,
+            // pmoId: 1,
+            // activeUsVisa: 1
           })
         },
         {

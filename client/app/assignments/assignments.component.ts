@@ -23,6 +23,8 @@ const emptyItem = {assignments: []};
 export class AssignmentsComponent extends Schedule {
   @ViewChild(AssignmentsReportComponent) reportModal: AssignmentsReportComponent;
 
+  columns = ['onTrip'];
+
   constructor(
     assignmentService: AssignmentService,
     resourceService: ResourceService,
