@@ -24,7 +24,7 @@ const defaultColumns = [
   'commentsCount',
   'comments'
 ];
-const columnName = new RegExp(/^[a-z.]+$/, 'ig');
+const columnName = new RegExp(/^[a-z.]+$/, 'i');
 
 export default class AssignmentCtrl extends BaseCtrl {
   model = Assignment;
