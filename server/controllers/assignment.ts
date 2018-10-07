@@ -120,6 +120,7 @@ export default class AssignmentCtrl extends BaseCtrl {
 
     // Extended columns information
     group = group.reduce((result, column) => {
+      [column, ] = column.split('.', 2);
       this._addGroup(result, column);
       return result;
     }, {});
@@ -127,6 +128,7 @@ export default class AssignmentCtrl extends BaseCtrl {
     let project = {};
     columns.forEach(column => {
       if (!defaultColumns.includes(column) && columnName.test(column)) {
+        [column, ] = column.split('.', 2);
         this._addGroup(group, column);
         project[column] = 1;
       }

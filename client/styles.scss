@@ -992,8 +992,9 @@ ul.tasks {
           }
 
           th {
-            text-align: center;
             text-transform: capitalize;
+            white-space: nowrap;
+            text-align: center;
           }
 
           td span p:first-child {
@@ -1037,6 +1038,8 @@ ul.tasks {
   .table {
     th {
       text-transform: capitalize;
+      white-space: nowrap;
+      text-align: center;
     }
     tbody {
       tr {
