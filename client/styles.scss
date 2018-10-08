@@ -1314,7 +1314,7 @@ div.bottom-corner {
   margin-top: 20px;
 
   &.error {
-    border-color: $danger;
+    border-color: $red;
   }
 
   ol {
@@ -1323,7 +1323,7 @@ div.bottom-corner {
     li {
       list-style: none;
       &.error {
-        color: $danger;
+        color: $red;
       }
     }
   }
