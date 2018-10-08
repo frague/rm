@@ -76,9 +76,9 @@ export class CarreerTabComponent extends BaseTabComponent {
         this.setState('carreer', this.bambooId, carreer);
 
         let labels = [];
-        let result = (carreer.compensations || [])
+        let result = Array.from(carreer.compensations || [])
           .reverse()
-          .map(compensation => {
+          .map((compensation: any) => {
             labels.push(this.makeDate.transform(compensation.startDate, 'nodate'));
             return compensation.rate ? Math.round(compensation.rate.value) : '-';
           }
