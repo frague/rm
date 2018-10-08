@@ -30,8 +30,12 @@ export class FilterComponent {
   ngOnInit() {
     this.filter.getAll().subscribe(data => this.filters = data.reduce((result, filter) => {
       result[filter._id] = filter;
+      if (this.criteria && this.criteria === filter.filter) {
+        this.set(filter);
+      }
       return result;
     }, {}));
+
     this.$externalCriteria = this.bus.criteriaUpdated.subscribe(criteria => {
       this.criteria = criteria;
       this.parseCriteria(null, true);
@@ -78,15 +82,18 @@ export class FilterComponent {
   }
 
   select(filter) {
-    this.selectedFilter = filter;
-    this.title = filter.title;
+    this.set(filter);
     this.criteria = filter.filter;
     this.parseCriteria(null, true);
   }
 
+  set(filter) {
+    this.selectedFilter = filter;
+    this.title = filter.title || '';
+  }
+
   reset() {
-    this.title = '';
-    this.selectedFilter = {};
+    this.set({});
   }
 
   _parseParam(name: string, value: string = '') {
