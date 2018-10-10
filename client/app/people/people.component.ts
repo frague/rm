@@ -49,7 +49,8 @@ export class PeopleComponent extends Schedule {
 
   getClasses(name: string) {
     return {
-      clickable: this.isClickable(name)
+      clickable: this.isClickable(name),
+      name: name === 'name'
     };
   }
 

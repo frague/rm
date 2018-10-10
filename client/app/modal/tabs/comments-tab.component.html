@@ -16,7 +16,7 @@
         </span>
       </div>
       <h6 *ngIf="comment.source">{{ comment.source }}</h6>
-      <div [innerHTML]="comment.text|markdown"></div>
+      <div class="md" [innerHTML]="comment.text|markdown"></div>
     </div>
 
     <form class="form" [formGroup]="form" *ngIf="isEditing()">

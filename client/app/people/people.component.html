@@ -30,7 +30,7 @@
               >
                 <b>{{ resource.commentsCount || '' }}</b>
               </div>
-            </div><span [innerHTML]="resource|column:column|markdown" *ngIf="resource|column:column"></span></td>
+            </div><span class="md" [innerHTML]="resource|column:column|markdown" *ngIf="resource|column:column"></span></td>
       </tr>
     </tbody>
   </table>

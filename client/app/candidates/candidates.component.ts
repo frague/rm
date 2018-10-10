@@ -139,14 +139,6 @@ export class CandidatesComponent implements OnInit {
     }
   }
 
-  getStateClass(state) {
-    return {
-      'Filled': 'fa-check',
-      'Draft': 'fa-pencil',
-      'Open': 'fa-search',
-    }[state];
-  }
-
   getRequisitionDetails(requisition): string {
     if (!requisition) {
       return '';
@@ -194,8 +186,8 @@ export class CandidatesComponent implements OnInit {
       'Filled': 'fa-check',
       'Open': 'fa-search',
       'Draft': 'fa-pencil',
-      'Hold': 'fa-clock-o',
-      'Awaiting Approval': 'fa-hourglass-2'
+      'Hold': 'fa-pause',
+      'Awaiting Approval': 'fa-clock-o'
     }[requisition.jobState];
   }
 

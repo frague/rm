@@ -830,7 +830,7 @@ export default class SyncCtrl {
 
       this._addLog(total + ' candidates found', 'jobvite');
 
-      let fetchers = new Array(Math.ceil(total / candidatesChunk)).join('.').split('.').map((x, i) => {
+      let fetchers = new Array(Math.ceil(total / candidatesChunk)).fill(0).map((x, i) => {
         let from = 1 + candidatesChunk * i;
         return new Promise((res, rej) =>
           // Using timeout to overcome calls per second API limitation

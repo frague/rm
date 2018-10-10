@@ -3,6 +3,9 @@
     <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
+    <div class="stage" [ngClass]="requisition.jobState">
+      <i class="fa" [ngClass]="getClass(requisition.jobState)"></i>
+    </div>
     <h4 class="modal-title">
       Requisition {{ requisition.requisitionId }}
     </h4>

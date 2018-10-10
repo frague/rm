@@ -54,4 +54,14 @@ export class RequisitionModal extends BaseModalComponent {
     }
     return this.open(tabName);
   }
+
+  getClass(state: string) {
+    return {
+      'Open': 'fa-search',
+      'Draft': 'fa-pencil',
+      'Awaiting Approval': 'fa-clock-o',
+      'On-hold': 'fa-pause',
+      'Filled': 'fa-check',
+    }[state];
+  }
 }

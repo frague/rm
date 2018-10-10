@@ -116,6 +116,53 @@ pre {
   }
 }
 
+.md {
+  h1 {
+    font-weight: 900;
+    font-size: 120%;
+  }
+  h2 {
+    font-weight: 800;
+    font-size: 110%;
+  }
+  h3 {
+    font-weight: 700;
+    font-size: 105%;
+  }
+  h4 {
+    font-weight: 600;
+    font-size: 100%;
+  }
+  h5 {
+    font-weight: 500;
+    font-size: 100%;
+  }
+  h6 {
+    font-weight: 400;
+    font-size: 100%;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    margin: 5px 0;
+    padding: 0;
+  }
+  p {
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+
+  hr {
+    margin: 0.5rem 0 1rem 0;
+  }
+
+  ol, ul {
+    margin-bottom: 0;
+  }
+}
+
 .btn {
   outline-width: 0px !important;
   border-radius: 0;
@@ -253,10 +300,10 @@ pre {
       font-weight: 100;
       line-height: 2;
 
-      &.FC {
+      &.FC, &.Filled {
         background-color: $good;
       }
-      &.VA {
+      &.VA, &.Open, &.Draft, &.Awaiting {
         background-color: $average;
       }
       &.SP {
@@ -264,6 +311,15 @@ pre {
       }
       &.X {
         background-color: $critical;
+      }
+      &.On-hold {
+        background-color: $body;
+      }
+
+      i.fa {
+        font-size: 50px;
+        font-weight: 100;
+        margin-top: 10px;
       }
     }
 
@@ -975,6 +1031,16 @@ ul.tasks {
 }
 
 .people {
+
+  h1 {
+    i {
+      @extend .clickable;
+      float: right;
+      font-size: 16px;
+      color: $body - #222;
+    }
+  }
+
   &.printable {
     h1 i {
       color: $body - #777;
@@ -986,20 +1052,6 @@ ul.tasks {
       thead, tbody {
         tr {
           background-color: #FFF;
-
-          &:nth-child(odd) {
-            background-color: #FFF;
-          }
-
-          th {
-            text-transform: capitalize;
-            white-space: nowrap;
-            text-align: center;
-          }
-
-          td span p:first-child {
-            margin-bottom: 0;
-          }
 
           th, td {
             padding: 4px;
@@ -1026,16 +1078,17 @@ ul.tasks {
     }
   }
 
-  h1 {
-    i {
-      @extend .clickable;
-      float: right;
-      font-size: 16px;
-      color: $body - #222;
+  .table {
+    tbody {
+      tr {
+        &:nth-child(odd) {
+          background-color: $body - #080808;
+        }
+      }
     }
   }
 
-  .table {
+  table {
     th {
       text-transform: capitalize;
       white-space: nowrap;
@@ -1043,10 +1096,6 @@ ul.tasks {
     }
     tbody {
       tr {
-        &:nth-child(odd) {
-          background-color: $body - #080808;
-        }
-
         td {
           &:empty:after {
             content: "-";
@@ -1058,6 +1107,14 @@ ul.tasks {
             cursor: pointer;
           }
 
+          &.name {
+            white-space: nowrap;
+          }
+
+          span p:last-child {
+            margin-bottom: 0;
+          }
+
           div {
             float: right;
 
@@ -1066,30 +1123,6 @@ ul.tasks {
               margin-top: 0;
               top: -12px;
             }
-          }
-
-          p {
-            &:first-child {
-              margin-top: 0;
-            }
-
-            margin-top: 1rem;
-            margin-bottom: 0;
-          }
-
-          hr {
-            margin: 0.5rem 0 1rem 0;
-          }
-
-          ol,
-          ul {
-            margin-bottom: 0;
-          }
-
-          h1 {
-            font-size: 20px;
-            margin: 0;
-            padding: 0;
           }
         }
       }
