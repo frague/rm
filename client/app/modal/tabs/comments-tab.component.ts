@@ -1,4 +1,4 @@
-import { Component, Input, Output } from '@angular/core';
+import { Component, Input, Output, ViewChild, ElementRef, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subscription, Subject } from 'rxjs';
 import { BaseTabComponent } from './base.component';
@@ -9,11 +9,12 @@ const isDate = new RegExp(/^[12]\d{3}\-/);
 
 @Component({
   selector: 'comments-tab',
-  templateUrl: './comments-tab.component.html'
+  templateUrl: './comments-tab.component.html',
 })
 export class CommentsTabComponent extends BaseTabComponent {
   @Input() key: string;
   @Input() callback: Subject<any> = new Subject();
+  @ViewChild('markdown') markdown: ElementRef;
 
   status: any = '';
   aggregated: any[] = [];
@@ -32,6 +33,7 @@ export class CommentsTabComponent extends BaseTabComponent {
   constructor(
     private makeDate: PrintableDatePipe,
     private commentService: CommentService,
+    private cd: ChangeDetectorRef
   ) {
     super();
   }
@@ -125,5 +127,19 @@ export class CommentsTabComponent extends BaseTabComponent {
 
   isFormValid() {
     return this.form.status !== 'INVALID';
+  }
+
+  showNoRecords() {
+    return !this.isEditing() && (!this.aggregated || !this.aggregated.length);
+  }
+
+  reposition(event: Event) {
+    let t = event.srcElement;
+    let m = this.markdown;
+    if (t && m) {
+      let p = t.scrollTop / (t.scrollHeight - t.clientHeight);
+      let c = m.nativeElement.scrollHeight - m.nativeElement.clientHeight;
+      m.nativeElement.scrollTop = Math.round(c * p);
+    }
   }
 }

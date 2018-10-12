@@ -7,6 +7,7 @@
       class="comment"
       *ngFor="let comment of getVisibleRecords()"
       [ngClass]="{status: comment.isStatus, editing: isEditing()}"
+       #markdown
     >
       <div class="date">
         {{ comment.date|date }}
@@ -36,6 +37,6 @@
       </div>
     </form>
 
-    <div class="empty" *ngIf="!aggregated || !aggregated.length">No records found</div>
+    <div class="empty" *ngIf="false">No records found</div>
   </div>
 </spinner>
