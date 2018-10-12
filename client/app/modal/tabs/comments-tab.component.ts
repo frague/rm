@@ -10,6 +10,7 @@ const isDate = new RegExp(/^[12]\d{3}\-/);
 @Component({
   selector: 'comments-tab',
   templateUrl: './comments-tab.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CommentsTabComponent extends BaseTabComponent {
   @Input() key: string;
@@ -58,7 +59,8 @@ export class CommentsTabComponent extends BaseTabComponent {
           this.aggregated.unshift(this.status);
         }
       })
-      .add(() => this.isLoading = false);
+      .add(() => this.isLoading = false)
+      .add(() => this.cd.markForCheck());
   }
 
   _confirmDeletion() {
@@ -134,12 +136,15 @@ export class CommentsTabComponent extends BaseTabComponent {
   }
 
   reposition(event: Event) {
-    let t = event.srcElement;
-    let m = this.markdown;
-    if (t && m) {
-      let p = t.scrollTop / (t.scrollHeight - t.clientHeight);
-      let c = m.nativeElement.scrollHeight - m.nativeElement.clientHeight;
-      m.nativeElement.scrollTop = Math.round(c * p);
-    }
+    setTimeout(() => {
+      let textarea = event.srcElement;
+      let markdown = this.markdown;
+      if (textarea && markdown) {
+        let percents = textarea.scrollTop / (textarea.scrollHeight - textarea.clientHeight);
+        let height = markdown.nativeElement.scrollHeight - markdown.nativeElement.clientHeight;
+        markdown.nativeElement.scrollTop = Math.round(percents * height);
+        this.cd.markForCheck();
+      }
+    }, 0);
   }
 }
