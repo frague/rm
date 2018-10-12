@@ -13,7 +13,7 @@ marked.setOptions({renderer});
 type dateFormat = 'full' | 'nodate' | 'noyear';
 
 const trailingIndex = new RegExp(/^\d{2} /);
-const deCamelExpr = new RegExp(/([A-Z0-9])/, 'g');
+const deCamelExpr = new RegExp(/([^A-Z0-9])([A-Z0-9])/, 'g');
 
 const formatDate = (date: any, format: dateFormat = 'full') => {
   if (!date) {
@@ -164,6 +164,6 @@ export class MarkdownPipe implements PipeTransform {
 @Pipe({name: 'deCamel'})
 export class DeCamelPipe implements PipeTransform {
   transform(source: string = '') {
-    return source.replace(deCamelExpr, ' $1').trim();
+    return source.replace(deCamelExpr, '$1 $2').trim();
   }
 }
