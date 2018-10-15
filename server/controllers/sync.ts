@@ -771,11 +771,19 @@ export default class SyncCtrl {
   }
 
   private async _jvGetCandidatesChunk(start: number, count: number, allowedRequisitions: string[], resolve, reject) {
+    let _attempts = 5;
     const diapasone = '[' + start + '÷' + (start + count - 1) + ']';
-    let _error;
-    let [data, ] = await this.jv.getCandidates(start, count).catch(error => _error = error);
+    let _error = true;
+    let data;
+    while (_attempts-- && _error) {
+      _error = false;
+      [data, ] = await this.jv.getCandidates(start, count).catch(error => _error = error);
+      if (_error) {
+        console.log(`Error fetching JobVite candidates chunk ${diapasone}. Attempt ${5-_attempts} of 5.`);
+      }
+    }
     if (_error) {
-      console.log('Unable to fetch JobVite candidates chunk ' + diapasone, _error);
+      this._addLog('Failed to fetch JobVite candidates chunk ' + diapasone, 'jobvite');
       return reject(_error);
     };
 
