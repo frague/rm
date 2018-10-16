@@ -127,9 +127,11 @@ export class SyncComponent {
   onSubmit() {
     const formModel = this.form.value;
     this.isLoading = true;
-    this.syncService.restore(formModel).subscribe(() => {
-      this.isLoading = false;
-    });
+    this.syncService.restore(formModel)
+      .subscribe(
+        () => this.isLoading = false,
+        () => this.isLoading = false
+      );
   }
 
   getLogStyle(log: string) {
