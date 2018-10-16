@@ -4,6 +4,14 @@ $primary: #dfd;
 $danger: #fdd;
 $grid: #aaa;
 
+$form-border: $body - #555;
+$form-body: #f9efdd;
+$form-border-rest: $form-body - #111;
+$form-perspective: 2px;
+
+$btn-color: $form-body;
+$btn-border: rgba(0, 0, 0, 0.1);
+
 $green: #dfd;
 $yellow: #ffb;
 $blue: #1ca1c0;
@@ -105,14 +113,25 @@ pre {
 }
 
 .input-group {
-  border: solid 1px $body - #333;
+  // border: solid 1px $body - #333;
+  border-width: 0;
+
+  & .btn:active {
+    margin-top: 0;
+    border-width: $form-perspective 1px 1px 1px;
+  }
 }
 
 .form-control {
   border-radius: 0;
+  border-color: $form-border $form-border-rest $form-border-rest $form-border-rest !important;
+  border-width: $form-perspective 1px 1px 1px;
+  background-color: $form-body;
+
 
   &:focus {
-    border-color: $body - #888;
+    border-color: $form-border $form-border-rest $form-border-rest $form-border-rest !important;
+    background-color: $form-body + #111;
   }
 }
 
@@ -163,7 +182,14 @@ pre {
   outline-width: 0px !important;
   border-radius: 0;
   color: $body - #777;
-  background-color: $body - #111;
+  background-color: $btn-color;
+  border-color: $btn-border $btn-border $form-border !important;
+  border-width: 1px 1px $form-perspective 1px;
+
+  &:active {
+    margin-top: $form-perspective - 1px;
+    border-width: 1px;
+  }
 
   &:hover,
   &:active,
@@ -172,7 +198,7 @@ pre {
   &:focus:active,
   &:disabled {
     color: $body - #777;
-    background-color: $body - #222;
+    background-color: $btn-color - #111;
   }
 
   &:nth-child(n+2) {
@@ -217,12 +243,12 @@ pre {
 
   &:disabled,
   &.disabled {
-    color: $body - #222;
+    color: rgba(0,0,0,0.2);
     opacity: 1;
 
     &,
     &:hover {
-      background-color: $body + #040404;
+      background-color: $btn-color - #111;
     }
   }
 }
@@ -1638,10 +1664,14 @@ div.bottom-corner {
     padding-top: 10px;
 
     button {
-      @extend .shadow;
+      // @extend .shadow;
       position: fixed;
       right: 25px;
       margin-top: -75px;
+
+      &:active {
+        margin-top: -75px + $form-perspective - 1px;
+      }
     }
   }
   .comment {
@@ -1650,7 +1680,7 @@ div.bottom-corner {
     min-height: 52px;
 
     &.editing {
-      height: 78px;
+      height: 76px;
       overflow-x: hidden;
       overflow-y: auto;
     }
