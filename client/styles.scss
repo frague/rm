@@ -113,7 +113,6 @@ pre {
 }
 
 .input-group {
-  // border: solid 1px $body - #333;
   border-width: 0;
 
   & .btn:active {
@@ -1819,6 +1818,10 @@ div.bottom-corner {
 .deadpool {
   div {
     margin-bottom: 20px;
+
+    &.col-lg-4:nth-child(even) {
+      background-color: $body - #080808;
+    }
 
     h4 {
       font-weight: 200;
