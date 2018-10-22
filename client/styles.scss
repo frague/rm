@@ -115,17 +115,28 @@ pre {
 .input-group {
   border-width: 0;
 
-  & .btn:active {
-    margin-top: 0;
-    border-width: $form-perspective 1px 1px 1px;
+  button.btn {
+    border-color: $form-border-rest $form-border-rest $form-border $form-border-rest !important;
+
+    &:active {
+      margin-top: 0;
+      border-color: $form-border $form-border-rest !important;
+      border-width: $form-perspective 1px 1px 1px;
+    }
   }
 }
 
 .form-control {
-  border-radius: 0;
-  border-color: $form-border $form-border-rest $form-border-rest $form-border-rest !important;
-  border-width: $form-perspective 1px 1px 1px;
-  background-color: $form-body;
+  &,
+  &:hover,
+  &:visited,
+  &:active {
+    border-radius: 0;
+    border-color: $form-border $form-border-rest $form-border-rest $form-border-rest !important;
+    border-width: $form-perspective 1px 1px 1px;
+    background-color: $form-body;
+    z-index: 2 !important;
+  }
 
 
   &:focus {
