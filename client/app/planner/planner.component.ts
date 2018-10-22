@@ -17,7 +17,7 @@ import { BusService } from '../services/bus.service';
 
 const stripIndex = new RegExp(/^\d{2} /);
 const rowNumber = new RegExp(/^(\d+):/);
-const allowedStates = ['Open', 'Approved'];
+const allowedStates = ['Open', 'Approved', 'Awaiting Approval'];
 const candidatesQueryKeys = ['requisition', 'candidate', 'comments'];
 
 @Component({
