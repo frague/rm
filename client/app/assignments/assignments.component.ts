@@ -64,13 +64,6 @@ export class AssignmentsComponent extends Schedule {
     return (assignee.grade ? assignee.grade + ', ' : '') + assignee.name;
   }
 
-  getDemandFrom(item) {
-    let assignments = item.assignments;
-    if (assignments) {
-      return [item, assignments[Object.keys(assignments)[0]][0].demand];
-    }
-  }
-
   showReport() {
     this.reportModal.show(this.items);
   }
