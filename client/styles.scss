@@ -797,7 +797,14 @@ i.initiative {
           }
 
           &.accepted {
-            background-color: #d0d0d0;
+            background: repeating-linear-gradient(
+              45deg,
+              rgba(0, 0, 0, 0),
+              rgba(0, 0, 0, 0) 10px,
+              rgba(0, 0, 0, 0.05) 10px,
+              rgba(0, 0, 0, 0.05) 20px
+            );
+            background-color: #e0e0e0;
             &.assigned {
               background-color: #bfd6bb;
             }
