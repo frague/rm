@@ -796,6 +796,13 @@ i.initiative {
             }
           }
 
+          &.accepted {
+            background-color: #d0d0d0;
+            &.assigned {
+              background-color: #bfd6bb;
+            }
+          }
+
           .avatar {
             width: $demandCardWidth - 10px;
             height: $demandCardWidth - 10px;

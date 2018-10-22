@@ -67,7 +67,7 @@
           <li
             *ngFor="let candidate of candidates;let x = index"
             (click)="showResource(candidate)"
-            [ngClass]="{billable: candidate.billable, assigned: isAssigned(candidate), hiree: candidate.isHiree}"
+            [ngClass]="getCardClass(candidate)"
           >
             <avatar [login]="candidate.login" [useDefault]="candidate.isHiree">
               <a (click)="showRequisition(candidate.requisitionId, $event)" *ngIf="candidate.requisitionId">

@@ -248,4 +248,13 @@ export class PlannerComponent extends Schedule {
       'striked': state && !allowedStates.includes(state)
     };
   }
+
+  getCardClass(candidate: any) {
+    return {
+      billable: candidate.billable,
+      assigned: this.isAssigned(candidate),
+      hiree: candidate.isHiree,
+      accepted: candidate.login.indexOf(' ') > 0
+    };
+  }
 }
