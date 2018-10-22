@@ -50,7 +50,8 @@ export class AccountsComponent extends Schedule {
       billable: (demand || assignment).billable,
       involvement: assignment.involvement,
       offset: assignment.offset,
-      width: assignment.width
+      width: assignment.width,
+      isAcceptor: !initiative.name
     };
   }
 }

@@ -10,7 +10,8 @@ export class InitiativeComponent {
     color: '',
     name: 'None',
     billable: false,
-    imvolvement: 100
+    imvolvement: 100,
+    isAcceptor: false
   };
 
   getTitle(): string {
@@ -30,7 +31,7 @@ export class InitiativeComponent {
   getClass() {
     return {
       nb: !Utils.isTrue(this.data.billable),
-      accepted: !this.data.name
+      accepted: this.data.isAcceptor
     }
   }
 
