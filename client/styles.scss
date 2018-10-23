@@ -195,10 +195,12 @@ pre {
   background-color: $btn-color;
   border-color: $btn-border $btn-border $form-border !important;
   border-width: 1px 1px $form-perspective 1px;
+  box-shadow: 0 3px 2px -2px rgba(0,0,0,0.2);
 
   &:active {
     margin-top: $form-perspective - 1px;
     border-width: 1px;
+    box-shadow: none;
   }
 
   &:hover,
@@ -308,7 +310,7 @@ pre {
   background-size: cover;
   border: solid 1px $grid;
   text-align: left;
-  padding: 2px 0 0 6px;
+  padding: 2px 0 0 4px;
   font-size: 8px;
   font-weight: 500;
   color: $grid;
@@ -815,6 +817,17 @@ i.initiative {
             height: $demandCardWidth - 10px;
             margin: 0;
             float: initial;
+
+            a, span {
+              text-transform: uppercase;
+              font-weight: 600;
+              color: #888;
+              font-size: 8px;
+            }
+
+            a {
+              color: $link;
+            }
           }
 
           span {
@@ -1733,6 +1746,14 @@ div.bottom-corner {
 
     .inline {
       display: inline-block;
+    }
+
+    .buttons {
+      float: right;
+
+      .btn {
+        margin-top: -2px;
+      }
     }
   }
 }

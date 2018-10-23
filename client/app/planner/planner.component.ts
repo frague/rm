@@ -74,6 +74,9 @@ export class PlannerComponent extends Schedule {
             .slice(0, 30)
             .map(item => {
               let result = this.resourcesById[item.login] || {};
+              if (item.login.indexOf(' ') > 0) {
+                result.starts = item.minDate;
+              };
               ['canTravel', 'billable', 'onTrip'].forEach(key => result[key] = item[key] === 'true');
               return result;
             })

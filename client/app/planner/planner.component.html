@@ -73,6 +73,7 @@
               <a (click)="showRequisition(candidate.requisitionId, $event)" *ngIf="candidate.requisitionId">
                 {{ candidate.requisitionId }}
               </a>
+              <span *ngIf="candidate.starts">{{ candidate.starts|date }}</span>
             </avatar>
             {{ candidate.name }}
             <span>

@@ -27,7 +27,7 @@
       <div class="form-group">
         <textarea class="form-control" name="text" formControlName="text" placeholder="Content (required)" required rows="4" (keydown)="reposition($event)" (scroll)="reposition($event)"></textarea>
       </div>
-      <div class="pull-right">
+      <div class="buttons">
         <button type="" class="btn btn-primary" (click)="save()" [disabled]="!isFormValid()">Save</button>
         <button type="" class="btn btn-default" (click)="discard()">Discard</button>
       </div>
