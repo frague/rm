@@ -9,7 +9,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let assignment of items">
+        <tr *ngFor="let assignment of items" [ngClass]="getClass(assignment)">
           <td>{{ assignment.account }} ({{ assignment.project }})</td>
           <td>{{ assignment.start|date }} - {{ assignment.finish|date }}</td>
           <td>{{ assignment.status }} {{ assignment.involvement }}%</td>

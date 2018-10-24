@@ -1,6 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import * as marked from 'marked';
 import { months, monthsRoman } from './sync/mappings';
+import { Utils } from './utils';
 
 // Custom markdown renderer for links
 var renderer = new marked.Renderer();
@@ -10,7 +11,7 @@ renderer.link = function (href: string, title: string, text: string) {
 marked.setOptions({renderer});
 //
 
-type dateFormat = 'full' | 'nodate' | 'noyear';
+type dateFormat = 'full' | 'nodate' | 'noyear' | 'ten';
 
 const trailingIndex = new RegExp(/^\d{2} /);
 const deCamelExpr = new RegExp(/([^A-Z0-9])([A-Z0-9])/, 'g');
@@ -29,6 +30,10 @@ const formatDate = (date: any, format: dateFormat = 'full') => {
     case 'noyear':
       result = [months[d.getMonth()], d.getDate()];
       delimiter = ', ';
+      break;
+    case 'ten':
+      result = [d.getFullYear(), Utils.leadingZero(d.getMonth()), Utils.leadingZero(d.getDate())];
+      delimiter = '-';
       break;
     default:
       result = [d.getDate(), months[d.getMonth()], d.getFullYear()];

@@ -12,9 +12,11 @@ export class AssignmentsTabComponent extends BaseTabComponent {
   @Input() pmoId: string = '';
   @Input() state: any = {};
   items: any[] = [];
+  now: string = '';
 
   constructor(
     private assignmentService: AssignmentService,
+    private makeDate: PrintableDatePipe
   ) {
     super();
   }
@@ -25,6 +27,8 @@ export class AssignmentsTabComponent extends BaseTabComponent {
       return;
     }
 
+    this.now = this.makeDate.transform(new Date(), 'ten');
+
     this.isLoading = true;
   	this.assignmentService.get({_id: this.pmoId})
       .subscribe(data => {
@@ -32,5 +36,11 @@ export class AssignmentsTabComponent extends BaseTabComponent {
         this.setState('assignments', this.pmoId, data);
       })
       .add(() => this.isLoading = false);
+  }
+
+  getClass(assignment) {
+    return {
+      active: assignment.start <= this.now && (!assignment.finish || assignment.finish >= this.now) 
+    }
   }
 }

@@ -431,6 +431,14 @@ pre {
     }
 
     .assignments {
+      table tbody tr {
+        color: #bbb;
+
+        &.active {
+          color: inherit;
+        }
+      }
+
       ul {
         padding: 0;
         font-size: 14px;
