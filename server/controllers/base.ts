@@ -149,9 +149,12 @@ abstract class BaseCtrl {
     try {
       let orders = JSON.parse(req.query.order || '""').split(',').reduce((result, criterion) => {
         let [param, order] = criterion.split(':');
-        console.log(param, order);
-        if (/^[\S]+$/.test(param) && +order == order) {
-          result[param] = +order;
+        if (+order == order) {
+          if (!param.indexOf('comments.')) {
+            result['comments.text'] = +order;
+          } else if (/^[\S]+$/.test(param)) {
+            result[param] = +order;
+          }
         }
         return result;
       }, {});

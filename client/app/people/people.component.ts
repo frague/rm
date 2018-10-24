@@ -13,8 +13,7 @@ import { Schedule } from '../schedule';
 const defaultColumns = {
   name: 'Name',
   grade: 'Grade',
-  location: 'Location',
-  pool: 'Profile'
+  status: 'Status'
 };
 
 @Component({

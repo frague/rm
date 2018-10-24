@@ -71,6 +71,7 @@ export default class AssignmentCtrl extends BaseCtrl {
     console.log('- Assignments -----------------------------------------------------');
     console.log('Extra columns:', columns);
     console.log('Initial:', JSON.stringify(or));
+    console.log('Order:', JSON.stringify(this.order));
 
     if (skillsList.length) {
       try {
