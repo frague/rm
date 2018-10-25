@@ -28,7 +28,6 @@ export class AssignmentsTabComponent extends BaseTabComponent {
     }
 
     this.now = this.makeDate.transform(new Date(), 'ten');
-
     this.isLoading = true;
   	this.assignmentService.get({_id: this.pmoId})
       .subscribe(data => {
@@ -40,7 +39,7 @@ export class AssignmentsTabComponent extends BaseTabComponent {
 
   getClass(assignment) {
     return {
-      active: assignment.start <= this.now && (!assignment.finish || assignment.finish >= this.now) 
+      active: assignment.start <= this.now && (!assignment.finish || assignment.finish >= this.now)
     }
   }
 }

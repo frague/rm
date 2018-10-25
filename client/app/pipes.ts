@@ -32,7 +32,7 @@ const formatDate = (date: any, format: dateFormat = 'full') => {
       delimiter = ', ';
       break;
     case 'ten':
-      result = [d.getFullYear(), Utils.leadingZero(d.getMonth()), Utils.leadingZero(d.getDate())];
+      result = [d.getFullYear(), Utils.leadingZero(1 + d.getMonth()), Utils.leadingZero(d.getDate())];
       delimiter = '-';
       break;
     default:

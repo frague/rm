@@ -436,6 +436,10 @@ pre {
 
         &.active {
           color: inherit;
+
+          i.fa {
+            display: none;
+          }
         }
       }
 
