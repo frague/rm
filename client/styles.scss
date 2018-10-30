@@ -696,6 +696,10 @@ i.initiative {
       &.warning {
         background-color: $warning-opaque;
       }
+      &.expired time {
+        color: $red;
+        font-weight: 600;
+      }
       &.SP {
         border-left: solid 4px $bad;
       }

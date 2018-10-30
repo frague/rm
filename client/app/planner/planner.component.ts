@@ -46,6 +46,7 @@ export class PlannerComponent extends Schedule {
   columns = ['pool', 'billable', 'onTrip', 'canTravel'];
 
   _cd: ChangeDetectorRef;
+  now;
 
   private _reset() {
     this.demands = [];
@@ -54,6 +55,8 @@ export class PlannerComponent extends Schedule {
   }
 
   postFetch = query => {
+    this.now = new Date();
+
     this._reset();
     let queryString = JSON.stringify(query);
     let candidatesQuery = candidatesQueryKeys.some(key => queryString.indexOf(key + '.') >= 0) ?
@@ -205,10 +208,14 @@ export class PlannerComponent extends Schedule {
   }
 
   getDemandStyles(demand: any) {
+    let expired = new Date(demand.start) < this.now;
     return {
       covered: this.reserved[demand.login],
       [demand.stage]: true,
-      warning: (!demand.candidates || !demand.candidates.length) && (!demand.requestId || !demand.requestId.length)
+      warning:
+        ((!demand.candidates || !demand.candidates.length) &&
+        (!demand.requestId || !demand.requestId.length)),
+      expired
     };
   }
 
