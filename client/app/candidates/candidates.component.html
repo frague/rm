@@ -19,7 +19,19 @@
           <div class="col-md-2">
             <demands [demands]="requisition.demands" (showDemand)="showDemand($event, requisition)"></demands>
             <i class="fa" [ngClass]="getRequisitionClass(requisition)" (click)="toggleSelection(requisition)"></i>
-            <a (click)="showRequisition(requisition, $event)">{{ requisition.requisitionId }}</a>
+            <a (click)="showRequisition(requisition, false, $event)">{{ requisition.requisitionId }}</a>
+            <div
+              class="corner"
+              (click)="showRequisition(requisition, true, $event)"
+              [ngClass]="{'has-status': requisition.status}"
+              container="body"
+              placement="top-left"
+              [ngbTooltip]="getCurrentStatus(requisition)"
+              *ngIf="requisition.commentsCount"
+            >
+              <b>{{ requisition.commentsCount }}</b>
+            </div>
+
             <span *ngIf="requisition.candidates && requisition.candidates.length">
               {{ requisition.candidates.length }}
               <i class="fa fa-male"></i>

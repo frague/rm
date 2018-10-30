@@ -155,8 +155,8 @@ export class CandidatesComponent implements OnInit {
     this.cd.markForCheck();
   }
 
-  getCurrentStatus(candidate: any): string {
-    return (candidate && candidate.status) ? candidate.status.text : '';
+  getCurrentStatus(entity: any): string {
+    return (entity && entity.status) ? entity.status.text : '';
   }
 
   showCandidate(candidate, showComments=false, event: MouseEvent = null) {
@@ -170,9 +170,13 @@ export class CandidatesComponent implements OnInit {
       });
   }
 
-  showRequisition(requisition, event: MouseEvent) {
+  showRequisition(requisition, showComments, event: MouseEvent) {
     event.stopPropagation();
-    this.requisitionModal.show(requisition);
+    this.requisitionModal.show(requisition, showComments && 'comments')
+      .subscribe(({status, commentsCount}) => {
+        [requisition.status, requisition.commentsCount] = [status, commentsCount];
+        this.cd.markForCheck();
+      });
   }
 
   getRequisitionClasses(requisition) {

@@ -73,7 +73,6 @@ export default class RequisitionCtrl extends BaseCtrl {
             preserveNullAndEmptyArrays: true
           }
         },
-
         {
           '$lookup': {
             from: 'comments',
@@ -90,6 +89,33 @@ export default class RequisitionCtrl extends BaseCtrl {
                 {
                   '$filter': {
                     input: '$candidate.comments',
+                    as: 'status',
+                    cond: {
+                      '$eq': ['$$status.isStatus', true]
+                    }
+                  }
+                },
+                0
+              ]
+            }
+          }
+        },
+        {
+          '$lookup': {
+            from: 'comments',
+            localField: 'requisitionId',
+            foreignField: 'login',
+            as: 'comments'
+          }
+        },
+        {
+          '$addFields': {
+            'commentsCount': {'$size': '$comments'},
+            'status': {
+              '$arrayElemAt': [
+                {
+                  '$filter': {
+                    input: '$comments',
                     as: 'status',
                     cond: {
                       '$eq': ['$$status.isStatus', true]
@@ -124,6 +150,8 @@ export default class RequisitionCtrl extends BaseCtrl {
             eId: {'$first': '$eId'},
             title: {'$first': '$title'},
             candidates: {'$push': '$candidate'},
+            status: {'$first': '$status'},
+            commentsCount: {'$first': '$commentsCount'},
           }
         },
         {
@@ -188,6 +216,8 @@ export default class RequisitionCtrl extends BaseCtrl {
             requisitionId: { '$first': '$requisitionId' },
             title: { '$first': '$title' },
             candidates: {'$first': '$candidates'},
+            status: {'$first': '$status'},
+            commentsCount: {'$first': '$commentsCount'},
           }
         },
         {
