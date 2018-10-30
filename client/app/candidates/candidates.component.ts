@@ -170,7 +170,7 @@ export class CandidatesComponent implements OnInit {
       });
   }
 
-  showRequisition(requisition, showComments, event: MouseEvent) {
+  showRequisition(requisition, showComments=false) {
     event.stopPropagation();
     this.requisitionModal.show(requisition, showComments && 'comments')
       .subscribe(({status, commentsCount}) => {

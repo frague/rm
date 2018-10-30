@@ -13,16 +13,16 @@
       <h3>{{ category }}</h3>
       <ng-container *ngFor="let requisition of categoryRequisitions[category]">
         <div
-          class="row"
+          class="requisition row"
           [ngClass]="getRequisitionClasses(requisition)"
         >
           <div class="col-md-2">
             <demands [demands]="requisition.demands" (showDemand)="showDemand($event, requisition)"></demands>
             <i class="fa" [ngClass]="getRequisitionClass(requisition)" (click)="toggleSelection(requisition)"></i>
-            <a (click)="showRequisition(requisition, false, $event)">{{ requisition.requisitionId }}</a>
+            <a (click)="showRequisition(requisition)">{{ requisition.requisitionId }}</a>
             <div
               class="corner"
-              (click)="showRequisition(requisition, true, $event)"
+              (click)="showRequisition(requisition, true)"
               [ngClass]="{'has-status': requisition.status}"
               container="body"
               placement="top-left"

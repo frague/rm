@@ -1221,11 +1221,7 @@ ul.tasks {
     padding-top: 8px;
   }
 
-  div.corner {
-    position: absolute;
-    width: 0;
-    height: 0;
-    border-top: 16px solid #87afb3;
+  .requisition div.corner {
     border-right: 16px solid transparent;
     border-left: none;
     margin-top: -26px;

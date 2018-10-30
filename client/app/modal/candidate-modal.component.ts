@@ -20,17 +20,22 @@ export class CandidateModal extends BaseModalComponent {
     super(modalService);
   }
 
+  adaptCandidate(candidate: any) {
+    candidate.state = (candidate.state || '').replace(/^\d+ /, '');
+    return candidate;
+  }
+
   show(candidate: any = {}, tabName = ''): Subject<any> {
     this.candidate = {};
     if (typeof candidate === 'string') {
       this.isLoading = true;
       this.candidateService.getByLogin(candidate)
         .subscribe(candidate => {
-          this.candidate = candidate;
+          this.candidate = this.adaptCandidate(candidate);
         })
         .add(() => this.isLoading = false);
     } else {
-      this.candidate = candidate;
+      this.candidate = this.adaptCandidate(candidate);
     }
     return this.open(tabName);
   }

@@ -16,7 +16,7 @@ export class CandidateTabComponent extends BaseTabComponent {
     super();
   }
 
-  getJvApplicationLink(candidate) {
-    return this.sanitizer.bypassSecurityTrustUrl(jobViteCandidate + candidate.applicationId);
+  getJvApplicationLink() {
+    return this.sanitizer.bypassSecurityTrustUrl(jobViteCandidate + this.candidate.applicationId);
   }
 }
