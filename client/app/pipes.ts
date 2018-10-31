@@ -108,20 +108,21 @@ export class ColumnPipe implements PipeTransform {
         return '';
       case 'assignments':
         if (value) {
-          if (!secondary) {
-            secondary = 'login';
-          }
-          return Object.values(value).map((assignments: any) => {
-            if (!(assignments instanceof Array)) {
-              assignments = [assignments];
-            }
-            return assignments.map(assignment => {
-              if (assignment.demand) {
-                assignment = assignment.demand;
+          return Object.keys(value)
+            .filter(account => account !== 'vacation')
+            .map((account: any) => {
+              let accountAssignments = value[account];
+              if (!(accountAssignments instanceof Array)) {
+                accountAssignments = [accountAssignments];
               }
-              return assignment[secondary] || '';
-            }).join('\n* ');
-          }).join(', ');
+              let assignmentsList = accountAssignments.map(assignment => {
+                if (assignment.demand) {
+                  assignment = assignment.demand;
+                }
+                return secondary ? assignment[secondary] : `__${assignment.account}__: ${assignment.initiative || '-'} (${assignment.involvement}% ${assignment.billability})`;
+              }).join('\n* ');
+              return `* ${assignmentsList}`;
+            }).join('\n');
         }
         return '';
       case 'comments':
@@ -168,6 +169,6 @@ export class MarkdownPipe implements PipeTransform {
 @Pipe({name: 'deCamel'})
 export class DeCamelPipe implements PipeTransform {
   transform(source: string = '') {
-    return source.replace(deCamelExpr, '$1 $2').trim();
+    return source.replace(/\./g, ' ').replace(deCamelExpr, '$1 $2').trim();
   }
 }

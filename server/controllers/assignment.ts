@@ -5,9 +5,12 @@ import SkillTreeCtrl from './integrations/skilltree';
 import { fakeRes } from './fakeresponse';
 
 const andKey = '$and';
+const inKey = '$in';
+const regexKey = '$regex';
 
 const skillTree = new SkillTreeCtrl();
 const skillsExpr = new RegExp(/^skills/);
+const skillExprExpr = new RegExp(/^\/([^\/]*)\/i$/);
 const delimiter = skillTree.delimiter;
 
 const defaultColumns = [
@@ -37,17 +40,31 @@ export default class AssignmentCtrl extends BaseCtrl {
   order;
   shift;
 
-  filterSkills = (source: any[]): any => {
+  filterSkills = (source: any[]): any[] => {
     let result = [];
     source.forEach(item => {
       item = item || {};
       let key = Object.keys(item)[0];
+      let value = item[key];
       if (key === andKey) {
         result = result.concat(this.filterSkills(item[key]))
       } else if (skillsExpr.test(key)) {
-        let value = item[key];
-        let expr = value['$regex'];
-        result.push((expr ? '[^' + delimiter + ']*' + expr + '[^' + delimiter + ']*' : value).toLowerCase());
+        if (typeof value === 'string') {
+          let expr = value.replace(skillExprExpr, '$1');  
+          if (expr !== value) {
+            value = '[^' + delimiter + ']*' + expr + '[^' + delimiter + ']*';
+          }
+          result.push(value.toLowerCase());
+        } else {
+          Object.keys(value).forEach(conditionKey => {
+            let conditionValue = value[conditionKey];
+            switch (conditionKey) {
+              case inKey:
+                result = result.concat(conditionValue);
+                break;
+            }
+          });
+        }
       }
     });
     return result;
@@ -72,6 +89,7 @@ export default class AssignmentCtrl extends BaseCtrl {
     console.log('Extra columns:', columns);
     console.log('Initial:', JSON.stringify(or));
     console.log('Order:', JSON.stringify(this.order));
+    console.log('Skills:', JSON.stringify(skillsList));
 
     if (skillsList.length) {
       try {
