@@ -1124,6 +1124,11 @@ ul.tasks {
     h1 i {
       color: $body - #777;
     }
+
+    a + i.fa {
+      display: none;
+    }
+
     table {
       border: solid 1px #000;
       border-width: 0 1px 1px 0;
