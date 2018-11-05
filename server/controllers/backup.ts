@@ -54,16 +54,24 @@ export default class BackupCtrl {
         Object.keys(models).map(key => {
           let model = models[key];
 
-          return model.deleteMany({}, (err) => {
-            let items = data[key];
-            items.forEach(itemData => {
-              delete itemData['__v'];
-              new model(itemData).save();
-            });
-            let r = items.length + ' ' + key + ' were successfully restored from backup';
-            result.push(r);
-            console.log(r);
-          });
+          return model.deleteMany({})
+            .exec()
+            .then(() => {
+              let items = data[key];
+              items.forEach(itemData => {
+                delete itemData['__v'];
+                new model(itemData)
+                  .save()
+                  .then(
+                    data => {},
+                    error => console.log(`Error saving ${key}:`, itemData)
+                  );
+              });
+              let r = items.length + ' ' + key + ' were successfully restored from backup';
+              result.push(r);
+              console.log(r);
+            })
+            .catch(error => console.log(`Error deleting ${key}`));
         })
       )
         .then(() => {
