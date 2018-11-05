@@ -23,11 +23,11 @@
   </div>
 </div>
 <div class="backup-restore row">
-  <div class="col-md-6">
+  <div class="col-md-4">
     <h1>Backup</h1>
     <a href="/api/backup" target="blank">Download users comments backup file</a>
   </div>
-  <div class="col-md-6">
+  <div class="col-md-4">
     <h1>Restore</h1>
     <form class="form" [formGroup]="form" (ngSubmit)="onSubmit()">
       <div class="form-group">
@@ -38,6 +38,10 @@
         Restore
       </button>
     </form>
+  </div>
+  <div class="col-md-4">
+    <h1>Cleanup</h1>
+    <a href="javascript:void()" (click)="cleanup()">Remove obsolete comments</a>
   </div>
 
 </div>

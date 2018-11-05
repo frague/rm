@@ -19,7 +19,10 @@ export class SyncService {
   }
 
   restore(data: any): Observable<any> {
-    return this.http.post('/api/restore', data);
+    return this.http.post('/api/restore', data).map(res => res.json());
   }
 
+  cleanup(): Observable<any> {
+    return this.http.get('/api/cleanup').map(res => res.json());
+  }
 }

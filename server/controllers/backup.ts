@@ -1,6 +1,16 @@
+import * as mongoose from 'mongoose';
+
 import Filter from '../models/filter';
-import Comment from '../models/comment';
 import Plan from '../models/demandplan';
+import Resource from '../models/resource';
+import Demand from '../models/demand';
+import Requisition from '../models/requisition';
+import Candidate from '../models/candidate';
+
+import Comment from '../models/comment';
+
+const entities = [Resource, Demand, Requisition, Candidate];
+const idsFields = ['login', 'login', 'requisitionId', 'login'];
 
 const models = {
   comments: Comment,
@@ -50,12 +60,14 @@ export default class BackupCtrl {
               delete itemData['__v'];
               new model(itemData).save();
             });
-            result.push(items.length + ' ' + key + ' were successfully restored from backup');
+            let r = items.length + ' ' + key + ' were successfully restored from backup';
+            result.push(r);
+            console.log(r);
           });
         })
       )
         .then(() => {
-          return res.send(result.join('\n'));
+          return res.json(result);
         })
         .catch(error => {
           console.log('Error restoring from backup:', error);
@@ -64,6 +76,37 @@ export default class BackupCtrl {
     } else {
       return res.sendStatus(500);
     }
+  }
+
+  private _queryModel = (model: mongoose.Schema, idName: string): Promise<any[]> => {
+    return model.aggregate([
+      {
+        '$group': {
+          _id: null,
+          ids: {'$push': '$' + idName}
+        }
+      }
+    ])
+      .cursor({})
+      .exec()
+      .toArray()
+      .then(data => data[0].ids);
+  }
+
+  cleanup = async (req, res) => {
+    Promise.all(entities.map((model, index) => 
+      this._queryModel(model, idsFields[index])
+    ))
+      .then(results => {
+        let ids = [].concat(...results);
+        Comment
+          .deleteMany({login: {'$nin': ids}})
+          .exec()
+          .then(data => {
+            res.json({deleted: data.deletedCount});
+          });
+      })
+      .catch(error => res.sendStatus(500));
   }
 
 }

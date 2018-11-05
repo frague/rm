@@ -129,7 +129,13 @@ export class SyncComponent {
     this.isLoading = true;
     this.syncService.restore(formModel)
       .subscribe(
-        () => this.isLoading = false,
+        logs => {
+          this.isLoading = false;
+          if (logs) {
+            console.log(logs);
+            logs.forEach(log => this.addLog(log, 'Restore'));
+          }
+        },
         () => this.isLoading = false
       );
   }
@@ -138,5 +144,19 @@ export class SyncComponent {
     return {
       error: log.indexOf('rror') > 0
     };
+  }
+
+  cleanup() {
+    this.isLoading = true;
+    this.syncService.cleanup()
+      .subscribe(
+        data => {
+          this.isLoading = false;
+          if (data) {
+            this.addLog(`${data.deleted} obsolete comments were deleted`, 'Cleanup');
+          }
+        },
+        () => this.isLoading = false
+      );
   }
 }

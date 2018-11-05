@@ -149,6 +149,7 @@ export default function setRoutes(app) {
   // Backup and restore
   router.route('/backup').get(backupCtrl.download);
   router.route('/restore').post(upload.single('backup'), backupCtrl.restore);
+  router.route('/cleanup').get(backupCtrl.cleanup);
 
   // Deadpool
   router.route('/dps').get(diffCtrl.getAll);
