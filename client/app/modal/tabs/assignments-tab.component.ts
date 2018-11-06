@@ -22,12 +22,12 @@ export class AssignmentsTabComponent extends BaseTabComponent {
   }
 
   fetchData() {
+    this.now = this.makeDate.transform(new Date(), 'ten');
     this.items = this.getState('assignments', this.pmoId);
     if (this.items && this.items.length) {
       return;
     }
 
-    this.now = this.makeDate.transform(new Date(), 'ten');
     this.isLoading = true;
   	this.assignmentService.get({_id: this.pmoId})
       .subscribe(data => {
