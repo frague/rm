@@ -3,9 +3,9 @@ import { login, fillRequest } from './utils';
 
 const env = process.env;
 const pmo = 'https://pmo.griddynamics.net/';
-const pmoAssignments = pmo + '/service/v1/people/employees';
-const pmoDemandMeta = pmo + '/service/api/internal/position/demand/';
-const pmoUserAssignments = pmo + '/api/v1/people/history/employee?id=';
+const pmoAssignments = pmo + 'service/v1/people/employees';
+const pmoDemandMeta = pmo + 'service/api/internal/position/demand/';
+const pmoUserAssignments = pmo + 'api/v1/people/history/employee?id=';
 
 export default class PmoIntegrationsCtrl {
   sessionCookies = '';
@@ -87,12 +87,12 @@ export default class PmoIntegrationsCtrl {
             resolve(body);
           } catch (e) {
             console.log(e);
-            reject('Error parsing PMO response for dict ' + name);
+            reject('Error parsing PMO response for dict: ' + name);
           }
         })
         .on('error', error => {
           console.log('Error', name, error);
-          reject('Unable to access PMO demand dictionary ' + name);
+          reject('Unable to access PMO demand dictionary: ' + name);
         })
     });
   }
