@@ -35,6 +35,7 @@ const requisitionsChunk = 500;
 const cleanupLocation = new RegExp(/(^,\s*|,\s*$)/);
 const outdated = 1000 * 60 * 60 * 24 * 30 * 3;  // 3 months
 const reqId = new RegExp(/^.*(GD\d+).*$/, 'i');
+const dateExpr = new RegExp(/^\d{1,4}-\d{1,2}-\d{1,4}$/);
 
 export default class SyncCtrl {
 
@@ -73,14 +74,18 @@ export default class SyncCtrl {
     IO.client().emit('status', [task, status]);
   }
 
-  private _makeDate(milliseconds: number, eod=false): string {
-    if (+milliseconds !== milliseconds) return '';
+  private _makeDate(sourceDate: any, eod=false): string {
     let result;
-    try {
-      result = new Date(milliseconds);
-    } catch (e) {
-      throw `Unable to convert ${milliseconds} to a date`;
+    if (+sourceDate === sourceDate) {
+      result = new Date(sourceDate);
+    } else if (dateExpr.test(sourceDate)) {
+      result = new Date(Date.parse(sourceDate));
+    };
+
+    if (!result || result == 'Invalid Date') {
+      return '';
     }
+
     if (eod) {
       result.setHours(23);
       result.setMinutes(59);
