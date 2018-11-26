@@ -85,8 +85,9 @@ pre {
   font: inherit;
 }
 
-.striked {
+.striked, s {
   position: relative;
+  text-decoration: none;
 
   &:before {
     position: absolute;

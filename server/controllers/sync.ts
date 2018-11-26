@@ -74,8 +74,13 @@ export default class SyncCtrl {
   }
 
   private _makeDate(milliseconds: number, eod=false): string {
-    if (!milliseconds) return '';
-    let result = new Date(milliseconds);
+    if (+milliseconds !== milliseconds) return '';
+    let result;
+    try {
+      result = new Date(milliseconds);
+    } catch (e) {
+      throw `Unable to convert ${milliseconds} to a date`;
+    }
     if (eod) {
       result.setHours(23);
       result.setMinutes(59);
