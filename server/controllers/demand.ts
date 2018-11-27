@@ -71,7 +71,7 @@ export default class DemandCtrl extends BaseCtrl {
             billable: {
               '$cond': {
                 if: {
-                  '$in': ['$role', ['Billable', 'Soft booked', 'PTO Coverage', 'Funded']]
+                  '$in': ['$role', ['Billable', 'Booked', 'PTO Coverage', 'Funded']]
                 },
                 then: 'true',
                 else: 'false'

@@ -1,7 +1,7 @@
 import { Component, ViewChild, Input } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 
-const billables = ['Billable', 'Funded', 'PTO Coverage', 'Soft booked'];
+const billables = ['Billable', 'Funded', 'PTO Coverage', 'Booked'];
 
 @Component({
   selector: 'assignments-report-modal',
