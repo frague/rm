@@ -793,11 +793,10 @@ export default class SyncCtrl {
       }
     }
     if (_error) {
-      this._addLog('Failed to fetch JobVite candidates chunk ' + diapasone, 'jobvite');
+      this._addLog(`Failed to fetch JobVite candidates chunk ${diapasone}`, 'jobvite');
       return reject(_error);
     };
 
-    this._addLog('Candidates chunk fetched ' + diapasone, 'jobvite');
     let now = new Date().getTime();
     let saved = 0;
     data.forEach((candidate, index) => {
@@ -833,6 +832,7 @@ export default class SyncCtrl {
         nc.save();
       }
     });
+    this._addLog(`Candidates chunk ${diapasone} fetched, ${saved} saved`, 'jobvite');
     console.log(saved + ' candidates saved');
     resolve();
   }
