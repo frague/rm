@@ -55,6 +55,7 @@ import { SkillsetComponent } from './planner/skillset.component';
 import { CandidatesComponent } from './candidates/candidates.component';
 import { SpinnerComponent } from './shared/spinner/spinner.component';
 import { RequisitionDemandComponent } from './candidates/requisition-demand.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 import { PersonModal } from './modal/person-modal.component';
 import { AssignmentModal } from './modal/assignment-modal.component';
@@ -98,7 +99,7 @@ const config: SocketIoConfig = {
     PrintableDatePipe, RangePipe, KeysPipe, EllipsisPipe, MarkdownPipe,
     FilterComponent, FilteringPanelComponent, CutIndexPipe, ColumnPipe,
     SplitPipe, DeCamelPipe,
-    
+
     PlannerComponent, ReportComponent, DemandPlanComponent,
     DpComponent,
     AvatarComponent,
@@ -107,6 +108,7 @@ const config: SocketIoConfig = {
     CandidatesComponent,
     SpinnerComponent,
     RequisitionDemandComponent,
+    DashboardComponent,
 
     PersonModal, AssignmentModal, DemandModal, RequisitionModal, CommentsModal, CandidateModal,
 

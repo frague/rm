@@ -567,6 +567,12 @@ i.initiative {
   }
 }
 
+.dashboard {
+  div.notes {
+    background-color: $body - #080808;
+  }
+}
+
 .assignments,
 .accounts,
 .planner {
