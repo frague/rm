@@ -1,7 +1,7 @@
 <h1>Dashboard</h1>
 
 <div class="dashboard row">
-  <div class="notes col-md-4">
+  <div class="notes col-md-8">
     <h2>Notes</h2>
     <spinner [isShown]="isLoading">
       <div class="comments">
@@ -32,15 +32,9 @@
           <div class="form-group">
             <textarea class="form-control" name="text" formControlName="text" placeholder="Content (required)" required rows="4" (keydown)="reposition($event)" (scroll)="reposition($event)"></textarea>
           </div>
-          <div class="buttons">
-            <button type="" class="btn btn-primary" (click)="save()" [disabled]="!isFormValid()">Save</button>
-            <button type="" class="btn btn-default" (click)="discard()">Discard</button>
-          </div>
-          <div class="form-check inline">
-            <label class="form-check-label">
-              <input class="form-check-input" type="checkbox" formControlName="isStatus">
-              This should be considered as a current status
-            </label>
+          <div class="form-group buttons">
+            <button class="btn btn-primary" (click)="save()" [disabled]="!isFormValid()">Save</button>
+            <button class="btn btn-default" (click)="discard()">Discard</button>
           </div>
         </form>
 

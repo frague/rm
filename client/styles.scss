@@ -1748,6 +1748,16 @@ div.bottom-corner {
       &:active {
         margin-top: -75px + $form-perspective - 1px;
       }
+
+      .notes & {
+        margin-left: -62px;
+        margin-top: -53px;
+        right: unset;
+
+        &:active {
+          margin-top: -53px + $form-perspective - 1px;
+        }
+      }
     }
   }
   .comment {
@@ -1759,6 +1769,10 @@ div.bottom-corner {
       height: 76px;
       overflow-x: hidden;
       overflow-y: auto;
+
+      .notes & {
+        height: 120px;
+      }
     }
 
     &.status {
