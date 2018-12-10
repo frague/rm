@@ -6,6 +6,7 @@
         [routerLink]="['dashboard']"
         class="nav-item nav-link"
         routerLinkActive="active"
+        *ngIf="isLogged"
       >
         <i class="fa fa-home"></i>
       </a>
@@ -13,6 +14,7 @@
         [routerLink]="['assignments']"
         class="nav-item nav-link"
         routerLinkActive="active"
+        *ngIf="isLogged"
       >
         Assignments
       </a>
@@ -20,6 +22,7 @@
         [routerLink]="['accounts']"
         class="nav-item nav-link"
         routerLinkActive="active"
+        *ngIf="isLogged"
       >
         Accounts
       </a>
@@ -27,6 +30,7 @@
         [routerLink]="['people']"
         class="nav-item nav-link"
         routerLinkActive="active"
+        *ngIf="isLogged"
       >
         People
       </a>
@@ -34,6 +38,7 @@
         [routerLink]="['hiring']"
         class="nav-item nav-link"
         routerLinkActive="active"
+        *ngIf="isLogged"
       >
         Hiring
       </a>
@@ -41,6 +46,7 @@
         [routerLink]="['planner']"
         class="nav-item nav-link"
         routerLinkActive="active"
+        *ngIf="isLogged"
       >
         Planner
       </a>
@@ -48,6 +54,7 @@
         [routerLink]="['dp']"
         class="nav-item nav-link"
         routerLinkActive="active"
+        *ngIf="isLogged"
       >
         <i class="deadpool"></i>
       </a>
@@ -55,24 +62,9 @@
         [routerLink]="['sync']"
         class="nav-item nav-link"
         routerLinkActive="active"
+        *ngIf="isLogged"
       >
         Sync
-      </a>
-      <a
-        [routerLink]="['login']"
-        class="nav-item nav-link"
-        routerLinkActive="active"
-        *ngIf="!auth.loggedIn"
-      >
-        Login
-      </a>
-      <a
-        [routerLink]="['register']"
-        class="nav-item nav-link"
-        routerLinkActive="active"
-        *ngIf="!auth.loggedIn"
-      >
-        Register
       </a>
 
       <div class="pull-right">
@@ -84,6 +76,22 @@
         </a>
         <a [routerLink]="['logout']" class="nav-item nav-link" routerLinkActive="active" *ngIf="auth.loggedIn">
           Logout
+        </a>
+        <a
+          [routerLink]="['login']"
+          class="nav-item nav-link"
+          routerLinkActive="active"
+          *ngIf="!auth.loggedIn"
+        >
+          Login
+        </a>
+        <a
+          [routerLink]="['register']"
+          class="nav-item nav-link"
+          routerLinkActive="active"
+          *ngIf="!auth.loggedIn"
+        >
+          Register
         </a>
       </div>
     </div>

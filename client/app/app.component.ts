@@ -7,5 +7,9 @@ import { AuthService } from './services/auth.service';
 })
 export class AppComponent {
   isFilterVisible = true;
+  public get isLogged(): boolean {
+    return this.auth.loggedIn;
+  }
+  
   constructor(public auth: AuthService) {}
 }
