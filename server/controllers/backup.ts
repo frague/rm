@@ -102,11 +102,12 @@ export default class BackupCtrl {
   }
 
   cleanup = async (req, res) => {
-    Promise.all(entities.map((model, index) => 
+    Promise.all(entities.map((model, index) =>
       this._queryModel(model, idsFields[index])
     ))
       .then(results => {
-        let ids = [].concat(...results);
+        // All system' comments start with '%' so exclude them
+        let ids = ['/^%/'].concat(...results);
         Comment
           .deleteMany({login: {'$nin': ids}})
           .exec()

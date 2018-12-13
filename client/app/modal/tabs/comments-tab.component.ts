@@ -40,6 +40,10 @@ export class CommentsTabComponent extends BaseTabComponent {
   }
 
   fetchData(): Subscription {
+    if (!this.key) {
+      return;
+    }
+
     this.isLoading = true;
     return this.commentService.getAll(this.key)
       .subscribe((notes: any[]) => {

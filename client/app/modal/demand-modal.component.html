@@ -33,6 +33,11 @@
           <demand-requisition-tab [comparison]="requisitionDiff"></demand-requisition-tab>
         </ng-template>
       </ngb-tab>
+      <ngb-tab title="Project" id="project">
+        <ng-template ngbTabContent>
+          <account-project-tab [account]="demand.account" [initiative]="demand.project"></account-project-tab>
+        </ng-template>
+      </ngb-tab>
     </ngb-tabset>
     <div *ngIf="notFound">Active demand #{{ getId() }} not found</div>
   </div>

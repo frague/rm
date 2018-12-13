@@ -32,6 +32,7 @@ export class AssignmentsTabComponent extends BaseTabComponent {
   	this.assignmentService.get({_id: this.pmoId})
       .subscribe(data => {
         this.items = data;
+        console.log(data);
         this.setState('assignments', this.pmoId, data);
       })
       .add(() => this.isLoading = false);

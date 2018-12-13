@@ -75,6 +75,7 @@ import { RequisitionTabComponent } from './modal/tabs/requisition-tab.component'
 import { CandidatesTabComponent } from './modal/tabs/candidates-tab.component';
 import { CandidateTabComponent } from './modal/tabs/candidate-tab.component';
 import { DemandRequisitionTabComponent } from './modal/tabs/demand-requisition-tab.component';
+import { AccountProjectTabComponent } from './modal/tabs/account-project-tab.component';
 
 const config: SocketIoConfig = {
   url: ':3030',
@@ -98,7 +99,7 @@ const config: SocketIoConfig = {
     PrintableDatePipe, RangePipe, KeysPipe, EllipsisPipe, MarkdownPipe,
     FilterComponent, FilteringPanelComponent, CutIndexPipe, ColumnPipe,
     SplitPipe, DeCamelPipe,
-    
+
     PlannerComponent, ReportComponent, DemandPlanComponent,
     DpComponent,
     AvatarComponent,
@@ -113,7 +114,7 @@ const config: SocketIoConfig = {
     UserTabComponent, CommentsTabComponent, SkillsTabComponent, CarreerTabComponent,
     AssignmentTabComponent, AssignmentsTabComponent, HistoryTabComponent, DemandTabComponent,
     RequisitionTabComponent, CandidatesTabComponent, CandidateTabComponent,
-    DemandRequisitionTabComponent,
+    DemandRequisitionTabComponent, AccountProjectTabComponent,
   ],
   imports: [
     RoutingModule,
@@ -144,7 +145,7 @@ const config: SocketIoConfig = {
     CandidateService,
     CarreerService,
     RequisitionDemandService,
-    
+
     PrintableDatePipe,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

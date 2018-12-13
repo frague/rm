@@ -20,6 +20,11 @@
           <assignment-tab [assignment]="assignment"></assignment-tab>
         </ng-template>
       </ngb-tab>
+      <ngb-tab title="Project" id="project">
+        <ng-template ngbTabContent>
+          <account-project-tab [account]="assignment.account" [initiative]="assignment.initiative" [state]="state"></account-project-tab>
+        </ng-template>
+      </ngb-tab>
       <ngb-tab title="All" id="assignments">
         <ng-template ngbTabContent>
           <assignments-tab [pmoId]="person.pmoId" [state]="state"></assignments-tab>

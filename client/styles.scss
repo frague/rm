@@ -1744,6 +1744,11 @@ div.bottom-corner {
       }
     }
   }
+  &.project {
+    h2 {
+      margin-top: -3px;
+    }
+  }
   .comment {
     padding: 10px 0 10px 100px;
     margin: 0;
@@ -1806,6 +1811,8 @@ div.bottom-corner {
     }
   }
 }
+
+
 
 .skills {
   h3 {
