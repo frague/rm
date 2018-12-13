@@ -53,6 +53,7 @@ import { AvatarComponent } from './people/avatar.component';
 import { AssignmentsReportComponent } from './assignments/report.component';
 import { SkillsetComponent } from './planner/skillset.component';
 import { CandidatesComponent } from './candidates/candidates.component';
+import { EditorComponent } from './shared/editor/editor.component';
 import { SpinnerComponent } from './shared/spinner/spinner.component';
 import { RequisitionDemandComponent } from './candidates/requisition-demand.component';
 
@@ -106,6 +107,7 @@ const config: SocketIoConfig = {
     AssignmentsReportComponent,
     SkillsetComponent,
     CandidatesComponent,
+    EditorComponent,
     SpinnerComponent,
     RequisitionDemandComponent,
 

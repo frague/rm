@@ -46,6 +46,7 @@ export class PlannerComponent extends Schedule {
   columns = ['pool', 'billable', 'onTrip', 'canTravel'];
 
   _cd: ChangeDetectorRef;
+  _bus;
   now;
 
   private _reset() {
@@ -128,6 +129,11 @@ export class PlannerComponent extends Schedule {
   ) {
     super(assignmentService, resourceService, initiativeService, demandService, bus, cd);
     this._cd = cd;
+    this._bus = bus;
+  }
+
+  showEditor() {
+    this._bus.showEditor({subject: 'Tests', content: 'TEst test', isStatus: true}).catch(err => {});
   }
 
   ngOnInit() {
