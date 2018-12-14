@@ -1,8 +1,8 @@
 import { EventEmitter } from '@angular/core';
 
 export type IEditedContent = {
-  subject: string,
-  content: string,
+  source: string,
+  text: string,
   isStatus: boolean
 };
 

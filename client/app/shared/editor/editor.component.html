@@ -4,10 +4,10 @@
       <h1>Edit form</h1>
       <form class="form" [formGroup]="form">
         <div class="form-group">
-          <input class="form-control" type="text" name="subject" formControlName="subject" placeholder="Source">
+          <input class="form-control" type="text" name="source" formControlName="source" placeholder="Source">
         </div>
         <div class="form-group">
-          <textarea class="form-control" name="content" formControlName="content" placeholder="Content (required)" required rows="4" (keydown)="reposition($event)" (scroll)="reposition($event)"></textarea>
+          <textarea class="form-control" name="text" formControlName="text" placeholder="Content (required)" required rows="4" (keydown)="reposition($event)" (scroll)="reposition($event)"></textarea>
         </div>
         <div class="buttons">
           <button type="" class="btn btn-primary" (click)="close(true)" [disabled]="!isFormValid()">Save</button>
@@ -24,7 +24,8 @@
     </div>
     <div class="col-md-6" #markdown>
       <h1>Markdown</h1>
-      <div class="md" [innerHTML]="''|markdown"></div>
+      <h2>{{ editedValue.source }}</h2>
+      <div class="md" [innerHTML]="editedValue.text|markdown"></div>
     </div>
   </div>
 </div>

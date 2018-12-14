@@ -10,17 +10,21 @@ export class EditorComponent {
   @ViewChild('markdown') markdown: ElementRef;
 
   form = new FormGroup({
-    // _id: new FormControl(''),
-    // login: new FormControl(''),
-    // date: new FormControl(''),
+    _id: new FormControl(''),
+    login: new FormControl(''),
+    date: new FormControl(''),
     isStatus: new FormControl(),
-    subject: new FormControl(''),
-    content: new FormControl('', Validators.required)
+    source: new FormControl(''),
+    text: new FormControl('', Validators.required)
   });
+
+  public get editedValue(): any {
+    return this.form.value;
+  }
 
   $visibility;
   isVisible = false;
-  data: IEditedContent = {subject: '', content: '', isStatus: false};
+  data: IEditedContent = {source: '', text: '', isStatus: false};
   close = () => {};
 
   constructor(private bus: BusService) {
@@ -34,16 +38,14 @@ export class EditorComponent {
   ngOnInit() {
     this.resetClose();
     this.$visibility = this.bus.editedContent.subscribe(({data, resolve, reject}) => {
-      let _data = Object.assign({}, data);
-      this.form.setValue(_data);
-      console.log(_data);
+      // let _data = Object.assign({}, data);
+      this.form.setValue(data);
       this.isVisible = true;
       this.close = (returnData = false) => {
-        console.log(returnData);
         this.isVisible = false;
         this.resetClose();
         if (returnData) {
-          resolve(data);
+          resolve(this.editedValue);
         } else {
           reject();
         }

@@ -2,6 +2,7 @@ import { Component, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@a
 import { Subscription } from 'rxjs';
 import { CommentsTabComponent } from './comments-tab.component';
 import { AssignmentService } from '../../services/assignment.service';
+import { BusService } from '../../services/bus.service';
 import { CommentService} from '../../services/comments.service';
 import { PrintableDatePipe } from '../../pipes';
 import * as md5 from 'md5';
@@ -26,9 +27,10 @@ export class AccountProjectTabComponent extends CommentsTabComponent {
     private assignmentService: AssignmentService,
     makeDate: PrintableDatePipe,
     commentService: CommentService,
+    bus: BusService,
     cd: ChangeDetectorRef
   ) {
-    super(makeDate, commentService, cd);
+    super(makeDate, commentService, bus, cd);
     this._makeDate = makeDate;
     this._cd = cd;
   }

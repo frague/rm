@@ -129,12 +129,12 @@ export class PlannerComponent extends Schedule {
   ) {
     super(assignmentService, resourceService, initiativeService, demandService, bus, cd);
     this._cd = cd;
-    this._bus = bus;
+    // this._bus = bus;
   }
 
-  showEditor() {
-    this._bus.showEditor({subject: 'Tests', content: 'TEst test', isStatus: true}).catch(err => {});
-  }
+  // showEditor() {
+  //   this._bus.showEditor({subject: 'Tests', content: 'TEst test', isStatus: true}).catch(err => {});
+  // }
 
   ngOnInit() {
     super.ngOnInit();

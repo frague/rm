@@ -4,6 +4,7 @@ import { Subscription, Subject } from 'rxjs';
 import { BaseTabComponent } from './base.component';
 import { PrintableDatePipe } from '../../pipes';
 import { CommentService} from '../../services/comments.service';
+import { BusService } from '../../services/bus.service';
 
 const isDate = new RegExp(/^[12]\d{3}\-/);
 
@@ -34,6 +35,7 @@ export class CommentsTabComponent extends BaseTabComponent {
   constructor(
     private makeDate: PrintableDatePipe,
     private commentService: CommentService,
+    private bus: BusService,
     private cd: ChangeDetectorRef
   ) {
     super();
@@ -96,8 +98,16 @@ export class CommentsTabComponent extends BaseTabComponent {
         o[key] = v.substr(0, 10);
       }
     });
-    this.form.setValue(o);
-    this.initialValue = o;
+    this.bus.showEditor(o)
+      .then(data => this.commentService.save(data)
+        .subscribe(() => {
+          this.fetchData().add(() => this._emitChanges());
+          this.discard();
+        })
+      )
+      .catch(err => console.log('Editing cancelled', err));
+    // this.form.setValue(o);
+    // this.initialValue = o;
   }
 
   save() {
