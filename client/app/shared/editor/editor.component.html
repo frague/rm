@@ -1,29 +1,26 @@
 <div class="editor" *ngIf="isVisible">
-  <div class="row">
-    <div class="col-md-6">
-      <h1>Edit form</h1>
-      <form class="form" [formGroup]="form">
-        <div class="form-group">
-          <input class="form-control" type="text" name="source" formControlName="source" placeholder="Source">
-        </div>
-        <div class="form-group">
-          <textarea class="form-control" name="text" formControlName="text" placeholder="Content (required)" required rows="4" (keydown)="reposition($event)" (scroll)="reposition($event)"></textarea>
-        </div>
+  <div class="panes">
+    <h1>Edit form</h1>
+    <h1>Markdown</h1>
+    <form class="form" [formGroup]="form">
+      <div class="form-group">
+        <input class="form-control" type="text" name="source" formControlName="source" placeholder="Source">
+      </div>
+      <div class="form-group text">
+        <textarea class="form-control" name="text" formControlName="text" placeholder="Content (required)" required rows="4" (keydown)="reposition($event)" (scroll)="reposition($event)"></textarea>
+      </div>
+      <div class="form-check inline">
         <div class="buttons">
           <button type="" class="btn btn-primary" (click)="close(true)" [disabled]="!isFormValid()">Save</button>
           <button type="" class="btn btn-default" (click)="close()">Discard</button>
         </div>
-        <div class="form-check inline">
-          <label class="form-check-label">
-            <input class="form-check-input" type="checkbox" formControlName="isStatus">
-            This should be considered as a current status
-          </label>
-        </div>
-      </form>
-
-    </div>
-    <div class="col-md-6" #markdown>
-      <h1>Markdown</h1>
+        <label class="form-check-label">
+          <input class="form-check-input" type="checkbox" formControlName="isStatus">
+          This should be considered as a current status
+        </label>
+      </div>
+    </form>
+    <div class="markdown" #markdown>
       <h2>{{ editedValue.source }}</h2>
       <div class="md" [innerHTML]="editedValue.text|markdown"></div>
     </div>
