@@ -1,5 +1,4 @@
-import { Component, Input, Output, ViewChild, ElementRef, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, Input, Output, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Subscription, Subject } from 'rxjs';
 import { BaseTabComponent } from './base.component';
 import { PrintableDatePipe } from '../../pipes';
@@ -16,21 +15,10 @@ const isDate = new RegExp(/^[12]\d{3}\-/);
 export class CommentsTabComponent extends BaseTabComponent {
   @Input() key: string;
   @Input() callback: Subject<any> = new Subject();
-  @ViewChild('markdown') markdown: ElementRef;
 
   status: any = '';
   aggregated: any[] = [];
-  initialValue: any = null;
   commentsCount = 0;
-
-  form = new FormGroup({
-    _id: new FormControl(''),
-    login: new FormControl(''),
-    date: new FormControl(''),
-    isStatus: new FormControl(),
-    source: new FormControl(''),
-    text: new FormControl('', Validators.required)
-  });
 
   constructor(
     private makeDate: PrintableDatePipe,
@@ -100,34 +88,9 @@ export class CommentsTabComponent extends BaseTabComponent {
     });
     this.bus.showEditor(o)
       .then(data => this.commentService.save(data)
-        .subscribe(() => {
-          this.fetchData().add(() => this._emitChanges());
-          this.discard();
-        })
+        .subscribe(() => this.fetchData().add(() => this._emitChanges()))
       )
       .catch(err => console.log('Editing cancelled', err));
-    // this.form.setValue(o);
-    // this.initialValue = o;
-  }
-
-  save() {
-    this.commentService.save(this.form.value)
-      .subscribe(() => {
-        this.fetchData().add(() => this._emitChanges());
-        this.discard();
-      })
-  }
-
-  discard() {
-    this.initialValue = null;
-  }
-
-  isEditing() {
-    return null !== this.initialValue;
-  }
-
-  getVisibleRecords() {
-    return this.isEditing() ? [this.form.value] : this.aggregated;
   }
 
   getEmpty() {
@@ -139,26 +102,5 @@ export class CommentsTabComponent extends BaseTabComponent {
       source: '',
       text: ''
     }
-  }
-
-  isFormValid() {
-    return this.form.status !== 'INVALID';
-  }
-
-  showNoRecords() {
-    return !this.isEditing() && (!this.aggregated || !this.aggregated.length);
-  }
-
-  reposition(event: Event) {
-    setTimeout(() => {
-      let textarea = event.srcElement;
-      let markdown = this.markdown;
-      if (textarea && markdown) {
-        let percents = textarea.scrollTop / (textarea.scrollHeight - textarea.clientHeight);
-        let height = markdown.nativeElement.scrollHeight - markdown.nativeElement.clientHeight;
-        markdown.nativeElement.scrollTop = Math.round(percents * height);
-        this.cd.markForCheck();
-      }
-    }, 0);
   }
 }
