@@ -1,6 +1,14 @@
 <div>
   <div class="alert alert-info message" *ngIf="message">{{ message }}</div>
-  <h1><span (click)="showReport()">Show Report</span>Demand Planning Board</h1>
+  <div class="row">
+    <h1 class="col-md-7">
+      <span (click)="showReport()"><i class="fa fa-file-text-o"></i></span>
+      Demand Planning Board
+    </h1>
+    <div class="col-md-5">
+      <demand-plan [rowsLogins]="reserved" (planHasChanged)="setReservations($event)"></demand-plan>
+    </div>
+  </div>
 
   <assignment-modal></assignment-modal>
 
@@ -13,8 +21,6 @@
   <requisition-modal></requisition-modal>
 
   <report-modal [accountsDemand]="accountsDemand" [candidates]="candidates"></report-modal>
-
-  <demand-plan [rowsLogins]="reserved" (planHasChanged)="setReservations($event)"></demand-plan>
 
   <div class="row">
     <div class="col-md-2"></div>
