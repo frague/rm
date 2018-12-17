@@ -1,14 +1,14 @@
 <spinner [isShown]="isLoading">
   <div class="project comments">
-    <div class="new" *ngIf="!isEditing()">
+    <div class="new">
       <button class="btn btn-primary" (click)="edit(getEmpty())">Add</button>
     </div>
     <h2>{{ account }}</h2>
     <h6>{{ initiative }}</h6>
     <div
       class="comment"
-      *ngFor="let comment of getVisibleRecords()"
-      [ngClass]="{status: comment.isStatus, editing: isEditing()}"
+      *ngFor="let comment of aggregated"
+      [ngClass]="{status: comment.isStatus}"
        #markdown
     >
       <div class="date">
@@ -21,25 +21,6 @@
       <h6 *ngIf="comment.source">{{ comment.source }}</h6>
       <div class="md" [innerHTML]="comment.text|markdown"></div>
     </div>
-
-    <form class="form" [formGroup]="form" *ngIf="isEditing()">
-      <div class="form-group">
-        <input class="form-control" type="text" name="source" formControlName="source" placeholder="Source">
-      </div>
-      <div class="form-group">
-        <textarea class="form-control" name="text" formControlName="text" placeholder="Content (required)" required rows="4" (keydown)="reposition($event)" (scroll)="reposition($event)"></textarea>
-      </div>
-      <div class="buttons">
-        <button type="" class="btn btn-primary" (click)="save()" [disabled]="!isFormValid()">Save</button>
-        <button type="" class="btn btn-default" (click)="discard()">Discard</button>
-      </div>
-      <div class="form-check inline">
-        <label class="form-check-label">
-          <input class="form-check-input" type="checkbox" formControlName="isStatus">
-          This should be considered as a current status
-        </label>
-      </div>
-    </form>
 
     <div class="empty" *ngIf="false">No records found</div>
   </div>
