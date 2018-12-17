@@ -1,7 +1,10 @@
 <div class="editor" *ngIf="isVisible">
   <div class="panes">
     <h1>Edit form</h1>
-    <h1>Markdown</h1>
+    <h1>
+      Markdown
+      <button class="close" type="button" (click)="close()">&times;</button>
+    </h1>
     <form class="form" [formGroup]="form">
       <div class="form-group">
         <input class="form-control" type="text" name="source" formControlName="source" placeholder="Source">

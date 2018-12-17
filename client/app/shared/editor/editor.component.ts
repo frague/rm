@@ -25,28 +25,30 @@ export class EditorComponent {
   $visibility;
   isVisible = false;
   data: IEditedContent = {source: '', text: '', isStatus: false};
-  close = () => {};
+  close = (returnData=false) => {};
 
   constructor(private bus: BusService) {
 
   }
 
   resetClose() {
-    this.close = () => this.isVisible = false;
+    this.close = (returnData=false) => this.isVisible = false;
   }
 
   ngOnInit() {
     this.resetClose();
     this.$visibility = this.bus.editedContent.subscribe(({data, resolve, reject}) => {
-      // let _data = Object.assign({}, data);
       this.form.setValue(data);
+      this.manageListener(true);
       this.isVisible = true;
       this.close = (returnData = false) => {
         this.isVisible = false;
         this.resetClose();
         if (returnData) {
+          this.manageListener();
           resolve(this.editedValue);
         } else {
+          this.manageListener();
           reject();
         }
       };
@@ -55,6 +57,19 @@ export class EditorComponent {
 
   ngOnDestroy() {
     this.$visibility.unsubscribe();
+  }
+
+  manageListener(add = false) {
+    (add ? window.addEventListener : window.removeEventListener)('keyup', (event: KeyboardEvent) => this.hotKeysHandler(event));
+  }
+
+  hotKeysHandler(event: KeyboardEvent) {
+    console.log(event.key, event.ctrlKey, event.metaKey);
+    if (event.key === 'Escape') {
+      this.close();
+    } else if (event.key === 'Enter' && event.ctrlKey) {
+      this.close(true);
+    }
   }
 
   isFormValid() {

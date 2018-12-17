@@ -72,6 +72,11 @@ h1 {
     padding-top: 10px;
     cursor: pointer;
   }
+
+  i.fa {
+    font-size: 24px;
+    color: $body - #222;
+  }
 }
 
 h2 {
@@ -1116,8 +1121,6 @@ ul.tasks {
     i {
       @extend .clickable;
       float: right;
-      font-size: 16px;
-      color: $body - #222;
     }
   }
 
