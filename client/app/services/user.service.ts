@@ -3,8 +3,8 @@ import { Http, Headers, RequestOptions } from '@angular/http';
 
 import { BaseService } from './base.service';
 
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
+import { Observable } from 'rxjs';
+
 
 @Injectable()
 export class UserService extends BaseService {
