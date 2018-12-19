@@ -1,6 +1,6 @@
 import { ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription, from } from 'rxjs';
 
 import { BaseComponent } from './base.component';
 import { Utils } from './utils';
@@ -160,7 +160,7 @@ export class Schedule {
     this.isLoading = true;
     let queryString = JSON.stringify(query);
     let demandQuery = queryString.indexOf('demand') >= 0 || queryString.indexOf('comments') >= 0 ?
-      this.demandService.getAll(query) : Observable.from([[]]);
+      this.demandService.getAll(query) : from([[]]);
 
     let shift = serviceData['shift'];
     let withModifiers = Object.assign(query, {
@@ -260,7 +260,7 @@ export class Schedule {
         });
 
         // Fetch Initiatives
-        (this.initiativesData ? Observable.from([this.initiativesData]) : this.initiativeService.getAll()).subscribe(
+        (this.initiativesData ? from([this.initiativesData]) : this.initiativeService.getAll()).subscribe(
           data => {
             this.initiativesData = Array.from(data);
 
@@ -293,7 +293,7 @@ export class Schedule {
         );
 
         // Fetch resources
-        (this.resourcesData ? Observable.from([this.resourcesData]) : this.resourceService.getAll()).subscribe(
+        (this.resourcesData ? from([this.resourcesData]) : this.resourceService.getAll()).subscribe(
           data => {
             this.resourcesData = data;
 

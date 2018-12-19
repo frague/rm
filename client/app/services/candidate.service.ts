@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Http } from '@angular/http';
 import { BaseService } from './base.service';
 
@@ -13,16 +14,16 @@ export class CandidateService extends BaseService {
   getByRequisition(requisitionId: string): Observable<any> {
     return this
       .getAll({or: [{'$and':[{'candidate.requisitionId': requisitionId}]}]})
-      .map(res => {
-        return (res && res.length) ? res : [];
-      });
+      .pipe(
+        map(res => (res && res.length) ? res : [])
+      );
   }
 
   getByLogin(login: string): Observable<any> {
     return this
       .getAll({or: [{'$and':[{'candidate.login': login}]}]})
-      .map(res => {
-        return (res && res.length) ? res[0] : {};
-      });
+      .pipe(
+        map(res => (res && res.length) ? res[0] : {})
+      );
   }
 }

@@ -1,5 +1,5 @@
 import { Component, Input, EventEmitter } from '@angular/core';
-import { Observable } from 'rxjs';
+import { from } from 'rxjs';
 
 import { BaseTabComponent } from './base.component';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -59,7 +59,7 @@ export class CarreerTabComponent extends BaseTabComponent {
 
   fetchData() {
     let data = this.getState('carreer', this.bambooId) || null;
-    let fetcher = data ? Observable.from([data]) : this.carreerService.get(this.bambooId);
+    let fetcher = data ? from([data]) : this.carreerService.get(this.bambooId);
 
     this.isLoading = true;
     this.isForbidden = false;

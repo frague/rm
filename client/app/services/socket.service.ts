@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Socket } from 'ng-socket-io';
+import { Socket } from 'ng6-socket-io';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class SocketService {
@@ -13,10 +14,10 @@ export class SocketService {
   getMessage() {
     return this.socket
       .fromEvent('message')
-      .map((data: any) => {
+      .pipe(map((data: any) => {
         console.log(data);
         return data.msg;
-      });
+      }));
   }
 
   subscribe(callback) {

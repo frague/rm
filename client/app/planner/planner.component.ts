@@ -1,7 +1,7 @@
 import { Component, ViewChild, ElementRef, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { Schedule } from '../schedule';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
-import { Observable } from 'rxjs';
+import { from } from 'rxjs';
 
 import { ReportComponent } from './report.component';
 import { DemandPlanComponent } from './demandplan.component';
@@ -46,7 +46,6 @@ export class PlannerComponent extends Schedule {
   columns = ['pool', 'billable', 'onTrip', 'canTravel'];
 
   _cd: ChangeDetectorRef;
-  _bus;
   now;
 
   private _reset() {
@@ -61,7 +60,7 @@ export class PlannerComponent extends Schedule {
     this._reset();
     let queryString = JSON.stringify(query);
     let candidatesQuery = candidatesQueryKeys.some(key => queryString.indexOf(key + '.') >= 0) ?
-      this.candidateService.getAll(query) : Observable.from([[]]);
+      this.candidateService.getAll(query) : from([[]]);
 
     candidatesQuery.subscribe(data => {
       this.candidates = Object.keys(query).length
@@ -129,12 +128,7 @@ export class PlannerComponent extends Schedule {
   ) {
     super(assignmentService, resourceService, initiativeService, demandService, bus, cd);
     this._cd = cd;
-    // this._bus = bus;
   }
-
-  // showEditor() {
-  //   this._bus.showEditor({subject: 'Tests', content: 'TEst test', isStatus: true}).catch(err => {});
-  // }
 
   ngOnInit() {
     super.ngOnInit();

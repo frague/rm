@@ -1,10 +1,11 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClientModule } from '@angular/common/http';
+import { JwtModule } from '@auth0/angular-jwt';
 
 import { RoutingModule } from './routing.module';
 import { SharedModule } from './shared/shared.module';
-import { SocketIoModule, SocketIoConfig } from 'ng-socket-io';
+import { SocketIoModule, SocketIoConfig } from 'ng6-socket-io';
 import { ChartsModule } from 'ng4-charts/ng4-charts';
 
 import { AssignmentService } from './services/assignment.service';
@@ -81,7 +82,11 @@ import { AccountProjectTabComponent } from './modal/tabs/account-project-tab.com
 const config: SocketIoConfig = {
   url: ':3030',
   options: {}
-};
+}
+
+export function tokenGetter() {
+  return localStorage.getItem('token');
+}
 
 @NgModule({
   declarations: [
@@ -124,7 +129,14 @@ const config: SocketIoConfig = {
     ChartsModule,
     SharedModule,
     NgbModule.forRoot(),
-    SocketIoModule.forRoot(config)
+    SocketIoModule.forRoot(config),
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        whitelistedDomains: ['localhost:3030'],
+        blacklistedRoutes: []
+      }
+    })
   ],
   providers: [
     AuthService,

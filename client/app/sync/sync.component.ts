@@ -118,7 +118,7 @@ export class SyncComponent {
         this.form.get('backup').setValue({
           filename: file.name,
           filetype: file.type,
-          value: reader.result.split(',')[1]
+          value: (reader.result as string).split(',')[1]
         })
       };
     }

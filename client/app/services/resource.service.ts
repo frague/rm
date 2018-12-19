@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import { BaseService } from './base.service';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 
 @Injectable()
 export class ResourceService extends BaseService {
@@ -15,8 +17,8 @@ export class ResourceService extends BaseService {
   getByLogin(login: string): Observable<any> {
   	return this
   	  .getAll({or: [{'$and':[{login}]}]})
-      .map(res => {
-        return (res && res.length) ? res[0] : {};
-      });
+      .pipe(
+        map(res => (res && res.length) ? res[0] : {})
+      );
   }
 }

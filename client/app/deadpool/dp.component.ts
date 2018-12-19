@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BaseComponent } from '../base.component';
 import { DpService } from '../services/dp.service';
 import { PrintableDatePipe } from '../pipes';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription, forkJoin } from 'rxjs';
 
 import { DemandModal } from '../modal/demand-modal.component';
 import { RequisitionModal } from '../modal/requisition-modal.component';
@@ -45,7 +45,7 @@ export class DpComponent extends BaseComponent {
 
   getAll(criteria: any = {}): Subscription {
     this.reset();
-    return Observable.forkJoin(this.types.map(type => {
+    return forkJoin(this.types.map(type => {
       let query = Object.assign({type}, criteria);
       return this.dp.getAll(query);
     })).subscribe(
