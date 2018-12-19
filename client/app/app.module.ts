@@ -5,7 +5,7 @@ import { JwtModule } from '@auth0/angular-jwt';
 
 import { RoutingModule } from './routing.module';
 import { SharedModule } from './shared/shared.module';
-import { SocketIoModule, SocketIoConfig } from 'ng6-socket-io';
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { ChartsModule } from 'ng4-charts/ng4-charts';
 
 import { AssignmentService } from './services/assignment.service';
