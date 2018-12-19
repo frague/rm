@@ -49,6 +49,14 @@ body {
   color: $red;
 }
 
+button {
+  &:hover,
+  &:focus,
+  &:active {
+    outline: none !important;
+  }
+}
+
 a {
   &,
   &:hover,
