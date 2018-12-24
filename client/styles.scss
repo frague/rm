@@ -161,40 +161,51 @@ pre {
 
 .md {
   h1 {
-    font-weight: 900;
+    font-weight: 400;
+    font-size: 140%;
+
+  }
+  
+  h2 {
+    font-weight: 400;
+    font-size: 130%;
+  }
+  
+  h3 {
+    font-weight: 400;
     font-size: 120%;
   }
-  h2 {
-    font-weight: 800;
+  
+  h4 {
+    font-weight: 400;
     font-size: 110%;
   }
-  h3 {
-    font-weight: 700;
-    font-size: 105%;
-  }
-  h4 {
-    font-weight: 600;
-    font-size: 100%;
-  }
+  
   h5 {
-    font-weight: 500;
-    font-size: 100%;
+    font-weight: 400;
+    font-size: 110%;
   }
+  
   h6 {
     font-weight: 400;
     font-size: 100%;
   }
+  
   h1, h2, h3, h4, h5, h6 {
-    margin: 5px 0;
+    margin: 15px 0 5px 0;
     padding: 0;
-  }
-  p, ul, ol {
-    &:last-child {
-      margin-bottom: 0;
-    }
 
-    margin-top: 0;
-    margin-bottom: 10px;
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  p, ul, ol {
+    margin: 0;
+
+    & + p, & + ul, & + ol {
+      margin: 10px 0 0 0;
+    }
   }
 
   hr {
@@ -589,6 +600,7 @@ i.initiative {
 .dashboard {
   div.notes {
     background-color: $body - #080808;
+    padding-bottom: 15px;
   }
 }
 
@@ -1763,16 +1775,17 @@ div.bottom-corner {
       // @extend .shadow;
       position: fixed;
       right: 25px;
-      margin-top: -75px;
+      margin-top: -76px;
 
       &:active {
-        margin-top: -75px + $form-perspective - 1px;
+        margin-top: -76px + $form-perspective - 1px;
       }
 
       .notes & {
         margin-left: -62px;
         margin-top: -53px;
         right: unset;
+        position: absolute;
 
         &:active {
           margin-top: -53px + $form-perspective - 1px;
@@ -1782,7 +1795,15 @@ div.bottom-corner {
   }
 
   &.project {
-    h2 {
+    .new button {
+      margin-top: -73px;
+
+      &:active {
+        margin-top: -73px + $form-perspective - 1px;
+      }
+    }
+
+    & > h2 {
       margin-top: -3px;
 
       span {
@@ -1794,6 +1815,11 @@ div.bottom-corner {
   comment {
     &:nth-child(n + 3) > div {
       border-top: solid 1px $grid + #222;
+    }
+
+    h6 {
+      font-size: 100%;
+      font-weight: 800;  
     }
 
     & > div {
@@ -1926,7 +1952,8 @@ div.bottom-corner {
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: rgba(255, 255, 255, 0.9);
+  // background-color: rgba(255, 255, 255, 0.9);
+  background-color: $body;
   z-index: 1500;
 
   .panes {
@@ -1953,6 +1980,10 @@ div.bottom-corner {
     .markdown {
       overflow: auto;
       margin-left: 15px;
+
+      h2 {
+        margin-top: 0;
+      }
     }
 
     form {
