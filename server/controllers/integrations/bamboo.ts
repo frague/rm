@@ -29,8 +29,12 @@ export default class BambooIntegrationsCtrl {
           data.push(chunk);
         })
         .on('end', () => {
-          let body = parser.toJson(Buffer.concat(data).toString());
-          resolve(JSON.parse(body));
+          try {
+            let body = parser.toJson(Buffer.concat(data).toString());
+            return resolve(JSON.parse(body));
+          } catch (error) {
+            reject(error);
+          }
         })
         .on('error', error => {
           console.log('Error getting bamboo time offs');

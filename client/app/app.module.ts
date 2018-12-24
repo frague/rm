@@ -57,6 +57,7 @@ import { CandidatesComponent } from './candidates/candidates.component';
 import { EditorComponent } from './shared/editor/editor.component';
 import { SpinnerComponent } from './shared/spinner/spinner.component';
 import { RequisitionDemandComponent } from './candidates/requisition-demand.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 import { PersonModal } from './modal/person-modal.component';
 import { AssignmentModal } from './modal/assignment-modal.component';
@@ -115,6 +116,7 @@ export function tokenGetter() {
     EditorComponent,
     SpinnerComponent,
     RequisitionDemandComponent,
+    DashboardComponent,
 
     PersonModal, AssignmentModal, DemandModal, RequisitionModal, CommentsModal, CandidateModal,
 

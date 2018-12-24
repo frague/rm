@@ -580,6 +580,12 @@ i.initiative {
   }
 }
 
+.dashboard {
+  div.notes {
+    background-color: $body - #080808;
+  }
+}
+
 .assignments,
 .accounts,
 .planner {
@@ -1753,6 +1759,16 @@ div.bottom-corner {
       &:active {
         margin-top: -75px + $form-perspective - 1px;
       }
+
+      .notes & {
+        margin-left: -62px;
+        margin-top: -53px;
+        right: unset;
+
+        &:active {
+          margin-top: -53px + $form-perspective - 1px;
+        }
+      }
     }
   }
   
@@ -1770,6 +1786,10 @@ div.bottom-corner {
       height: 76px;
       overflow-x: hidden;
       overflow-y: auto;
+
+      .notes & {
+        height: 120px;
+      }
     }
 
     &.status {
