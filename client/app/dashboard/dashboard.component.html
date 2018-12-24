@@ -5,13 +5,13 @@
     <h2>Notes</h2>
     <spinner [isShown]="isLoading">
       <div class="comments">
-        <div class="new" *ngIf="!isEditing()">
+        <div class="new">
           <button class="btn btn-primary" (click)="edit(getEmpty())">Add</button>
         </div>
         <div
           class="comment"
-          *ngFor="let comment of getVisibleRecords()"
-          [ngClass]="{status: comment.isStatus, editing: isEditing()}"
+          *ngFor="let comment of aggregated"
+          [ngClass]="{status: comment.isStatus}"
            #markdown
         >
           <div class="date">
@@ -24,20 +24,6 @@
           <h6 *ngIf="comment.source">{{ comment.source }}</h6>
           <div class="md" [innerHTML]="comment.text|markdown"></div>
         </div>
-
-        <form class="form" [formGroup]="form" *ngIf="isEditing()">
-          <div class="form-group">
-            <input class="form-control" type="text" name="source" formControlName="source" placeholder="Source">
-          </div>
-          <div class="form-group">
-            <textarea class="form-control" name="text" formControlName="text" placeholder="Content (required)" required rows="4" (keydown)="reposition($event)" (scroll)="reposition($event)"></textarea>
-          </div>
-          <div class="form-group buttons">
-            <button class="btn btn-primary" (click)="save()" [disabled]="!isFormValid()">Save</button>
-            <button class="btn btn-default" (click)="discard()">Discard</button>
-          </div>
-        </form>
-
         <div class="empty" *ngIf="false">No records found</div>
       </div>
     </spinner>
