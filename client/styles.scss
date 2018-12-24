@@ -378,6 +378,12 @@ pre {
     h4.modal-title {
       font-weight: 300;
       line-height: 2;
+
+      i.fa {
+        font-size: 16px;
+        position: relative;
+        bottom: 4px;
+      }
     }
 
     h6 {
@@ -763,6 +769,9 @@ i.initiative {
       margin-top: $demandCardHeight;
 
       i.fa {
+        & + i.fa {
+          margin-left: 2px;
+        }
         font-size: 100%;
       }
 
@@ -1771,80 +1780,62 @@ div.bottom-corner {
       }
     }
   }
-  
+
   &.project {
     h2 {
       margin-top: -3px;
-    }
-  }
-  .comment {
-    padding: 10px 0 10px 100px;
-    margin: 0;
-    min-height: 52px;
 
-    &.editing {
-      height: 76px;
-      overflow-x: hidden;
-      overflow-y: auto;
-
-      .notes & {
-        height: 120px;
-      }
-    }
-
-    &.status {
-      background-color: $primary;
-    }
-
-    &:nth-child(n + 3) {
-      border-top: solid 1px $grid;
-    }
-
-    div.date {
-      float: left;
-      margin-left: -90px;
-      font-size: 12px;
-      font-weight: 600;
       span {
-        display: block;
-        text-align: center;
+        font-weight: 200;
       }
     }
   }
-  form {
-    margin-top: 15px;
 
-    .inline {
-      display: inline-block;
+  comment {
+    &:nth-child(n + 3) > div {
+      border-top: solid 1px $grid + #222;
     }
 
-    .buttons {
-      float: right;
+    & > div {
+      padding: 10px 0 10px 115px;
+      margin: 0;
+      min-height: 56px;
 
-      .btn {
-        margin-top: -2px;
+      &.status {
+        background-color: $primary;
+      }
+
+      div.info {
+        float: left;
+        margin-top: -5px;
+        margin-left: -100px;
+        width: 90px;
+
+        time {
+          font-size: 0.9rem;
+          font-weight: 100;
+        }
+        span {
+          display: block;
+          text-align: center;
+          clear: both;
+          a {
+            @extend .clickable;
+
+            color: $body - #222;
+            &:hover {
+              color: $link;
+            };
+
+            & + a {
+              margin-left: 6px;
+            }
+          }
+        }
       }
     }
   }
 }
-
-.comment {
-  .preview {
-    overflow: auto;
-    max-height: 250px;
-
-    background-color: #f8f8f8;
-    font-size: 12px;
-    padding: 4px;
-    min-height: 190px;
-
-    p {
-      margin-bottom: 6px;
-    }
-  }
-}
-
-
 
 .skills {
   h3 {

@@ -57,10 +57,6 @@ export class CommentsTabComponent extends BaseTabComponent {
       .add(() => this.cd.markForCheck());
   }
 
-  _confirmDeletion() {
-    return confirm('Are you sure you want to delete this note?\nYou won\'t be able to undo that.');
-  }
-
   _emitChanges() {
     this.callback.next({
       status: this.status,
@@ -68,29 +64,16 @@ export class CommentsTabComponent extends BaseTabComponent {
     });
   }
 
-  delete(item: any) {
-    if (this._confirmDeletion()) {
-      return this.commentService.delete(item)
-        .subscribe(() => {
-          this.fetchData().add(() => this._emitChanges());
-        });
-    }
+  commentCallback() {
+    return this.fetchData().add(() => this._emitChanges())
   }
 
-  edit(item: any) {
-    let o: any = Object.assign({}, item);
-    delete o.__v;
-    Object.keys(o).forEach(key => {
-      let v = o[key];
-      if (isDate.test(v)) {
-        o[key] = v.substr(0, 10);
-      }
-    });
-    this.bus.showEditor(o)
+  add() {
+    this.bus.showEditor(this.getEmpty())
       .then(data => this.commentService.save(data)
-        .subscribe(() => this.fetchData().add(() => this._emitChanges()))
+        .subscribe(() => this.commentCallback())
       )
-      .catch(err => console.log('Editing cancelled', err));
+      .catch(err => console.log('Adding cancelled', err));
   }
 
   getEmpty() {

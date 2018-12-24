@@ -32,6 +32,8 @@ import { RequisitionDemandService } from './services/requisitionDemand.service';
 import { AppComponent } from './app.component';
 import { SyncComponent } from './sync/sync.component';
 import { TaskComponent } from './sync/task.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { RequisitionDemandComponent } from './candidates/requisition-demand.component';
 import { InitiativeComponent } from './initiatives/initiative.component';
 import { AssignmentsComponent } from './assignments/assignments.component';
 import { PeopleComponent } from './people/people.component';
@@ -56,8 +58,7 @@ import { SkillsetComponent } from './planner/skillset.component';
 import { CandidatesComponent } from './candidates/candidates.component';
 import { EditorComponent } from './shared/editor/editor.component';
 import { SpinnerComponent } from './shared/spinner/spinner.component';
-import { RequisitionDemandComponent } from './candidates/requisition-demand.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
+import { CommentComponent } from './shared/comment/comment.component';
 
 import { PersonModal } from './modal/person-modal.component';
 import { AssignmentModal } from './modal/assignment-modal.component';
@@ -123,7 +124,7 @@ export function tokenGetter() {
     UserTabComponent, CommentsTabComponent, SkillsTabComponent, CarreerTabComponent,
     AssignmentTabComponent, AssignmentsTabComponent, HistoryTabComponent, DemandTabComponent,
     RequisitionTabComponent, CandidatesTabComponent, CandidateTabComponent,
-    DemandRequisitionTabComponent, AccountProjectTabComponent,
+    DemandRequisitionTabComponent, AccountProjectTabComponent, CommentComponent,
   ],
   imports: [
     RoutingModule,

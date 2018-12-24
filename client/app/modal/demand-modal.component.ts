@@ -9,6 +9,7 @@ const states = {
   true: 'Active',
   false: 'Inactive'
 };
+const pmoDemandUrl = 'https://pmo.griddynamics.net/dashboard/position/demand/view.action?cs_id=';
 
 @Component({
   selector: 'demand-modal',
@@ -60,5 +61,10 @@ export class DemandModal extends BaseModalComponent {
   getId() {
     let [num, ] = (this.demand.login || '_').split('_');
     return num;
+  }
+
+  getPmoLink() {
+    let id = this.getId();
+    return id ? pmoDemandUrl + id : null;
   }
 }

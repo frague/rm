@@ -1,0 +1,11 @@
+<div [ngClass]="{status: comment.isStatus}">
+  <div class="info">
+    <time [dateTime]="comment.date">{{ comment.date|date }}</time>
+    <span *ngIf="comment._id">
+      <a (click)="delete()"><i class="fa fa-trash"></i></a>
+      <a (click)="edit()"><i class="fa fa-pencil"></i></a>
+    </span>
+  </div>
+  <h6 *ngIf="comment.source">{{ comment.source }}</h6>
+  <div class="md" [innerHTML]="comment.text|markdown"></div>
+</div>

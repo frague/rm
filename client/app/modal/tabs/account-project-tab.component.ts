@@ -19,7 +19,7 @@ export class AccountProjectTabComponent extends CommentsTabComponent {
   @Input() state: any = {};
 
   _makeDate = {
-    transform: (date: any, format?: any) => ""
+    transform: (date: any, format?: any) => ''
   };
   _cd;
 

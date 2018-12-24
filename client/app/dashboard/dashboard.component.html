@@ -6,25 +6,14 @@
     <spinner [isShown]="isLoading">
       <div class="comments">
         <div class="new">
-          <button class="btn btn-primary" (click)="edit(getEmpty())">Add</button>
+          <button class="btn btn-primary" (click)="add()">Add</button>
         </div>
-        <div
-          class="comment"
+        <comment
           *ngFor="let comment of aggregated"
-          [ngClass]="{status: comment.isStatus}"
-           #markdown
-        >
-          <div class="date">
-            {{ comment.date|date }}
-            <span *ngIf="comment._id">
-              <a (click)="delete(comment)"><i class="fa fa-trash"></i></a>
-              <a (click)="edit(comment)"><i class="fa fa-pencil"></i></a>
-            </span>
-          </div>
-          <h6 *ngIf="comment.source">{{ comment.source }}</h6>
-          <div class="md" [innerHTML]="comment.text|markdown"></div>
-        </div>
-        <div class="empty" *ngIf="false">No records found</div>
+          [comment]="comment"
+          (callback)="commentCallback"
+        ></comment>
+        <div class="empty" *ngIf="!aggregated.length">No records found</div>
       </div>
     </spinner>
   </div>

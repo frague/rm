@@ -64,7 +64,6 @@ export class EditorComponent {
   }
 
   hotKeysHandler(event: KeyboardEvent) {
-    console.log(event.key, event.ctrlKey, event.metaKey);
     if (event.key === 'Escape') {
       this.close();
     } else if (event.key === 'Enter' && event.ctrlKey) {
