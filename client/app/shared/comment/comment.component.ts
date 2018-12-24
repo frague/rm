@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Subscription, Subject } from 'rxjs';
 import { PrintableDatePipe } from '../../pipes';
 import { CommentService} from '../../services/comments.service';
@@ -13,7 +13,7 @@ const isDate = new RegExp(/^[12]\d{3}\-/);
 })
 export class CommentComponent {
   @Input() comment = {};
-  @Input() callback: Function = () => {};
+  @Output() callback: EventEmitter<any> = new EventEmitter();
 
   constructor(
     private makeDate: PrintableDatePipe,
@@ -32,7 +32,7 @@ You won't be able to undo that - the data will be erased permanently.`);
     if (this._confirmDeletion()) {
       return this.commentService.delete(this.comment)
         .subscribe(
-          () => this.callback(),
+          () => this.callback.emit(),
           error => console.log('Error deleting the comment', error)
         );
     }
@@ -47,9 +47,9 @@ You won't be able to undo that - the data will be erased permanently.`);
         o[key] = v.substr(0, 10);
       }
     });
-    this.bus.showEditor(o)
+    return this.bus.showEditor(o)
       .then(data => this.commentService.save(data)
-        .subscribe(() => this.callback())
+        .subscribe(() => this.callback.emit())
       )
       .catch(err => console.log('Editing cancelled', err));
   }

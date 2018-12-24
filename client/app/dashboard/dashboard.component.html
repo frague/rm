@@ -11,7 +11,7 @@
         <comment
           *ngFor="let comment of aggregated"
           [comment]="comment"
-          (callback)="commentCallback"
+          (callback)="commentCallback()"
         ></comment>
         <div class="empty" *ngIf="!aggregated.length">No records found</div>
       </div>
