@@ -1804,7 +1804,7 @@ div.bottom-corner {
     }
 
     & > h2 {
-      margin-top: -3px;
+      margin: -3px 0 15px 0;
 
       span {
         font-weight: 200;
@@ -1981,7 +1981,7 @@ div.bottom-corner {
       overflow: auto;
       margin-left: 15px;
 
-      h2 {
+      & > h2 {
         margin-top: 0;
       }
     }
