@@ -18,6 +18,6 @@ export class DashboardComponent extends CommentsTabComponent {
     private auth: AuthService
   ) {
     super(makeDate, commentService, bus, cd);
-    this.key = 'notes_' + this.auth.currentUser.username;
+    this.key = '%notes_' + this.auth.currentUser.username;
   }
 }
