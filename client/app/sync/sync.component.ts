@@ -14,6 +14,7 @@ const tasks = {
       'vacations': {mandatory: false},
     }},
     'demand': {mandatory: false},
+    'accounts': {mandatory: false},
     'requisitions': {mandatory: false, default: false, dependants: {
       'candidates': {mandatory: false},
     }},

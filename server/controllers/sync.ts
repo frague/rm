@@ -2,6 +2,7 @@ import Initiative from '../models/initiative';
 import Resource from '../models/resource';
 import Assignment from '../models/assignment';
 import Demand from '../models/demand';
+import Comment from '../models/comment';
 import Candidate from '../models/candidate';
 import Requisition from '../models/requisition';
 import RequisitionDemand from '../models/requisitionDemand';
@@ -12,11 +13,9 @@ import BambooIntegrationsCtrl from './integrations/bamboo';
 import JobViteIntegrationsCtrl from './integrations/jobvite';
 
 import { IO } from '../io';
-import { fakeRes } from './fakeresponse';
-
 import { usPriorities } from './htmlparser';
-
 import * as convert from 'color-convert';
+import * as md5 from 'md5';
 import {
   replaceFromMap,
   accountsMap,
@@ -36,6 +35,7 @@ const cleanupLocation = new RegExp(/(^,\s*|,\s*$)/);
 const outdated = 1000 * 60 * 60 * 24 * 30 * 3;  // 3 months
 const reqId = new RegExp(/^.*(GD\d+).*$/, 'i');
 const dateExpr = new RegExp(/^\d{1,4}-\d{1,2}-\d{1,4}$/);
+const accountManagementSource = 'Account management';
 
 export default class SyncCtrl {
 
@@ -180,6 +180,20 @@ export default class SyncCtrl {
           .then(() => this._finishOverall('demand'));
       }
 
+      // Accounts projects management
+      if (this._setTimer('accounts')) {
+        this._threads['accounts'] = true;
+        await Comment.deleteMany({source: accountManagementSource, login: /^%/});
+        this._queryConfluenceAccounts()
+          .then(() => {
+            this._getDelay('accounts');
+          })
+          .catch(error => {
+            this._setError('accounts', error);
+          })
+          .then(() => this._finishOverall('accounts'));
+      }
+
       // Users
       if (this._setTimer('users')) {
         this._threads['users'] = true;
@@ -200,7 +214,7 @@ export default class SyncCtrl {
 
         // Whois on wiki (skype id, room, etc.)
         if (this._setTimer('whois')) {
-          this._whois = await this._queryConfluence()
+          this._whois = await this._queryConfluenceWhois()
             .catch(error => this._setError('whois', error));
           this._getDelay('whois');
         }
@@ -705,10 +719,14 @@ export default class SyncCtrl {
     });
   }
 
-  private _queryConfluence(): Promise<any> {
+  private _queryConfluenceWhois(): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        let whois: any[] = await this.wiki.getWhois().catch(reject);
+        let error;
+        let whois: any[] = await this.wiki.getWhois().catch(err => error = err);
+        if (error) {
+          return reject(error);
+        }
 
         this._addLog(whois.length + ' records fetched', 'whois');
 
@@ -717,6 +735,36 @@ export default class SyncCtrl {
           result[login] = { manager, skype, phone, room };
           return result;
         }, {}));
+      } catch (e) {
+        reject(e);
+      }
+    });
+  };
+
+  private _queryConfluenceAccounts(): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let error;
+        let now = new Date();
+        let projects: any[] = await this.wiki.getAccountManagement().catch(err => error = err);
+        if (error) {
+          return reject(error);
+        }
+
+        this._addLog(projects.length + ' records fetched', 'accounts');
+        projects.forEach(project => new Comment({
+          date: now,
+          login: '%' + md5(project.account) + '_' + md5(project.project),
+          source: accountManagementSource,
+          text: `Account Directors: ${project.ams}
+
+Delivery Directors: ${project.dds}
+
+Customer Partners: ${project.cp}
+
+Delivery Managers: ${project.dms}`
+        }).save());
+        resolve();
       } catch (e) {
         reject(e);
       }

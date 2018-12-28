@@ -1,6 +1,6 @@
 const request = require('request');
 const Confluence = require('confluence-api');
-import { htmlParse } from '../htmlparser';
+import { visasParse, accountsParse } from '../htmlparser';
 
 import { login, fillRequest } from './utils';
 
@@ -19,7 +19,7 @@ export default class ConfluenceIntegrationsCtrl {
     return new Promise((resolve, reject) => {
       confluence.getContentByPageTitle('HQ', 'New WhoIs', function(error, data) {
         if (error) {
-          reject(error);
+          return reject(error);
         }
 
         try {
@@ -41,15 +41,35 @@ export default class ConfluenceIntegrationsCtrl {
         expanders: ['body.view']
       }, function(error, data) {
         if (error) {
-          reject(error);
+          return reject(error);
         }
         try {
-          let visas = htmlParse(data.body.view.value);
+          let visas = visasParse(data.body.view.value);
           resolve(visas);
         } catch (e) {
           reject(e);
         }
       });
+    });
+  }
+
+  // Accounts management
+  getAccountManagement = (): Promise<any> => {
+    return new Promise((resolve, reject) => {
+      confluence.getCustomContentById({
+        id: '136693048',
+        expanders: ['body.view']
+      }, function(error, data) {
+        if (error) {
+          return reject(error);
+        }
+
+        try {
+          resolve(accountsParse(data.body.view.value));
+        } catch (e) {
+          reject(e);
+        }
+     });
     });
   }
 

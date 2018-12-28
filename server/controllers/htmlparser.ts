@@ -9,6 +9,7 @@ const amp = new RegExp(/&[a-z]+;/, 'gi');
 const whiteSpace = new RegExp(/\s+/, 'gi');
 const h3 = new RegExp(/<([/]?h3)[^>]*>/, 'gi');
 const table = new RegExp(/<([/]?table)[^>]*>/, 'gi');
+const tbody = new RegExp(/<([/]?tbody)[^>]*>/, 'gi');
 const tr = new RegExp(/(<[/]?tr[^>]*>){1,2}/, 'gi');
 const tick = new RegExp(/<img[^>]+check\.png[^>]*>/, 'gi');
 const date = new RegExp(/(\d{1,2}[\s\-]*[a-z]{3,}[\s\-]*\d{4})/, 'i');
@@ -30,6 +31,8 @@ export const usPriorities = {
   'L1': 3,
   'H-1b': 4,
 };
+
+
 
 const usTypes = Object.keys(usPriorities);
 const visaTypesKeys = Object.keys(visaTypes);
@@ -71,7 +74,7 @@ var addVisa = (where, type, till) => {
   });
 }
 
-export var htmlParse = (html: string) => {
+export var visasParse = (html: string) => {
   let headers = html.split(h3);
   let locations = {};
   for (var i = 0,l = headers.length; i < l; i++) {
@@ -128,4 +131,37 @@ export var htmlParse = (html: string) => {
     return visas;
   }, {});
 
+}
+
+export var accountsParse = (html: string) => {
+    let tableMarkup = (html.split(tbody) || ['', '', ''])[2];
+    let result = [];
+    if (tableMarkup) {
+      tableMarkup
+        .split(tr)
+        .map(line => stripTags(line.replace(/<\/td>/g, '|').replace(/<br[^>]*>/gi, '+')))
+        .forEach(line => {
+          let [account, project, ams, dds, cp, dms, timesheets, ] =
+            line.split('|').map(param =>
+              (param.includes('+') ?
+                              param.split('+').map(name => name.trim()).join(', ')
+                            :
+                              param.trim()) || '-'
+            );
+          if (account && project) {
+            result.push({
+              account,
+              project,
+              ams,
+              dds,
+              cp,
+              dms
+            });
+          }
+        });
+    } else {
+      console.log('Unable to parse accounts management data');
+    }
+
+    return result;
 }

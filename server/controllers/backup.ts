@@ -107,7 +107,7 @@ export default class BackupCtrl {
     ))
       .then(results => {
         // All system' comments start with '%' so exclude them
-        let ids = ['/^%/'].concat(...results);
+        let ids = [/^%/].concat(...results);
         Comment
           .deleteMany({login: {'$nin': ids}})
           .exec()
