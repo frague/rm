@@ -756,13 +756,12 @@ export default class SyncCtrl {
           date: now,
           login: '%' + md5(project.account) + '_' + md5(project.project),
           source: accountManagementSource,
-          text: `Account Directors: ${project.ams}
-
-Delivery Directors: ${project.dds}
-
-Customer Partners: ${project.cp}
-
-Delivery Managers: ${project.dms}`
+          text: [
+            project.ams && `Account Directors: ${project.ams}`,
+            project.dds && `Delivery Directors: ${project.dds}`,
+            project.cp && `Customer Partners: ${project.cp}`,
+            project.dms && `Delivery Managers: ${project.dms}`
+          ].filter(line => !!line).join('\n\n')
         }).save());
         resolve();
       } catch (e) {

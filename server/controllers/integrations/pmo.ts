@@ -36,6 +36,7 @@ export default class PmoIntegrationsCtrl {
           try {
             data = JSON.parse(body);
           } catch (e) {
+            console.log('Error', e);
             return reject(e);
           }
           resolve(data.data);
@@ -57,11 +58,17 @@ export default class PmoIntegrationsCtrl {
           let data;
           try {
             data = JSON.parse(body);
+            if (!data.data || !data.data.assignments) {
+              // No assignments
+              return resolve([]);
+            }
+
             resolve(data.data.assignments.sort((a, b) => {
               let [da, db] = [new Date(a.start), new Date(b.start)];
               return da < db ? 1 : -1;
             }));
           } catch (e) {
+            console.log('Error', e);
             return reject(e);
           }
         })

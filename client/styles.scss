@@ -1808,6 +1808,15 @@ div.bottom-corner {
 
       span {
         font-weight: 200;
+
+        &:not(:empty) {
+          &:before {
+            content: "(";
+          };
+          &:after {
+            content: ")";
+          };
+        };
       }
     }
   }

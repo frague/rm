@@ -3,7 +3,7 @@
     <div class="new">
       <button class="btn btn-primary" (click)="edit(getEmpty())">Add</button>
     </div>
-    <h2>{{ account }} <span>({{ initiative }})</span></h2>
+    <h2>{{ account }} <span>{{ initiative }}</span></h2>
     <comment
       *ngFor="let comment of aggregated"
       [comment]="comment"

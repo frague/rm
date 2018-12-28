@@ -143,20 +143,12 @@ export var accountsParse = (html: string) => {
         .forEach(line => {
           let [account, project, ams, dds, cp, dms, timesheets, ] =
             line.split('|').map(param =>
-              (param.includes('+') ?
-                              param.split('+').map(name => name.trim()).join(', ')
-                            :
-                              param.trim()) || '-'
+              param.includes('+') ?
+              param.split('+').map(name => name.trim()).join(', ') :
+              param.trim()
             );
           if (account && project) {
-            result.push({
-              account,
-              project,
-              ams,
-              dds,
-              cp,
-              dms
-            });
+            result.push({ account, project, ams, dds, cp, dms });
           }
         });
     } else {
