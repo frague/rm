@@ -68,6 +68,12 @@ a {
   }
 }
 
+i.fa-external-link-square {
+  position: relative;
+  bottom: 5px;
+  font-size: 70%; 
+}
+
 h1 {
   font-size: 32px;
   font-weight: 200;
@@ -165,32 +171,32 @@ pre {
     font-size: 140%;
 
   }
-  
+
   h2 {
     font-weight: 400;
     font-size: 130%;
   }
-  
+
   h3 {
     font-weight: 400;
     font-size: 120%;
   }
-  
+
   h4 {
     font-weight: 400;
     font-size: 110%;
   }
-  
+
   h5 {
     font-weight: 400;
     font-size: 110%;
   }
-  
+
   h6 {
     font-weight: 400;
     font-size: 100%;
   }
-  
+
   h1, h2, h3, h4, h5, h6 {
     margin: 15px 0 5px 0;
     padding: 0;
@@ -300,13 +306,19 @@ pre {
   }
 }
 
-.table thead th {
-  border-bottom: 2px solid $grid;
-  border-top: none;
-}
+.table {
+  thead th {
+    border-bottom: 2px solid $grid;
+    border-top: none;
+  }
 
-.table td {
-  border-top: 1px solid $grid;
+  td {
+    border-top: 1px solid $grid;
+  }
+
+  &.justified tr td:last-child() {
+    text-align: right;
+  }
 }
 
 .fade {

@@ -1,12 +1,12 @@
 <spinner [isShown]="isLoading">
   <h4>Requisition candidates</h4>
-  <table class="table">
+  <table class="table justified">
     <thead>
       <tr>
         <th>Name</th>
         <th>Status</th>
         <th>Location</th>
-        <th><i class="fa fa-external-link-square"></i></th>
+        <th>JobVite</th>
       </tr>
     </thead>
     <tbody>
@@ -14,7 +14,7 @@
         <td>{{ candidate.name }}</td>
         <td>{{ candidate.state }}, {{ candidate.updated|date }}</td>
         <td>{{ candidate.location }}</td>
-        <td><a [href]="getJvApplicationLink(candidate)" target="_blank"><i class="fa fa-external-link-square"></i></a></td>
+        <td><a [href]="getJvApplicationLink(candidate)" target="_blank">JV <i class="fa fa-external-link-square"></i></a></td>
       </tr>
     </tbody>
   </table>
