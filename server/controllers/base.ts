@@ -9,24 +9,41 @@ const valueModifiers = {
   'in': (key, value, [days]) => {
     let d = new Date();
     d.setDate(d.getDate() + +days);
-    return[key, { '$gte': new Date(), '$lt': d }];
+    return[key, { '$gte': new Date(), '$lt': d }, false];
   },
   'after': (key, value, [days]) => {
     let d = new Date();
     d.setDate(d.getDate() + +days);
-    return [key, { '$gte': d }];
+    return [key, { '$gte': d }, false];
   },
   'empty': (key, value) => {
-    return [key, null];
+    return [key, null, false];
   },
   'exists': (key, value) => {
-    return [key, { '$ne': null }];
+    return [key, { '$ne': null }, false];
+  },
+  'month': (key, value, [month]) => {
+    if (!/^\d+$/.test('' + month)) {
+      month = 1 + new Date().getMonth();
+    }
+    return [
+      key,
+      {
+        '$expr': {
+          '$eq': [
+            {'$month': '$' + key},
+            +month
+          ]
+        }
+      },
+      true
+    ];
   },
   'not': (key, value, [compValue]) => {
-    return [key, { '$ne': compValue }];
+    return [key, { '$ne': compValue }, false];
   },
   null: (key, value) => {
-    return [key, value];
+    return [key, value, false];
   }
 };
 
@@ -41,6 +58,7 @@ abstract class BaseCtrl {
     let inclusions = modifiers.include || [];
     let useWhitelist = inclusions.length > 0;
     let exclusions = useWhitelist ? [] : modifiers.exclude || [];
+    let skipKey;
 
     criteria.forEach(criterion => {
       if (!criterion) return;
@@ -49,11 +67,11 @@ abstract class BaseCtrl {
       let keyBase = key.replace(keywordExtender, '');
 
       // Values modifiers
-      [key, value] = this._modifyValue(key, value);
+      [key, value, skipKey] = this._modifyValue(key, value);
       if (typeof value === 'string' && !value.indexOf('/')) {
         value = new RegExp(value.replace(/^\/([^\/]+)\/i$/, '$1'), 'i');
       }
-      criterion = {[key]: value};
+      criterion = skipKey ? value : {[key]: value};
 
       if (key === andKey) {
         let and = this.modifyCriteria(value, modifiers, group);
@@ -85,6 +103,7 @@ abstract class BaseCtrl {
         or.push(criterion);
       }
     });
+    // console.log(JSON.stringify(or));
     return or;
   }
 
@@ -138,7 +157,7 @@ abstract class BaseCtrl {
         return modifier(key, value, this._getParameters(value));
       }
     }
-    return [key, value];
+    return [key, value, false];
   }
 
   _addGroup(group = {}, column: string) {

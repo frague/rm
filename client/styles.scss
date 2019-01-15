@@ -526,6 +526,10 @@ pre {
             margin-left: 100px;
             li {
               list-style: none;
+
+              i.fa {
+                margin-left: 5px;
+              }
             }
           }
         }
