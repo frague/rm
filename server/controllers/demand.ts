@@ -121,6 +121,7 @@ export default class DemandCtrl extends BaseCtrl {
             requestId: { '$push': '$requestId' },
             requirements: { '$first': '$requirements' },
             comment: { '$first': '$comment' },
+            comments: {'$first': '$comments'},
             specializations: { '$first': '$specializations' },
             candidates: { '$first': '$candidates' },
             login: { '$first': '$login' },
@@ -151,6 +152,33 @@ export default class DemandCtrl extends BaseCtrl {
         },
         {
           '$match': query
+        },
+        {
+          '$project': {
+            _id: 1,
+            account: 1,
+            name: 1,
+            pool: 1,
+            role: 1,
+            profile: 1,
+            project: 1,
+            start: 1,
+            end: 1,
+            deployment: 1,
+            stage: 1,
+            grades: 1,
+            locations: 1,
+            requestId: 1,
+            requirements: 1,
+            comment: 1,
+            specializations: 1,
+            candidates: 1,
+            login: 1,
+            commentsCount: 1,
+            status: 1,
+            billable: 1,
+            requisitionsStates: 1
+          }
         },
         {
           '$sort': {
