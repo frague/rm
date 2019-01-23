@@ -12,55 +12,57 @@
 
   <assignments-report-modal></assignments-report-modal>
 
-  <div class="row">
-    <div class="col-md-2"></div>
-    <div class="col-md-10"></div>
-  </div>
+  <spinner [isShown]="isLoading">
+    <div class="row">
+      <div class="col-md-2"></div>
+      <div class="col-md-10"></div>
+    </div>
 
-  <div class="assignments row" *ngIf="items.length">
-    <div class="col-md-2 people lines">
-      <div
-        *ngFor="let assignee of items; let i = index"
-        class="line"
-        [ngClass]="getAssignmentsCount(i)"
-        (click)="showResource(assignee)"
-      >
+    <div class="assignments row" *ngIf="items.length">
+      <div class="col-md-2 people lines">
         <div
-          class="corner"
-          (click)="showResource(assignee, true, $event)"
-          [ngClass]="{'has-status': assignee.status}"
-          container="body"
-          placement="top-left"
-          [ngbTooltip]="getCurrentStatus(assignee)"
+          *ngFor="let assignee of items; let i = index"
+          class="line"
+          [ngClass]="getAssignmentsCount(i)"
+          (click)="showResource(assignee)"
         >
-          <b>{{ assignee.commentsCount || '' }}</b>
+          <div
+            class="corner"
+            (click)="showResource(assignee, true, $event)"
+            [ngClass]="{'has-status': assignee.status}"
+            container="body"
+            placement="top-left"
+            [ngbTooltip]="getCurrentStatus(assignee)"
+          >
+            <b>{{ assignee.commentsCount || '' }}</b>
+          </div>
+          <i class="fa fa-globe" *ngIf="isOnTrip(assignee)"></i>
+          {{ makeCaption(assignee) }}
         </div>
-        <i class="fa fa-globe" *ngIf="isOnTrip(assignee)"></i>
-        {{ makeCaption(assignee) }}
       </div>
-    </div>
-    <div class="col-md-10 schedule" #schedule>
-      <div
-        [ngStyle]="getScheduleStyles()"
-        class="lines"
-        (click)="setMarker($event)"
-      >
-        <ol>
-          <li class="today" [ngStyle]="{left: todayOffset + 2 + 'px'}">{{ todayCaption }}</li>
-          <li class="marker" [ngStyle]="makeCaptionStyles(markerDateOffset)">{{ markerDateCaption }}</li>
-          <li *ngFor="let week of weekTitles">{{ week }}</li>
-        </ol>
+      <div class="col-md-10 schedule" #schedule>
+        <div
+          [ngStyle]="getScheduleStyles()"
+          class="lines"
+          (click)="setMarker($event)"
+        >
+          <ol>
+            <li class="today" [ngStyle]="{left: todayOffset + 2 + 'px'}">{{ todayCaption }}</li>
+            <li class="marker" [ngStyle]="makeCaptionStyles(markerDateOffset)">{{ markerDateCaption }}</li>
+            <li *ngFor="let week of weekTitles">{{ week }}</li>
+          </ol>
 
-        <div *ngFor="let assignee of items; let i = index" class="line" [ngClass]="getAssignmentsCount(i)">
-          <span *ngFor="let assignmentsGroup of getAssignmentsGroups(assignee.assignments)">
-            <initiative
-              *ngFor="let assignment of assignmentsGroup"
-              [data]="getAssignment(assignment)"
-              (click)="showAssignment(assignment, assignee.login, $event)"
-            ></initiative>
-          </span>
+          <div *ngFor="let assignee of items; let i = index" class="line" [ngClass]="getAssignmentsCount(i)">
+            <span *ngFor="let assignmentsGroup of getAssignmentsGroups(assignee.assignments)">
+              <initiative
+                *ngFor="let assignment of assignmentsGroup"
+                [data]="getAssignment(assignment)"
+                (click)="showAssignment(assignment, assignee.login, $event)"
+              ></initiative>
+            </span>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </spinner>
 </div>

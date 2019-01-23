@@ -74,7 +74,7 @@ export class Schedule {
   visibleAccounts = {};
   visibleInitiatives = {};
 
-  postFetch = query => {};
+  postFetch = query => from([]).subscribe();
 
   private $query;
 
@@ -158,6 +158,7 @@ export class Schedule {
 
   fetchData(query={}, fetchAll=false, serviceData={}): Subscription {
     this.isLoading = true;
+    let loadingParts = 2;
     let queryString = JSON.stringify(query);
     let demandQuery = queryString.indexOf('demand') >= 0 || queryString.indexOf('comments') >= 0 ?
       this.demandService.getAll(query) : from([[]]);
@@ -287,10 +288,13 @@ export class Schedule {
               return result;
             }, {});
             this.findVisibleAccounts();
-            this.cd.markForCheck();
           },
           error => console.log(error)
-        );
+        )
+          .add(() => {
+            this.isLoading = !!--loadingParts;
+            this.cd.markForCheck();
+          });
 
         // Fetch resources
         (this.resourcesData ? from([this.resourcesData]) : this.resourceService.getAll()).subscribe(
@@ -309,19 +313,22 @@ export class Schedule {
               result[person.login] = person;
               return result;
             }, {});
-            this.cd.markForCheck();
           },
           error => console.log(error)
-        ).add(() => this.postFetch(query));
+        ).add(() =>
+          this.postFetch(query)
+            .add(() => {
+              this.isLoading = !!--loadingParts;
+              this.cd.markForCheck();
+            })
+        );
 
         if (!fetchAll) {
           this.findVisibleAccounts();
         }
 
       });
-
-    })
-      .add(() => this.isLoading = false);
+    });
   }
 
   makeCaptionStyles(offset: number): Object {

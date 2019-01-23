@@ -13,48 +13,50 @@
     <div class="col-md-10"></div>
   </div>
 
-  <div class="accounts row" *ngIf="getAccounts().length">
-    <div class="people col-md-2">
-      <div class="account" *ngFor="let account of getAccounts()">
-        <h3>{{ account }}</h3>
-        <div class="lines">
-          <div
-            *ngFor="let initiative of getAccountInitiatives(account); let i = index"
-            class="line"
-            [ngClass]="getAssignmentsCount(initiative)"
-          >{{ getInitiativeCaption(initiative) }}</div>
+  <spinner [isShown]="isLoading">
+    <div class="accounts row" *ngIf="getAccounts().length">
+      <div class="people col-md-2">
+        <div class="account" *ngFor="let account of getAccounts()">
+          <h3>{{ account }}</h3>
+          <div class="lines">
+            <div
+              *ngFor="let initiative of getAccountInitiatives(account); let i = index"
+              class="line"
+              [ngClass]="getAssignmentsCount(initiative)"
+            >{{ getInitiativeCaption(initiative) }}</div>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="schedule col-md-10" #schedule>
-      <div
-        [ngStyle]="getScheduleStyles()"
-        class="lines"
-        (click)="setMarker($event)"
-      >
-        <ol>
-          <li class="today" [ngStyle]="makeCaptionStyles(todayOffset)">{{ todayCaption }}</li>
-          <li class="marker" [ngStyle]="makeCaptionStyles(markerDateOffset)">{{ markerDateCaption }}</li>
-          <li *ngFor="let week of weekTitles">{{ week }}</li>
-        </ol>
-        <div *ngFor="let account of getAccounts()" class="account">
+      <div class="schedule col-md-10" #schedule>
+        <div
+          [ngStyle]="getScheduleStyles()"
+          class="lines"
+          (click)="setMarker($event)"
+        >
+          <ol>
+            <li class="today" [ngStyle]="makeCaptionStyles(todayOffset)">{{ todayCaption }}</li>
+            <li class="marker" [ngStyle]="makeCaptionStyles(markerDateOffset)">{{ markerDateCaption }}</li>
+            <li *ngFor="let week of weekTitles">{{ week }}</li>
+          </ol>
+          <div *ngFor="let account of getAccounts()" class="account">
 
-          <div
-            *ngFor="let initiative of getAccountInitiatives(account); let i = index"
-            class="line"
-            [ngClass]="getAssignmentsCount(initiative)"
-          >
-            <span *ngFor="let login of getPersonInitiativeAssignments(initiative)">
-              <initiative
-                *ngFor="let assignment of initiativeAssignments[initiative._id][login]"
-                [data]="getAssignment(assignment)"
-                (click)="showAssignment(assignment, login, $event)"
-              ></initiative>
-            </span>
+            <div
+              *ngFor="let initiative of getAccountInitiatives(account); let i = index"
+              class="line"
+              [ngClass]="getAssignmentsCount(initiative)"
+            >
+              <span *ngFor="let login of getPersonInitiativeAssignments(initiative)">
+                <initiative
+                  *ngFor="let assignment of initiativeAssignments[initiative._id][login]"
+                  [data]="getAssignment(assignment)"
+                  (click)="showAssignment(assignment, login, $event)"
+                ></initiative>
+              </span>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </spinner>
 
 </div>

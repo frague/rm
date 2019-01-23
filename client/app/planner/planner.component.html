@@ -22,100 +22,102 @@
 
   <report-modal [accountsDemand]="accountsDemand" [candidates]="candidates"></report-modal>
 
-  <div class="row">
-    <div class="col-md-2"></div>
-    <div class="col-md-10"></div>
-  </div>
+  <spinner [isShown]="isLoading">
+    <div class="row">
+      <div class="col-md-2"></div>
+      <div class="col-md-10"></div>
+    </div>
 
-  <div class="planner row" *ngIf="items.length">
-    <div class="col-md-3 demands lines">
-      <div class="account" *ngFor="let account of getAccounts()">
-        <h3>{{ account }}</h3>
-        <div
-          *ngFor="let demand of accountsDemand[account]"
-          class="line"
-          (click)="showResource(demand)"
-          [ngClass]="getDemandStyles(demand)"
-        >
-          <time>{{ demand.start|date:'noyear' }}</time>
-          <div
-            class="corner"
-            (click)="showResource(demand, true, $event)"
-            [ngClass]="{'has-status': demand.status}"
-            container="body"
-            placement="top-left"
-            [ngbTooltip]="getCurrentStatus(demand)"
-          >
-            <b>{{ demand.commentsCount || '' }}</b>
-          </div>
-          <div
-            class="bottom-corner"
-            container="body"
-            placement="top-left"
-            [ngbTooltip]="getDemandCandidate(demand)"
-            *ngIf="getDemandCandidate(demand)"
-          >
-            <i class="fa fa-info-circle"></i>
-          </div>
-          <i class="fa fa-plane" *ngIf="isOnsite(demand)"></i>
-          {{ demand.name }} <u>{{ demand.project }}</u>
-          <span>
-            <ul class="requisitions" *ngIf="demand.requestId.length"><li *ngFor="let req of getDemandRequisitions(demand);let i = index"><a (click)="showRequisition(req, $event)" [ngClass]="showReqStatus(demand, i)">{{ req }}</a></li></ul>
-            {{ getDemandAttrs(demand) }}
-          </span>
-          <span [title]="demand.comment">{{ demand.comment || demand.requirements }}</span>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-9 candidates">
-      <div class="lines" [ngStyle]="{width: (candidatesCount * cardWidth) + 'px'}">
-        <ol #sticky [ngStyle]="{top: bofOffset}" [ngClass]="{sticky: bofOffset !== 'auto'}">
-          <li
-            *ngFor="let candidate of candidates;let x = index"
-            (click)="showResource(candidate)"
-            [ngClass]="getCardClass(candidate)"
-          >
-            <avatar [login]="candidate.login" [useDefault]="candidate.isHiree">
-              <a (click)="showRequisition(candidate.requisitionId, $event)" *ngIf="candidate.requisitionId">
-                {{ candidate.requisitionId }}
-              </a>
-              <span *ngIf="candidate.starts">{{ candidate.starts|date }}</span>
-            </avatar>
-            {{ candidate.name }}
-            <span>
-              <i class="fa fa-globe" *ngIf="candidate.onTrip"></i>
-              <i class="fa fa-plane" *ngIf="candidate.canTravel"></i>
-              {{ getCandidateCaption(candidate) }}
-            </span>
-            <div
-              class="status"
-              container="body"
-              placement="top-right"
-              [ngbTooltip]="getCurrentStatus(candidate)"
-              (click)="showResource(candidate, true, $event)"
-            >
-              <div
-                class="corner"
-                [ngClass]="{'has-status': candidate.status}"
-              >
-                <b>{{ candidate.commentsCount || '' }}</b>
-              </div>
-              <span [innerHTML]="getCurrentStatus(candidate)|markdown"></span>
-            </div>
-          </li>
-        </ol>
+    <div class="planner row" *ngIf="items.length">
+      <div class="col-md-3 demands lines">
         <div class="account" *ngFor="let account of getAccounts()">
-          <div *ngFor="let demand of accountsDemand[account]" class="line">
+          <h3>{{ account }}</h3>
+          <div
+            *ngFor="let demand of accountsDemand[account]"
+            class="line"
+            (click)="showResource(demand)"
+            [ngClass]="getDemandStyles(demand)"
+          >
+            <time>{{ demand.start|date:'noyear' }}</time>
             <div
-              *ngFor="let candidate of candidates"
-              (click)="reserve(candidate, demand)"
-              [ngClass]="getCheckStyles(candidate, demand)"
+              class="corner"
+              (click)="showResource(demand, true, $event)"
+              [ngClass]="{'has-status': demand.status}"
+              container="body"
+              placement="top-left"
+              [ngbTooltip]="getCurrentStatus(demand)"
             >
-              <i class="fa fa-check"></i>&nbsp;
+              <b>{{ demand.commentsCount || '' }}</b>
+            </div>
+            <div
+              class="bottom-corner"
+              container="body"
+              placement="top-left"
+              [ngbTooltip]="getDemandCandidate(demand)"
+              *ngIf="getDemandCandidate(demand)"
+            >
+              <i class="fa fa-info-circle"></i>
+            </div>
+            <i class="fa fa-plane" *ngIf="isOnsite(demand)"></i>
+            {{ demand.name }} <u>{{ demand.project }}</u>
+            <span>
+              <ul class="requisitions" *ngIf="demand.requestId.length"><li *ngFor="let req of getDemandRequisitions(demand);let i = index"><a (click)="showRequisition(req, $event)" [ngClass]="showReqStatus(demand, i)">{{ req }}</a></li></ul>
+              {{ getDemandAttrs(demand) }}
+            </span>
+            <span [title]="demand.comment">{{ demand.comment || demand.requirements }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-9 candidates">
+        <div class="lines" [ngStyle]="{width: (candidatesCount * cardWidth) + 'px'}">
+          <ol #sticky [ngStyle]="{top: bofOffset}" [ngClass]="{sticky: bofOffset !== 'auto'}">
+            <li
+              *ngFor="let candidate of candidates;let x = index"
+              (click)="showResource(candidate)"
+              [ngClass]="getCardClass(candidate)"
+            >
+              <avatar [login]="candidate.login" [useDefault]="candidate.isHiree">
+                <a (click)="showRequisition(candidate.requisitionId, $event)" *ngIf="candidate.requisitionId">
+                  {{ candidate.requisitionId }}
+                </a>
+                <span *ngIf="candidate.starts">{{ candidate.starts|date }}</span>
+              </avatar>
+              {{ candidate.name }}
+              <span>
+                <i class="fa fa-globe" *ngIf="candidate.onTrip"></i>
+                <i class="fa fa-plane" *ngIf="candidate.canTravel"></i>
+                {{ getCandidateCaption(candidate) }}
+              </span>
+              <div
+                class="status"
+                container="body"
+                placement="top-right"
+                [ngbTooltip]="getCurrentStatus(candidate)"
+                (click)="showResource(candidate, true, $event)"
+              >
+                <div
+                  class="corner"
+                  [ngClass]="{'has-status': candidate.status}"
+                >
+                  <b>{{ candidate.commentsCount || '' }}</b>
+                </div>
+                <span [innerHTML]="getCurrentStatus(candidate)|markdown"></span>
+              </div>
+            </li>
+          </ol>
+          <div class="account" *ngFor="let account of getAccounts()">
+            <div *ngFor="let demand of accountsDemand[account]" class="line">
+              <div
+                *ngFor="let candidate of candidates"
+                (click)="reserve(candidate, demand)"
+                [ngClass]="getCheckStyles(candidate, demand)"
+              >
+                <i class="fa fa-check"></i>&nbsp;
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </spinner>
 </div>
