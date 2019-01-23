@@ -1,6 +1,6 @@
 import { ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subscription, from } from 'rxjs';
+import { Subscription, from, zip } from 'rxjs';
 
 import { BaseComponent } from './base.component';
 import { Utils } from './utils';
@@ -54,6 +54,7 @@ export class Schedule {
   isScrolled = false;
   isCalculated = false;
   isLoading = false;
+  loadingCounter = 0;
 
   items = [];
   resources = [];
@@ -100,6 +101,7 @@ export class Schedule {
 
   ngAfterViewChecked() {
     if (this.schedule && !this.isScrolled && this.todayOffset && this.isCalculated) {
+      console.log(-1000);
       this.schedule.nativeElement.scrollTo(this.todayOffset - window.innerWidth / 2.5, 0);
       this.isScrolled = true;
     }
@@ -126,7 +128,7 @@ export class Schedule {
     delete clean.width;
     delete clean.__v;
     clean.comment = clean.comment || '';
-    this.cd.markForCheck();
+    this.markForCheck();
     return clean;
   }
 
@@ -146,7 +148,6 @@ export class Schedule {
       this.initiativesData = null;
       this.resourcesData = null;
     }
-    // this.cd.markForCheck();
   }
 
   findVisibleAccounts() {
@@ -156,11 +157,21 @@ export class Schedule {
     );
   }
 
+  _oneLoaded() {
+    this.isLoading = !!--this.loadingCounter;
+    if (!this.isLoading) {
+      this.markForCheck();
+    }
+  }
+
   fetchData(query={}, fetchAll=false, serviceData={}): Subscription {
+    console.log('Fetch data');
     this.isLoading = true;
-    let loadingParts = 2;
+    this.loadingCounter = 2;
+    this.markForCheck();
+    
     let queryString = JSON.stringify(query);
-    let demandQuery = queryString.indexOf('demand') >= 0 || queryString.indexOf('comments') >= 0 ?
+    let demandQuery = queryString.indexOf('demand=false') < 0 && (queryString.indexOf('demand') >= 0 || queryString.indexOf('comments') >= 0) ?
       this.demandService.getAll(query) : from([[]]);
 
     let shift = serviceData['shift'];
@@ -291,10 +302,7 @@ export class Schedule {
           },
           error => console.log(error)
         )
-          .add(() => {
-            this.isLoading = !!--loadingParts;
-            this.cd.markForCheck();
-          });
+          .add(() => this._oneLoaded());
 
         // Fetch resources
         (this.resourcesData ? from([this.resourcesData]) : this.resourceService.getAll()).subscribe(
@@ -317,15 +325,11 @@ export class Schedule {
           error => console.log(error)
         ).add(() =>
           this.postFetch(query)
-            .add(() => {
-              this.isLoading = !!--loadingParts;
-              this.cd.markForCheck();
-            })
-        );
+            .add(() => this._oneLoaded()));
 
-        if (!fetchAll) {
-          this.findVisibleAccounts();
-        }
+        // if (!fetchAll) {
+        //   this.findVisibleAccounts();
+        // }
 
       });
     });

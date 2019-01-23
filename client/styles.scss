@@ -1962,12 +1962,18 @@ div.bottom-corner {
 }
 
 .spinner {
+  &.loading .content {
+    filter: grayscale(100%);
+    opacity: 0.8;
+  }
+
   & > i.fa {
     position: absolute;
     left: 50%;
     margin-left: -40px;
     margin-top: 50px;
     font-size: 80px;
+    z-index: 1000;
   }
 }
 
