@@ -15,7 +15,7 @@
     </button>
   </div>
   <div class="col-md-8 col-lg-9">
-    <div class="log" [ngClass]="hasErrors && 'error'" #log>
+    <div class="log" [ngClass]="{error: hasErrors}" #log>
       <ol>
         <li *ngFor="let log of logs" [ngClass]="getLogStyle(log)">{{ log }}</li>
       </ol>

@@ -11,7 +11,7 @@
               &rarr;
               {{ diff.diff[key][1]|ellipsis:'...' }}
             </ng-container>
-            <i *ngIf="key === 'payRate'" class="fa fa-eye" [title]="diff.diff[key][0] + ' &rarr; ' + diff.diff[key][1]"></i>
+            <i *ngIf="key === 'payRate'" class="fa fa-eye" [ngbTooltip]="diff.diff[key][0] + ' &rarr; ' + diff.diff[key][1]"></i>
           </li>
           <li *ngIf="diff.diff == 1">added</li>
           <li *ngIf="diff.diff == -1">removed</li>

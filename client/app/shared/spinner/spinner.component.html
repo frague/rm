@@ -1,4 +1,6 @@
-<div class="spinner">
+<div class="spinner" [ngClass]="{loading: isShown}">
   <i *ngIf="isShown" class="fa fa-spinner fa-spin"></i>
-  <ng-content *ngIf="!isShown"></ng-content>
+  <div class="content">
+    <ng-content *ngIf="!isShown || showContent"></ng-content>
+  </div>
 </div>

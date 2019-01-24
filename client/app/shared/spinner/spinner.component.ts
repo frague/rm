@@ -6,4 +6,5 @@ import { Component, Input } from '@angular/core';
 })
 export class SpinnerComponent {
   @Input() isShown = false;
+  @Input() showContent = false;
 }

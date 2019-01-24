@@ -62,7 +62,7 @@ export class PlannerComponent extends Schedule {
     let candidatesQuery = candidatesQueryKeys.some(key => queryString.indexOf(key + '.') >= 0) ?
       this.candidateService.getAll(query) : from([[]]);
 
-    candidatesQuery.subscribe(data => {
+    return candidatesQuery.subscribe(data => {
       this.candidates = Object.keys(query).length
         ?
           this.items
