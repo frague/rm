@@ -29,6 +29,9 @@ const defaultColumns = [
 ];
 const columnName = new RegExp(/^[a-z.]+$/, 'i');
 
+// const billableStatuses = ['Billable', 'Booked', 'PTO Coverage', 'Funded'];
+const billableStatuses = ['Billable', 'Booked', 'PTO Coverage'];
+
 export default class AssignmentCtrl extends BaseCtrl {
   model = Assignment;
 
@@ -230,7 +233,7 @@ export default class AssignmentCtrl extends BaseCtrl {
               '$cond': {
                 if: {
                   '$and': [
-                    {'$in': ['$assignment.billability', ['Billable', 'Booked', 'PTO Coverage', 'Funded']]},
+                    {'$in': ['$assignment.billability', billableStatuses]},
                     {'$gt': ['$assignment.involvement', 0]}
                   ]
                 },
