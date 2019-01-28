@@ -165,11 +165,10 @@ export class Schedule {
   }
 
   fetchData(query={}, fetchAll=false, serviceData={}): Subscription {
-    console.log('Fetch data');
     this.isLoading = true;
     this.loadingCounter = 2;
     this.markForCheck();
-    
+
     let queryString = JSON.stringify(query);
     let demandQuery = queryString.indexOf('demand=false') < 0 && (queryString.indexOf('demand') >= 0 || queryString.indexOf('comments') >= 0) ?
       this.demandService.getAll(query) : from([[]]);

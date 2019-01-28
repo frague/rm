@@ -617,6 +617,11 @@ i.initiative {
   & > div {
     background-color: $body - #080808;
     padding-bottom: 15px;
+    border-left: solid 1px $body;
+
+    &:first-child {
+      border-left: 0;
+    }
   }
 }
 
