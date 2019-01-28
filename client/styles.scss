@@ -614,7 +614,7 @@ i.initiative {
 }
 
 .dashboard {
-  div.notes {
+  & > div {
     background-color: $body - #080808;
     padding-bottom: 15px;
   }
@@ -1797,7 +1797,7 @@ div.bottom-corner {
         margin-top: -76px + $form-perspective - 1px;
       }
 
-      .notes & {
+      comments-widget & {
         margin-left: -62px;
         margin-top: -53px;
         right: unset;

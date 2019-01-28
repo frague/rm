@@ -81,6 +81,9 @@ import { CandidateTabComponent } from './modal/tabs/candidate-tab.component';
 import { DemandRequisitionTabComponent } from './modal/tabs/demand-requisition-tab.component';
 import { AccountProjectTabComponent } from './modal/tabs/account-project-tab.component';
 
+import { QueryWidget } from './dashboard/query.widget';
+import { CommentsWidget } from './dashboard/comments.widget';
+
 const config: SocketIoConfig = {
   url: ':3030',
   options: {}
@@ -125,6 +128,8 @@ export function tokenGetter() {
     AssignmentTabComponent, AssignmentsTabComponent, HistoryTabComponent, DemandTabComponent,
     RequisitionTabComponent, CandidatesTabComponent, CandidateTabComponent,
     DemandRequisitionTabComponent, AccountProjectTabComponent, CommentComponent,
+
+    QueryWidget, CommentsWidget,
   ],
   imports: [
     RoutingModule,
