@@ -101,7 +101,6 @@ export class Schedule {
 
   ngAfterViewChecked() {
     if (this.schedule && !this.isScrolled && this.todayOffset && this.isCalculated) {
-      console.log(-1000);
       this.schedule.nativeElement.scrollTo(this.todayOffset - window.innerWidth / 2.5, 0);
       this.isScrolled = true;
     }

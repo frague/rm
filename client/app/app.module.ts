@@ -82,6 +82,7 @@ import { DemandRequisitionTabComponent } from './modal/tabs/demand-requisition-t
 import { AccountProjectTabComponent } from './modal/tabs/account-project-tab.component';
 
 import { QueryWidget } from './dashboard/query.widget';
+import { BirthdaysWidget } from './dashboard/birthdays.widget';
 import { CommentsWidget } from './dashboard/comments.widget';
 
 const config: SocketIoConfig = {
@@ -129,7 +130,7 @@ export function tokenGetter() {
     RequisitionTabComponent, CandidatesTabComponent, CandidateTabComponent,
     DemandRequisitionTabComponent, AccountProjectTabComponent, CommentComponent,
 
-    QueryWidget, CommentsWidget,
+    QueryWidget, BirthdaysWidget, CommentsWidget,
   ],
   imports: [
     RoutingModule,

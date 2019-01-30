@@ -7,7 +7,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let resource of items">
+      <tr *ngFor="let resource of items" [ngClass]="getLineClass(resource)">
         <td *ngFor="let column of keys"><span class="md" [innerHTML]="resource|column:column|markdown" *ngIf="resource|column:column"></span></td>
       </tr>
     </tbody>

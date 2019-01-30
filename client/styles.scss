@@ -623,6 +623,15 @@ i.initiative {
       border-left: 0;
     }
   }
+
+  .query-widget {
+    tr.past td {
+      opacity: 0.5;
+    }
+    tr.today td {
+      color: $red;
+    }
+  }
 }
 
 .assignments,

@@ -31,10 +31,6 @@ export class QueryWidget {
   demands = [];
   resources = [];
 
-  private _clickability = {
-    name: this.showUser
-  };
-
   constructor(
     assignmentsService: AssignmentService,
     candidatesService: CandidateService,
@@ -81,32 +77,7 @@ export class QueryWidget {
     return data;
   }
 
-  getClasses(name: string) {
-    return {
-      clickable: this.isClickable(name),
-      name: name === 'name'
-    };
+  getLineClass(item): string|object {
+    return '';
   }
-
-  click(name: string, line: any) {
-    const handler = this._clickability[name];
-    if (handler) {
-      handler.call(this, name, line);
-    }
-  }
-
-  isClickable(name: string): boolean {
-    return Object.keys(this._clickability).includes(name);
-  }
-
-  showUser(name: string, line: any) {
-    return this.showResource(line);
-  }
-
-  showComments(candidate, event: MouseEvent) {
-    event.stopPropagation();
-    this.personModal.show(candidate.login, 'comments');
-  }
-
-
 }
