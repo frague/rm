@@ -1171,7 +1171,7 @@ ul.tasks {
   }
 }
 
-.people {
+.people, .query-widget {
 
   h1 {
     i {
@@ -1528,6 +1528,12 @@ div.bottom-corner {
   }
   .dropdown-toggle::after {
     margin-left: 0px;
+  }
+  .dropdown-menu {
+    @extend .shadow;
+  }
+  .dropdown-item {
+    @extend .clickable;
   }
 
   small {

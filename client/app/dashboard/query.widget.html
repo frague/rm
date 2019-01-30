@@ -1,8 +1,15 @@
 <h2>{{ title }}</h2>
-<spinner [isShown]="isLoading">
+<spinner [isShown]="isLoading" class="query-widget">
   <table class="query table">
+    <thead>
+      <tr>
+        <th *ngFor="let column of keys">{{ tableColumns[column]|deCamel }}</th>
+      </tr>
+    </thead>
     <tbody>
-      <tr></tr>
+      <tr *ngFor="let resource of items">
+        <td *ngFor="let column of keys"><span class="md" [innerHTML]="resource|column:column|markdown" *ngIf="resource|column:column"></span></td>
+      </tr>
     </tbody>
   </table>
 </spinner>
