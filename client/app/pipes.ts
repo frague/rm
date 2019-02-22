@@ -106,6 +106,9 @@ export class ColumnPipe implements PipeTransform {
           return `**${value.type}**: ${formatDate(value.till)}`;
         }
         return '';
+      case 'assignment':
+        [, secondary] = name.split('.');
+        value = line['assignments'];
       case 'assignments':
         if (value) {
           return Object.keys(value)
@@ -154,7 +157,7 @@ export class ColumnPipe implements PipeTransform {
     if (typeof value !== 'string') {
       value = new String(value).toString();
     }
-    return value === 'undefined' ? '' : value;
+    return ['undefined', 'null'].includes(value) ? '' : value;
   }
 }
 

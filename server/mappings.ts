@@ -164,13 +164,14 @@ export var locationsMap = {
   'Menlo Park': 'US',
   'Kharkov': 'KHR',
   'Krakow': 'KR',
+  'Wroclaw': 'WR',
   'Kyiv': 'KY',
   'Lviv': 'LV',
   'Belgrade': 'BEL'
 };
 
 export var locations = [
-  'SPB', 'SAR', 'KHA', 'LV', 'KR', 'US', 'BEL'
+  'SPB', 'SAR', 'KHA', 'LV', 'KR', 'US', 'BEL', 'WR'
 ];
 
 export var visasCols = {
@@ -222,6 +223,7 @@ export const requisitionsLocations = {
   'Belgrade, Serbia': 'BEL',
   'Kharkov, Ukraine': 'KHR',
   'Krakow, Poland': 'KR',
+  'Wroclaw, Poland': 'WR',
   'Lviv, Ukraine': 'LV',
   'Saratov, Russia': 'SAR',
   'St. Petersburg, Russia': 'SPB',
