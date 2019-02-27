@@ -159,19 +159,20 @@ export var months = [
 ];
 
 export var locationsMap = {
-  'Saratov': 'SAR',
   'Saint-Petersburg': 'SPB',
   'Menlo Park': 'US',
+  'Belgrade': 'BEL',
+  'Wroclaw': 'WR',
+  'Saratov': 'SAR',
   'Kharkov': 'KHR',
   'Krakow': 'KR',
   'Wroclaw': 'WR',
   'Kyiv': 'KY',
   'Lviv': 'LV',
-  'Belgrade': 'BEL'
 };
 
 export var locations = [
-  'SPB', 'SAR', 'KHA', 'LV', 'KR', 'US', 'BEL', 'WR'
+  'SPB', 'SAR', 'KHA', 'LV', 'KR', 'US', 'BEL', 'WR',
 ];
 
 export var visasCols = {
@@ -219,7 +220,7 @@ export const requisitionsAvailability = [
 ];
 
 export const requisitionsLocations = {
-  'All Offshore': 'BEL, KHR, KR, LV, SAR, SPB',
+  'All Offshore': 'BEL, KHR, KR, LV, SAR, SPB, WR',
   'Belgrade, Serbia': 'BEL',
   'Kharkov, Ukraine': 'KHR',
   'Krakow, Poland': 'KR',
@@ -249,12 +250,12 @@ export const requisitionsLocations = {
 };
 
 export const candidateStates = {
-  'Pre-Screening Test': '01 Prescreening',
-  'Screened': '02 Screened',
-  'Submitted to Interviewers': '03 Interview',
-  'Approved by Interviewers by CV': '04 Approved by CV',
-  'Submitted to Hiring Manager': '05 Passed to HM',
-  'Approved by Hiring Manager': '06 Approved by HM',
+  // 'Pre-Screening Test': '01 Prescreening',
+  // 'Screened': '02 Screened',
+  // 'Submitted to Interviewers': '03 Interview',
+  // 'Approved by Interviewers by CV': '04 Approved by CV',
+  // 'Submitted to Hiring Manager': '05 Passed to HM',
+  // 'Approved by Hiring Manager': '06 Approved by HM',
   'HR Interview': '07 HR Interview',
   'Technical Interview': '08 Tech. Interview',
   'Non-Technical Interview': '09 Non-Tech. Interview',

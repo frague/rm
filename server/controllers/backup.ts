@@ -109,9 +109,10 @@ export default class BackupCtrl {
         // All system' comments start with '%' so exclude them
         let ids = [/^%/].concat(...results);
         Comment
-          .deleteMany({login: {'$nin': ids}})
+          .find({login: {'$nin': ids}})
           .exec()
           .then(data => {
+            console.log(data);
             res.json({deleted: data.deletedCount});
           });
       })
