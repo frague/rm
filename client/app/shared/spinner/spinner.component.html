@@ -1,7 +1,7 @@
 <div class="spinner" [ngClass]="{loading: isShown}">
   <span *ngIf="isShown">
     <i class="fa fa-circle-o-notch fa-spin"></i>
-    {{ timer }}s
+    <time>{{ timer }}s</time>
   </span>
   <div class="content">
     <ng-content *ngIf="!isShown || showContent"></ng-content>

@@ -2001,10 +2001,18 @@ div.bottom-corner {
 
     & > i.fa {
       position: absolute;
-      margin-left: -46px;
-      margin-top: -37px;
+      margin-left: -56px;
+      margin-top: -35px;
       font-size: 112px;
       text-shadow: 0 0 20px #FFF;
+    }
+
+    & > time {
+      position: absolute;
+      width: 100px;
+      margin-left: -50px;
+      text-align: center;
+      display: block;
     }
   }
 }
