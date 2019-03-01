@@ -162,11 +162,10 @@ export var locationsMap = {
   'Saint-Petersburg': 'SPB',
   'Menlo Park': 'US',
   'Belgrade': 'BEL',
-  'Wroclaw': 'WR',
   'Saratov': 'SAR',
   'Kharkov': 'KHR',
-  'Krakow': 'KR',
   'Wroclaw': 'WR',
+  'Krakow': 'KR',
   'Kyiv': 'KY',
   'Lviv': 'LV',
 };

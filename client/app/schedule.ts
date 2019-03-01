@@ -1,6 +1,6 @@
 import { ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subscription, from, zip } from 'rxjs';
+import { Subscription, from, forkJoin } from 'rxjs';
 
 import { BaseComponent } from './base.component';
 import { Utils } from './utils';
@@ -156,21 +156,15 @@ export class Schedule {
     );
   }
 
-  _oneLoaded() {
-    this.isLoading = !!--this.loadingCounter;
-    if (!this.isLoading) {
-      this.markForCheck();
-    }
-  }
-
   fetchData(query={}, fetchAll=false, serviceData={}): Subscription {
     this.isLoading = true;
-    this.loadingCounter = 2;
     this.markForCheck();
 
     let queryString = JSON.stringify(query);
     let demandQuery = queryString.indexOf('demand=false') < 0 && (queryString.indexOf('demand') >= 0 || queryString.indexOf('comments') >= 0) ?
       this.demandService.getAll(query) : from([[]]);
+    let initiativesQuery = this.initiativesData ? from([this.initiativesData]) : this.initiativeService.getAll();
+    let resourcesQuery = this.resourcesData ? from([this.resourcesData]) : this.resourceService.getAll();
 
     let shift = serviceData['shift'];
     let withModifiers = Object.assign(query, {
@@ -179,12 +173,17 @@ export class Schedule {
       shift
     });
 
-    return this.assignmentService.getAll(withModifiers).subscribe(data => {
-      this.reset(fetchAll);
+    return forkJoin(
+      demandQuery,
+      initiativesQuery,
+      resourcesQuery,
+      this.assignmentService.getAll(withModifiers)
+    )
+      .subscribe(([demands, initiatives, resources, assignments]) => {
+        this.reset(fetchAll);
 
-      [this.items, this.message] = [data.data, data.message];
+        [this.items, this.message] = [assignments.data, assignments.message];
 
-      demandQuery.subscribe(demands => {
         if (!this.demands.length) {
           this.demands = demands;
         }
@@ -208,18 +207,17 @@ export class Schedule {
         let demandAccounts = {};
         let demandResources = [];
         let demandItems = [];
+        if (showDemand) {
+          demands.forEach((demand, index) => {
+            let demandId = demand._id;
+            let initiativeId = demandId;
+            if (demandAccounts[demand.account]) {
+              initiativeId = demandAccounts[demand.account];
+            } else {
+              demandAccounts[demand.account] = initiativeId;
+            }
+            demandResources.push(demand);
 
-        demands.forEach((demand, index) => {
-          let demandId = demand._id;
-          let initiativeId = demandId;
-          if (demandAccounts[demand.account]) {
-            initiativeId = demandAccounts[demand.account];
-          } else {
-            demandAccounts[demand.account] = initiativeId;
-          }
-          demandResources.push(demand);
-
-          if (showDemand) {
             let item = {
               _id: demandId,
               name: demand.name,
@@ -244,10 +242,8 @@ export class Schedule {
               demand
             };
             demandItems.push(item);
-          }
-        });
+          });
 
-        if (showDemand) {
           this.items = demandItems.concat(this.items);
         }
 
@@ -270,67 +266,57 @@ export class Schedule {
         });
 
         // Fetch Initiatives
-        (this.initiativesData ? from([this.initiativesData]) : this.initiativeService.getAll()).subscribe(
-          data => {
-            this.initiativesData = Array.from(data);
+        if (!this.initiativesData) {
+          this.initiativesData = Array.from(initiatives);
+        }
 
-            if (showDemand) {
-              let demandInitiative = data.find(demand => demand.name === 'Demand');
-              Object.keys(demandAccounts).forEach(account => {
-                data.push(Object.assign(
-                  {},
-                  demandInitiative,
-                  {
-                    _id: demandAccounts[account],
-                    isDemand: true,
-                    account
-                  }
-                ));
-              });
-            }
+        if (showDemand) {
+          let demandInitiative = initiatives.find(demand => demand.name === 'Demand');
 
-            this.initiatives = data.reduce((result, initiative) => {
-              result[initiative._id] = initiative;
+          Object.keys(demandAccounts).forEach(account => {
+            initiatives.push(Object.assign(
+              {},
+              demandInitiative,
+              {
+                _id: demandAccounts[account],
+                isDemand: true,
+                account
+              }
+            ));
+          });
+        }
 
-              this._push(this.accountInitiatives, initiative.account, initiative);
+        this.initiatives = initiatives.reduce((result, initiative) => {
+          result[initiative._id] = initiative;
 
-              return result;
-            }, {});
-            this.findVisibleAccounts();
-          },
-          error => console.log(error)
-        )
-          .add(() => this._oneLoaded());
+          this._push(this.accountInitiatives, initiative.account, initiative);
+
+          return result;
+        }, {});
+        this.findVisibleAccounts();
 
         // Fetch resources
-        (this.resourcesData ? from([this.resourcesData]) : this.resourceService.getAll()).subscribe(
-          data => {
-            this.resourcesData = data;
+        if (!this.resourcesData) {
+          this.resourcesData = resources;
+        }
 
-            demandResources.forEach(demand => data.push({
-              _id: demand._id,
-              name: demand.name,
-              isDemand: true
-            }));
+        demandResources.forEach(demand => resources.push({
+          _id: demand._id,
+          name: demand.name,
+          isDemand: true
+        }));
 
-            this.resources = data;
-            this.resourcesById = data.reduce((result, person) => {
-              person.status = personStati[person._id];
-              result[person.login] = person;
-              return result;
-            }, {});
-          },
-          error => console.log(error)
-        ).add(() =>
-          this.postFetch(query)
-            .add(() => this._oneLoaded()));
+        this.resources = resources;
+        this.resourcesById = resources.reduce((result, person) => {
+          person.status = personStati[person._id];
+          result[person.login] = person;
+          return result;
+        }, {});
 
-        // if (!fetchAll) {
-        //   this.findVisibleAccounts();
-        // }
-
-      });
-    });
+        this.isLoading = false;
+        this.markForCheck();
+      })
+        .add(() => this.postFetch(query));
   }
 
   makeCaptionStyles(offset: number): Object {
