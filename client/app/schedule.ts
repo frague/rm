@@ -312,11 +312,12 @@ export class Schedule {
           result[person.login] = person;
           return result;
         }, {});
-
-        this.isLoading = false;
-        this.markForCheck();
       })
-        .add(() => this.postFetch(query));
+        .add(() => {
+          this.postFetch(query)
+          this.isLoading = false;
+          this.markForCheck();
+        });
   }
 
   makeCaptionStyles(offset: number): Object {
