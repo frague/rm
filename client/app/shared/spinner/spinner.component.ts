@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectorRef } from '@angular/core';
 
 @Component({
 	selector: 'spinner',
@@ -18,13 +18,16 @@ export class SpinnerComponent {
     if (value !== this._isShown) {
       if (value) {
         this.timer = 0;
-        this.$timer = setTimeout(() => this.timer++, 1000);
+        this.$timer = setInterval(() => {this.timer++; this.cd.markForCheck()}, 1000);
       } else {
-        clearTimeout(this.$timer);
+        clearInterval(this.$timer);
       }
+      this.cd.markForCheck();
     }
     this._isShown = value;
   }
 
   @Input() showContent = false;
+
+  constructor(private cd: ChangeDetectorRef) {}
 }

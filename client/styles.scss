@@ -1988,17 +1988,24 @@ div.bottom-corner {
 .spinner {
   &.loading .content {
     filter: grayscale(100%);
-    opacity: 0.8;
+    opacity: 0.3;
   }
 
-  & > i.fa {
+  & > span {
     position: absolute;
     left: 50%;
-    margin-left: -40px;
     margin-top: 50px;
-    font-size: 111px;
     z-index: 1000;
-    text-shadow: 0 0 20px #FFF;
+    font-weight: 900;
+    font-size: 25px;
+
+    & > i.fa {
+      position: absolute;
+      margin-left: -46px;
+      margin-top: -37px;
+      font-size: 112px;
+      text-shadow: 0 0 20px #FFF;
+    }
   }
 }
 
