@@ -203,6 +203,23 @@ export default class AssignmentCtrl extends BaseCtrl {
         },
         {
           '$addFields': {
+            'onVacation': {
+              '$cond': {
+                if: {
+                  '$and': [
+                    {'$lte': ['$assignment.start', now]},
+                    {'$gte': ['$assignment.end', now]},
+                    {'$eq': ['$assignment.initiativeId', 'vacation']},
+                  ]
+                },
+                then: 'true',
+                else: 'false'
+              }
+            }
+          }
+        },
+        {
+          '$addFields': {
             'activeUsVisa': {
               '$reduce': {
                 input: '$visas',
@@ -299,6 +316,7 @@ export default class AssignmentCtrl extends BaseCtrl {
             maxDate: {'$max': '$assignment.end'},
             billable: {'$max': '$assignment.billableNow'},
             canTravel: { '$max': '$canTravel' },
+            onVacation: { '$max': '$onVacation' },
             login: { '$first': '$login' },
             status: { '$first': '$status' },
             commentsCount: { '$first': '$commentsCount' },

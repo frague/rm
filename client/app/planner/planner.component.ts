@@ -43,7 +43,7 @@ export class PlannerComponent extends Schedule {
 
   accountsDemand = {};
 
-  columns = ['pool', 'billable', 'onTrip', 'canTravel'];
+  columns = ['pool', 'billable', 'onTrip', 'canTravel', 'onVacation'];
 
   _cd: ChangeDetectorRef;
   now;
