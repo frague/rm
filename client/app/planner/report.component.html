@@ -12,25 +12,25 @@
       <table>
         <thead>
           <tr>
-            <th>Position</th>
+            <th>Demand</th>
             <th>Candidate</th>
-            <th>Gr.</th>
-            <th>Loc.</th>
-            <th>Visa</th>
             <th>Status</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let demand of getAccountDemand(account)">
             <th>
-              <strong>{{ demand.profile }}{{ getDetails(demand) }}</strong>
-              <p *ngIf="demand.comment">{{ demand.comment }}</p>
-              <p *ngIf="demand.requestId">Jobvite requisition: <b>{{ demand.requestId }}</b></p>
+              <h6>#{{ demand.name }} ({{ stages[demand.stage] }})</h6>
+              <p *ngIf="demand.comment" [innerHTML]="demand.comment|cut:100|markdown"></p>
+              <p *ngIf="demand.requestId.length">Jobvite: <b>{{ demand.requestId }}</b></p>
             </th>
-            <td
-              *ngFor="let value of getCandidate(demand)"
-              [innerHTML]="value|markdown"
-            ></td>
+            <td>
+              <span *ngIf="demand.candidate.name">
+                <p>{{ demand.candidate.name }} ({{ demand.candidate.grade }}, {{ demand.candidate.location }})</p>
+                <p *ngIf="demand.candidate.canTravel">Has US visa</p>
+              </span>
+            </td>
+            <td [innerHTML]="demand.combinedStatus|markdown"></td>
           </tr>
         </tbody>
       </table>

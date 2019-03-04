@@ -45,7 +45,7 @@ import { AdminComponent } from './admin/admin.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { AccountsComponent } from './accounts/accounts.component';
 import { PrintableDatePipe, RangePipe, KeysPipe, EllipsisPipe, CutIndexPipe, ColumnPipe, MarkdownPipe, 
-    SplitPipe, DeCamelPipe } from './pipes';
+    SplitPipe, DeCamelPipe, CutByPipe } from './pipes';
 import { FilterComponent } from './filter/filter.component';
 import { FilteringPanelComponent } from './filter/filteringpanel.component';
 import { PlannerComponent } from './planner/planner.component';
@@ -110,7 +110,7 @@ export function tokenGetter() {
     AccountsComponent,
     PrintableDatePipe, RangePipe, KeysPipe, EllipsisPipe, MarkdownPipe,
     FilterComponent, FilteringPanelComponent, CutIndexPipe, ColumnPipe,
-    SplitPipe, DeCamelPipe,
+    SplitPipe, DeCamelPipe, CutByPipe,
 
     PlannerComponent, ReportComponent, DemandPlanComponent,
     DpComponent,

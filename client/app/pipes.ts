@@ -81,6 +81,16 @@ export class EllipsisPipe implements PipeTransform {
   }
 }
 
+@Pipe({name: 'cut'})
+export class CutByPipe implements PipeTransform {
+  transform(source: any, by: number): string {
+    if (typeof source !== 'string') {
+      source = '' + source;
+    }
+    return source.length < by ? source : source.substr(0, by) + '...';
+  }
+}
+
 @Pipe({name: 'cutIndex'})
 export class CutIndexPipe implements PipeTransform {
   transform(source: string = '') {
