@@ -154,7 +154,17 @@ export class SyncComponent {
         data => {
           this.isLoading = false;
           if (data) {
-            this.addLog(`${data.deleted} obsolete comments were deleted`, 'Cleanup');
+            this.addLog(`${data.deleted} obsolete comments were deleted:`, 'Cleanup');
+            Object.keys(data.logins).sort().forEach(login => {
+              let item = '';
+              if (/^[a-z]+$/.test(login)) {
+                item = `User ${login}`;
+              } else if (/^\d/.test(login)) {
+                item = `Demand #${login.replace(/_/g, ' ')}`;
+              }
+
+              this.addLog(` * ${item} (${data.logins[login]})`);
+            });
           }
         },
         () => this.isLoading = false

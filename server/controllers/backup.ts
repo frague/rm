@@ -112,8 +112,15 @@ export default class BackupCtrl {
           .find({login: {'$nin': ids}})
           .exec()
           .then(data => {
-            console.log(data);
-            res.json({deleted: data.deletedCount});
+            let logins = data.reduce((result, comment) => {
+              result[comment.login] = (result[comment.login] || 0) + 1;
+              return result;
+            }, {});
+            console.log(logins);
+            Comment
+              .deleteMany({login: {'$nin': ids}})
+              .exec()
+              .then(() => res.json({deleted: data.length, logins}));
           });
       })
       .catch(error => res.sendStatus(500));
