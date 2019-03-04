@@ -30,7 +30,7 @@ const defaultColumns = [
 const columnName = new RegExp(/^[a-z.]+$/, 'i');
 
 // const billableStatuses = ['Billable', 'Booked', 'PTO Coverage', 'Funded'];
-const billableStatuses = ['Billable', 'Booked', 'PTO Coverage'];
+const billableStatuses = ['Billable', 'PTO Coverage'];
 
 export default class AssignmentCtrl extends BaseCtrl {
   model = Assignment;
