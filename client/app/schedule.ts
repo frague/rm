@@ -497,7 +497,10 @@ export class Schedule {
   }
 
   getPersonFrom(item: any) {
-    return [item, this.resourcesById[item.login]];
+    let person = this.resourcesById[item.login];
+    // On vacation status comes from assignments
+    person.onVacation = item.onVacation;
+    return [item, person];
   }
 
   getCandidateFrom(item: any) {

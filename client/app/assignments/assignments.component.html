@@ -23,7 +23,7 @@
         <div
           *ngFor="let assignee of items; let i = index"
           class="line"
-          [ngClass]="getAssignmentsCount(i)"
+          [ngClass]="getAssigneeClasses(i, assignee)"
           (click)="showResource(assignee)"
         >
           <div
@@ -37,6 +37,7 @@
             <b>{{ assignee.commentsCount || '' }}</b>
           </div>
           <i class="fa fa-globe" *ngIf="isOnTrip(assignee)"></i>
+          <i class="fa fa-bed" *ngIf="isOnVacation(assignee)"></i>
           {{ makeCaption(assignee) }}
         </div>
       </div>
@@ -52,7 +53,7 @@
             <li *ngFor="let week of weekTitles">{{ week }}</li>
           </ol>
 
-          <div *ngFor="let assignee of items; let i = index" class="line" [ngClass]="getAssignmentsCount(i)">
+          <div *ngFor="let assignee of items; let i = index" class="line" [ngClass]="getAssigneeClasses(i, assignee)">
             <span *ngFor="let assignmentsGroup of getAssignmentsGroups(assignee.assignments)">
               <initiative
                 *ngFor="let assignment of assignmentsGroup"

@@ -701,6 +701,10 @@ i.initiative {
         height: $lineHeight;
       }
 
+      &.vacation {
+        background-color: rgba($vacation, 0.4);
+      }
+
       @for $i from 0 through 100 {
         &.an#{$i + 1} {
           height: $lineHeight + ($i * ($lineHeight - 2));
@@ -742,7 +746,14 @@ i.initiative {
       &.fa-globe {
         color: $cornerColor - #333;
       }
-      // font-size: 80%;
+      &.fa-bed {
+        color: $vacation - #333;
+        padding: 0 2px;
+        font-size: 85%;
+      }
+      & + i.fa {
+        padding-left: 4px;
+      }
       opacity: 0.8;
       font-weight: 100;
     }

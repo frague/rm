@@ -23,7 +23,7 @@ const emptyItem = {assignments: []};
 export class AssignmentsComponent extends Schedule {
   @ViewChild(AssignmentsReportComponent) reportModal: AssignmentsReportComponent;
 
-  columns = ['onTrip'];
+  columns = ['onTrip', 'onVacation'];
 
   constructor(
     assignmentService: AssignmentService,
@@ -36,8 +36,12 @@ export class AssignmentsComponent extends Schedule {
     super(assignmentService, resourceService, initiativeService, demandService, bus, cd);
   }
 
-  getAssignmentsCount(index) {
-    return 'an' + Object.keys((this.items[index] || emptyItem).assignments).length;
+  getAssigneeClasses(index, assignee) {
+    return {
+      ['an' + Object.keys((this.items[index] || emptyItem).assignments).length]: true,
+      'trip': this.isOnTrip(assignee),
+      'vacation': this.isOnVacation(assignee),
+    };
   }
 
   getAssignment(assignment) {
@@ -58,6 +62,10 @@ export class AssignmentsComponent extends Schedule {
 
   isOnTrip(assignee) {
     return Utils.isTrue(assignee.onTrip);
+  }
+
+  isOnVacation(assignee) {
+    return Utils.isTrue(assignee.onVacation);
   }
 
   makeCaption(assignee) {
