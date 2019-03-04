@@ -19,6 +19,9 @@ const valueModifiers = {
   'empty': (key, value) => {
     return [key, null, false];
   },
+  'emptySet': (key, value) => {
+    return [key, { '$eq': [] }, false];
+  },
   'exists': (key, value) => {
     return [key, { '$ne': null }, false];
   },
