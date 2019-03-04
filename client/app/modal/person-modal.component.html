@@ -6,9 +6,8 @@
     <avatar [login]="person.login"></avatar>
     <h4 class="modal-title">
       {{ person.name }}
-      <ng-container *ngIf="isTrue(person.onTrip)">
-        (on a business trip)
-      </ng-container>
+      <ng-container *ngIf="isTrue(person.onTrip)">(on a business trip)</ng-container>
+      <ng-container *ngIf="isTrue(person.onVacation)">(on vacation)</ng-container>
     </h4>
     <h6>
       <span class="comma-after">{{ person.grade }}</span>

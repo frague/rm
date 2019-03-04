@@ -15,6 +15,8 @@ import { DemandService } from '../services/demand.service';
 import { CandidateService } from '../services/candidate.service';
 import { BusService } from '../services/bus.service';
 
+import { Utils } from '../utils';
+
 const stripIndex = new RegExp(/^\d{2} /);
 const rowNumber = new RegExp(/^(\d+):/);
 const allowedStates = ['Open', 'Approved', 'Awaiting Approval', 'Draft'];
@@ -80,7 +82,7 @@ export class PlannerComponent extends Schedule {
               if (item.login.indexOf(' ') > 0) {
                 result.starts = item.minDate;
               };
-              ['canTravel', 'billable', 'onTrip'].forEach(key => result[key] = item[key] === 'true');
+              ['canTravel', 'billable', 'onTrip', 'onVacation'].forEach(key => result[key] = item[key] === 'true');
               return result;
             })
         :
@@ -264,7 +266,8 @@ export class PlannerComponent extends Schedule {
       billable: candidate.billable,
       assigned: this.isAssigned(candidate),
       hiree: candidate.isHiree,
-      accepted: candidate.login.indexOf(' ') > 0
+      accepted: candidate.login.indexOf(' ') > 0,
+      vacation: Utils.isTrue(candidate.onVacation)
     };
   }
 }

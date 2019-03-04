@@ -315,8 +315,10 @@ export class Schedule {
       })
         .add(() => {
           this.postFetch(query)
-          this.isLoading = false;
-          this.markForCheck();
+            .add(() => {
+              this.isLoading = false;
+              this.markForCheck();
+            });
         });
   }
 

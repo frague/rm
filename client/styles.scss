@@ -35,6 +35,8 @@ $demandCardWidth: 120px;
 $lineHeight: 30px;
 $plannerLineHeight: 60px;
 
+$vacation: #aaf2fb;
+
 body {
   background-color: $body;
   margin-top: 15px;
@@ -882,6 +884,14 @@ i.initiative {
 
             &.assigned {
               background-color: $primary;
+            }
+          }
+
+          &.vacation {
+            background-color: $vacation;
+            .avatar {
+              filter: grayscale(100%);
+              opacity: 0.8;
             }
           }
 
