@@ -35,7 +35,7 @@ $demandCardWidth: 120px;
 $lineHeight: 30px;
 $plannerLineHeight: 60px;
 
-$vacation: #aaf2fb;
+$vacation: #fff3cd;
 
 body {
   background-color: $body;
@@ -747,7 +747,7 @@ i.initiative {
         color: $cornerColor - #333;
       }
       &.fa-bed {
-        color: $vacation - #333;
+        color: $vacation - #888;
         padding: 0 2px;
         font-size: 85%;
       }
@@ -899,11 +899,7 @@ i.initiative {
           }
 
           &.vacation {
-            background-color: $vacation;
-            .avatar {
-              filter: grayscale(100%);
-              opacity: 0.8;
-            }
+            background: $vacation url(assets/palm-tree.png) no-repeat 175% bottom/75%;
           }
 
           &.accepted {
