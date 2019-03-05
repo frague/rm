@@ -4,16 +4,16 @@ import { from } from 'rxjs';
 import { BaseTabComponent } from './base.component';
 import { DomSanitizer } from '@angular/platform-browser';
 import { PrintableDatePipe } from '../../pipes';
-import { CarreerService} from '../../services/carreer.service';
+import { CareerService} from '../../services/career.service';
 
 @Component({
-  selector: 'carreer-tab',
-  templateUrl: './carreer-tab.component.html'
+  selector: 'career-tab',
+  templateUrl: './career-tab.component.html'
 })
-export class CarreerTabComponent extends BaseTabComponent {
+export class CareerTabComponent extends BaseTabComponent {
   @Input() bambooId: string = '';
   @Input() state: any = {};
-  carreer: any = {};
+  career: any = {};
   isForbidden = false;
 
   public lineChart: any = {
@@ -52,31 +52,31 @@ export class CarreerTabComponent extends BaseTabComponent {
 
   constructor(
     private makeDate: PrintableDatePipe,
-    private carreerService: CarreerService,
+    private careerService: CareerService,
   ) {
     super();
   }
 
   fetchData() {
-    let data = this.getState('carreer', this.bambooId) || null;
-    let fetcher = data ? from([data]) : this.carreerService.get(this.bambooId);
+    let data = this.getState('career', this.bambooId) || null;
+    let fetcher = data ? from([data]) : this.careerService.get(this.bambooId);
 
     this.isLoading = true;
     this.isForbidden = false;
 
     fetcher
-      .subscribe((carreer: any) => {
-        let jobs = carreer.jobs;
+      .subscribe((career: any) => {
+        let jobs = career.jobs;
         if (!jobs || !jobs.length || !jobs[0].date) {
           this.isForbidden = true;
           return;
         }
 
-        this.carreer = carreer;
-        this.setState('carreer', this.bambooId, carreer);
+        this.career = career;
+        this.setState('career', this.bambooId, career);
 
         let labels = [];
-        let result = Array.from(carreer.compensations || [])
+        let result = Array.from(career.compensations || [])
           .reverse()
           .map((compensation: any) => {
             labels.push(this.makeDate.transform(compensation.startDate, 'nodate'));

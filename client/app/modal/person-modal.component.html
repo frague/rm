@@ -42,9 +42,9 @@
           <skills-tab [login]="person.login" [state]="state"></skills-tab>
         </ng-template>
       </ngb-tab>
-      <ngb-tab title="Carreer" id="carreer" [disabled]="!person.bambooId">
+      <ngb-tab title="Career" id="career" [disabled]="!person.bambooId">
         <ng-template ngbTabContent>
-          <carreer-tab [bambooId]="person.bambooId" [state]="state"></carreer-tab>
+          <career-tab [bambooId]="person.bambooId" [state]="state"></career-tab>
         </ng-template>
       </ngb-tab>
       <ngb-tab title="History" id="history">

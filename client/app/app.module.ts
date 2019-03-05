@@ -26,7 +26,7 @@ import { SocketService } from './services/socket.service';
 import { SkillsService } from './services/skills.service';
 import { RequisitionService } from './services/requisition.service';
 import { CandidateService } from './services/candidate.service';
-import { CarreerService } from './services/carreer.service';
+import { CareerService } from './services/career.service';
 import { RequisitionDemandService } from './services/requisitionDemand.service';
 
 import { AppComponent } from './app.component';
@@ -70,7 +70,7 @@ import { CandidateModal } from './modal/candidate-modal.component';
 import { UserTabComponent } from './modal/tabs/user-tab.component';
 import { CommentsTabComponent } from './modal/tabs/comments-tab.component';
 import { SkillsTabComponent } from './modal/tabs/skills-tab.component';
-import { CarreerTabComponent } from './modal/tabs/carreer-tab.component';
+import { CareerTabComponent } from './modal/tabs/career-tab.component';
 import { AssignmentTabComponent } from './modal/tabs/assignment-tab.component';
 import { AssignmentsTabComponent } from './modal/tabs/assignments-tab.component';
 import { HistoryTabComponent } from './modal/tabs/history-tab.component';
@@ -125,7 +125,7 @@ export function tokenGetter() {
 
     PersonModal, AssignmentModal, DemandModal, RequisitionModal, CommentsModal, CandidateModal,
 
-    UserTabComponent, CommentsTabComponent, SkillsTabComponent, CarreerTabComponent,
+    UserTabComponent, CommentsTabComponent, SkillsTabComponent, CareerTabComponent,
     AssignmentTabComponent, AssignmentsTabComponent, HistoryTabComponent, DemandTabComponent,
     RequisitionTabComponent, CandidatesTabComponent, CandidateTabComponent,
     DemandRequisitionTabComponent, AccountProjectTabComponent, CommentComponent,
@@ -166,7 +166,7 @@ export function tokenGetter() {
     SkillsService,
     RequisitionService,
     CandidateService,
-    CarreerService,
+    CareerService,
     RequisitionDemandService,
 
     PrintableDatePipe,

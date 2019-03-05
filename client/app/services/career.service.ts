@@ -4,10 +4,10 @@ import { BaseService } from './base.service';
 import { Observable } from 'rxjs';
 
 @Injectable()
-export class CarreerService extends BaseService {
+export class CareerService extends BaseService {
 
   constructor(http: Http) {
-    super('carreer', http);
+    super('career', http);
   }
 
   get(bambooId: string): Observable<any> {

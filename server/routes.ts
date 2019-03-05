@@ -155,7 +155,7 @@ export default function setRoutes(app) {
   router.route('/dps').post(snapshotCtrl.saveDiffs);
 
   // Bamboo
-  router.route('/carreer/:bambooId').get(bamboo.getCarreer);
+  router.route('/career/:bambooId').get(bamboo.getCareer);
 
   // Apply the routes to our application with the prefix /api
   app.use('/api', router);

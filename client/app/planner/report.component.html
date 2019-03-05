@@ -21,8 +21,10 @@
           <tr *ngFor="let demand of getAccountDemand(account)">
             <th>
               <h6>#{{ demand.name }} ({{ stages[demand.stage] }})</h6>
-              <p *ngIf="demand.comment" [innerHTML]="demand.comment|cut:100|markdown"></p>
+              <p><span>{{ demand.start|date:'noyear' }}</span><span>{{ demand.grades }}</span></p>
+              <p>{{ demand.locations || 'Any location' }} &rarr; {{ demand.deployment }}</p>
               <p *ngIf="demand.requestId.length">Jobvite: <b>{{ demand.requestId }}</b></p>
+              <p class="description" *ngIf="demand.comment" [innerHTML]="demand.comment|cut:200|markdown"></p>
             </th>
             <td>
               <span *ngIf="demand.candidate.name">
@@ -30,7 +32,7 @@
                 <p *ngIf="demand.candidate.canTravel">Has US visa</p>
               </span>
             </td>
-            <td [innerHTML]="demand.combinedStatus|markdown"></td>
+            <td class="md" [innerHTML]="demand.combinedStatus|markdown"></td>
           </tr>
         </tbody>
       </table>

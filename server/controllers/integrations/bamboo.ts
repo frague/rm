@@ -96,7 +96,7 @@ export default class BambooIntegrationsCtrl {
     return this._getEmployeeTable(employeeId, 'customGrade1');
   }
 
-  getCarreer = (req, res) => {
+  getCareer = (req, res) => {
     let { bambooId } = req.params;
     if (bambooId != +bambooId) {
       return res.sendStatus(500);
