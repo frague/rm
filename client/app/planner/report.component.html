@@ -20,7 +20,7 @@
         <tbody>
           <tr *ngFor="let demand of getAccountDemand(account)">
             <th>
-              <h6>#{{ demand.name }} ({{ stages[demand.stage] }})</h6>
+              <h6>#{{ demand.name }} @{{ demand.project }}</h6>
               <p><span>{{ demand.start|date:'noyear' }}</span><span>{{ demand.grades }}</span></p>
               <p>{{ demand.locations || 'Any location' }} &rarr; {{ demand.deployment }}</p>
               <p *ngIf="demand.requestId.length">Jobvite: <b>{{ demand.requestId }}</b></p>
