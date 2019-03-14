@@ -145,6 +145,8 @@ export default function setRoutes(app) {
   router.route('/skills/:userId').get(skillTreeCtrl.querySkills);
   router.route('/skills/:userId/info').get(skillTreeCtrl.queryUsersInfo);
 
+  router.route('/skilltree').get(skillTreeCtrl.queryLogin);
+
   // Backup and restore
   router.route('/backup').get(backupCtrl.download);
   router.route('/restore').post(upload.single('backup'), backupCtrl.restore);

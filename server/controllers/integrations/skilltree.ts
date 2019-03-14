@@ -1,34 +1,38 @@
-import { login, fillRequest, sendJson } from './utils';
+import { postJson, sendJson } from './utils';
 
 const request = require('request');
 const env = process.env;
 const skillTree = 'https://skilltree.griddynamics.net/api/';
+const sso = 'https://sso.griddynamics.net/auth/token/ldap';
 
 export default class SkillTreeCtrl {
-  skillTreeCookie = '';
   skills = null;
   skillsFlatten = '';
   delimiter = '%';
+  ssoHeader = {};
 
   _login = (): Promise<any> => {
-    return new Promise((resolve, reject) => {
-      this.skillTreeCookie = '';
-      login(skillTree + 'auth', env.CONFLUENCE_LOGIN, env.CONFLUENCE_PASSWORD)
-        .on('response', response => {
-          let cookies = response.headers['set-cookie'];
-          if (cookies && cookies.length) {
-            this.skillTreeCookie = request.cookie(response.headers['set-cookie'][0]);
-            return resolve(request);
-          } else {
-            console.log('Error logging into skillTree');
-            reject('Error logging into skillTree');
+    return new Promise((resolve, reject) =>
+      postJson(
+        sso,
+        {
+          userName: env.CONFLUENCE_LOGIN,
+          encodedPassword: Buffer.from(env.CONFLUENCE_PASSWORD).toString('base64')
+        },
+        (err, response, body) => {
+          console.log('SSO authentication');
+          if (err) {
+            return reject('Error logging in via SSO');
           }
-        })
-        .on('error', err => {
-          console.log('Error logging into skilltree: ', err);
-          reject('Error logging into skillTree');
-        });
-    });
+          this.ssoHeader = {
+            headers: {
+              Authorization: 'Bearer ' + body.accessToken
+            }
+          };
+          resolve();
+        }
+      )
+    )
   }
 
   _query = (url: string, preprocessor=null): Promise<any> => {
@@ -39,11 +43,10 @@ export default class SkillTreeCtrl {
         return reject(_error);
       }
       request.get(
-        Object.assign(
-          { rejectUnauthorized: false },
-          fillRequest(this.skillTreeCookie, skillTree + url)
-        ),
+        skillTree + url,
+        this.ssoHeader,
         (err, response, body) => {
+          console.log('SkillTree response');
           let data;
           try {
             data = JSON.parse(body);
@@ -140,9 +143,11 @@ export default class SkillTreeCtrl {
         employees: [],
         skills
       };
-      let options = fillRequest(
-        this.skillTreeCookie,
-        skillTree + 'v2/searchEmployee'
+      let options: any = Object.assign(
+        {
+          url: skillTree + 'v2/searchEmployee',
+        },
+        this.ssoHeader
       );
       options.body = query;
       options.json = true;
@@ -162,6 +167,12 @@ export default class SkillTreeCtrl {
   queryUsersInfo = (req, res): void => {
     const userId = req.params.userId;
     this.getUsersInfo(userId)
+      .then(data => sendJson(data, res))
+      .catch(() => res.sendStatus(500));
+  }
+
+  queryLogin = (req, res): void => {
+    this._login()
       .then(data => sendJson(data, res))
       .catch(() => res.sendStatus(500));
   }

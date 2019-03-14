@@ -20,3 +20,11 @@ export const sendJson = (data: Object, res) => {
   res.setHeader('Content-Type', 'application/json');
   res.json(data);
 }
+
+export const postJson = (url: string, json: Object, handler: Function) => {
+  return request.post(
+    url,
+    { json },
+    handler
+  );
+}
