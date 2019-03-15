@@ -5,6 +5,8 @@ import { BaseModalComponent } from './base.component';
 import { ResourceService } from '../services/resource.service';
 import { Utils } from '../utils';
 
+const pmoEngineerUrl = 'https://pmo.griddynamics.net/dashboard/engineering/view.action?cs_name=';
+
 @Component({
   selector: 'person-modal',
   templateUrl: './person-modal.component.html'
@@ -40,4 +42,9 @@ export class PersonModal extends BaseModalComponent {
     }
     return this.open(tabName);
   }
+
+  getPmoLink() {
+    return this.person ? pmoEngineerUrl + this.person.name : null;
+  }
+
 }
