@@ -493,7 +493,7 @@ export class Schedule {
   }
 
   getDemandFrom(item: any) {
-    return [item, item];
+    return [item, item.demand ? item.demand : item];
   }
 
   getPersonFrom(item: any) {
