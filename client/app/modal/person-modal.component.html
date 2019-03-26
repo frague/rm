@@ -6,9 +6,9 @@
     <avatar [login]="person.login"></avatar>
     <h4 class="modal-title">
       {{ person.name }}
-      <a [href]="getPmoLink()" *ngIf="getPmoLink()" target="_blank"><i class="fa fa-external-link-square"></i></a>
       <ng-container *ngIf="isTrue(person.onTrip)">(on a business trip)</ng-container>
       <ng-container *ngIf="isTrue(person.onVacation)">(on vacation)</ng-container>
+      <a [href]="getPmoLink()" *ngIf="getPmoLink()" target="_blank"><i class="fa fa-external-link-square"></i></a>
     </h4>
     <h6>
       <span class="comma-after">{{ person.grade }}</span>

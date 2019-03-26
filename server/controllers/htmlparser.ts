@@ -5,6 +5,7 @@ const paragraph = new RegExp(/<[\/]*p>/, 'gi');
 const tild = new RegExp(/~/, 'g');
 const deTild = new RegExp(/(^~|~$)/, 'g');
 
+const ampItself = new RegExp(/&amp;/, 'gi');
 const amp = new RegExp(/&[a-z]+;/, 'gi');
 const whiteSpace = new RegExp(/\s+/, 'gi');
 const h3 = new RegExp(/<([/]?h3)[^>]*>/, 'gi');
@@ -42,6 +43,7 @@ var stripTags = (html: string) => {
     .replace(tick, '1')
     .replace(deTild, '')
     .replace(tag, '')
+    .replace(ampItself, '&')
     .replace(amp, '')
     .replace(whiteSpace, ' ')
     .replace(paragraph, '~');
@@ -141,6 +143,7 @@ export var accountsParse = (html: string) => {
         .split(tr)
         .map(line => stripTags(line.replace(/<\/td>/g, '|').replace(/<br[^>]*>/gi, '+')))
         .forEach(line => {
+          if (line.charAt(1) === 'A') console.log(line);
           let [account, project, ams, dds, cp, dms, timesheets, ] =
             line.split('|').map(param =>
               param.includes('+') ?
