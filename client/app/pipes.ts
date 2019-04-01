@@ -129,10 +129,13 @@ export class ColumnPipe implements PipeTransform {
                 accountAssignments = [accountAssignments];
               }
               let assignmentsList = accountAssignments.map(assignment => {
+                let result = `__${assignment.account}__: ${assignment.initiative || '-'} (${assignment.involvement}% ${assignment.billability})`;
                 if (assignment.demand) {
                   assignment = assignment.demand;
+                  result = `Demand for __${assignment.profile}__ @${assignment.account} (${assignment.project})`;
+                  console.log(assignment);
                 }
-                return secondary ? assignment[secondary] : `__${assignment.account}__: ${assignment.initiative || '-'} (${assignment.involvement}% ${assignment.billability})`;
+                return secondary ? assignment[secondary] : result;
               }).join('\n* ');
               return `* ${assignmentsList}`;
             }).join('\n');
