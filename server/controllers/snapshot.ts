@@ -77,7 +77,7 @@ export default class SnapshotCtrl extends BaseCtrl {
       } else if (Array.isArray(c) && Array.isArray(d)) {
         [c, d] = [c.sort().join(','), d.sort().join(',')];
       }
-      if (c !== d) {
+      if (('' + c) !== ('' + d)) {
         result[key] = [c, d];
       }
       return result;
