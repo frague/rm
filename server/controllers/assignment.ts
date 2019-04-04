@@ -100,6 +100,10 @@ export default class AssignmentCtrl extends BaseCtrl {
         let { ids, suggestions } = skillTree.mapSkillsIds(skillsList);
         console.log('Skills suggestions are fetched:', suggestions, ids);
 
+        if (!ids || !ids.length) {
+          return res.json({message: 'No skills found', data: []})
+        }
+
         let people = await skillTree.getEngineersBySkills(ids)
           .catch(error => {
             res.json({message: 'No skills found', data: []})
@@ -112,7 +116,6 @@ export default class AssignmentCtrl extends BaseCtrl {
             and = [];
             or[0][andKey] = and;
           }
-          // console.log(JSON.stringify(and), JSON.stringify(or));
           and.push({
             login: {
               '$in': people.map(person => person.user_id)
@@ -120,7 +123,8 @@ export default class AssignmentCtrl extends BaseCtrl {
           });
           console.log('With skills:', JSON.stringify(or));
         } else {
-          console.log('No people with selected skills were found');
+          let message = 'No people with selected skills were found';
+          return res.json({message, data: []})
         }
         let query = this.modifyCriteria(or, this.modifiers, group);
         this._query(res, this.fixOr(query), suggestions, columns, group);
