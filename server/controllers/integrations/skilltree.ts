@@ -1,47 +1,23 @@
-import { postJson, sendJson } from './utils';
+import { postJson, sendJson, ssoLogin } from './utils';
 
 const request = require('request');
 const env = process.env;
 const skillTree = 'https://skilltree.griddynamics.net/api/';
-const sso = 'https://sso.griddynamics.net/auth/token/ldap';
 
 export default class SkillTreeCtrl {
   skills = null;
   skillsFlatten = '';
   delimiter = '%';
-  ssoHeader = {};
+  ssoHeader = null;
 
-  _login = (): Promise<any> => {
-    return new Promise((resolve, reject) =>
-      postJson(
-        sso,
-        {
-          userName: env.CONFLUENCE_LOGIN,
-          encodedPassword: Buffer.from(env.CONFLUENCE_PASSWORD).toString('base64')
-        },
-        (err, response, body) => {
-          console.log('SSO authentication');
-          if (err) {
-            return reject('Error logging in via SSO');
-          }
-          this.ssoHeader = {
-            headers: {
-              Authorization: 'Bearer ' + body.accessToken
-            }
-          };
-          resolve();
-        }
-      )
-    )
-  }
-
-  _query = (url: string, preprocessor=null): Promise<any> => {
+  private _query = (url: string, preprocessor=null): Promise<any> => {
     return new Promise(async (resolve, reject) => {
-      let _error;
-      await this._login().catch(error => _error = error);
-      if (_error) {
-        return reject(_error);
+      if (!this.ssoHeader) {
+        let _error;
+        this.ssoHeader = await ssoLogin().catch(error => _error = error);
+        if (_error) return reject(_error);
       }
+
       request.get(
         skillTree + url,
         this.ssoHeader,
@@ -134,11 +110,12 @@ export default class SkillTreeCtrl {
   // Find engineers who have skills listed
   getEngineersBySkills(skills: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
-      let _error;
-      await this._login().catch(error => _error = error);
-      if (_error) {
-        return reject(_error);
+      if (!this.ssoHeader) {
+        let _error;
+        this.ssoHeader = await ssoLogin().catch(error => _error = error);
+        if (_error) return reject(_error);
       }
+
       let query = {
         employees: [],
         skills
@@ -171,9 +148,9 @@ export default class SkillTreeCtrl {
       .catch(() => res.sendStatus(500));
   }
 
-  queryLogin = (req, res): void => {
-    this._login()
-      .then(data => sendJson(data, res))
-      .catch(() => res.sendStatus(500));
-  }
+  // queryLogin = (req, res): void => {
+  //   this._login()
+  //     .then(data => sendJson(data, res))
+  //     .catch(() => res.sendStatus(500));
+  // }
 }
