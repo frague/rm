@@ -4,17 +4,17 @@ import { from } from 'rxjs';
 import { BaseTabComponent } from './base.component';
 import { DomSanitizer } from '@angular/platform-browser';
 import { PrintableDatePipe } from '../../pipes';
-import { CareerService} from '../../services/career.service';
+import { InGridService } from '../../services/ingrid.service';
 
 @Component({
   selector: 'feedbacks-tab',
   templateUrl: './feedbacks-tab.component.html'
 })
-export class CareerTabComponent extends BaseTabComponent {
-  @Input() bambooId: string = '';
+export class FeedbacksTabComponent extends BaseTabComponent {
+  @Input() userId: string = '';
   @Input() state: any = {};
-  career: any = {};
-  isForbidden = false;
+  feedbacks = [];
+  isAvailable = false;
 
   public lineChart: any = {
     labels: [''],
@@ -52,44 +52,31 @@ export class CareerTabComponent extends BaseTabComponent {
 
   constructor(
     private makeDate: PrintableDatePipe,
-    private careerService: CareerService,
+    private ingridService: InGridService,
   ) {
     super();
   }
 
   fetchData() {
-    let data = this.getState('career', this.bambooId) || null;
-    let fetcher = data ? from([data]) : this.careerService.get(this.bambooId);
+    let data = this.getState('feedbacks', this.userId) || null;
+    let fetcher = data ? from([data]) : this.ingridService.get(this.userId);
 
     this.isLoading = true;
-    this.isForbidden = false;
+    this.isAvailable = false;
 
     fetcher
-      .subscribe((career: any) => {
-        let jobs = career.jobs;
-        if (!jobs || !jobs.length || !jobs[0].date) {
-          this.isForbidden = true;
-          return;
-        }
+      .subscribe((feedbacks: any) => {
+        this.isAvailable = !!feedbacks.available;
+        this.feedbacks = this.isAvailable ? feedbacks.feedbacks : [];
+        this.setState('feedbacks', this.userId, feedbacks);
+        console.log(feedbacks);
 
-        this.career = career;
-        this.setState('career', this.bambooId, career);
-
-        let labels = [];
-        let result = Array.from(career.compensations || [])
-          .reverse()
-          .map((compensation: any) => {
-            labels.push(this.makeDate.transform(compensation.startDate, 'nodate'));
-            return compensation.rate ? Math.round(compensation.rate.value) : '-';
-          }
-        );
-
-        this.lineChart.labels = labels;
-        this.lineChart.data = [{
-          label: 'Compensation',
-          pointRadius: 10,
-          data: result
-        }];
+        // this.lineChart.labels = labels;
+        // this.lineChart.data = [{
+        //   label: 'Compensation',
+        //   pointRadius: 10,
+        //   data: result
+        // }];
       })
       .add(() => this.isLoading = false);
   }

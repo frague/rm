@@ -21,7 +21,7 @@ export default class InGridCtrl {
         inGrid + url,
         this.ssoHeader,
         (err, response, body) => {
-          console.log('inGrid response');
+          console.log('inGrid response', response);
           let data;
           try {
             if (err) throw err;

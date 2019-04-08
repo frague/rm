@@ -1,49 +1,19 @@
 <spinner [isShown]="isLoading">
-  <ng-container *ngIf="!isForbidden">
-    <div class="career row">
+  <ng-container *ngIf="isAvailable">
+    <div class="feedbacks row">
       <div class="col-md-6">
-        <h2>Grades</h2>
-        <table class="table">
-          <tr *ngFor="let grade of career.grades">
-            <td>{{ grade.customDate|date }}</td>
-            <td>
-              {{ grade.customGrade }}, {{ grade.customProfile }}
-              <span *ngIf="grade.customSpecialization">/ {{ grade.customSpecialization }}</span>
-            </td>
-          </tr>
-        </table>
+        <h2>Charts</h2>
       </div>
       <div class="col-md-6">
-        <h2>Ordinance</h2>
-        <table class="table">
-          <tr *ngFor="let job of career.jobs">
-            <td>{{ job.date|date }}</td>
-            <td>{{ job.department }} ({{ job.reportsTo }})</td>
-          </tr>
-        </table>
-      </div>
-    </div>
-    <div class="career row">
-      <div class="col-md-4">
-        <h2>Compensations</h2>
-        <table class="table">
-          <tr *ngFor="let rate of career.compensations">
-            <td>{{ rate.startDate|date }}</td>
-            <td>{{ (rate.rate || {}).value }} {{ (rate.rate || {}).currency }}</td>
-          </tr>
-        </table>
-      </div>
-      <div class="col-md-8">
-        <h2>&nbsp;</h2>
-        <canvas baseChart height="200"
-          [datasets]="lineChart.data"
-          [labels]="lineChart.labels"
-          [options]="lineChart.options"
-          [colors]="lineChart.colors"
-          [legend]="lineChart.legend"
-          [chartType]="lineChart.type"></canvas>
+        <h2>Feedbacks</h2>
+        <ul>
+          <li *ngFor="let feedback of feedbacks">
+            {{ feedback.feedbackDate|date }} from {{ feedback.senderGrade }} @{{ feedback.accountTitle }}
+            <div>{{ feedback.comment }}</div>
+          </li>
+        </ul>
       </div>
     </div>
   </ng-container>
-  <div *ngIf="isForbidden">You don't have an access to user's career data</div>
+  <div *ngIf="!isAvailable">No feedbacks have been submitted yet</div>
 </spinner>
