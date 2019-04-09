@@ -1,4 +1,4 @@
-import { postJson, sendJson, ssoLogin } from './utils';
+import { postJson, sendJson, ssoQuery } from './utils';
 
 const request = require('request');
 const env = process.env;
@@ -7,46 +7,13 @@ const inGrid = 'https://in.griddynamics.net/api/';
 export default class InGridCtrl {
   ssoHeader = null;
 
-  // TODO: Introduce utils/ssoQuery method
   private _query = (url: string, preprocessor=null): Promise<any> => {
-    return new Promise(async (resolve, reject) => {
-      if (!this.ssoHeader) {
-        let _error;
-        this.ssoHeader = await ssoLogin().catch(error => _error = error);
-        if (_error) {
-          return reject(_error);
-        }
-      }
-
-      request.get(
-        inGrid + url,
-        this.ssoHeader,
-        async (err, response, body) => {
-          console.log('inGrid response');
-          if (response && response.statusCode === 401) {
-            console.log('Invalidating SSO token');
-            this.ssoHeader = null;
-            return await this._query(url, preprocessor);
-          }
-
-          let data;
-          try {
-            if (err) throw err;
-            data = JSON.parse(body);
-          } catch (error) {
-            console.log('Error decoding json', body);
-            return reject(error);
-          }
-          if (preprocessor) {
-            data = preprocessor(data);
-          }
-          resolve(data);
-        })
-          .on('error', error => {
-            console.log('Error requesting inGrid', error);
-            reject(error);
-          });
-    });
+    return ssoQuery(inGrid + url)
+      .then(data => preprocessor ? preprocessor(data) : data)
+      .catch(error => {
+        console.log('Error requesting skill tree skills', error);
+        return error;
+      });
   }
 
   // Get user feedbacks

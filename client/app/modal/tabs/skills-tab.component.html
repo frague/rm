@@ -2,7 +2,7 @@
   <h2>Surveys</h2>
   <div class="skills row" *ngIf="skillsInfo">
     <ng-container *ngFor="let state of surveyStates|keys">
-      <div class="col-md-6" *ngIf="skillsInfo.surveys[state]">
+      <div class="col-md-6" *ngIf="skillsInfo.surveys && skillsInfo.surveys[state]">
         <h3>{{ surveyStates[state] }}</h3>
         <ul *ngIf="skillsInfo.surveys" class="surveys">
           <li *ngFor="let survey of skillsInfo.surveys[state]">

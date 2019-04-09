@@ -123,7 +123,7 @@ export default class AssignmentCtrl extends BaseCtrl {
           });
           console.log('With skills:', JSON.stringify(or));
         } else {
-          let message = 'No people with selected skills were found';
+          let message = `No people with the following skills found: ${suggestions.join(', ')}`;
           return res.json({message, data: []})
         }
         let query = this.modifyCriteria(or, this.modifiers, group);
@@ -367,7 +367,7 @@ export default class AssignmentCtrl extends BaseCtrl {
       .exec()
       .toArray()
       .then(data => {
-        let message = skillsList.length ? 'Skills suggested: ' + skillsList.join(', ') : '';
+        let message = skillsList.length ? `Skills matched: ${skillsList.join(', ')}` : '';
         res.json({message, data});
       })
       .catch(error => {

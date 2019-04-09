@@ -2,6 +2,7 @@ const request = require('request');
 
 const env = process.env;
 const sso = 'https://sso.griddynamics.net/auth/token/ldap';
+var ssoHeader = null;
 
 export const fillRequest = (cookie: string, url: string, payload={}): any => {
   let jar = request.jar();
@@ -17,7 +18,7 @@ export const login = (url: string, j_username: string, j_password: string) => {
   });
 }
 
-export const ssoLogin = (): Promise<any> => {
+const ssoLogin = (): Promise<any> => {
   return new Promise((resolve, reject) =>
     postJson(
       sso,
@@ -38,6 +39,35 @@ export const ssoLogin = (): Promise<any> => {
       }
     )
   )
+}
+
+export const ssoQuery = (url: string, options: any = null): Promise<any> => {
+  return new Promise(async (resolve, reject) => {
+    if (!ssoHeader) {
+      let _error;
+      ssoHeader = await ssoLogin().catch(error => _error = error);
+      if (_error) return reject(_error);
+    }
+
+    let opts = Object.assign({url}, ssoHeader, options);
+
+    request[options ? 'post' : 'get'](
+      opts,
+      (err, response, body) => {
+        let data;
+        try {
+          data = typeof body === 'string' ? JSON.parse(body) : body;
+        } catch (error) {
+          console.log('Error decoding json', body);
+          return reject(error);
+        }
+        resolve(data);
+      })
+        .on('error', error => {
+          console.log('Error making SSO-authenticated request to ' + url, error);
+          reject(error);
+        });
+  });
 }
 
 export const sendJson = (data: Object, res) => {

@@ -1,4 +1,4 @@
-import { postJson, sendJson, ssoLogin } from './utils';
+import { postJson, sendJson, ssoQuery } from './utils';
 
 const request = require('request');
 const env = process.env;
@@ -10,35 +10,14 @@ export default class SkillTreeCtrl {
   delimiter = '%';
   ssoHeader = null;
 
-  private _query = (url: string, preprocessor=null): Promise<any> => {
-    return new Promise(async (resolve, reject) => {
-      if (!this.ssoHeader) {
-        let _error;
-        this.ssoHeader = await ssoLogin().catch(error => _error = error);
-        if (_error) return reject(_error);
-      }
-
-      request.get(
-        skillTree + url,
-        this.ssoHeader,
-        (err, response, body) => {
-          console.log('SkillTree response');
-          let data;
-          try {
-            data = JSON.parse(body);
-          } catch (error) {
-            console.log('Error decoding json');
-            return reject(error);
-          }
-          if (preprocessor) {
-            data = preprocessor(data);
-          }
-          resolve(data);
-        })
-          .on('error', error => {
-            console.log('Error requesting skill tree skills', error);
-            reject(error);
-          });
+  private _query = (url: string, preprocessor=null, options=null): Promise<any> => {
+    return new Promise((resolve, reject) => {
+      ssoQuery(skillTree + url, options)
+        .then(data => resolve(preprocessor ? preprocessor(data) : data))
+        .catch(error => {
+          console.log('Error requesting skill tree skills', error);
+          reject(error);
+        });
     });
   }
 
@@ -109,29 +88,20 @@ export default class SkillTreeCtrl {
 
   // Find engineers who have skills listed
   getEngineersBySkills(skills: any): Promise<any> {
-    return new Promise(async (resolve, reject) => {
-      if (!this.ssoHeader) {
-        let _error;
-        this.ssoHeader = await ssoLogin().catch(error => _error = error);
-        if (_error) return reject(_error);
-      }
-
-      let query = {
-        employees: [],
-        skills
-      };
-      let options: any = Object.assign(
-        {
-          url: skillTree + 'v2/searchEmployee',
-        },
-        this.ssoHeader
-      );
-      options.body = query;
-      options.json = true;
-      delete options.form;
-
-      request.post(options, (err, response, body) => resolve(body)).on('error', reject);
-    });
+    let query = {
+      employees: [],
+      skills
+    };
+    let options: any = Object.assign(
+      {
+        url: skillTree + 'v2/searchEmployee',
+      },
+      this.ssoHeader
+    );
+    options.body = query;
+    options.json = true;
+    delete options.form;
+    return this._query(skillTree + 'v2/searchEmployee', null, options);
   }
 
   querySkills = (req, res): void => {
@@ -147,10 +117,4 @@ export default class SkillTreeCtrl {
       .then(data => sendJson(data, res))
       .catch(() => res.sendStatus(500));
   }
-
-  // queryLogin = (req, res): void => {
-  //   this._login()
-  //     .then(data => sendJson(data, res))
-  //     .catch(() => res.sendStatus(500));
-  // }
 }
