@@ -57,6 +57,10 @@ export class FeedbacksTabComponent extends BaseTabComponent {
     super();
   }
 
+  deUnder(source: string) {
+    return source.replace(/_/g, ' ');
+  }
+
   fetchData() {
     let data = this.getState('feedbacks', this.userId) || null;
     let fetcher = data ? from([data]) : this.ingridService.get(this.userId);
@@ -69,7 +73,6 @@ export class FeedbacksTabComponent extends BaseTabComponent {
         this.isAvailable = !!feedbacks.available;
         this.feedbacks = this.isAvailable ? feedbacks.feedbacks : [];
         this.setState('feedbacks', this.userId, feedbacks);
-        console.log(feedbacks);
 
         // this.lineChart.labels = labels;
         // this.lineChart.data = [{

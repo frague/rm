@@ -7,6 +7,7 @@ const inGrid = 'https://in.griddynamics.net/api/';
 export default class InGridCtrl {
   ssoHeader = null;
 
+  // TODO: Introduce utils/ssoQuery method
   private _query = (url: string, preprocessor=null): Promise<any> => {
     return new Promise(async (resolve, reject) => {
       if (!this.ssoHeader) {
@@ -20,8 +21,14 @@ export default class InGridCtrl {
       request.get(
         inGrid + url,
         this.ssoHeader,
-        (err, response, body) => {
-          console.log('inGrid response', response);
+        async (err, response, body) => {
+          console.log('inGrid response');
+          if (response && response.statusCode === 401) {
+            console.log('Invalidating SSO token');
+            this.ssoHeader = null;
+            return await this._query(url, preprocessor);
+          }
+
           let data;
           try {
             if (err) throw err;
