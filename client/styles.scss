@@ -457,7 +457,6 @@ pre {
       padding: 7px 20px 8px 20px;
 
       &.active {
-        @extend .shadow-top;
         color: #000;
       }
 
