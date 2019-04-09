@@ -1,0 +1,22 @@
+<spinner [isShown]="isLoading">
+  <ng-container *ngIf="isAvailable">
+    <div class="feedbacks row">
+      <div class="col-md-4">
+        <h2>Charts</h2>
+      </div>
+      <div class="col-md-8">
+        <h2>Feedbacks</h2>
+        <div *ngFor="let feedback of feedbacks" class="feedback">
+          <time>{{ feedback.feedbackDate|date }}</time>
+          <h6>{{ feedback.senderGrade }} at {{ feedback.accountTitle }}</h6>
+          <ul>
+            <li>Performance: <b>{{ deUnder(feedback.performanceQuestion) }}</b></li>
+            <li>Would work together again: <b>{{ deUnder(feedback.nextTimeQuestion) }}</b></li>
+          </ul>
+          <div class="md" [innerHTML]="feedback.comment|markdown"></div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <div *ngIf="!isAvailable">No feedbacks have been submitted yet</div>
+</spinner>

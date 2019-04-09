@@ -24,6 +24,7 @@ import { BusService } from './services/bus.service';
 import { FilterService } from './services/filter.service';
 import { SocketService } from './services/socket.service';
 import { SkillsService } from './services/skills.service';
+import { InGridService } from './services/ingrid.service';
 import { RequisitionService } from './services/requisition.service';
 import { CandidateService } from './services/candidate.service';
 import { CareerService } from './services/career.service';
@@ -80,6 +81,7 @@ import { CandidatesTabComponent } from './modal/tabs/candidates-tab.component';
 import { CandidateTabComponent } from './modal/tabs/candidate-tab.component';
 import { DemandRequisitionTabComponent } from './modal/tabs/demand-requisition-tab.component';
 import { AccountProjectTabComponent } from './modal/tabs/account-project-tab.component';
+import { FeedbacksTabComponent } from './modal/tabs/feedbacks-tab.component';
 
 import { QueryWidget } from './dashboard/query.widget';
 import { BirthdaysWidget } from './dashboard/birthdays.widget';
@@ -128,7 +130,7 @@ export function tokenGetter() {
     UserTabComponent, CommentsTabComponent, SkillsTabComponent, CareerTabComponent,
     AssignmentTabComponent, AssignmentsTabComponent, HistoryTabComponent, DemandTabComponent,
     RequisitionTabComponent, CandidatesTabComponent, CandidateTabComponent,
-    DemandRequisitionTabComponent, AccountProjectTabComponent, CommentComponent,
+    DemandRequisitionTabComponent, AccountProjectTabComponent, FeedbacksTabComponent, CommentComponent,
 
     QueryWidget, BirthdaysWidget, CommentsWidget,
   ],
@@ -164,6 +166,7 @@ export function tokenGetter() {
     DpService,
     SocketService,
     SkillsService,
+    InGridService,
     RequisitionService,
     CandidateService,
     CareerService,

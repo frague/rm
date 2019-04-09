@@ -6,6 +6,7 @@ import InitiativeCtrl from './controllers/initiative';
 import AssignmentCtrl from './controllers/assignment';
 import UserCtrl from './controllers/user';
 import SkillTreeCtrl from './controllers/integrations/skilltree';
+import InGridCtrl from './controllers/integrations/ingrid';
 import DemandCtrl from './controllers/demand';
 import FilterCtrl from './controllers/filter';
 import SyncCtrl from './controllers/sync';
@@ -44,6 +45,7 @@ export default function setRoutes(app) {
   const candidateCtrl = new CandidateCtrl();
   const requisitionCtrl = new RequisitionCtrl();
   const skillTreeCtrl = new SkillTreeCtrl();
+  const inGridCtrl = new InGridCtrl();
   const requisitionDemandCtrl = new RequisitionDemandCtrl();
 
   const bamboo = new BambooIntegrationsCtrl();
@@ -144,8 +146,11 @@ export default function setRoutes(app) {
   // Skill Tree
   router.route('/skills/:userId').get(skillTreeCtrl.querySkills);
   router.route('/skills/:userId/info').get(skillTreeCtrl.queryUsersInfo);
+  // router.route('/skilltree').get(skillTreeCtrl.queryLogin);
 
-  router.route('/skilltree').get(skillTreeCtrl.queryLogin);
+  // InGrid feedbacks
+  router.route('/ingrid/:userId').get(inGridCtrl.queryFeedbacksFor);
+  router.route('/ingrid/:userId/orgchart').get(inGridCtrl.queryOrgchartFor);
 
   // Backup and restore
   router.route('/backup').get(backupCtrl.download);

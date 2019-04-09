@@ -2027,6 +2027,44 @@ div.bottom-corner {
   }
 }
 
+.feedbacks {
+  div.feedback {
+    padding: 10px 0 10px 115px;
+    margin: 0;
+    min-height: 56px;
+
+    time {
+      float: left;
+      margin-top: -5px;
+      margin-left: -100px;
+      width: 90px;
+      font-size: 0.9rem;
+      font-weight: 100;
+    }
+
+    & > ul {
+      padding-left: 0;
+
+      li {
+        list-style: none;
+        b {
+          text-transform: lowercase;
+          font-weight: 600;
+        }
+      }
+    }
+
+    &:nth-child(n + 2) {
+      border-top: solid 1px $grid + #222;
+    }
+
+    h6 {
+      font-size: 100%;
+      font-weight: 800;
+    }
+  }
+}
+
 .spinner {
   &.loading .content {
     filter: grayscale(100%);

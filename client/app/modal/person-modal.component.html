@@ -48,6 +48,11 @@
           <career-tab [bambooId]="person.bambooId" [state]="state"></career-tab>
         </ng-template>
       </ngb-tab>
+      <ngb-tab title="Feedbacks" id="feedbacks">
+        <ng-template ngbTabContent>
+          <feedbacks-tab [userId]="person.login" [state]="state"></feedbacks-tab>
+        </ng-template>
+      </ngb-tab>
       <ngb-tab title="History" id="history">
         <ng-template ngbTabContent>
           <history-tab [key]="person.login" [state]="state"></history-tab>
