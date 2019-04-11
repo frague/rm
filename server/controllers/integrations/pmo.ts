@@ -28,9 +28,12 @@ export default class PmoIntegrationsCtrl {
   // Get employees info
   getPeople = (): Promise<any> => {
     return new Promise(async (resolve, reject) => {
+      let tillDate = new Date();
+      tillDate.setFullYear(1 + tillDate.getFullYear());
+      tillDate = tillDate.toUTCString();
       await this.login().catch(reject);
       request.get(
-        fillRequest(this.sessionCookies, pmoAssignments),
+        fillRequest(this.sessionCookies, pmoAssignments, {tillDate}),
         (error, response, body) => {
           let data;
           try {
