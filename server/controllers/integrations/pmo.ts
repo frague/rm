@@ -3,7 +3,7 @@ import { login, fillRequest } from './utils';
 
 const env = process.env;
 const pmo = 'https://pmo.griddynamics.net/';
-const pmoAssignments = pmo + 'service/v1/people/employees';
+const pmoAssignments = pmo + 'service/v1/people/engineering/employees';
 const pmoDemandMeta = pmo + 'service/api/internal/position/demand/';
 const pmoUserAssignments = pmo + 'service/employees/%username/assignments';
 
