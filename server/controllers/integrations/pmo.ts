@@ -5,7 +5,7 @@ const env = process.env;
 const pmo = 'https://pmo.griddynamics.net/';
 const pmoAssignments = pmo + 'service/v1/people/employees';
 const pmoDemandMeta = pmo + 'service/api/internal/position/demand/';
-const pmoUserAssignments = pmo + 'api/v1/people/history/employee?id=';
+const pmoUserAssignments = pmo + 'service/employees/%username/assignments';
 
 export default class PmoIntegrationsCtrl {
   sessionCookies = '';
@@ -49,21 +49,21 @@ export default class PmoIntegrationsCtrl {
   }
 
   // Get employees info
-  getUserAssignments = (bambooId: string): Promise<any> => {
+  getUserAssignments = (login: string): Promise<any> => {
     return new Promise(async (resolve, reject) => {
       await this.login().catch(reject);
       request.get(
-        fillRequest(this.sessionCookies, pmoUserAssignments + bambooId),
+        fillRequest(this.sessionCookies, pmoUserAssignments.replace('%username', login)),
         (error, response, body) => {
           let data;
           try {
             data = JSON.parse(body);
-            if (!data.data || !data.data.assignments) {
+            if (!data || !data.rows) {
               // No assignments
               return resolve([]);
             }
 
-            resolve(data.data.assignments.sort((a, b) => {
+            resolve(data.rows.sort((a, b) => {
               let [da, db] = [new Date(a.start), new Date(b.start)];
               return da < db ? 1 : -1;
             }));
@@ -127,12 +127,12 @@ export default class PmoIntegrationsCtrl {
   }
 
   getAssignments = (req, res) => {
-    let { pmoId } = req.params;
-    if (pmoId != +pmoId) {
+    let { login } = req.params;
+    if (!login) {
       return res.sendStatus(500);
     }
 
-	  this.getUserAssignments(pmoId)
+	  this.getUserAssignments(login)
       .then(data => {
         res.setHeader('Content-Type', 'application/json');
         res.json(data);

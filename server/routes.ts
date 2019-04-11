@@ -61,7 +61,7 @@ export default function setRoutes(app) {
   router.route('/assignments/count').get(assignmentCtrl.count);
   router.route('/assignment/:id').delete(assignmentCtrl.delete);
   router.route('/assignments').delete(assignmentCtrl.deleteAll);
-  router.route('/assignment/:pmoId').get(pmo.getAssignments);
+  router.route('/assignment/:login').get(pmo.getAssignments);
 
   // Resources
   router.route('/resources').get(resourceCtrl.getAll);

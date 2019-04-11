@@ -5,6 +5,7 @@ const sso = 'https://sso.griddynamics.net/auth/token/ldap';
 var ssoHeader = null;
 
 export const fillRequest = (cookie: string, url: string, payload={}): any => {
+  console.log('URL', url);
   let jar = request.jar();
   jar.setCookie(cookie, url);
   return Object.assign({}, {url, jar, form: payload});

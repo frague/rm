@@ -9,7 +9,7 @@ import { AssignmentService } from '../../services/assignment.service';
   templateUrl: './assignments-tab.component.html'
 })
 export class AssignmentsTabComponent extends BaseTabComponent {
-  @Input() pmoId: string = '';
+  @Input() login: string = '';
   @Input() state: any = {};
   items: any[] = [];
   now: string = '';
@@ -23,16 +23,16 @@ export class AssignmentsTabComponent extends BaseTabComponent {
 
   fetchData() {
     this.now = this.makeDate.transform(new Date(), 'ten');
-    this.items = this.getState('assignments', this.pmoId);
+    this.items = this.getState('assignments', this.login);
     if (this.items && this.items.length) {
       return;
     }
 
     this.isLoading = true;
-  	this.assignmentService.get({_id: this.pmoId})
+  	this.assignmentService.get({_id: this.login})
       .subscribe(data => {
         this.items = data;
-        this.setState('assignments', this.pmoId, data);
+        this.setState('assignments', this.login, data);
       })
       .add(() => this.isLoading = false);
   }
