@@ -5,7 +5,7 @@ const env = process.env;
 const pmo = 'https://pmo.griddynamics.net/';
 const pmoAssignments = pmo + 'service/v1/people/engineering/employees';
 const pmoDemandMeta = pmo + 'service/api/internal/position/demand/';
-const pmoUserAssignments = pmo + 'service/employees/%username/assignments';
+const pmoUserAssignments = pmo + 'api/v1/people/engineering/history/employee?id=';
 
 export default class PmoIntegrationsCtrl {
   sessionCookies = '';
@@ -28,9 +28,9 @@ export default class PmoIntegrationsCtrl {
   // Get employees info
   getPeople = (): Promise<any> => {
     return new Promise(async (resolve, reject) => {
-      let tillDate = new Date();
-      tillDate.setFullYear(1 + tillDate.getFullYear());
-      tillDate = tillDate.toUTCString();
+      let d = new Date();
+      d.setFullYear(1 + d.getFullYear());
+      let tillDate = d.toUTCString();
       await this.login().catch(reject);
       request.get(
         fillRequest(this.sessionCookies, pmoAssignments, {tillDate}),
@@ -52,21 +52,16 @@ export default class PmoIntegrationsCtrl {
   }
 
   // Get employees info
-  getUserAssignments = (login: string): Promise<any> => {
+  getUserAssignments = (pmoId: string): Promise<any> => {
     return new Promise(async (resolve, reject) => {
       await this.login().catch(reject);
       request.get(
-        fillRequest(this.sessionCookies, pmoUserAssignments.replace('%username', login)),
+        fillRequest(this.sessionCookies, pmoUserAssignments + pmoId),
         (error, response, body) => {
           let data;
           try {
-            data = JSON.parse(body);
-            if (!data || !data.rows) {
-              // No assignments
-              return resolve([]);
-            }
-
-            resolve(data.rows.sort((a, b) => {
+            data = JSON.parse(body).data.assignments;
+            resolve(data.sort((a, b) => {
               let [da, db] = [new Date(a.start), new Date(b.start)];
               return da < db ? 1 : -1;
             }));

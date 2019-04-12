@@ -15,7 +15,7 @@ import * as md5 from 'md5';
 export class AccountProjectTabComponent extends CommentsTabComponent {
   @Input() account: string;
   @Input() initiative: string;
-  @Input() login: string;
+  @Input() pmoId: string;
   @Input() state: any = {};
 
   _makeDate = {
@@ -49,8 +49,8 @@ export class AccountProjectTabComponent extends CommentsTabComponent {
 
     if (current) {
       [this.account, this.initiative] = [current.account, current.project];
-      this.setState('currentAccount', this.login, this.account);
-      this.setState('currentProject', this.login, this.initiative);
+      this.setState('currentAccount', this.pmoId, this.account);
+      this.setState('currentProject', this.pmoId, this.initiative);
       return super.fetchData();
     }
     this._cd.markForCheck();
@@ -58,25 +58,25 @@ export class AccountProjectTabComponent extends CommentsTabComponent {
   }
 
   fetchData() {
-    if (this.login) {
-      let currentAccount = this.getState('currentAccount', this.login);
-      let currentProject = this.getState('currentProject', this.login);
+    if (this.pmoId) {
+      let currentAccount = this.getState('currentAccount', this.pmoId);
+      let currentProject = this.getState('currentProject', this.pmoId);
 
       if (currentAccount && currentProject) {
         [this.account, this.initiative] = [currentAccount, currentProject];
         return super.fetchData();
       }
 
-      let assignments = this.getState('assignments', this.login);
+      let assignments = this.getState('assignments', this.pmoId);
       if (assignments && assignments.length) {
         return this.processAssignments(assignments);
       }
 
       this.isLoading = true;
-      this.assignmentService.get({_id: this.login})
+      this.assignmentService.get({_id: this.pmoId})
         .subscribe(
           data => {
-            this.setState('assignments', this.login, data);
+            this.setState('assignments', this.pmoId, data);
             return this.processAssignments(data);
           }
         );
