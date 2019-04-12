@@ -3,6 +3,8 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
 import { BaseModalComponent } from './base.component';
 import { CandidateService } from '../services/candidate.service';
+import { DomSanitizer } from '@angular/platform-browser';
+import { jobViteCandidate } from '../consts';
 
 @Component({
   selector: 'candidate-modal',
@@ -16,6 +18,7 @@ export class CandidateModal extends BaseModalComponent {
   constructor(
     modalService: NgbModal,
     private candidateService: CandidateService,
+    private sanitizer: DomSanitizer,
   ) {
     super(modalService);
   }
@@ -38,5 +41,9 @@ export class CandidateModal extends BaseModalComponent {
       this.candidate = this.adaptCandidate(candidate);
     }
     return this.open(tabName);
+  }
+
+  getJvApplicationLink() {
+    return this.sanitizer.bypassSecurityTrustUrl(jobViteCandidate + this.candidate.applicationId);
   }
 }

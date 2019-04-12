@@ -1,7 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { BaseTabComponent } from './base.component';
-import { DomSanitizer } from '@angular/platform-browser';
-import { jobViteCandidate } from '../../consts';
 
 @Component({
   selector: 'candidate-tab',
@@ -9,14 +7,4 @@ import { jobViteCandidate } from '../../consts';
 })
 export class CandidateTabComponent extends BaseTabComponent {
   @Input() candidate: any = {};
-
-  constructor(
-    private sanitizer: DomSanitizer,
-  ) {
-    super();
-  }
-
-  getJvApplicationLink() {
-    return this.sanitizer.bypassSecurityTrustUrl(jobViteCandidate + this.candidate.applicationId);
-  }
 }
