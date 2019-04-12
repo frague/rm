@@ -8,6 +8,7 @@
     </div>
     <h4 class="modal-title">
       Requisition {{ requisition.requisitionId }}
+      <a [href]="getJvRequisitionLink()" target="_blank"><i class="fa fa-external-link-square"></i></a>
     </h4>
     <h6>{{ requisition.title }} in {{ requisition.location }}</h6>
   </div>

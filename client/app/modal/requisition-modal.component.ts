@@ -3,6 +3,8 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
 import { BaseModalComponent } from './base.component';
 import { RequisitionService } from '../services/requisition.service';
+import { DomSanitizer } from '@angular/platform-browser';
+import { jobViteRequisition } from '../consts';
 
 @Component({
   selector: 'requisition-modal',
@@ -17,6 +19,7 @@ export class RequisitionModal extends BaseModalComponent {
   constructor(
     modalService: NgbModal,
     private requisitionService: RequisitionService,
+    private sanitizer: DomSanitizer,
   ) {
     super(modalService);
   }
@@ -64,4 +67,9 @@ export class RequisitionModal extends BaseModalComponent {
       'Filled': 'fa-check',
     }[state];
   }
+
+  getJvRequisitionLink() {
+    return this.sanitizer.bypassSecurityTrustUrl(jobViteRequisition + this.requisition.eId);
+  }
+
 }
