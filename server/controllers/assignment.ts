@@ -53,7 +53,7 @@ export default class AssignmentCtrl extends BaseCtrl {
         result = result.concat(this.filterSkills(item[key]))
       } else if (skillsExpr.test(key)) {
         if (typeof value === 'string') {
-          let expr = value.replace(skillExprExpr, '$1');  
+          let expr = value.replace(skillExprExpr, '$1');
           if (expr !== value) {
             value = '[^' + delimiter + ']*' + expr + '[^' + delimiter + ']*';
           }

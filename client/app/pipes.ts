@@ -15,6 +15,11 @@ type dateFormat = 'full' | 'nodate' | 'noyear' | 'ten';
 
 const trailingIndex = new RegExp(/^\d{2} /);
 const deCamelExpr = new RegExp(/([^A-Z0-9])([A-Z0-9])/, 'g');
+const closedStates = ['Filled', 'Closed', 'Cancelled', 'On hold'];
+const states = {
+  true: 'Active',
+  false: 'Inactive'
+};
 
 const formatDate = (date: any, format: dateFormat = 'full') => {
   if (!date) {
@@ -98,6 +103,26 @@ export class CutIndexPipe implements PipeTransform {
   }
 }
 
+const _compare = (demand, requisition): string => {
+  let result = [];
+
+  // Equally open or closed (filled)
+  let [d, r] = [!!demand.login, !closedStates.includes(requisition.jobState)];
+  if (d !== r) {
+    return `* States: requisition - ${states[r]}, demand - ${states[d]}`;
+  }
+  // Set of locations differs
+  [d, r] = [
+    demand.locations.sort().join(', '),
+    requisition.location
+  ];
+  if (d !== r) {
+    result.push(`* Locations: requisition - ${r}, demand - ${d}`);
+  }
+
+  return result.join('\n');
+}
+
 @Pipe({name: 'column'})
 export class ColumnPipe implements PipeTransform {
   transform(line: any, name: string) {
@@ -166,7 +191,24 @@ export class ColumnPipe implements PipeTransform {
           case 'end':
             return formatDate(value);
         }
+      case 'demands':
+        value = value instanceof Array ? value : [];
+        return value
+          .map(demand => '#' + (demand.id || '').split('_')[0])
+          .join(', ');
+      case 'discrepancies':
+        value = line['demands'];
+        value = value instanceof Array ? value : [];
+        let isSingle = value.length === 1;
+        return value
+          .map(demand => {
+            let id = '#' + (demand.id || '').split('_')[0];
+            let diff = _compare(demand, line);
+            return diff ? (isSingle ? '' : '**${id}**\n') + `${diff}` : '';
+          })
+          .join('\n\n');
     }
+
     if (typeof value !== 'string') {
       value = new String(value).toString();
     }

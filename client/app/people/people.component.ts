@@ -1,10 +1,11 @@
 import { Component, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription, Observable, from } from 'rxjs';
 
 import { AssignmentService } from '../services/assignment.service';
 import { InitiativeService } from '../services/initiative.service';
 import { ResourceService } from '../services/resource.service';
 import { DemandService } from '../services/demand.service';
+import { RequisitionService } from '../services/requisition.service';
 import { BusService } from '../services/bus.service';
 
 import { PersonModal } from '../modal/person-modal.component';
@@ -16,16 +17,18 @@ const defaultColumns = {
   status: 'Status'
 };
 
+const candidatesQueryKeys = ['requisition', 'candidate', 'comments'];
+
 @Component({
   selector: 'people',
   templateUrl: './people.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PeopleComponent extends Schedule {
-  items = [];
   tableColumns = {};
   keys = {};
   isPrintable = false;
+  requisitions = {};
 
   private _clickability = {
     name: this.showUser
@@ -37,7 +40,8 @@ export class PeopleComponent extends Schedule {
     initiativeService: InitiativeService,
     demandService: DemandService,
     bus: BusService,
-    cd: ChangeDetectorRef
+    cd: ChangeDetectorRef,
+    private requisitionService: RequisitionService
   ) {
     super(assignmentService, resourceService, initiativeService, demandService, bus, cd);
   }
@@ -75,6 +79,20 @@ export class PeopleComponent extends Schedule {
     query['addComments'] = 1;
     return super.fetchData(query, fetchAll, serviceData);
   }
+
+  postFetch = query => {
+    let queryString = JSON.stringify(query);
+    let requisitionsQuery = candidatesQueryKeys.some(key => queryString.indexOf(key + '.') >= 0) ?
+      this.requisitionService.getAll(query) : from([[]]);
+
+    return requisitionsQuery.subscribe(data => {
+      data.slice(0, 100).forEach(requisition => {
+        this.items.push(requisition);
+      });
+      this.markForCheck();
+    });
+
+  };
 
   getPrintableClass() {
     return this.isPrintable && 'printable';
