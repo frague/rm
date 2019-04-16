@@ -233,6 +233,7 @@ export const requisitionsLocations = {
   'Krakow, Poland': 'KR',
   'Wroclaw, Poland': 'WR',
   'Lviv, Ukraine': 'LV',
+  'Kyiv, Ukraine': 'KY',
   'Saratov, Russia': 'SAR',
   'St. Petersburg, Russia': 'SPB',
   'Atlanta, GA, US': 'US',

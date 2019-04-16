@@ -643,7 +643,7 @@ export default class SyncCtrl {
         let demand, status;
         const requestId = (item.jobviteId || '')
           .split(',')
-          .map((id: string) => 
+          .map((id: string) =>
              (id || '').toUpperCase().replace(reqId, '$1')
           );
 
