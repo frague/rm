@@ -11,7 +11,7 @@ const tasks = {
       'visas': {mandatory: false},
       'whois': {mandatory: false},
       'assignments': {mandatory: true},
-      'vacations': {mandatory: false},
+      'vacations': {mandatory: false, default: false},
     }},
     'demand': {mandatory: false},
     'accounts': {mandatory: false},
