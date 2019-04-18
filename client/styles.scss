@@ -2178,6 +2178,7 @@ div.bottom-corner {
 
     div.date {
       margin-bottom: 10px;
+      overflow-x: hidden;
 
       div span a {
         @extend .clickable;
