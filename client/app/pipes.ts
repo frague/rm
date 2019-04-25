@@ -207,6 +207,10 @@ export class ColumnPipe implements PipeTransform {
             return diff ? (isSingle ? '' : '**${id}**\n') + `${diff}` : '';
           })
           .join('\n\n');
+      case 'state':
+        if (value) {
+          return value.replace(/^\d+ /, '');
+        }
     }
 
     if (typeof value !== 'string') {

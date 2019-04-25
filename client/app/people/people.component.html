@@ -10,29 +10,35 @@
 
   <comments-modal></comments-modal>
 
-  <table [ngClass]="!isPrintable && 'table'">
-    <thead>
-      <tr>
-        <th *ngFor="let column of keys">{{ tableColumns[column]|deCamel }}</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let resource of items">
-        <td
-          *ngFor="let column of keys"
-          (click)="click(column, resource)"
-          [ngClass]="getClasses(column)"
-          ><div *ngIf="column == 'name'">
-              <div
-                class="corner"
-                [ngClass]="{'has-status': resource.status}"
-                (click)="showResource(resource, true, $event)"
-              >
-                <b>{{ resource.commentsCount || '' }}</b>
-              </div>
-            </div><span class="md" [innerHTML]="resource|column:column|markdown" *ngIf="resource|column:column"></span></td>
-      </tr>
-    </tbody>
-  </table>
+  <candidate-modal></candidate-modal>
+
+  <requisition-modal></requisition-modal>
+
+  <spinner [isShown]="isLoading" [showContent]="true">
+    <table [ngClass]="!isPrintable && 'table'">
+      <thead>
+        <tr>
+          <th *ngFor="let column of keys">{{ tableColumns[column]|deCamel }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let resource of items">
+          <td
+            *ngFor="let column of keys"
+            (click)="click(column, resource)"
+            [ngClass]="getClasses(column)"
+            ><div *ngIf="column == 'name'">
+                <div
+                  class="corner"
+                  [ngClass]="{'has-status': resource.status}"
+                  (click)="showResource(resource, true, $event)"
+                >
+                  <b>{{ resource.commentsCount || '' }}</b>
+                </div>
+              </div><span class="md" [innerHTML]="resource|column:column|markdown" *ngIf="resource|column:column"></span></td>
+        </tr>
+      </tbody>
+    </table>
+  </spinner>
 
 </div>

@@ -475,7 +475,7 @@ export class Schedule {
     }
   };
 
-  showRequisition(requisitionId: string, e: MouseEvent) {
+  showRequisition(requisitionId: string, e: MouseEvent = {}) {
     e.cancelBubble = true;
     this.requisitionModal.show(requisitionId);
   }
@@ -515,12 +515,14 @@ export class Schedule {
       // Only demand entity always contains "stage" key
       let [entity, source] = this.getDemandFrom(item);
       return this._showModal(entity, source, this.demandModal, showComments);
-    } else if (!item.isHiree) {
-      let [entity, source] = this.getPersonFrom(item);
-      return this._showModal(entity, source, this.personModal, showComments);
-    } else {
+    } else if (item.isHiree) {
       let [entity, source] = this.getCandidateFrom(item);
       return this._showModal(entity, source, this.candidateModal, showComments);
+    } else if (item.candidates) {
+      return this.showRequisition(item.requisitionId);
+    } else {
+      let [entity, source] = this.getPersonFrom(item);
+      return this._showModal(entity, source, this.personModal, showComments);
     }
   }
 

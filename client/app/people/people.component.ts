@@ -87,7 +87,12 @@ export class PeopleComponent extends Schedule {
 
     return requisitionsQuery.subscribe(data => {
       data.slice(0, 100).forEach(requisition => {
+        requisition.summary = `${requisition.requisitionId} ${requisition.title} (${requisition.jobState})`;
         this.items.push(requisition);
+        requisition.candidates.forEach(candidate => {
+          candidate.isHiree = true;
+          this.items.push(candidate);
+        });
       });
       this.markForCheck();
     });
