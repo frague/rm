@@ -81,7 +81,7 @@ export class PeopleComponent extends Schedule {
   }
 
   postFetch = query => {
-    let queryString = JSON.stringify(query);
+    let queryString = JSON.stringify(query['or']) || '';
     let requisitionsQuery = candidatesQueryKeys.some(key => queryString.indexOf(key + '.') >= 0) ?
       this.requisitionService.getAll(query) : from([[]]);
 
