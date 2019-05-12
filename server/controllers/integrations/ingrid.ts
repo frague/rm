@@ -11,7 +11,7 @@ export default class InGridCtrl {
     return ssoQuery(inGrid + url)
       .then(data => preprocessor ? preprocessor(data) : data)
       .catch(error => {
-        console.log('Error requesting skill tree skills', error);
+        console.log('Error requesting from ingrid', error);
         return error;
       });
   }

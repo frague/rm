@@ -28,10 +28,12 @@ const ssoLogin = (): Promise<any> => {
         encodedPassword: Buffer.from(env.CONFLUENCE_PASSWORD).toString('base64')
       },
       (err, response, body) => {
-        console.log('SSO authentication');
+        console.log('SSO authentication...');
         if (err) {
+          console.log('   error');
           return reject('Error logging in via SSO');
         }
+        console.log('   successful');
         resolve({
           headers: {
             Authorization: 'Bearer ' + body.accessToken
@@ -52,9 +54,14 @@ export const ssoQuery = (url: string, options: any = null): Promise<any> => {
 
     let opts = Object.assign({url}, ssoHeader, options);
 
+    console.log('SSO query: ', opts);
+
     request[options ? 'post' : 'get'](
       opts,
       (err, response, body) => {
+        if (!body && response && response.toJSON) {
+          body = response.toJSON().body;
+        }
         let data;
         try {
           data = typeof body === 'string' ? JSON.parse(body) : body;
