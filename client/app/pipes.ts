@@ -109,7 +109,7 @@ const _compare = (demand, requisition): string => {
   // Equally open or closed (filled)
   let [d, r] = [!!demand.login, !closedStates.includes(requisition.jobState)];
   if (d !== r) {
-    return `* States: requisition - ${states[r]}, demand - ${states[d]}`;
+    return `* States: requisition - ${states[''+r]}, demand - ${states[''+d]}`;
   }
   // Set of locations differs
   [d, r] = [

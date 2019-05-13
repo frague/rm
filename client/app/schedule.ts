@@ -475,8 +475,8 @@ export class Schedule {
     }
   };
 
-  showRequisition(requisitionId: string, e: MouseEvent = {}) {
-    e.cancelBubble = true;
+  showRequisition(requisitionId: string, event: any = {}) {
+    event.cancelBubble = true;
     this.requisitionModal.show(requisitionId);
   }
 
