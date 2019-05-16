@@ -42,7 +42,8 @@ export class AssignmentsTabComponent extends BaseTabComponent {
 
   getClass(assignment) {
     return {
-      active: assignment.start <= this.now && (!assignment.finish || assignment.finish >= this.now)
+      active: assignment.start <= this.now && (!assignment.finish || assignment.finish >= this.now),
+      pending: assignment.start > this.now
     }
   }
 }

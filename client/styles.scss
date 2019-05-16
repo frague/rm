@@ -485,6 +485,14 @@ pre {
             display: none;
           }
         }
+        &.pending {
+          color: $green - #444;
+          font-weight: 100;
+
+          i.fa {
+            display: none;
+          }
+        }
       }
 
       ul {
@@ -2062,6 +2070,23 @@ div.bottom-corner {
     h6 {
       font-size: 100%;
       font-weight: 800;
+
+      span:not(:empty):before {
+        content: " at ";
+      }
+
+      div:not(:empty) {
+        position: relative;
+        display: inline-block;
+        bottom: 10px;
+        left: 4px;
+        font-size: 8px;
+        font-weight: 200;
+        background-color: $grid;
+        color: white;
+        border-radius: 4px;
+        padding: 2px 4px;
+      }
     }
   }
 }

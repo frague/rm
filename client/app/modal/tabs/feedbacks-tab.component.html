@@ -8,10 +8,11 @@
         <h2>Feedbacks</h2>
         <div *ngFor="let feedback of feedbacks" class="feedback">
           <time>{{ feedback.feedbackDate|date }}</time>
-          <h6>{{ feedback.senderGrade }} at {{ feedback.accountTitle }}</h6>
+          <h6>{{ feedback.senderGrade }}<span>{{ feedback.accountTitle }}</span><div>{{ feedback.source }}</div></h6>
           <ul>
             <li>Performance: <b>{{ deUnder(feedback.performanceQuestion) }}</b></li>
             <li>Would work together again: <b>{{ deUnder(feedback.nextTimeQuestion) }}</b></li>
+            <li>Initiative: <b>{{ feedback.projectTitle }}</b></li>
           </ul>
           <div class="md" [innerHTML]="feedback.comment|markdown"></div>
         </div>
