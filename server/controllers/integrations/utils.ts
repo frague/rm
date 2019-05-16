@@ -46,7 +46,9 @@ const ssoLogin = (): Promise<any> => {
 
 export const ssoQuery = (url: string, options: any = null, isRecurred=false): Promise<any> => {
   return new Promise(async (resolve, reject) => {
+    let hasAuthenticated = false;
     if (!ssoHeader) {
+      hasAuthenticated = true;
       let _error;
       ssoHeader = await ssoLogin().catch(error => _error = error);
       if (_error) return reject(_error);
@@ -70,7 +72,7 @@ export const ssoQuery = (url: string, options: any = null, isRecurred=false): Pr
           return reject(error);
         }
         if (data && data.status === 401) {
-          if (!isRecurred) {
+          if (!hasAuthenticated && !isRecurred) {
             console.log('!!!! Reauthenticate');
             ssoHeader = null;
             return ssoQuery(url, options, true)
