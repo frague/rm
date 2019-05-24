@@ -7,7 +7,7 @@
     <h4 class="modal-title">
       {{ person.name }}
       <ng-container *ngIf="isTrue(person.onTrip)">(on a business trip)</ng-container>
-      <ng-container *ngIf="isTrue(person.onVacation)">(on vacation)</ng-container>
+      <ng-container *ngIf="!!person.onVacation">(on vacation)</ng-container>
       <a [href]="getPmoLink()" *ngIf="getPmoLink()" target="_blank"><i class="fa fa-external-link-square"></i></a>
     </h4>
     <h6>

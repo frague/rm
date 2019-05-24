@@ -23,10 +23,10 @@
   <report-modal [accountsDemand]="accountsDemand" [candidates]="candidates"></report-modal>
 
   <spinner [isShown]="isLoading" [showContent]="true">
-    <div class="row">
+    <!--div class="row">
       <div class="col-md-2"></div>
       <div class="col-md-10"></div>
-    </div>
+    </div-->
 
     <div class="planner row" *ngIf="items.length">
       <div class="col-md-3 demands lines">
@@ -80,6 +80,7 @@
                 <a (click)="showRequisition(candidate.requisitionId, $event)" *ngIf="candidate.requisitionId">
                   {{ candidate.requisitionId }}
                 </a>
+                <span *ngIf="candidate.onVacation">{{ candidate.onVacation|date }}</span>
                 <span *ngIf="candidate.starts">{{ candidate.starts|date }}</span>
               </avatar>
               {{ candidate.name }}

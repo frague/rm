@@ -65,7 +65,7 @@ export class AssignmentsComponent extends Schedule {
   }
 
   isOnVacation(assignee) {
-    return Utils.isTrue(assignee.onVacation);
+    return !!assignee.onVacation;
   }
 
   makeCaption(assignee) {

@@ -82,7 +82,8 @@ export class PlannerComponent extends Schedule {
               if (item.login.indexOf(' ') > 0) {
                 result.starts = item.minDate;
               };
-              ['canTravel', 'billable', 'onTrip', 'onVacation'].forEach(key => result[key] = item[key] === 'true');
+              ['canTravel', 'billable', 'onTrip'].forEach(key => result[key] = item[key] === 'true');
+              result.onVacation = item.onVacation;
               return result;
             })
         :
@@ -267,7 +268,7 @@ export class PlannerComponent extends Schedule {
       assigned: this.isAssigned(candidate),
       hiree: candidate.isHiree,
       accepted: candidate.login.indexOf(' ') > 0,
-      vacation: Utils.isTrue(candidate.onVacation)
+      vacation: !!candidate.onVacation
     };
   }
 }

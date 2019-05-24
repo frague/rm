@@ -934,10 +934,13 @@ i.initiative {
               font-weight: 600;
               color: #888;
               font-size: 8px;
+              text-shadow: 0 0 3px #000, 0 0 6px #000;
+              color: #FFF;
             }
 
             a {
               color: $link;
+              text-shadow: none;
             }
           }
 
