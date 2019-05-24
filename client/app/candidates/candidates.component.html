@@ -8,82 +8,84 @@
   <div class="alert alert-info message" *ngIf="message">{{ message }}</div>
   <h1>Requisitions &amp; candidates</h1>
 
-  <div class="requisitions" *ngIf="getRequisitions().length">
-    <ng-container *ngFor="let category of getCategories()">
-      <h3>{{ category }}</h3>
-      <ng-container *ngFor="let requisition of categoryRequisitions[category]">
-        <div
-          class="requisition row"
-          [ngClass]="getRequisitionClasses(requisition)"
-        >
-          <div class="col-md-2">
-            <demands [demands]="requisition.demands" (showDemand)="showDemand($event, requisition)"></demands>
-            <i class="fa" [ngClass]="getRequisitionClass(requisition)" (click)="toggleSelection(requisition)"></i>
-            <a (click)="showRequisition(requisition)">{{ requisition.requisitionId }}</a>
-            <div
-              class="corner"
-              (click)="showRequisition(requisition, true)"
-              [ngClass]="{'has-status': requisition.status}"
-              container="body"
-              placement="top-left"
-              [ngbTooltip]="getCurrentStatus(requisition)"
-              *ngIf="requisition.commentsCount"
-            >
-              <b>{{ requisition.commentsCount }}</b>
-            </div>
-
-            <span *ngIf="requisition.candidates && requisition.candidates.length">
-              {{ requisition.candidates.length }}
-              <i class="fa fa-male"></i>
-            </span>
-          </div>
-          <div class="col-md-4" (click)="toggleSelection(requisition)">
-            <i class="fa" [ngClass]="getStatusStyle(requisition)"></i>
-            {{ requisition.title }}
-          </div>
-          <div class="col-md-1">
-            {{ requisition.jobState }}
-          </div>
-          <div class="col-md-2">
-            {{ requisition.department }}
-          </div>
-          <div class="col-md-3">
-            <a [href]="getJvRequisitionLink(requisition)" target="_blank"><i class="fa fa-external-link-square"></i></a>
-            {{ requisition.location }}
-          </div>
-        </div>
-        <ng-container *ngIf="isRequisitionSelected(requisition)">
+  <spinner [isShown]="isLoading" [showContent]="true">
+    <div class="requisitions" *ngIf="getRequisitions().length">
+      <ng-container *ngFor="let category of getCategories()">
+        <h3>{{ category }}</h3>
+        <ng-container *ngFor="let requisition of categoryRequisitions[category]">
           <div
-            *ngFor="let candidate of requisition.candidates"
-            class="candidate row"
-            (click)="showCandidate(candidate)"
+            class="requisition row"
+            [ngClass]="getRequisitionClasses(requisition)"
           >
             <div class="col-md-2">
+              <demands [demands]="requisition.demands" (showDemand)="showDemand($event, requisition)"></demands>
+              <i class="fa" [ngClass]="getRequisitionClass(requisition)" (click)="toggleSelection(requisition)"></i>
+              <a (click)="showRequisition(requisition)">{{ requisition.requisitionId }}</a>
               <div
                 class="corner"
-                (click)="showCandidate(candidate, true, $event)"
-                [ngClass]="{'has-status': candidate.status}"
+                (click)="showRequisition(requisition, true)"
+                [ngClass]="{'has-status': requisition.status}"
                 container="body"
                 placement="top-left"
-                [ngbTooltip]="getCurrentStatus(candidate)"
+                [ngbTooltip]="getCurrentStatus(requisition)"
+                *ngIf="requisition.commentsCount"
               >
-                <b>{{ candidate.commentsCount || '' }}</b>
+                <b>{{ requisition.commentsCount }}</b>
               </div>
-              {{ candidate.name }}
+
+              <span *ngIf="requisition.candidates && requisition.candidates.length">
+                {{ requisition.candidates.length }}
+                <i class="fa fa-male"></i>
+              </span>
             </div>
-            <div class="col-md-3">
-              {{ candidate.state|cutIndex }}
+            <div class="col-md-4" (click)="toggleSelection(requisition)">
+              <i class="fa" [ngClass]="getStatusStyle(requisition)"></i>
+              {{ requisition.title }}
+            </div>
+            <div class="col-md-1">
+              {{ requisition.jobState }}
             </div>
             <div class="col-md-2">
-              {{ candidate.updated|date }}
+              {{ requisition.department }}
             </div>
-            <div class="col-md-5">
-              <a [href]="getJvCandidateLink(candidate)" target="_blank"><i class="fa fa-external-link-square"></i></a>
-              {{ candidate.location }}
+            <div class="col-md-3">
+              <a [href]="getJvRequisitionLink(requisition)" target="_blank"><i class="fa fa-external-link-square"></i></a>
+              {{ requisition.location }}
             </div>
           </div>
+          <ng-container *ngIf="isRequisitionSelected(requisition)">
+            <div
+              *ngFor="let candidate of requisition.candidates"
+              class="candidate row"
+              (click)="showCandidate(candidate)"
+            >
+              <div class="col-md-2">
+                <div
+                  class="corner"
+                  (click)="showCandidate(candidate, true, $event)"
+                  [ngClass]="{'has-status': candidate.status}"
+                  container="body"
+                  placement="top-left"
+                  [ngbTooltip]="getCurrentStatus(candidate)"
+                >
+                  <b>{{ candidate.commentsCount || '' }}</b>
+                </div>
+                {{ candidate.name }}
+              </div>
+              <div class="col-md-3">
+                {{ candidate.state|cutIndex }}
+              </div>
+              <div class="col-md-2">
+                {{ candidate.updated|date }}
+              </div>
+              <div class="col-md-5">
+                <a [href]="getJvCandidateLink(candidate)" target="_blank"><i class="fa fa-external-link-square"></i></a>
+                {{ candidate.location }}
+              </div>
+            </div>
+          </ng-container>
         </ng-container>
       </ng-container>
-    </ng-container>
-  </div>
+    </div>
+  </spinner>
 </div>

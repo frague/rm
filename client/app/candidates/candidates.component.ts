@@ -41,6 +41,7 @@ export class CandidatesComponent implements OnInit {
   isCategoryFilled = {};
   selectedRequisitionId = null;
   allExpanded = false;
+  isLoading = false;
 
   private $query;
 
@@ -83,6 +84,8 @@ export class CandidatesComponent implements OnInit {
 
   fetchData(query={}): Subscription {
     this.allExpanded = false;
+    this.isLoading = true;
+    this.cd.markForCheck();
 
     return this.requisitionService.getAll(query).subscribe(data => {
         this.allExpanded = data && data.length <= 10;
@@ -100,8 +103,8 @@ export class CandidatesComponent implements OnInit {
           return result;
         }, {});
 
-
         this.items = data;
+        this.isLoading = false;
         this.cd.markForCheck();
       });
   }
