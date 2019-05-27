@@ -49,8 +49,13 @@ export class PlannerComponent extends Schedule {
   _cd: ChangeDetectorRef;
   now;
 
-  filterStates = {fc: true, sp: true, va: true};
+  filterStates = {FC: true, SP: true, VA: true};
   filterDeployments = {offshore: true, onsite: true};
+  locations = [
+    'SPB', 'SAR', 'KHR', 'LV', 'KR', 'US', 'BEL', 'WR',
+  ];
+  filterLocations = {};
+  filterUsers = false;
 
   private _reset() {
     this.demands = [];
@@ -133,6 +138,7 @@ export class PlannerComponent extends Schedule {
   ) {
     super(assignmentService, resourceService, initiativeService, demandService, bus, cd);
     this._cd = cd;
+    this.toggleLocations({target: {checked: true}});
   }
 
   ngOnInit() {
@@ -210,6 +216,35 @@ export class PlannerComponent extends Schedule {
 
   isReserved(candidate: any, demand: any) {
     return this.reserved[demand.login] === candidate.login;
+  }
+
+  isDemandVisible(demand: any) {
+    if (!demand) return false;
+    let state = this.filterStates[demand.stage];
+    let deployment = this.filterDeployments[demand.deployment === 'Offshore' ? 'offshore' : 'onsite'];
+    let location = demand.locations.split(', ').some(dl => this.filterLocations[dl]);
+    return state && deployment && location;
+  }
+
+  isUserVisible(user: any) {
+    if (!this.filterUsers) return true;
+    return this.filterLocations[user.location];
+  }
+
+  getCandidatesCount() {
+    if (!this.filterUsers) return this.candidatesCount;
+    return this.candidates.reduce((p, v) => {
+      p += this.filterLocations[v.location] ? 1 : 0;
+      return p;
+    }, 0);
+  }
+
+  toggleLocations(event: any) {
+    let state = event.target.checked;
+    this.filterLocations = this.locations.reduce((p, v) => {
+      p[v] = state;
+      return p;
+    }, {});
   }
 
   getDemandStyles(demand: any) {

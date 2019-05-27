@@ -28,103 +28,119 @@
         <div class="filters">
           <ul>
             <h6>Status</h6>
-            <li><input type="checkbox" [(ngModel)]="filterStates.FC">FC</li>
-            <li><input type="checkbox" [(ngModel)]="filterStates.VA">VA</li>
-            <li><input type="checkbox" [(ngModel)]="filterStates.SP">SP</li>
+            <li><label><input type="checkbox" [(ngModel)]="filterStates.FC">Fully Confirmed</label></li>
+            <li><label><input type="checkbox" [(ngModel)]="filterStates.VA">Verbally Agreed</label></li>
+            <li><label><input type="checkbox" [(ngModel)]="filterStates.SP">Sales Prospect</label></li>
           </ul>
           <ul>
             <h6>Deployment</h6>
-            <li><input type="checkbox" [(ngModel)]="filterDeployments.onsite">Onsite</li>
-            <li><input type="checkbox" [(ngModel)]="filterDeployments.offshore">Offshore</li>
+            <li><label><input type="checkbox" [(ngModel)]="filterDeployments.onsite">Onsite</label></li>
+            <li><label><input type="checkbox" [(ngModel)]="filterDeployments.offshore">Offshore</label></li>
+          </ul>
+          <ul>
+            <h6>Location</h6>
+            <li *ngFor="let location of locations"><label><input type="checkbox" [(ngModel)]="filterLocations[location]">{{ location }}</label></li>
+            <li><label><input type="checkbox" (click)="toggleLocations($event)" checked>Toggle all</label></li>
+            <li><label><input type="checkbox" [(ngModel)]="filterUsers">Apply to users</label></li>
           </ul>
         </div>
         <div class="account" *ngFor="let account of getAccounts()">
           <h3>{{ account }}</h3>
-          <div
+          <ng-container
             *ngFor="let demand of accountsDemand[account]"
-            class="line"
-            (click)="showResource(demand)"
-            [ngClass]="getDemandStyles(demand)"
           >
-            <time>{{ demand.start|date:'noyear' }}</time>
             <div
-              class="corner"
-              (click)="showResource(demand, true, $event)"
-              [ngClass]="{'has-status': demand.status}"
-              container="body"
-              placement="top-left"
-              [ngbTooltip]="getCurrentStatus(demand)"
+              *ngIf="isDemandVisible(demand)"
+              class="line"
+              (click)="showResource(demand)"
+              [ngClass]="getDemandStyles(demand)"
             >
-              <b>{{ demand.commentsCount || '' }}</b>
+              <time>{{ demand.start|date:'noyear' }}</time>
+              <div
+                class="corner"
+                (click)="showResource(demand, true, $event)"
+                [ngClass]="{'has-status': demand.status}"
+                container="body"
+                placement="top-left"
+                [ngbTooltip]="getCurrentStatus(demand)"
+              >
+                <b>{{ demand.commentsCount || '' }}</b>
+              </div>
+              <div
+                class="bottom-corner"
+                container="body"
+                placement="top-left"
+                [ngbTooltip]="getDemandCandidate(demand)"
+                *ngIf="getDemandCandidate(demand)"
+              >
+                <i class="fa fa-info-circle"></i>
+              </div>
+              <i class="fa fa-plane" *ngIf="isOnsite(demand)"></i>
+              {{ demand.name }} <u>{{ demand.project }}</u>
+              <span>
+                <ul class="requisitions" *ngIf="demand.requestId.length"><li *ngFor="let req of getDemandRequisitions(demand);let i = index"><a (click)="showRequisition(req, $event)" [ngClass]="showReqStatus(demand, i)">{{ req }}</a></li></ul>
+                {{ getDemandAttrs(demand) }}
+              </span>
+              <span [title]="demand.comment">{{ demand.comment || demand.requirements }}</span>
             </div>
-            <div
-              class="bottom-corner"
-              container="body"
-              placement="top-left"
-              [ngbTooltip]="getDemandCandidate(demand)"
-              *ngIf="getDemandCandidate(demand)"
-            >
-              <i class="fa fa-info-circle"></i>
-            </div>
-            <i class="fa fa-plane" *ngIf="isOnsite(demand)"></i>
-            {{ demand.name }} <u>{{ demand.project }}</u>
-            <span>
-              <ul class="requisitions" *ngIf="demand.requestId.length"><li *ngFor="let req of getDemandRequisitions(demand);let i = index"><a (click)="showRequisition(req, $event)" [ngClass]="showReqStatus(demand, i)">{{ req }}</a></li></ul>
-              {{ getDemandAttrs(demand) }}
-            </span>
-            <span [title]="demand.comment">{{ demand.comment || demand.requirements }}</span>
-          </div>
+          </ng-container>
         </div>
       </div>
       <div class="col-md-9 candidates">
-        <div class="lines" [ngStyle]="{width: (candidatesCount * cardWidth) + 'px'}">
+        <div class="lines" [ngStyle]="{width: (getCandidatesCount() * cardWidth) + 'px'}">
           <ol #sticky [ngStyle]="{top: bofOffset}" [ngClass]="{sticky: bofOffset !== 'auto'}">
-            <li
-              *ngFor="let candidate of candidates;let x = index"
-              (click)="showResource(candidate)"
-              [ngClass]="getCardClass(candidate)"
-            >
-              <avatar [login]="candidate.login" [useDefault]="candidate.isHiree">
-                <a (click)="showRequisition(candidate.requisitionId, $event)" *ngIf="candidate.requisitionId">
-                  {{ candidate.requisitionId }}
-                </a>
-                <span *ngIf="candidate.onVacation">{{ candidate.onVacation|date }}</span>
-                <span *ngIf="candidate.starts">{{ candidate.starts|date }}</span>
-              </avatar>
-              {{ candidate.name }}
-              <span>
-                <i class="fa fa-bed" *ngIf="candidate.onVacation"></i>
-                <i class="fa fa-globe" *ngIf="candidate.onTrip"></i>
-                <i class="fa fa-plane" *ngIf="candidate.canTravel"></i>
-                {{ getCandidateCaption(candidate) }}
-              </span>
-              <div
-                class="status"
-                container="body"
-                placement="top-right"
-                [ngbTooltip]="getCurrentStatus(candidate)"
-                (click)="showResource(candidate, true, $event)"
+            <ng-container *ngFor="let candidate of candidates">
+              <li
+                *ngIf="isUserVisible(candidate)"
+                (click)="showResource(candidate)"
+                [ngClass]="getCardClass(candidate)"
               >
+                <avatar [login]="candidate.login" [useDefault]="candidate.isHiree">
+                  <a (click)="showRequisition(candidate.requisitionId, $event)" *ngIf="candidate.requisitionId">
+                    {{ candidate.requisitionId }}
+                  </a>
+                  <span *ngIf="candidate.onVacation">{{ candidate.onVacation|date }}</span>
+                  <span *ngIf="candidate.starts">{{ candidate.starts|date }}</span>
+                </avatar>
+                {{ candidate.name }}
+                <span>
+                  <i class="fa fa-bed" *ngIf="candidate.onVacation"></i>
+                  <i class="fa fa-globe" *ngIf="candidate.onTrip"></i>
+                  <i class="fa fa-plane" *ngIf="candidate.canTravel"></i>
+                  {{ getCandidateCaption(candidate) }}
+                </span>
                 <div
-                  class="corner"
-                  [ngClass]="{'has-status': candidate.status}"
+                  class="status"
+                  container="body"
+                  placement="top-right"
+                  [ngbTooltip]="getCurrentStatus(candidate)"
+                  (click)="showResource(candidate, true, $event)"
                 >
-                  <b>{{ candidate.commentsCount || '' }}</b>
+                  <div
+                    class="corner"
+                    [ngClass]="{'has-status': candidate.status}"
+                  >
+                    <b>{{ candidate.commentsCount || '' }}</b>
+                  </div>
+                  <span [innerHTML]="getCurrentStatus(candidate)|markdown"></span>
                 </div>
-                <span [innerHTML]="getCurrentStatus(candidate)|markdown"></span>
-              </div>
-            </li>
+              </li>
+            </ng-container>
           </ol>
           <div class="account" *ngFor="let account of getAccounts()">
-            <div *ngFor="let demand of accountsDemand[account]" class="line">
-              <div
-                *ngFor="let candidate of candidates"
-                (click)="reserve(candidate, demand)"
-                [ngClass]="getCheckStyles(candidate, demand)"
-              >
-                <i class="fa fa-check"></i>&nbsp;
+            <ng-container *ngFor="let demand of accountsDemand[account]">
+              <div *ngIf="isDemandVisible(demand)" class="line">
+                <ng-container *ngFor="let candidate of candidates">
+                  <div
+                    *ngIf="isUserVisible(candidate)"
+                    (click)="reserve(candidate, demand)"
+                    [ngClass]="getCheckStyles(candidate, demand)"
+                  >
+                    <i class="fa fa-check"></i>&nbsp;
+                  </div>
+                </ng-container>
               </div>
-            </div>
+            </ng-container>
           </div>
         </div>
       </div>

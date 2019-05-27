@@ -774,9 +774,31 @@ i.initiative {
 
       ul {
         position: absolute;
+        
+        label {
+          margin: 0;
+        }
 
         &:nth-child(2) {
-          margin-left: 100px;
+          margin-top: 115px;
+        }
+
+        &:nth-child(3) {
+          margin-left: 160px;
+          li:nth-child(even) {
+            position: absolute;
+            margin-left: 65px;
+            min-width: 60px
+          }
+          
+          li:nth-last-child(-n+2) {
+            position: static;
+            margin: 0;
+          }
+
+          li:nth-last-child(2) {
+            margin-top: 19px;
+          }
         }
 
         padding: 0;
