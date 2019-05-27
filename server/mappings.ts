@@ -2,21 +2,6 @@ export function replaceFromMap(where, what) {
   return where[what] ? where[what] : what;
 }
 
-export var accountsMap = {
-  'American Eagle Outfitters': 'AEO',
-  'Blackhawk Network': '',
-  'GAP': '',
-  'Hearst': '',
-  'Integral Ad Science': '',
-  'Jump Ramp Games': '',
-  'KOHL\'s': 'Kohls',
-  'MACY\'s': 'Macys',
-  'Rally Health': '',
-  'Sephora': '',
-  'Silicon Valley Bank': '',
-  'Toys R Us': 'ToysRUs'
-};
-
 export var demandProfilesMap = {
   'QE-Mobile': 'Quality Engineer',
   'BSA-Common': 'Quality Engineer',

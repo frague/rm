@@ -18,7 +18,6 @@ import * as convert from 'color-convert';
 import * as md5 from 'md5';
 import {
   replaceFromMap,
-  accountsMap,
   billabilityMap,
   locationsMap,
   locations,
