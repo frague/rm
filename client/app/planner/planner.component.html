@@ -23,13 +23,21 @@
   <report-modal [accountsDemand]="accountsDemand" [candidates]="candidates"></report-modal>
 
   <spinner [isShown]="isLoading" [showContent]="true">
-    <!--div class="row">
-      <div class="col-md-2"></div>
-      <div class="col-md-10"></div>
-    </div-->
-
     <div class="planner row" *ngIf="items.length">
       <div class="col-md-3 demands lines">
+        <div class="filters">
+          <ul>
+            <h6>Status</h6>
+            <li><input type="checkbox" [(ngModel)]="filterStates.FC">FC</li>
+            <li><input type="checkbox" [(ngModel)]="filterStates.VA">VA</li>
+            <li><input type="checkbox" [(ngModel)]="filterStates.SP">SP</li>
+          </ul>
+          <ul>
+            <h6>Deployment</h6>
+            <li><input type="checkbox" [(ngModel)]="filterDeployments.onsite">Onsite</li>
+            <li><input type="checkbox" [(ngModel)]="filterDeployments.offshore">Offshore</li>
+          </ul>
+        </div>
         <div class="account" *ngFor="let account of getAccounts()">
           <h3>{{ account }}</h3>
           <div

@@ -44,11 +44,13 @@ export class PlannerComponent extends Schedule {
   deserved = {};
 
   accountsDemand = {};
-
   columns = ['pool', 'billable', 'onTrip', 'canTravel', 'onVacation'];
 
   _cd: ChangeDetectorRef;
   now;
+
+  filterStates = {fc: true, sp: true, va: true};
+  filterDeployments = {offshore: true, onsite: true};
 
   private _reset() {
     this.demands = [];
