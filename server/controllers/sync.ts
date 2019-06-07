@@ -20,7 +20,6 @@ import {
   replaceFromMap,
   billabilityMap,
   locationsMap,
-  locations,
   demandProfilesMap,
   demandPoolsMap,
   candidateStates,
@@ -783,6 +782,7 @@ export default class SyncCtrl {
     let result = [];
     return new Promise(async (resolve, reject) => {
       let total = await this.jv.getRequisitionsCount();
+      this._addLog(total + ' requisitions to be fetched', 'jobvite');
       let result = [];
       let fetchers = new Array(Math.ceil(total / requisitionsChunk)).join('.').split('.').map((x, i) => {
         let from = 1 + i * requisitionsChunk;
@@ -892,7 +892,7 @@ export default class SyncCtrl {
         return reject(_error);
       };
 
-      this._addLog(total + ' candidates found', 'jobvite');
+      this._addLog(total + ' candidates to be fetched', 'jobvite');
 
       let fetchers = new Array(Math.ceil(total / candidatesChunk)).fill(0).map((x, i) => {
         let from = 1 + candidatesChunk * i;
