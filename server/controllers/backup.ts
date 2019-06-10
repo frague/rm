@@ -41,6 +41,8 @@ export default class BackupCtrl {
   restore = (req, res) => {
     if (req.body && req.body.backup && req.body.backup.value) {
       console.log('- Backup restore -----------------------------------------------');
+      let merge = !!req.body.merge;
+      console.log('Merge: ', merge);
       let data: any;
       try {
         data = JSON.parse(new Buffer(req.body.backup.value, 'base64').toString());
@@ -54,24 +56,26 @@ export default class BackupCtrl {
         Object.keys(models).map(key => {
           let model = models[key];
 
-          return model.deleteMany({})
-            .exec()
-            .then(() => {
-              let items = data[key];
-              items.forEach(itemData => {
-                delete itemData['__v'];
-                new model(itemData)
-                  .save()
-                  .then(
-                    data => {},
-                    error => console.log(`Error saving ${key}:`, itemData)
-                  );
-              });
-              let r = items.length + ' ' + key + ' were successfully restored from backup';
-              result.push(r);
-              console.log(r);
-            })
-            .catch(error => console.log(`Error deleting ${key}`));
+          return (merge && key === 'comments') ?
+            this._mergeComments(data[key], result) :
+            model.deleteMany({})
+              .exec()
+              .then(() => {
+                let items = data[key];
+                items.forEach(itemData => {
+                  delete itemData['__v'];
+                  new model(itemData)
+                    .save()
+                    .then(
+                      data => {},
+                      error => console.log(`Error saving ${key}:`, itemData)
+                    );
+                });
+                let r = items.length + ' ' + key + ' were successfully restored from backup';
+                result.push(r);
+                console.log(r);
+              })
+              .catch(error => console.log(`Error deleting ${key}`));
         })
       )
         .then(() => {
@@ -84,6 +88,46 @@ export default class BackupCtrl {
     } else {
       return res.sendStatus(500);
     }
+  }
+
+  private _mergeComments = (externalComments: any[], result: any[]) => {
+    return Comment.find({})
+      .exec()
+      .then(innerComments => {
+        let commentsById = innerComments.reduce((p, item) => {
+          p[item._id] = item;
+          return p;
+        }, {});
+
+        let added = 0;
+        let updated = 0;
+        externalComments.forEach(comment => {
+          delete comment['__v'];
+          let existingComment = commentsById[comment._id];
+          if (comment.source !== 'Account management') {
+            // Comment isn't automatically generated
+            if (!existingComment || existingComment.date < comment.date) {
+              // Record should be updated or created
+              if (!existingComment) {
+                added++;
+                console.log('Add: ', comment);
+              } else {
+                updated++;
+              }
+              new Comment(comment)
+                .save()
+                .then(
+                  data => {},
+                  error => console.log(`Error saving comment:`, comment)
+                );
+            }
+          }
+        });
+        let r = `Comments merged with the backup: ${added} added, ${updated} updated`;
+        result.push(r);
+        console.log(r);
+      })
+      .catch(error => console.log(`Error fetching comments`));
   }
 
   private _queryModel = (model: mongoose.Schema, idName: string): Promise<any[]> => {

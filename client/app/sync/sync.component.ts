@@ -1,5 +1,5 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { SyncService } from '../services/sync.service';
 import { DpService } from '../services/dp.service';
 import { SocketService } from '../services/socket.service';
@@ -35,6 +35,7 @@ export class SyncComponent {
   isLoading = false;
   stati = {};
   hasErrors = false;
+  file: any = {name: ''};
 
   public get tasks(): any {
     return tasks;
@@ -49,7 +50,8 @@ export class SyncComponent {
     private socket: SocketService
  ) {
     this.form = this.builder.group({
-      backup: null
+      backup: null,
+      merge: new FormControl(false)
     });
   }
 
@@ -125,6 +127,15 @@ export class SyncComponent {
     }
   }
 
+  public get fileChosen(): string {
+    let backup = this.form.get('backup');
+    return backup && backup.value && backup.value.filename ? backup.value.filename : '';
+  }
+
+  getButtonTitle(): string {
+    return this.form.get('merge').value ? 'Merge' : 'Restore';
+  }
+
   onSubmit() {
     const formModel = this.form.value;
     this.isLoading = true;
@@ -133,7 +144,6 @@ export class SyncComponent {
         logs => {
           this.isLoading = false;
           if (logs) {
-            console.log(logs);
             logs.forEach(log => this.addLog(log, 'Restore'));
           }
         },

@@ -31,11 +31,22 @@
     <h1>Restore</h1>
     <form class="form" [formGroup]="form" (ngSubmit)="onSubmit()">
       <div class="form-group">
-        <label for="backup">Restore users comments from the backup file:</label>
-        <input type="file" class="form-control-file" id="backup" name="backup"  (change)="onFileChange($event)" #fileInput required>
+        <label for="backup">
+          <input type="file" class="form-control-file" id="backup" name="backup" (change)="onFileChange($event)" #fileInput required>
+          <a *ngIf="!fileChosen">Please select backup file to restore from.</a>
+          <div *ngIf="fileChosen">
+            {{ fileChosen }}
+            <button type="reset" class="btn-link"><i class="fa fa-times"></i></button>
+          </div>
+        </label>
       </div>
-      <button type="submit" [disabled]="form.invalid || isLoading" class="btn btn-primary">
-        Restore
+      <div class="form-group">
+        <label>
+          <input type="checkbox" formControlName="merge"> Merge with the current state
+        </label>
+      </div>
+      <button type="submit" [disabled]="!fileChosen || isLoading" class="btn btn-primary">
+        {{ getButtonTitle() }}
       </button>
     </form>
   </div>
