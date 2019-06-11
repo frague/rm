@@ -143,9 +143,6 @@ export default class AssignmentCtrl extends BaseCtrl {
 
     let now = new Date();
     now.setDate(this.shift + now.getDate());
-    now.setHours(0);
-    now.setMinutes(0);
-    now.setSeconds(0);
 
     // Extended columns information
     group = group.reduce((result, column) => {
