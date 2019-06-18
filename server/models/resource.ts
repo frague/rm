@@ -23,6 +23,7 @@ const resourceSchema = new mongoose.Schema({
   bambooId: String,
   pmoId: String,
   visas: Array,
+  english: String,
 });
 
 const Resource = mongoose.model('Resource', resourceSchema);

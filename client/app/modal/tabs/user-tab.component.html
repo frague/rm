@@ -36,6 +36,9 @@
               {{ visa.type }}<span [ngClass]="{expired: isExpired(visa.till)}">{{ visa.till|date }}</span></li>
           </ul></dd>
 
+        <dt>English</dt>
+        <dd class="md" [innerHTML]="person.english|markdown"></dd>
+
         <dt>Skype</dt>
         <dd><a [href]="getSkype()" *ngIf="person.skype">{{ person.skype }}</a></dd>
 

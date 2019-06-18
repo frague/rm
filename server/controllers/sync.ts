@@ -374,6 +374,15 @@ export default class SyncCtrl {
     return source.replace(/^(\d+)(\.\d+)/, '$1');
   }
 
+  private _formatEnglish(level: string, customLevel: string, notes: string) {
+    let result = customLevel || level || null;
+    if (notes) {
+      result = result ? `${result}\n` : '';
+      result += notes.includes('+') ? '* ' + notes.split('+').map(l => l.replace(/\s*\(/, ' (')).join('\n* ') : notes;
+    }
+    return result;
+  }
+
   private async _queryUsers(): Promise<any> {
     let initiativesIds = {};
     let profilesCreated = 0;
@@ -427,6 +436,7 @@ export default class SyncCtrl {
           const pool = (ems && ems.length) ?
             ems[0].discipline :
             ((profilesInvertedMap[profile] || {})[specialization] || '');
+
           const prev = prevState[person.username] || {};
 
           const who = (syncWhois ? this._whois[person.username] : prev) || {};
@@ -436,11 +446,14 @@ export default class SyncCtrl {
             let newPR = this._prs[person.name] || {};
             let visaType = newPR.customVisaType;
             let payRate = newPR.payRate;
+            let english = this._formatEnglish(newPR.customEnglishproficiency, newPR.customLevel, newPR.customNotes1);
+
             pr = {
               nextPr: this._makeDate(newPR.customPerformanceReviewDue),
               payRate: payRate && payRate.charAt(0) !== ' ' ? this._formatPayRate(payRate) : null,
               birthday: this._makeDate(newPR.dateOfBirth),
               bambooId: newPR.id,
+              english,
             };
 
             // Visas are received from two sources: wiki and bamboo.
@@ -490,6 +503,7 @@ export default class SyncCtrl {
             payRate: pr.payRate,
             birthday: pr.birthday,
             bambooId: pr.bambooId,
+            english: pr.english,
             pmoId: person.id,
           });
 

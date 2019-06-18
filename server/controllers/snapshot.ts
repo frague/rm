@@ -40,6 +40,7 @@ const keys = [
   'payRate',
   'onTrip',
   'birthday',
+  'english',
 ];
 
 const dateKeys = [
