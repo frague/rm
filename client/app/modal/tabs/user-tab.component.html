@@ -37,7 +37,7 @@
           </ul></dd>
 
         <dt>English</dt>
-        <dd class="md" [innerHTML]="person.english|markdown"></dd>
+        <dd class="md english" [innerHTML]="person.english|markdown"></dd>
 
         <dt>Skype</dt>
         <dd><a [href]="getSkype()" *ngIf="person.skype">{{ person.skype }}</a></dd>

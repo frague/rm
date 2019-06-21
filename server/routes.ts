@@ -163,6 +163,7 @@ export default function setRoutes(app) {
 
   // Bamboo
   router.route('/career/:bambooId').get(bamboo.getCareer);
+  // router.route('/report').get(bamboo.getReport);
 
   // Apply the routes to our application with the prefix /api
   app.use('/api', router);

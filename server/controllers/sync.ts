@@ -374,11 +374,11 @@ export default class SyncCtrl {
     return source.replace(/^(\d+)(\.\d+)/, '$1');
   }
 
-  private _formatEnglish(level: string, customLevel: string, notes: string) {
+  private _formatEnglish(level: string, customTest: string, customLevel: string, notes: string) {
     let result = customLevel || level || null;
     if (notes) {
-      result = result ? `${result}\n` : '';
-      result += notes.includes('+') ? '* ' + notes.split('+').map(l => l.replace(/\s*\(/, ' (')).join('\n* ') : notes;
+      result += (result ? ', ' : '') + (customTest ? `${customTest}:` : '-');
+      result += notes.includes('+') ? '\n* ' + notes.split('+').map(l => l.replace(/\s*\(/, ' (')).join('\n* ') : ` ${notes}`;
     }
     return result;
   }
@@ -446,7 +446,7 @@ export default class SyncCtrl {
             let newPR = this._prs[person.name] || {};
             let visaType = newPR.customVisaType;
             let payRate = newPR.payRate;
-            let english = this._formatEnglish(newPR.customEnglishproficiency, newPR.customLevel, newPR.customNotes1);
+            let english = this._formatEnglish(newPR.customEnglishproficiency, newPR.customTest, newPR.customLevel, newPR.customNotes1);
 
             pr = {
               nextPr: this._makeDate(newPR.customPerformanceReviewDue),
