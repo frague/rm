@@ -2,7 +2,6 @@ import { ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subscription, from, forkJoin } from 'rxjs';
 
-import { BaseComponent } from './base.component';
 import { Utils } from './utils';
 
 import { PersonModal } from './modal/person-modal.component';

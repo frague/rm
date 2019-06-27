@@ -52,7 +52,7 @@ export class PlannerComponent extends Schedule {
   filterStates = {FC: true, SP: true, VA: true};
   filterDeployments = {offshore: true, onsite: true};
   locations = [
-    'SPB', 'SAR', 'KHR', 'LV', 'KR', 'US', 'BEL', 'WR',
+    'SPB', 'SAR', 'US', 'KHR', 'KY', 'LV', 'KR', 'WR', 'BEL',
   ];
   filterLocations = {};
   filterUsers = false;
