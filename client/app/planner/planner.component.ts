@@ -72,6 +72,8 @@ export class PlannerComponent extends Schedule {
       this.candidateService.getAll(query) : from([[]]);
 
     return candidatesQuery.subscribe(data => {
+      let peopleLogins = [], demandsLogins = [];
+
       this.candidates = Object.keys(query).length
         ?
           this.items
@@ -91,6 +93,7 @@ export class PlannerComponent extends Schedule {
               };
               ['canTravel', 'billable', 'onTrip'].forEach(key => result[key] = item[key] === 'true');
               result.onVacation = item.onVacation;
+              peopleLogins.push(result.login);
               return result;
             })
         :
@@ -99,6 +102,7 @@ export class PlannerComponent extends Schedule {
       data.slice(0, 20).forEach(candidate => {
         candidate.isHiree = true;
         this.candidates.push(candidate);
+        peopleLogins.push(candidate.login);
       });
 
       this.candidatesCount = this.candidates.length;
@@ -121,7 +125,9 @@ export class PlannerComponent extends Schedule {
           this.accountsDemand[account] = [];
         }
         this.accountsDemand[account].push(demand);
+        demandsLogins.push(demand.login);
       });
+      this.sanitizePlan(peopleLogins, demandsLogins);
       this.markForCheck();
     });
 
@@ -165,6 +171,15 @@ export class PlannerComponent extends Schedule {
     }
     this.bofOffset = 'auto';
   };
+
+  sanitizePlan(people, demands) {
+    Object.keys(this.reserved).forEach(row => {
+      if (!demands.includes(row)) delete this.reserved[row];
+    });
+    Object.keys(this.deserved).forEach(engineer => {
+      if (!people.includes(engineer)) delete this.deserved[engineer];
+    });
+  }
 
   getAccounts() {
     return Object.keys(this.accountsDemand).sort();
