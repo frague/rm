@@ -6,15 +6,16 @@
         <th>Name</th>
         <th>Status</th>
         <th>Location</th>
-        <th>JobVite</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let candidate of candidates">
-        <td>{{ candidate.name }}</td>
-        <td>{{ candidate.state }}, {{ candidate.updated|date }}</td>
+        <td>
+          {{ candidate.name }}
+          <a [href]="getJvApplicationLink(candidate)" target="_blank"><i class="fa fa-external-link-square"></i></a>
+        </td>
+        <td>{{ cleanupStatus(candidate.state) }}, {{ candidate.updated|date }}</td>
         <td>{{ candidate.location }}</td>
-        <td><a [href]="getJvApplicationLink(candidate)" target="_blank"><i class="fa fa-external-link-square"></i></a></td>
       </tr>
     </tbody>
   </table>

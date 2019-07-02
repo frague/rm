@@ -4,5 +4,8 @@ export var Utils = {
   },
   isTrue: (value: any): boolean => {
     return [true, 'true'].includes(value);
+  },
+  cleanupJvStatus: (status: string): string => {
+    return (status || '').replace(/^\d{2} /, '');
   }
 };

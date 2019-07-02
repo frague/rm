@@ -3,6 +3,7 @@ import { BaseTabComponent } from './base.component';
 import { DomSanitizer } from '@angular/platform-browser';
 import { jobViteCandidate } from '../../consts';
 import { CandidateService } from '../../services/candidate.service';
+import { Utils } from '../../utils';
 
 @Component({
   selector: 'candidates-tab',
@@ -30,5 +31,9 @@ export class CandidatesTabComponent extends BaseTabComponent {
 
   getJvApplicationLink(candidate) {
     return this.sanitizer.bypassSecurityTrustUrl(jobViteCandidate + candidate.applicationId);
+  }
+
+  cleanupStatus(status: string): string {
+    return Utils.cleanupJvStatus(status);
   }
 }
