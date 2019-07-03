@@ -717,7 +717,7 @@ export default class SyncCtrl {
           });
         }
 
-        if (status === 'Active') {
+        if (['Active', 'Booked'].includes(status)) {
           setTimeout(() => new Demand(demand).save((err, data) => {
             if (err) reject(err);
           }), 0);
