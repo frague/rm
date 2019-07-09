@@ -18,6 +18,9 @@ export default class RequisitionCtrl extends BaseCtrl {
   };
 
   requisitionTransform(key, value) {
+    if (key === 'requisition') {
+      return false;
+    }
     key = key.replace('requisition.', '');
     return {[key]: value};
   }

@@ -36,7 +36,7 @@ export default class AssignmentCtrl extends BaseCtrl {
   model = Assignment;
 
   modifiers = {
-    exclude: ['demand', 'skills', 'candidate'],
+    exclude: ['demand', 'skills', 'candidate', 'requisition'],
     comments: this.commentTransform
   };
 

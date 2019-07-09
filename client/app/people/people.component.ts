@@ -50,10 +50,11 @@ export class PeopleComponent extends Schedule {
     return Object.keys(this._clickability).includes(name);
   }
 
-  getClasses(name: string) {
+  getClasses(name: string, resource: any) {
     return {
       clickable: this.isClickable(name),
-      name: name === 'name'
+      name: name === 'name',
+      hiree: resource.isHiree
     };
   }
 
@@ -82,13 +83,16 @@ export class PeopleComponent extends Schedule {
 
   postFetch = query => {
     let queryString = JSON.stringify(query['or']) || '';
+    let hideRequisitions = queryString.includes('"requisition":"false"');
     let requisitionsQuery = candidatesQueryKeys.some(key => queryString.indexOf(key + '.') >= 0) ?
       this.requisitionService.getAll(query) : from([[]]);
 
     return requisitionsQuery.subscribe(data => {
       data.slice(0, 100).forEach(requisition => {
-        requisition.summary = `${requisition.requisitionId} ${requisition.title} (${requisition.jobState})`;
-        this.items.push(requisition);
+        if (!hideRequisitions) {
+          requisition.summary = `${requisition.requisitionId} ${requisition.title} (${requisition.jobState})`;
+          this.items.push(requisition);
+        }
         requisition.candidates.forEach(candidate => {
           candidate.isHiree = true;
           this.items.push(candidate);
@@ -96,7 +100,6 @@ export class PeopleComponent extends Schedule {
       });
       this.markForCheck();
     });
-
   };
 
   getPrintableClass() {

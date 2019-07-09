@@ -1380,6 +1380,10 @@ ul.tasks {
             white-space: nowrap;
           }
 
+          &.hiree.name span p::before {
+            content: "+ "
+          }
+
           span p:last-child {
             margin-bottom: 0;
           }

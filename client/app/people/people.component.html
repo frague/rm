@@ -26,7 +26,7 @@
           <td
             *ngFor="let column of keys"
             (click)="click(column, resource)"
-            [ngClass]="getClasses(column)"
+            [ngClass]="getClasses(column, resource)"
             ><div *ngIf="column == 'name'">
                 <div
                   class="corner"
