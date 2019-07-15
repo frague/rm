@@ -1092,7 +1092,7 @@ i.initiative {
             display: none;
           }
 
-          &.matched {
+          &.matched, &.proposed {
             background-color: $primary;
             i.fa {
               display: inline-block;
@@ -1105,6 +1105,24 @@ i.initiative {
               display: inline-block;
               color: $primary - #888;
               opacity: 0.8;
+            }
+          }
+
+          &.matched, &.preselected {
+            i.fa:nth-child(2) {
+              display: none;
+            }
+          }
+
+          &.proposed i.fa {
+            position: relative;
+            opacity: 1;
+            &:first-child {
+              left: 11px;
+              opacity: 0.8;
+            }
+            &:nth-child(2) {
+              right: 11px;
             }
           }
         }

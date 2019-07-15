@@ -223,9 +223,12 @@ export class PlannerComponent extends Schedule {
   }
 
   getCheckStyles(candidate, demand) {
+    let matched = this.isReserved(candidate, demand);
+    let preselected = demand.candidates.includes(candidate.name);
     return {
-      matched: this.isReserved(candidate, demand),
-      preselected: demand.candidates.includes(candidate.name)
+      matched: matched && !preselected,
+      preselected: preselected && !matched,
+      proposed: preselected && matched
     };
   }
 
