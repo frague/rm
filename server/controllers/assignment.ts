@@ -94,6 +94,7 @@ export default class AssignmentCtrl extends BaseCtrl {
     console.log('Order:', JSON.stringify(this.order));
     console.log('Skills:', JSON.stringify(skillsList));
 
+    let skillsByUser = {};
     if (skillsList.length) {
       try {
         let skillIds = await skillTree.getAllSkills();
@@ -110,6 +111,7 @@ export default class AssignmentCtrl extends BaseCtrl {
             throw error;
           });
 
+        let skillsRequested = suggestions.join(', ');
         if (people && people.length) {
           let and = or[0][andKey];
           if (!and) {
@@ -118,27 +120,30 @@ export default class AssignmentCtrl extends BaseCtrl {
           }
           and.push({
             login: {
-              '$in': people.map(person => person.user_id)
+              '$in': people.map(person => {
+                skillsByUser[person.user_id] = person.skills;
+                return person.user_id;
+              })
             }
           });
           console.log('With skills:', JSON.stringify(or));
         } else {
-          let message = `No people with the following skills found: ${suggestions.join(', ')}`;
+          let message = `No people with the following skills found: ${skillsRequested}`;
           return res.json({message, data: []})
         }
         let query = this.modifyCriteria(or, this.modifiers, group);
-        this._query(res, this.fixOr(query), suggestions, columns, group);
+        this._query(res, this.fixOr(query), columns, group, skillsRequested, skillsByUser);
       } catch (e) {
         console.log('Error', e);
         return res.sendStatus(500);
       }
     } else {
       let query = this.modifyCriteria(or, this.modifiers, group);
-      this._query(res, this.fixOr(query), [], columns, group);
+      this._query(res, this.fixOr(query), columns, group);
     }
   }
 
-  _query = (res, query, skillsList=[], columns=[], group=[]) => {
+  _query = (res, query, columns=[], group=[], skillsRequested='', skillsByUser={}) => {
     console.log('Query:', JSON.stringify(query));
 
     let now = new Date();
@@ -367,7 +372,16 @@ export default class AssignmentCtrl extends BaseCtrl {
       .exec()
       .toArray()
       .then(data => {
-        let message = skillsList.length ? `Skills matched: ${skillsList.join(', ')}` : '';
+        let message = skillsRequested ? `Skills matched: ${skillsRequested}` : '';
+        if (data && skillsByUser) {
+          data.forEach(user => {
+            let userSkills = skillsByUser[user.login];
+            user.skills = userSkills ? userSkills.reduce((p, skill) => {
+              p[skill.name] = skill.level || skill.declared_level;
+              return p;
+            }, {}) : {};
+          });
+        }
         res.json({message, data});
       })
       .catch(error => {

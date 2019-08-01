@@ -158,9 +158,8 @@ export class ColumnPipe implements PipeTransform {
                 if (assignment.demand) {
                   assignment = assignment.demand;
                   result = `Demand for __${assignment.profile}__ @${assignment.account} (${assignment.project})`;
-                  console.log(assignment);
                 }
-                return secondary ? assignment[secondary] : result;
+                return secondary ? this.transform(assignment, secondary) : result;
               }).join('\n* ');
               return `* ${assignmentsList}`;
             }).join('\n');
@@ -211,6 +210,10 @@ export class ColumnPipe implements PipeTransform {
         if (value) {
           return value.replace(/^\d+ /, '');
         }
+      case 'skills':
+      return secondary ?
+        value[secondary] :
+        Object.keys(value).sort().map(skill => `* **${skill}**: ${(value[skill] || '').toLowerCase()}`).join('\n');
     }
 
     if (typeof value !== 'string') {
