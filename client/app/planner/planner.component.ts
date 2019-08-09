@@ -13,6 +13,7 @@ import { InitiativeService } from '../services/initiative.service';
 import { ResourceService } from '../services/resource.service';
 import { DemandService } from '../services/demand.service';
 import { CandidateService } from '../services/candidate.service';
+import { CacheService } from '../services/cache.service';
 import { BusService } from '../services/bus.service';
 
 import { Utils } from '../utils';
@@ -68,10 +69,13 @@ export class PlannerComponent extends Schedule {
 
     this._reset();
     let queryString = JSON.stringify(query);
-    let candidatesQuery = candidatesQueryKeys.some(key => queryString.indexOf(key + '.') >= 0) ?
-      this.candidateService.getAll(query) : from([[]]);
+    let candidatesQuery = this.cache.getObservable('candidates') || (
+      candidatesQueryKeys.some(key => queryString.indexOf(key + '.') >= 0) ? this.candidateService.getAll(query) : from([[]])
+    );
 
     return candidatesQuery.subscribe(data => {
+      this.cache.set('candidates', data);
+
       let peopleLogins = [], demandsLogins = [];
 
       this.candidates = Object.keys(query).length
@@ -140,9 +144,10 @@ export class PlannerComponent extends Schedule {
     demandService: DemandService,
     private candidateService: CandidateService,
     bus: BusService,
+    cache: CacheService,
     cd: ChangeDetectorRef
   ) {
-    super(assignmentService, resourceService, initiativeService, demandService, bus, cd);
+    super(assignmentService, resourceService, initiativeService, demandService, bus, cache, cd);
     this._cd = cd;
     this.toggleLocations({target: {checked: true}});
   }

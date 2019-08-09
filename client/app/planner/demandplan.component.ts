@@ -1,10 +1,12 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { BusService } from '../services/bus.service';
+import { CacheService } from '../services/cache.service';
 import { DemandPlanService } from '../services/demandplan.service';
 
 @Component({
   selector: 'demand-plan',
-  templateUrl: './demandplan.component.html'
+  templateUrl: './demandplan.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DemandPlanComponent {
   @Input() rowsLogins = {};
@@ -18,11 +20,15 @@ export class DemandPlanComponent {
 
   constructor(
     private bus: BusService,
-    private demandPlans: DemandPlanService
+    private demandPlans: DemandPlanService,
+    private cache: CacheService,
+    private cd: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
-    this.demandPlans.getAll().subscribe(data => {
+    (this.cache.getObservable('plans') || this.demandPlans.getAll()).subscribe(data => {
+      this.cache.set('plans', data);
+
       let criteria = this.bus.criteria;
       let selectedPlan = null;
       this.plans = data.reduce((result, plan) => {
@@ -34,6 +40,8 @@ export class DemandPlanComponent {
         }, {});
       if (selectedPlan) {
         this.select(selectedPlan, false);
+      } else {
+        this.cd.markForCheck();
       }
     });
   }
@@ -62,6 +70,7 @@ export class DemandPlanComponent {
     operation.subscribe(data => {
       this.plans[data._id] = data;
       this.select(data);
+      this.cache.reset('plans');
     });
   }
 
@@ -69,6 +78,7 @@ export class DemandPlanComponent {
     this.demandPlans.delete(this.selectedPlan).subscribe(() => {
       delete this.plans[this.selectedPlan._id];
       this.reset();
+      this.cache.reset('plans');
     });
   }
 
@@ -79,10 +89,12 @@ export class DemandPlanComponent {
       this.bus.criteriaUpdated.emit(plan.filter);
     }
     this.planHasChanged.emit({rows: plan.rows, logins: plan.logins});
+    this.cd.markForCheck();
   }
 
   reset() {
     this.title = '';
     this.selectedPlan = {};
+    this.cd.markForCheck();
   }
 }

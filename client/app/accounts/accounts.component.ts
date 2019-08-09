@@ -5,6 +5,7 @@ import { AssignmentService } from '../services/assignment.service';
 import { InitiativeService } from '../services/initiative.service';
 import { ResourceService } from '../services/resource.service';
 import { DemandService } from '../services/demand.service';
+import { CacheService } from '../services/cache.service';
 import { BusService } from '../services/bus.service';
 
 import { Schedule } from '../schedule';
@@ -24,9 +25,10 @@ export class AccountsComponent extends Schedule {
     initiativeService: InitiativeService,
     demandService: DemandService,
     bus: BusService,
+    cache: CacheService,
     cd: ChangeDetectorRef
   ) {
-    super(assignmentService, resourceService, initiativeService, demandService, bus, cd);
+    super(assignmentService, resourceService, initiativeService, demandService, bus, cache, cd);
   }
 
   getAssignmentsCount(initiative) {

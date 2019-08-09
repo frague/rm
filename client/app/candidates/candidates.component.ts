@@ -8,6 +8,7 @@ import { RequisitionModal } from '../modal/requisition-modal.component';
 import { DemandModal } from '../modal/demand-modal.component';
 
 import { RequisitionService } from '../services/requisition.service';
+import { CacheService } from '../services/cache.service';
 import { BusService } from '../services/bus.service';
 
 import { jobViteRequisition, jobViteCandidate } from '../consts';
@@ -49,12 +50,16 @@ export class CandidatesComponent implements OnInit {
     private requisitionService: RequisitionService,
     private sanitizer: DomSanitizer,
     private bus: BusService,
+    private cache: CacheService,
     private cd: ChangeDetectorRef
   ) {
   }
 
   ngOnInit() {
-    this.$query = this.bus.filterUpdated.subscribe(([query]) => this.fetchData(query));
+    this.$query = this.bus.filterUpdated.subscribe(([query]) => {
+      this.cache.reset();
+      this.fetchData(query);
+    });
     this.fetchData(this.bus.filterQuery);
   }
 
@@ -87,26 +92,30 @@ export class CandidatesComponent implements OnInit {
     this.isLoading = true;
     this.cd.markForCheck();
 
-    return this.requisitionService.getAll(query).subscribe(data => {
-        this.allExpanded = data && data.length <= 10;
+    let requisitionsQuery = this.cache.getObservable('requisitions') || this.requisitionService.getAll(query);
 
-        this.categoryRequisitions = data.reduce((result, requisition) => {
-          let category = requisition.category;
-          if (!result[category]) {
-            result[category] = [requisition];
-          } else {
-            result[category].push(requisition);
-          }
-          if (requisition.demands) {
-            requisition.demands.forEach(demand => demand.comparison = this._compare(demand, requisition));
-          }
-          return result;
-        }, {});
+    return requisitionsQuery.subscribe(data => {
+      this.cache.set('requisitions', data);
 
-        this.items = data;
-        this.isLoading = false;
-        this.cd.markForCheck();
-      });
+      this.allExpanded = data && data.length <= 10;
+
+      this.categoryRequisitions = data.reduce((result, requisition) => {
+        let category = requisition.category;
+        if (!result[category]) {
+          result[category] = [requisition];
+        } else {
+          result[category].push(requisition);
+        }
+        if (requisition.demands) {
+          requisition.demands.forEach(demand => demand.comparison = this._compare(demand, requisition));
+        }
+        return result;
+      }, {});
+
+      this.items = data;
+      this.isLoading = false;
+      this.cd.markForCheck();
+    });
   }
 
   getCategories() {

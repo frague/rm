@@ -6,6 +6,7 @@ import { InitiativeService } from '../services/initiative.service';
 import { ResourceService } from '../services/resource.service';
 import { DemandService } from '../services/demand.service';
 import { RequisitionService } from '../services/requisition.service';
+import { CacheService } from '../services/cache.service';
 import { BusService } from '../services/bus.service';
 
 import { PersonModal } from '../modal/person-modal.component';
@@ -34,16 +35,20 @@ export class PeopleComponent extends Schedule {
     name: this.showUser
   };
 
+  _cache: CacheService;
+
   constructor(
     assignmentService: AssignmentService,
     resourceService: ResourceService,
     initiativeService: InitiativeService,
     demandService: DemandService,
     bus: BusService,
+    cache: CacheService,
     cd: ChangeDetectorRef,
     private requisitionService: RequisitionService
   ) {
-    super(assignmentService, resourceService, initiativeService, demandService, bus, cd);
+    super(assignmentService, resourceService, initiativeService, demandService, bus, cache, cd);
+    this._cache = cache;
   }
 
   isClickable(name: string): boolean {
@@ -84,10 +89,14 @@ export class PeopleComponent extends Schedule {
   postFetch = query => {
     let queryString = JSON.stringify(query['or']) || '';
     let hideRequisitions = queryString.includes('"requisition":"false"');
-    let requisitionsQuery = candidatesQueryKeys.some(key => queryString.indexOf(key + '.') >= 0) ?
-      this.requisitionService.getAll(query) : from([[]]);
+    let requisitionsQuery = this._cache.getObservable('requisitions') || (
+      candidatesQueryKeys.some(key => queryString.indexOf(key + '.') >= 0) ?
+          this.requisitionService.getAll(query) : from([[]])
+    );
 
     return requisitionsQuery.subscribe(data => {
+      this._cache.set('requisitions', data);
+
       data.slice(0, 100).forEach(requisition => {
         if (!hideRequisitions) {
           requisition.summary = `${requisition.requisitionId} ${requisition.title} (${requisition.jobState})`;

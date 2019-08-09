@@ -14,8 +14,8 @@ import { AssignmentService } from './services/assignment.service';
 import { InitiativeService } from './services/initiative.service';
 import { ResourceService } from './services/resource.service';
 import { DemandService } from './services/demand.service';
-import { BusService } from './services/bus.service';
 import { CacheService } from './services/cache.service';
+import { BusService } from './services/bus.service';
 
 const day = 1000 * 60 * 60 * 24;
 const week = day * 7;
@@ -75,6 +75,8 @@ export class Schedule {
   visibleAccounts = {};
   visibleInitiatives = {};
 
+  _cache: CacheService;
+
   postFetch = query => from([]).subscribe();
 
   private $query;
@@ -87,16 +89,20 @@ export class Schedule {
     private initiativeService: InitiativeService,
     private demandService: DemandService,
     private bus: BusService,
-    private cache: BusService,
+    private cache: CacheService,
     private cd: ChangeDetectorRef
   ) {
     this.fromDate = new Date();
     this.fromDate.setMonth(this.fromDate.getMonth() - 2);
     this.fromDate = this.adjustToMonday(this.fromDate.toString());
+    this._cache = cache;
   }
 
   ngOnInit() {
-    this.$query = this.bus.filterUpdated.subscribe(([query, serviceData]) => this.fetchData(query, false, serviceData));
+    this.$query = this.bus.filterUpdated.subscribe(([query, serviceData]) => {
+      this.cache.reset();
+      this.fetchData(query, false, serviceData);
+    });
     this.fetchData(this.bus.filterQuery, true, this.bus.serviceData);
   }
 
@@ -162,10 +168,11 @@ export class Schedule {
     this.markForCheck();
 
     let queryString = JSON.stringify(query);
-    let demandQuery = queryString.indexOf('demand=false') < 0 && (queryString.indexOf('demand') >= 0 || queryString.indexOf('comments') >= 0) ?
-      this.demandService.getAll(query) : from([[]]);
-    let initiativesQuery = this.initiativesData ? from([this.initiativesData]) : this.initiativeService.getAll();
-    let resourcesQuery = this.resourcesData ? from([this.resourcesData]) : this.resourceService.getAll();
+    let demandQuery = this._cache.getObservable('demands') ||
+      (queryString.indexOf('demand=false') < 0 && (queryString.indexOf('demand') >= 0 || queryString.indexOf('comments') >= 0) ?
+              this.demandService.getAll(query) : from([[]]));
+    let initiativesQuery = this._cache.getObservable('initiatives') || (this.initiativesData ? from([this.initiativesData]) : this.initiativeService.getAll());
+    let resourcesQuery = this._cache.getObservable('resources') || (this.resourcesData ? from([this.resourcesData]) : this.resourceService.getAll());
 
     let shift = serviceData['shift'];
     let withModifiers = Object.assign(query, {
@@ -174,13 +181,20 @@ export class Schedule {
       shift
     });
 
+    let assignmentsQuery = this._cache.getObservable('assignments') || this.assignmentService.getAll(withModifiers);
+
     return forkJoin(
       demandQuery,
       initiativesQuery,
       resourcesQuery,
-      this.assignmentService.getAll(withModifiers)
+      assignmentsQuery
     )
       .subscribe(([demands, initiatives, resources, assignments]) => {
+        this._cache.set('demands', demands);
+        this._cache.set('initiatives', initiatives);
+        this._cache.set('resources', resources);
+        this._cache.set('assignments', assignments);
+
         this.reset(fetchAll);
 
         [this.items, this.message] = [assignments.data, assignments.message];
@@ -427,27 +441,29 @@ export class Schedule {
 
     this.items.forEach(resource => {
       let assignmentsGrouped = {};
-      resource.assignments.forEach(assignment => {
-        if (!assignmentsGrouped[assignment.initiativeId]) {
-          assignmentsGrouped[assignment.initiativeId] = [];
-        }
-        if (!assignment.start) {
-          assignment.start = this.minDate;
-        }
-        let startDate = new Date(assignment.start);
-        let start = startDate.getTime();
-        let end = assignment.end ? new Date(assignment.end).getTime() : maxTime;
-        assignment.offset = (start - minTime) * dayCoefficient;
-        assignment.width = (end - start + day) * dayCoefficient - 1;
+      if (Array.isArray(resource.assignments)) {
+        resource.assignments.forEach(assignment => {
+          if (!assignmentsGrouped[assignment.initiativeId]) {
+            assignmentsGrouped[assignment.initiativeId] = [];
+          }
+          if (!assignment.start) {
+            assignment.start = this.minDate;
+          }
+          let startDate = new Date(assignment.start);
+          let start = startDate.getTime();
+          let end = assignment.end ? new Date(assignment.end).getTime() : maxTime;
+          assignment.offset = (start - minTime) * dayCoefficient;
+          assignment.width = (end - start + day) * dayCoefficient - 1;
 
-        if (!assignment.initiative && startDate > this.maxDate) {
-          assignment.offset = (maxTime - minTime) * dayCoefficient;
-          assignment.width = 1;
-        }
+          if (!assignment.initiative && startDate > this.maxDate) {
+            assignment.offset = (maxTime - minTime) * dayCoefficient;
+            assignment.width = 1;
+          }
 
-        assignmentsGrouped[assignment.initiativeId].push(assignment);
-      });
-      resource.assignments = assignmentsGrouped;
+          assignmentsGrouped[assignment.initiativeId].push(assignment);
+        });
+        resource.assignments = assignmentsGrouped;
+      }
     });
     this.isCalculated = true;
 
