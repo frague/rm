@@ -29,6 +29,7 @@ import { RequisitionService } from './services/requisition.service';
 import { CandidateService } from './services/candidate.service';
 import { CareerService } from './services/career.service';
 import { RequisitionDemandService } from './services/requisitionDemand.service';
+import { CacheService } from './services/cache.service';
 
 import { AppComponent } from './app.component';
 import { SyncComponent } from './sync/sync.component';
@@ -171,6 +172,7 @@ export function tokenGetter() {
     CandidateService,
     CareerService,
     RequisitionDemandService,
+    CacheService,
 
     PrintableDatePipe,
   ],

@@ -15,6 +15,7 @@ import { InitiativeService } from './services/initiative.service';
 import { ResourceService } from './services/resource.service';
 import { DemandService } from './services/demand.service';
 import { BusService } from './services/bus.service';
+import { CacheService } from './services/cache.service';
 
 const day = 1000 * 60 * 60 * 24;
 const week = day * 7;
@@ -86,6 +87,7 @@ export class Schedule {
     private initiativeService: InitiativeService,
     private demandService: DemandService,
     private bus: BusService,
+    private cache: BusService,
     private cd: ChangeDetectorRef
   ) {
     this.fromDate = new Date();
