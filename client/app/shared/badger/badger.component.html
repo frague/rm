@@ -3,10 +3,11 @@
     {{ badge.title }}
     <a (click)="delete(badge, i)">&times;</a>
   </li>
-  <li *ngIf="isHovered" class="new clickable" (click)="add()">
+  <li *ngIf="isHovered" class="new clickable" (click)="add()" [ngStyle]="getBadgeStyle(newBadge)">
     <span *ngIf="!isEditing">+</span>
     <form *ngIf="isEditing">
-      <input type="text" [(ngModel)]="newBadge.title" name="title" (blur)="cancel()" (keyup)="hotKeysHandler($event)">
+      <input type="text" [(ngModel)]="newBadge.title" name="title" (keyup)="hotKeysHandler($event)">
+      <input type="color" [(ngModel)]="newBadge.color" name="color">
     </form>
   </li>
 </ul>

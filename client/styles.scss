@@ -394,6 +394,12 @@ ul.badges {
           border: none;
           outline: none;
           width: auto;
+
+          &[type="color"] {
+            width: 14px;
+            height: 18px;
+            padding: 0;
+          }
         }
       }
     }

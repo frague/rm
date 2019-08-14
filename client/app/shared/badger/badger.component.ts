@@ -25,11 +25,12 @@ export class BadgerComponent {
   reset() {
     this.newBadge = {
       title: '',
-      color: ''
+      color: '#acb6b8'
     };
   }
 
   add() {
+    if (this.isEditing) return;
     this.reset();
     this.isEditing = true;
   }
