@@ -1,4 +1,11 @@
-<ul class="badges" (mouseenter)="isHovered=true" (mouseleave)="isHovered=false">
+<ul class="badges" (mouseenter)="isHovered=true" (mouseleave)="isHovered=isEditing||false">
   <li *ngFor="let badge of badges" [ngStyle]="getBadgeStyle(badge)">{{ badge.title }}</li>
-  <li *ngIf="isHovered" class="new" (click)="add()">+</li>
+  <li *ngIf="isHovered" class="new clickable" (click)="add()">
+    <span *ngIf="!isEditing">+</span>
+    <form *ngIf="isEditing">
+      <input type="text" [(ngModel)]="newBadge.title" name="title" (blur)="cancel()" (keyup)="checkKey($event)">
+    </form>
+  </li>
 </ul>
+
+{{ newBadge.title }}

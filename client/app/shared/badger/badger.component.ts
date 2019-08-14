@@ -12,11 +12,34 @@ export class BadgerComponent {
   ];
 
   isHovered = false;
+  isEditing = false;
+
+  newBadge = {};
 
   constructor() {
   }
 
-  add() {}
+  reset() {
+    this.newBadge = {
+      title: '',
+      color: ''
+    };
+  }
+
+  add() {
+    this.reset();
+    this.isEditing = true;
+  }
+
+  cancel() {
+    this.isEditing = false;
+    this.isHovered = false;
+    this.reset();
+  }
+
+  checkKey(event: KeyboardEvent) {
+    
+  }
 
   getBadgeStyle(badge: any) {
     return {'background-color': badge.color};

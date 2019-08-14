@@ -377,6 +377,22 @@ ul.badges {
     list-style: none;
     display: inline;
     border-radius: 6px;
+
+    &.new {
+      background-color: $body - #222;
+      max-width: 100px;
+
+      form {
+        display: inline;
+
+        input {
+          background-color: inherit;
+          border: none;
+          outline: none;
+          width: auto;
+        }
+      }
+    }
   }
 }
 
