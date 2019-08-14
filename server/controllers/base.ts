@@ -54,6 +54,7 @@ abstract class BaseCtrl {
 
   abstract model: mongoose.Schema;
 
+  // Remove related items to keep DB consistent
   cleanup = (req, res) => res.sendStatus(200);
 
   modifyCriteria(criteria: any[], modifiers: any = {}, group = []): any[] {
@@ -220,8 +221,9 @@ abstract class BaseCtrl {
     obj.save((err, item) => {
       // 11000 is the code for duplicate key error
       if (err) {
+        console.log('Error: ', err);
         if (err.code === 11000) {
-          return res.sendStatus(400);
+          return res.status(400).send(err.message);
         } else {
           return this._respondWithError(res, err);
         }

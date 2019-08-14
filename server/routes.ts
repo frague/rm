@@ -146,6 +146,7 @@ export default function setRoutes(app) {
 
   // Badges
   router.route('/badges').get(badgeCtrl.getAll);
+  router.route('/badges/:id').get(badgeCtrl.getAllFor);
   router.route('/badge').post(badgeCtrl.insert);
   router.route('/badge/:id').get(badgeCtrl.get);
   router.route('/badge/:id').put(badgeCtrl.update);
@@ -155,10 +156,8 @@ export default function setRoutes(app) {
   // Items Badges
   router.route('/ibs').get(itemBadgeCtrl.getAll);
   router.route('/ib').post(itemBadgeCtrl.insert);
-  router.route('/ib/:id').get(itemBadgeCtrl.get);
-  router.route('/ib/:id').put(itemBadgeCtrl.update);
   router.route('/ibs').delete(itemBadgeCtrl.deleteAll);
-  router.route('/ib/:id').delete(itemBadgeCtrl.delete);
+  router.route('/ib/:itemId/:badgeId').delete(itemBadgeCtrl.delete);
 
   // Sync
   router.route('/sync').post(syncCtrl.sync);

@@ -31,6 +31,7 @@ import { CareerService } from './services/career.service';
 import { RequisitionDemandService } from './services/requisitionDemand.service';
 import { CacheService } from './services/cache.service';
 import { ItemBadgeService } from './services/itemBadge.service';
+import { BadgeService } from './services/badge.service';
 
 import { AppComponent } from './app.component';
 import { SyncComponent } from './sync/sync.component';
@@ -176,6 +177,8 @@ export function tokenGetter() {
     CareerService,
     RequisitionDemandService,
     CacheService,
+    ItemBadgeService,
+    BadgeService,
 
     PrintableDatePipe,
   ],

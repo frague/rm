@@ -1,11 +1,12 @@
 <ul class="badges" (mouseenter)="isHovered=true" (mouseleave)="isHovered=isEditing||false">
-  <li *ngFor="let badge of badges" [ngStyle]="getBadgeStyle(badge)">{{ badge.title }}</li>
+  <li *ngFor="let badge of badges;let i = index" [ngStyle]="getBadgeStyle(badge)">
+    {{ badge.title }}
+    <a (click)="delete(badge, i)">&times;</a>
+  </li>
   <li *ngIf="isHovered" class="new clickable" (click)="add()">
     <span *ngIf="!isEditing">+</span>
     <form *ngIf="isEditing">
-      <input type="text" [(ngModel)]="newBadge.title" name="title" (blur)="cancel()" (keyup)="checkKey($event)">
+      <input type="text" [(ngModel)]="newBadge.title" name="title" (blur)="cancel()" (keyup)="hotKeysHandler($event)">
     </form>
   </li>
 </ul>
-
-{{ newBadge.title }}

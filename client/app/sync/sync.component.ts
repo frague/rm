@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { SyncService } from '../services/sync.service';
 import { DpService } from '../services/dp.service';
 import { SocketService } from '../services/socket.service';
+import { BadgeService} from '../services/badge.service';
 
 const tasks = {
   mandatory: true, dependants: {
@@ -37,6 +38,9 @@ export class SyncComponent {
   hasErrors = false;
   file: any = {name: ''};
 
+  itemId = 'test';
+  badges = [];
+
   public get tasks(): any {
     return tasks;
   };
@@ -47,12 +51,17 @@ export class SyncComponent {
     private syncService: SyncService,
     private dpService: DpService,
     private builder: FormBuilder,
-    private socket: SocketService
+    private socket: SocketService,
+    private badgeService: BadgeService
  ) {
     this.form = this.builder.group({
       backup: null,
       merge: new FormControl(false)
     });
+  }
+
+  ngOnInit() {
+    this.badgeService.getAllFor(this.itemId).subscribe(badges => this.badges = badges);
   }
 
   private addLog(text: string, source='') {

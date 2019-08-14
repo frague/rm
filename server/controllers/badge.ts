@@ -1,41 +1,82 @@
 import Badge from '../models/badge';
+import ItemBadge from '../models/itemBadge';
+
 import BaseCtrl from './base';
 
 export default class BadgeCtrl extends BaseCtrl {
   model = Badge;
 
-  modifiers = {
-  };
-
   cleanup = (req, res) => {
-    this.model.deleteMany({}, (err) => {
+    ItemBadge.deleteMany({badgeId: req.params.id}, (err) => {
       if (err) { return console.error(err); }
       res.sendStatus(200);
     })
   }
 
   getAll = (req, res) => {
-    let or;
-    try {
-      or = req.query.or ? JSON.parse(req.query.or) : [];
-    } catch (e) {
-      console.error('Error parsing search query: ' + req.query.or);
-      return res.sendStatus(500);
-    }
-
-    let query = this.fixOr(this.modifyCriteria(or, this.modifiers));
+    let query = this.reduceQuery(req.query);
 
     console.log('- Badge ----------------------------------------------------------');
-    console.log('Initial:', JSON.stringify(or));
-    console.log('Query:', JSON.stringify(query));
+    console.log('Query: ', query);
 
-    this.model.find(query).sort({date: -1, subject: 1}).limit(100).exec((err, docs) => {
+    this.model.find(query).sort({title: 1}).limit(100).exec((err, docs) => {
       if (err) {
         console.error(err);
         return res.sendStatus(500);
       }
       res.json(docs);
     });
+  }
+
+  getAllFor = (req, res) => {
+    let itemId = req.params.id;
+    let cursor = ItemBadge.aggregate([
+      {
+        '$match': { itemId }
+      },
+      {
+        '$lookup': {
+          from: 'badges',
+          let: {
+            'badgeId': '$badgeId'
+          },
+          pipeline: [
+            {
+              '$match': {
+                '$expr': {
+                  '$eq': ['$_id', {
+                    '$toObjectId': '$$badgeId'
+                  }]
+                }
+              }
+            }
+          ],
+          as: 'badge'
+        }
+      },
+      {
+        '$unwind': {
+          'path': '$badge'
+        }
+      },
+      {
+        '$project': {
+          _id: '$badge._id',
+          title: '$badge.title',
+          color: '$badge.color'
+        }
+      }
+    ])
+      .cursor({})
+      .exec()
+      .toArray()
+      .then(data => {
+        res.json(data);
+      })
+      .catch(error => {
+        console.log('Error', error);
+        return res.sendStatus(500);
+      });
   }
 
 }
