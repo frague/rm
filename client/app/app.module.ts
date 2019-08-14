@@ -30,6 +30,7 @@ import { CandidateService } from './services/candidate.service';
 import { CareerService } from './services/career.service';
 import { RequisitionDemandService } from './services/requisitionDemand.service';
 import { CacheService } from './services/cache.service';
+import { ItemBadgeService } from './services/itemBadge.service';
 
 import { AppComponent } from './app.component';
 import { SyncComponent } from './sync/sync.component';
@@ -46,7 +47,7 @@ import { AccountComponent } from './account/account.component';
 import { AdminComponent } from './admin/admin.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { AccountsComponent } from './accounts/accounts.component';
-import { PrintableDatePipe, RangePipe, KeysPipe, EllipsisPipe, CutIndexPipe, ColumnPipe, MarkdownPipe, 
+import { PrintableDatePipe, RangePipe, KeysPipe, EllipsisPipe, CutIndexPipe, ColumnPipe, MarkdownPipe,
     SplitPipe, DeCamelPipe, CutByPipe } from './pipes';
 import { FilterComponent } from './filter/filter.component';
 import { FilteringPanelComponent } from './filter/filteringpanel.component';
@@ -61,6 +62,7 @@ import { CandidatesComponent } from './candidates/candidates.component';
 import { EditorComponent } from './shared/editor/editor.component';
 import { SpinnerComponent } from './shared/spinner/spinner.component';
 import { CommentComponent } from './shared/comment/comment.component';
+import { BadgerComponent } from './shared/badger/badger.component';
 
 import { PersonModal } from './modal/person-modal.component';
 import { AssignmentModal } from './modal/assignment-modal.component';
@@ -132,6 +134,7 @@ export function tokenGetter() {
     AssignmentTabComponent, AssignmentsTabComponent, HistoryTabComponent, DemandTabComponent,
     RequisitionTabComponent, CandidatesTabComponent, CandidateTabComponent,
     DemandRequisitionTabComponent, AccountProjectTabComponent, FeedbacksTabComponent, CommentComponent,
+    BadgerComponent,
 
     QueryWidget, BirthdaysWidget, CommentsWidget,
   ],
