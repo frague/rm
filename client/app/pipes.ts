@@ -212,7 +212,7 @@ export class ColumnPipe implements PipeTransform {
         }
       case 'skills':
       return secondary ?
-        value[secondary] :
+        (value[secondary] || '').toLowerCase() :
         Object.keys(value).sort().map(skill => `* **${skill}**: ${(value[skill] || '').toLowerCase()}`).join('\n');
     }
 
