@@ -21,6 +21,7 @@ import PmoIntegrationsCtrl from './controllers/integrations/pmo';
 import BackupCtrl from './controllers/backup';
 import RequisitionDemandCtrl from './controllers/requisitionDemand';
 import BadgeCtrl from './controllers/badge';
+import ItemBadgeCtrl from './controllers/itemBadge';
 
 import Resource from './models/resource';
 import User from './models/user';
@@ -49,6 +50,7 @@ export default function setRoutes(app) {
   const inGridCtrl = new InGridCtrl();
   const requisitionDemandCtrl = new RequisitionDemandCtrl();
   const badgeCtrl = new BadgeCtrl();
+  const itemBadgeCtrl = new ItemBadgeCtrl();
 
   const bamboo = new BambooIntegrationsCtrl();
   const pmo = new PmoIntegrationsCtrl();
@@ -149,6 +151,14 @@ export default function setRoutes(app) {
   router.route('/badge/:id').put(badgeCtrl.update);
   router.route('/badges').delete(badgeCtrl.deleteAll);
   router.route('/badge/:id').delete(badgeCtrl.delete);
+
+  // Items Badges
+  router.route('/ibs').get(itemBadgeCtrl.getAll);
+  router.route('/ib').post(itemBadgeCtrl.insert);
+  router.route('/ib/:id').get(itemBadgeCtrl.get);
+  router.route('/ib/:id').put(itemBadgeCtrl.update);
+  router.route('/ibs').delete(itemBadgeCtrl.deleteAll);
+  router.route('/ib/:id').delete(itemBadgeCtrl.delete);
 
   // Sync
   router.route('/sync').post(syncCtrl.sync);

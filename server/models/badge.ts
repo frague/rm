@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
 
 const badgeSchema = new mongoose.Schema({
-  title: String,
+  title: { type: String, required: true, unique: true },
   color: String,
   description: String,
 });
