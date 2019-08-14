@@ -21,7 +21,7 @@ export default class ResourceCtrl extends BaseCtrl {
       or = req.query.or ? JSON.parse(req.query.or) : [];
     } catch (e) {
       console.error('Error parsing search query: ' + req.query.or);
-      return res.status(500);
+      return res.sendStatus(500);
     }
 
     let query = this.fixOr(this.modifyCriteria(or, this.modifiers));

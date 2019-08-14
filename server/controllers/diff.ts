@@ -9,7 +9,8 @@ export default class DiffCtrl extends BaseCtrl {
     console.log('Finding all', query);
     this.model.find(query).sort({date: -1, subject: 1}).limit(100).exec((err, docs) => {
       if (err) {
-        return console.error(err);
+        console.error(err);
+        return res.sendStatus(500);
       }
       res.json(docs);
     });
