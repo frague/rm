@@ -1,0 +1,4 @@
+<ul class="badges" (mouseenter)="isHovered=true" (mouseleave)="isHovered=false">
+  <li *ngFor="let badge of badges" [ngStyle]="getBadgeStyle(badge)">{{ badge.title }}</li>
+  <li *ngIf="isHovered" class="new" (click)="add()">+</li>
+</ul>

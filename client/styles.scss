@@ -366,6 +366,20 @@ pre {
   color: $grid;
 }
 
+ul.badges {
+  padding: 0;
+  margin: 0;
+  font-size: 80%;
+
+  li {
+    margin: 0 1px;
+    padding: 2px 8px;
+    list-style: none;
+    display: inline;
+    border-radius: 6px;
+  }
+}
+
 .modal-dialog {
   @extend .shadow;
 }
