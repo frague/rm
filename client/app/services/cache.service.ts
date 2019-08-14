@@ -1,4 +1,4 @@
-import { from } from 'rxjs';
+import { from, Observable } from 'rxjs';
 
 export class CacheService {
   private store = {};
