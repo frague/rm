@@ -48,6 +48,7 @@ export class PlannerComponent extends Schedule {
   columns = ['pool', 'billable', 'onTrip', 'canTravel', 'onVacation'];
 
   _cd: ChangeDetectorRef;
+  _cache: CacheService;
   now;
 
   filterStates = {FC: true, SP: true, VA: true};
@@ -69,12 +70,12 @@ export class PlannerComponent extends Schedule {
 
     this._reset();
     let queryString = JSON.stringify(query);
-    let candidatesQuery = this.cache.getObservable('candidates') || (
+    let candidatesQuery = this._cache.getObservable('candidates') || (
       candidatesQueryKeys.some(key => queryString.indexOf(key + '.') >= 0) ? this.candidateService.getAll(query) : from([[]])
     );
 
     return candidatesQuery.subscribe(data => {
-      this.cache.set('candidates', data);
+      this._cache.set('candidates', data);
 
       let peopleLogins = [], demandsLogins = [];
 
@@ -149,6 +150,7 @@ export class PlannerComponent extends Schedule {
   ) {
     super(assignmentService, resourceService, initiativeService, demandService, bus, cache, cd);
     this._cd = cd;
+    this._cache = cache;
     this.toggleLocations({target: {checked: true}});
   }
 
@@ -327,7 +329,7 @@ export class PlannerComponent extends Schedule {
       billable: candidate.billable,
       assigned: this.isAssigned(candidate),
       hiree: candidate.isHiree,
-      accepted: candidate.login.indexOf(' ') > 0,
+      accepted: candidate.login && candidate.login.indexOf(' ') > 0,
       vacation: !!candidate.onVacation
     };
   }
