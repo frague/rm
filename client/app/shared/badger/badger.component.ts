@@ -10,6 +10,8 @@ import { ItemBadgeService } from '../../services/itemBadge.service';
 export class BadgerComponent {
   @Input() itemId;
   @Input() badges: any[] = [];
+  @Input() allowManagement: boolean = true;
+  @Input() compactView: boolean = false;
 
   isHovered = false;
   isEditing = false;
@@ -56,7 +58,11 @@ export class BadgerComponent {
 
   private _isBadgeIncluded(badgeId): boolean {
     return this.badges.some(badge => badge._id === badgeId);
-  }  
+  }
+
+  cancelBubbling(event: MouseEvent) {
+    event.cancelBubble = true;
+  }
 
   save() {
     this.badgeService.save(this.newBadge).subscribe(
@@ -79,6 +85,10 @@ export class BadgerComponent {
     } else if (event.key === 'Enter') {
       this.save();
     }
+  }
+
+  getBadgeCaption(badge: any) {
+    return this.compactView ? (badge.title || '').toUpperCase().split(' ').map(w => w.substr(0, 1)).join('') : badge.title;
   }
 
   getBadgeStyle(badge: any) {

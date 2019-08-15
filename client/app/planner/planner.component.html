@@ -96,19 +96,22 @@
                 [ngClass]="getCardClass(candidate)"
               >
                 <avatar [login]="candidate.login" [useDefault]="candidate.isHiree">
+                  <badger [itemId]="candidate.login" [badges]="badges" [compactView]="true" [allowManagement]="false"></badger>
                   <a (click)="showRequisition(candidate.requisitionId, $event)" *ngIf="candidate.requisitionId">
                     {{ candidate.requisitionId }}
                   </a>
                   <span *ngIf="candidate.onVacation">{{ candidate.onVacation|date }}</span>
                   <span *ngIf="candidate.starts">{{ candidate.starts|date }}</span>
                 </avatar>
-                {{ candidate.name }}
-                <span>
-                  <i class="fa fa-bed" *ngIf="candidate.onVacation"></i>
-                  <i class="fa fa-globe" *ngIf="candidate.onTrip"></i>
-                  <i class="fa fa-plane" *ngIf="candidate.canTravel"></i>
-                  {{ getCandidateCaption(candidate) }}
-                </span>
+                <caption>
+                  {{ candidate.name }}
+                  <span>
+                    <i class="fa fa-bed" *ngIf="candidate.onVacation"></i>
+                    <i class="fa fa-globe" *ngIf="candidate.onTrip"></i>
+                    <i class="fa fa-plane" *ngIf="candidate.canTravel"></i>
+                    {{ getCandidateCaption(candidate) }}
+                  </span>
+                </caption>
                 <div
                   class="status"
                   container="body"
