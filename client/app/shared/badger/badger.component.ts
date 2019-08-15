@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 
 import { BadgeService } from '../../services/badge.service';
 import { ItemBadgeService } from '../../services/itemBadge.service';
+import { CacheService } from '../../services/cache.service';
 
 @Component({
   selector: 'badger',
@@ -9,7 +10,6 @@ import { ItemBadgeService } from '../../services/itemBadge.service';
 })
 export class BadgerComponent {
   @Input() itemId;
-  @Input() badges: any[] = [];
   @Input() allowManagement: boolean = true;
   @Input() compactView: boolean = false;
 
@@ -18,9 +18,14 @@ export class BadgerComponent {
 
   newBadge: any = {};
 
+  get badges(): any[] {
+    return (this.cacheService.get('badges') || {})[this.itemId] || [];
+  }
+
   constructor(
     private badgeService: BadgeService,
-    private itemBadgeService: ItemBadgeService
+    private itemBadgeService: ItemBadgeService,
+    private cacheService: CacheService
   ) {
   }
 
@@ -43,9 +48,16 @@ export class BadgerComponent {
     this.reset();
   }
 
+  private _updateBadges(badges: any[]) {
+    let all = this.cacheService.get('badges');
+    all[this.itemId] = badges;
+    // Emit the update
+  }
+
   delete(badge, index) {
     this.itemBadgeService.deleteByIds(this.itemId, badge._id).subscribe(() => {
       this.badges.splice(index, 1);
+      this._updateBadges(this.badges);
     });
   }
 
@@ -53,6 +65,7 @@ export class BadgerComponent {
     this.itemBadgeService.add({itemId: this.itemId, badgeId: badge._id}).subscribe(() => {
       this.badges.push(badge);
       this.cancel();
+      this._updateBadges(this.badges);
     });
   }
 

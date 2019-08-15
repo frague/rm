@@ -96,7 +96,7 @@
                 [ngClass]="getCardClass(candidate)"
               >
                 <avatar [login]="candidate.login" [useDefault]="candidate.isHiree">
-                  <badger [itemId]="candidate.login" [badges]="badges" [compactView]="true" [allowManagement]="false"></badger>
+                  <badger [itemId]="candidate.login" [compactView]="true" [allowManagement]="false"></badger>
                   <a (click)="showRequisition(candidate.requisitionId, $event)" *ngIf="candidate.requisitionId">
                     {{ candidate.requisitionId }}
                   </a>

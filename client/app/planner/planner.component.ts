@@ -104,6 +104,7 @@ export class PlannerComponent extends Schedule {
               };
               ['canTravel', 'billable', 'onTrip'].forEach(key => result[key] = item[key] === 'true');
               result.onVacation = item.onVacation;
+              result.badges = item.badges;
               peopleLogins.push(result.login);
               return result;
             })

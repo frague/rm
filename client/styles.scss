@@ -465,6 +465,14 @@ ul.badges {
 
     h6 {
       font-weight: 100;
+      display: inline;
+      margin-right: 10px;
+    }
+
+    badger {
+      &, ul {
+        display: inline;
+      }
     }
   }
 }

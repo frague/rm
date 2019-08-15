@@ -15,6 +15,7 @@
       {{ person.profile || '-' }}
       <span *ngIf="person.specialization"> ({{ person.specialization }})</span>
     </h6>
+    <badger [itemId]="person.login"></badger>
   </div>
   <div class="comments-modal modal-body">
     <ngb-tabset (tabChange)="tabChange($event)" #tabs="ngbTabset" [activeId]="activeId" *ngIf="!isLoading">
