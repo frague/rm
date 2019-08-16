@@ -937,6 +937,10 @@ i.initiative {
     }
   }
 
+  body.modal-open .candidates {
+    overflow-x: hidden;
+  }
+
   .candidates {
     padding-top: 0;
     overflow-x: auto;
