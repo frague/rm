@@ -5,6 +5,7 @@ import { AuthService } from './services/auth.service';
 import { BadgeService } from './services/badge.service';
 import { ItemBadgeService } from './services/itemBadge.service';
 import { CacheService } from './services/cache.service';
+import { BusService } from './services/bus.service';
 
 @Component({
   selector: 'app-root',
@@ -21,7 +22,8 @@ export class AppComponent {
     public auth: AuthService,
     private itemBadgeService: ItemBadgeService,
     private badgeService: BadgeService,
-    private cacheService: CacheService
+    private cacheService: CacheService,
+    private busService: BusService
   ) {
   }
 
@@ -35,19 +37,19 @@ export class AppComponent {
           result[badge._id] = badge;
           return result;
         }, {});
+        this.cacheService.set('badges', badgeById);
 
         let itemsBadges = itemBadges.reduce((result, link) => {
           let ibs = result[link.itemId] || [];
           let badge = badgeById[link.badgeId];
           if (badge) {
-            ibs.push(badge);
-            ibs.sort();
+            ibs.push(badge._id);
           }
           result[link.itemId] = ibs;
           return result;
         }, {});
-
-        this.cacheService.set('badges', itemsBadges);
+        this.cacheService.set('itemBadges', itemsBadges);
+        this.busService.badgeUpdated.emit();
       });
   }
 }
