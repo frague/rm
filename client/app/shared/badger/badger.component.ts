@@ -25,12 +25,7 @@ export class BadgerComponent {
 
   get badges(): any[] {
     let ids = ((this.cacheService.get('itemBadges') || {})[this.itemId] || []);
-    console.log('IDs', ids);
-    return ids.map(badgeId => {
-      let b = this.allBadges[badgeId];
-      console.log(badgeId, b);
-      return b || {title: '((('}
-    });
+    return ids.map(badgeId => this.allBadges[badgeId] || {title: '-'});
   }
 
   constructor(

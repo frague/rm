@@ -39,7 +39,6 @@ export class SyncComponent {
   file: any = {name: ''};
 
   itemId = 'test';
-  badges = [];
 
   public get tasks(): any {
     return tasks;
@@ -58,10 +57,6 @@ export class SyncComponent {
       backup: null,
       merge: new FormControl(false)
     });
-  }
-
-  ngOnInit() {
-    this.badgeService.getAllFor(this.itemId).subscribe(badges => this.badges = badges);
   }
 
   private addLog(text: string, source='') {
@@ -145,7 +140,7 @@ export class SyncComponent {
     return this.form.get('merge').value ? 'Merge' : 'Restore';
   }
 
-  onSubmit() {
+  restore() {
     const formModel = this.form.value;
     this.isLoading = true;
     this.syncService.restore(formModel)
@@ -158,6 +153,7 @@ export class SyncComponent {
         },
         () => this.isLoading = false
       );
+    // Invalidate badges cache
   }
 
   getLogStyle(log: string) {
