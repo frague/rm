@@ -51,6 +51,14 @@
         Planner
       </a>
       <a
+        [routerLink]="['badges']"
+        class="nav-item nav-link"
+        routerLinkActive="active"
+        *ngIf="isLogged"
+      >
+        Badges
+      </a>
+      <a
         [routerLink]="['dp']"
         class="nav-item nav-link"
         routerLinkActive="active"

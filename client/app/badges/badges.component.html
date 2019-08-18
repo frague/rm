@@ -1,0 +1,41 @@
+<h1>Badges</h1>
+
+<table class="badges table">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Color</th>
+      <th>Compact title</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let badge of getBadges()">
+      <td>
+        <span *ngIf="selected!=badge._id">{{ badge.title }}</span>
+        <input *ngIf="selected==badge._id" type="text" name="title" [(ngModel)]="newBadge.title" placeholder="Title">
+      </td>
+      <td>
+        <span *ngIf="selected!=badge._id">
+          <div class="circle" [ngStyle]="getBadgeStyle(badge)"></div> {{ badge.color }}
+        </span>
+        <input *ngIf="selected==badge._id" type="color" name="color" [(ngModel)]="newBadge.color">
+      </td>
+      <td>
+        <span *ngIf="selected!=badge._id">{{ badge.short }}</span>
+        <input *ngIf="selected==badge._id" type="text" name="short" [(ngModel)]="newBadge.short" placeholder="Compact title">
+      </td>
+      <td>
+        <span *ngIf="selected!=badge._id">
+          <button class="btn-link text-normal" (click)="edit(badge)"><i class="fa fa-pencil"></i></button>
+          <button class="btn-link text-danger" (click)="delete(badge)"><i class="fa fa-times"></i></button>
+        </span>
+        <span *ngIf="selected==badge._id">
+          <button class="btn-link text-normal" (click)="save()"><i class="fa fa-check"></i></button>
+          <button class="btn-link text-danger" (click)="cancel()"><i class="fa fa-reply"></i></button>
+        </span>
+      </td>
+    </tr>
+  </tbody>
+</table>
+

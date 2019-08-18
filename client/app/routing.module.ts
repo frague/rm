@@ -16,6 +16,7 @@ import { FilteringPanelComponent } from './filter/filteringpanel.component';
 import { DpComponent } from './deadpool/dp.component';
 import { CandidatesComponent } from './candidates/candidates.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { BadgesComponent } from './badges/badges.component';
 
 import { AuthGuardLogin } from './services/auth-guard-login.service';
 import { AuthGuardAdmin } from './services/auth-guard-admin.service';
@@ -35,6 +36,7 @@ const routes: Routes = [
     ]
   },
   { path: 'dashboard', component: DashboardComponent },
+  { path: 'badges', component: BadgesComponent },
   { path: 'dp', component: DpComponent },
   { path: 'sync', component: SyncComponent, canActivate: [AuthGuardAdmin] },
 

@@ -2,7 +2,7 @@
   <li *ngFor="let badge of badges;let i = index" [ngStyle]="getBadgeStyle(badge)">{{ getBadgeCaption(badge) }}<a *ngIf="allowManagement" (click)="delete(badge, i)">&times;</a></li>
   <li *ngIf="allowManagement" class="new clickable" (click)="add()" [ngStyle]="getBadgeStyle(newBadge)">
     <ng-container *ngIf="!isEditing">+</ng-container>
-    <form *ngIf="isEditing">
+    <form *ngIf="isEditing" autocomplete="off">
       <input type="text" [(ngModel)]="newBadge.title" name="title" (keyup)="hotKeysHandler($event)">
       <input type="color" [(ngModel)]="newBadge.color" name="color">
     </form>

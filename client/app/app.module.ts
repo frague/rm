@@ -64,6 +64,7 @@ import { EditorComponent } from './shared/editor/editor.component';
 import { SpinnerComponent } from './shared/spinner/spinner.component';
 import { CommentComponent } from './shared/comment/comment.component';
 import { BadgerComponent } from './shared/badger/badger.component';
+import { BadgesComponent } from './badges/badges.component';
 
 import { PersonModal } from './modal/person-modal.component';
 import { AssignmentModal } from './modal/assignment-modal.component';
@@ -113,6 +114,7 @@ export function tokenGetter() {
     AdminComponent,
     NotFoundComponent,
     SyncComponent, TaskComponent,
+    BadgesComponent,
     AccountsComponent,
     PrintableDatePipe, RangePipe, KeysPipe, EllipsisPipe, MarkdownPipe,
     FilterComponent, FilteringPanelComponent, CutIndexPipe, ColumnPipe,

@@ -5,6 +5,7 @@ $danger: #fdd;
 $grid: #aaa;
 
 $form-border: $body - #555;
+$text-normal: $body - #888;
 $form-body: #f9efdd;
 $form-border-rest: $form-body - #111;
 $form-perspective: 2px;
@@ -49,6 +50,10 @@ body {
 
 .red {
   color: $red;
+}
+
+.text-normal {
+  color: $text-normal;
 }
 
 button {
@@ -404,6 +409,15 @@ ul.badges {
         }
       }
     }
+  }
+}
+
+table.badges {
+  .circle {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    display: inline-block;
   }
 }
 
