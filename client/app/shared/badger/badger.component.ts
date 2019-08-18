@@ -114,16 +114,17 @@ export class BadgerComponent {
       item => {
         // Add/update the badge
         this._addBadge(item);
-        let allBadges = this.cacheService.get('badges');
-        allBadges[item._id] = item;
-        this.cacheService.set('badges', allBadges);
+        this.allBadges[item._id] = item;
+        this.cacheService.set('badges', this.allBadges);
       },
       error => {
         if (error._body && error._body.includes('duplicate')) {
           // Failed to create a new badge with duplicate title
-          let badge: any = Object.values(this.cacheService.get('badges') || {}).find((badge: any) => badge.title == this.newBadge.title);
+          let badge: any = Object.values(this.allBadges).find((badge: any) => badge.title == this.newBadge.title);
           if (badge && !this._isBadgeIncluded(badge._id)) {
             this._addBadge(badge);
+          } else {
+            console.log(`Unable to find existing badge ${this.newBadge.title} in`, this.allBadges);
           }
         }
       }

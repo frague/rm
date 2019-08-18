@@ -57,7 +57,7 @@ export class CandidatesComponent implements OnInit {
 
   ngOnInit() {
     this.$query = this.bus.filterUpdated.subscribe(([query]) => {
-      this.cache.reset();
+      this.cache.reset(['plans', 'demands', 'initiatives', 'resources', 'assignments', 'candidates']);
       this.fetchData(query);
     });
     this.fetchData(this.bus.filterQuery);

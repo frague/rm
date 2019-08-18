@@ -21,10 +21,14 @@ export class CacheService {
 
   reset(key?: string) {
     if (key) {
-      // console.log('Store ${key} cleanup ------------');
-      delete this.store[key];
+      // console.log(`Store ${key} cleanup ------------`);
+      if (Array.isArray(key)) {
+        key.forEach(subKey => delete this.store[subKey]);
+      } else {
+        delete this.store[key];
+      }
     } else {
-      // console.log('Store cleanup ------------');
+      // console.log('Store full cleanup ------------');
       this.store = {}
     }
   }
