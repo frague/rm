@@ -33,7 +33,7 @@ export class BadgesComponent {
   }
 
   getBadges() {
-    return Object.values(this.allBadges || {}).sort((a, b) => a.title > b.title ? 1 : -1);
+    return Object.values(this.allBadges || {}).sort((a: any, b: any) => a.title > b.title ? 1 : -1);
   }
 
   getBadgeStyle(badge: any) {

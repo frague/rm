@@ -19,7 +19,7 @@ export class CacheService {
     this.store[key] = value;
   }
 
-  reset(key?: string) {
+  reset(key?: string|string[]) {
     if (key) {
       // console.log(`Store ${key} cleanup ------------`);
       if (Array.isArray(key)) {

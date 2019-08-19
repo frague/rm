@@ -59,12 +59,6 @@ export class PlannerComponent extends Schedule {
   filterLocations = {};
   filterUsers = false;
 
-  badges = [
-    {title: 'React Native', color: 'orange'},
-    {title: 'Angular 2', color: 'magenta'},
-    {title: 'AngularJs', color: 'orangered'}
-  ];
-
   private _reset() {
     this.demands = [];
     this.candidates = [];

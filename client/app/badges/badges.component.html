@@ -6,6 +6,7 @@
       <th>Title</th>
       <th>Color</th>
       <th>Compact title</th>
+      <th>Description</th>
       <th></th>
     </tr>
   </thead>
@@ -26,13 +27,17 @@
         <input *ngIf="selected==badge._id" type="text" name="short" [(ngModel)]="newBadge.short" placeholder="Compact title">
       </td>
       <td>
+        <span *ngIf="selected!=badge._id">{{ badge.description }}</span>
+        <input *ngIf="selected==badge._id" type="text" name="description" [(ngModel)]="newBadge.description" placeholder="Description">
+      </td>
+      <td>
         <span *ngIf="selected!=badge._id">
           <button class="btn-link text-normal" (click)="edit(badge)"><i class="fa fa-pencil"></i></button>
           <button class="btn-link text-danger" (click)="delete(badge)"><i class="fa fa-times"></i></button>
         </span>
         <span *ngIf="selected==badge._id">
-          <button class="btn-link text-normal" (click)="save()"><i class="fa fa-check"></i></button>
-          <button class="btn-link text-danger" (click)="cancel()"><i class="fa fa-reply"></i></button>
+          <button class="btn-link text-success" (click)="save()"><i class="fa fa-check"></i></button>
+          <button class="btn-link text-normal" (click)="cancel()"><i class="fa fa-reply"></i></button>
         </span>
       </td>
     </tr>

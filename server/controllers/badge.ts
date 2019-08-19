@@ -63,7 +63,9 @@ export default class BadgeCtrl extends BaseCtrl {
         '$project': {
           _id: '$badge._id',
           title: '$badge.title',
-          color: '$badge.color'
+          color: '$badge.color',
+          short: '$badge.short',
+          description: '$badge.description',
         }
       }
     ])

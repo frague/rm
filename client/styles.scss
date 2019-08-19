@@ -44,6 +44,10 @@ body {
   margin-bottom: 10px;
 }
 
+body.modal-open .candidates {
+  overflow-x: hidden;
+}
+
 .grey {
   color: #888;
 }
@@ -407,7 +411,30 @@ ul.badges {
             padding: 0;
           }
         }
+        ul {
+          @extend .shadow;
+          position: absolute;
+          margin-top: 24px;
+          padding: 0;
+          width: 84px;
+          background-color: #FFF;
+          z-index: 10;
+
+          li {
+            @extend .clickable;
+            display: block;
+            margin: 0;
+            border-radius: 0;
+            background-color: $body;
+
+            &.selected {
+              font-weight: bold;
+              background-color: $body - #222;
+            }
+          }
+        }
       }
+
     }
   }
 }
@@ -418,6 +445,9 @@ table.badges {
     height: 15px;
     border-radius: 50%;
     display: inline-block;
+  }
+  input[type=text] {
+    width: 100%;
   }
 }
 
@@ -951,10 +981,6 @@ i.initiative {
     }
   }
 
-  body.modal-open .candidates {
-    overflow-x: hidden;
-  }
-
   .candidates {
     padding-top: 0;
     overflow-x: auto;
@@ -1068,7 +1094,8 @@ i.initiative {
               top: $demandCardWidth - 25px;
 
               li {
-                box-shadow: 0 0 4px #000;
+                box-shadow: 0 0 10px #FFF;
+                border: solid 1px rgba(0, 0, 0, 0.3);
                 padding: 1px 4px;
                 color: #000;
                 font-size: 10px;

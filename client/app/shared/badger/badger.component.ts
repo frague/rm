@@ -21,6 +21,10 @@ export class BadgerComponent {
   allBadges = {};
   newBadge: any = {};
 
+  suggestions = null;
+  suggestionIndex = -1;
+  typed: any = {};
+
   private $badgesUpdated;
 
   get badges(): any[] {
@@ -35,6 +39,7 @@ export class BadgerComponent {
     private busService: BusService,
     private cd: ChangeDetectorRef
   ) {
+    this.reset();
   }
 
   ngOnInit() {
@@ -57,6 +62,9 @@ export class BadgerComponent {
       title: '',
       color: '#f7fafb'
     };
+    this.typed = Object.assign({}, this.newBadge);
+    this.suggestions = [];
+    this.suggestionIndex = -1;
   }
 
   add() {
@@ -131,16 +139,57 @@ export class BadgerComponent {
     );
   }
 
+  private _updateSuggestions(): void {
+    this.suggestionIndex = -1;
+    let needle = this.newBadge.title.toLowerCase();
+    this.suggestions = Object.values(this.allBadges)
+      .filter((badge: any) => badge.title.toLowerCase().includes(needle))
+      .sort((a: any, b: any) => a.title < b.title ? 1 : 1);
+  }
+
+  selectSuggestion(newIndex: number, doSave=false) {
+    let l = this.suggestions.length;
+    if (!l || newIndex < -1 || newIndex >= l) {
+      return;
+    }
+    if (newIndex >= 0) {
+      this.newBadge = this.suggestions[newIndex];
+      if (doSave) {
+        return this.save();
+      }
+    } else {
+      this.newBadge = this.typed;
+    }
+    this.suggestionIndex = newIndex;
+  }
+
   hotKeysHandler(event: KeyboardEvent) {
-    if (event.key === 'Escape') {
-      this.cancel();
-    } else if (event.key === 'Enter') {
-      this.save();
+    let key = event.key;
+    switch (key) {
+      case 'Escape':
+        return this.cancel();
+      case 'Enter':
+        return this.save();
+      case 'ArrowUp':
+        return this.selectSuggestion(this.suggestionIndex - 1);
+      case 'ArrowDown':
+        return this.selectSuggestion(this.suggestionIndex + 1);
+        return;
+      default:
+        if (this.newBadge.title && this.suggestionIndex < 0) {
+          this._updateSuggestions();
+          this.typed = this.newBadge;
+        }
     }
   }
 
   getBadgeCaption(badge: any) {
-    return this.compactView ? (badge.title || '').toUpperCase().split(' ').map(w => w.substr(0, 1)).join('') : badge.title;
+    if (!this.compactView) {
+      return badge.title;
+    } else if (badge.short) {
+      return badge.short;
+    }
+    return (badge.title || '').toUpperCase().split(' ').map(w => w.substr(0, 1)).join('');
   }
 
   getBadgeStyle(badge: any) {
