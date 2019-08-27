@@ -225,6 +225,17 @@ pre {
     }
   }
 
+  blockquote {
+    margin-top: 10px;
+    padding-left: 10px;
+    border-left: solid 2px #DDD;
+    opacity: 0.7;
+
+    p {
+      white-space: pre-line;
+    }
+  }
+
   &.english {
     ul {
       padding-left: 15px;

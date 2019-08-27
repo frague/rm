@@ -222,7 +222,7 @@ export default class BackupCtrl {
               .save()
               .then(
                 data => {},
-                error => console.log(`Error saving item badge:`, badge.title)
+                error => console.log(`Error saving item badge:`, itemBadge)
               );
           }
 
