@@ -4,6 +4,7 @@ import { SyncService } from '../services/sync.service';
 import { DpService } from '../services/dp.service';
 import { SocketService } from '../services/socket.service';
 import { BadgeService} from '../services/badge.service';
+import { BusService } from '../services/bus.service'
 
 const tasks = {
   mandatory: true, dependants: {
@@ -51,7 +52,8 @@ export class SyncComponent {
     private dpService: DpService,
     private builder: FormBuilder,
     private socket: SocketService,
-    private badgeService: BadgeService
+    private badgeService: BadgeService,
+    private busService: BusService
  ) {
     this.form = this.builder.group({
       backup: null,
@@ -150,6 +152,7 @@ export class SyncComponent {
           if (logs) {
             logs.forEach(log => this.addLog(log, 'Restore'));
           }
+          this.busService.badgeUpdated.emit();
         },
         () => this.isLoading = false
       );

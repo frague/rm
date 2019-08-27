@@ -203,7 +203,7 @@ export class ColumnPipe implements PipeTransform {
           .map(demand => {
             let id = '#' + (demand.id || '').split('_')[0];
             let diff = _compare(demand, line);
-            return diff ? (isSingle ? '' : '**${id}**\n') + `${diff}` : '';
+            return diff ? (isSingle ? '' : `**${id}**\n`) + `${diff}` : '';
           })
           .join('\n\n');
       case 'state':
@@ -213,7 +213,7 @@ export class ColumnPipe implements PipeTransform {
       case 'skills':
       return secondary ?
         (value[secondary] || '').toLowerCase() :
-        Object.keys(value).sort().map(skill => `* **${skill}**: ${(value[skill] || '').toLowerCase()}`).join('\n');
+        Object.keys(value || {}).sort().map(skill => `* **${skill}**: ${(value[skill] || '').toLowerCase()}`).join('\n');
     }
 
     if (typeof value !== 'string') {

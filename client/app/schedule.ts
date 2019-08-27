@@ -100,7 +100,7 @@ export class Schedule {
 
   ngOnInit() {
     this.$query = this.bus.filterUpdated.subscribe(([query, serviceData]) => {
-      this.cache.reset(['plans', 'demands', 'initiatives', 'resources', 'assignments', 'candidates']);
+      this.cache.reset(['plans', 'demands', 'initiatives', 'resources', 'assignments', 'candidates', 'requisitions']);
       this.fetchData(query, false, serviceData);
     });
     this.fetchData(this.bus.filterQuery, true, this.bus.serviceData);
