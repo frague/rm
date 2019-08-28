@@ -66,6 +66,7 @@
               >
                 <b>{{ demand.commentsCount || '' }}</b>
               </div>
+              <badger [itemId]="demand.login" [compactView]="true" [allowManagement]="false"></badger>
               <div
                 class="bottom-corner"
                 container="body"

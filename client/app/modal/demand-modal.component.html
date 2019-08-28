@@ -11,6 +11,7 @@
     <h6 *ngIf="!notFound">
       on {{ demand.project }} project of {{ demand.account }} account
     </h6>
+    <badger [itemId]="demand.login"></badger>
   </div>
   <div class="comments-modal modal-body">
     <ngb-tabset (tabChange)="tabChange($event)" #tabs="ngbTabset" *ngIf="!isLoading && !notFound" [activeId]="activeId">
