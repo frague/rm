@@ -184,11 +184,8 @@ export class ColumnPipe implements PipeTransform {
           return value.text;
         }
       case 'demand':
-        value = (value && secondary) ? value[secondary] : '';
-        switch (secondary) {
-          case 'start':
-          case 'end':
-            return formatDate(value);
+        if (line.isDemand) {
+          return this.transform(line.demand, secondary);
         }
       case 'demands':
         value = value instanceof Array ? value : [];

@@ -4,7 +4,7 @@
     <ng-container *ngIf="!isEditing">+</ng-container>
     <form *ngIf="isEditing" autocomplete="off">
       <ul class="typeahead" *ngIf="suggestions">
-        <li *ngFor="let existingBadge of suggestions;let i = index" [ngClass]="{selected:i==suggestionIndex}" (click)="selectSuggestion(i, true)">{{ existingBadge.title }}</li>        
+        <li *ngFor="let existingBadge of suggestions;let i = index" [ngClass]="{selected:i==suggestionIndex}" (click)="selectSuggestion(i, true)">{{ existingBadge.title }}</li>
       </ul>
       <input type="text" [(ngModel)]="newBadge.title" name="title" (keyup)="hotKeysHandler($event)">
       <input type="color" [(ngModel)]="newBadge.color" name="color">
