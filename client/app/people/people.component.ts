@@ -88,7 +88,8 @@ export class PeopleComponent extends Schedule {
 
   postFetch = query => {
     let queryString = JSON.stringify(query['or']) || '';
-    let hideRequisitions = queryString.includes('"requisition":"false"');
+    let hideRequisitions = queryString.includes('"requisitions":"false"');
+    let hideCandidates = queryString.includes('"candidates":"false"');
     let requisitionsQuery = this._cache.getObservable('requisitions') || (
       candidatesQueryKeys.some(key => queryString.indexOf(key + '.') >= 0) ?
           this.requisitionService.getAll(query) : from([[]])
@@ -102,10 +103,12 @@ export class PeopleComponent extends Schedule {
           requisition.summary = `${requisition.requisitionId} ${requisition.title} (${requisition.jobState})`;
           this.items.push(requisition);
         }
-        requisition.candidates.forEach(candidate => {
-          candidate.isHiree = true;
-          this.items.push(candidate);
-        });
+        if (!hideCandidates) {
+          requisition.candidates.forEach(candidate => {
+            candidate.isHiree = true;
+            this.items.push(candidate);
+          });
+        }
       });
       this.markForCheck();
     });
