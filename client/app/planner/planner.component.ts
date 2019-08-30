@@ -60,7 +60,6 @@ export class PlannerComponent extends Schedule {
   filterUsers = false;
 
   private _reset() {
-    this.demands = [];
     this.candidates = [];
     this.accountsDemand = {};
   }

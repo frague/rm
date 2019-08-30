@@ -59,7 +59,6 @@ export class Schedule {
   items = [];
   resources = [];
   resourcesById = {};
-  demands = [];
 
   initiatives = {};
   assignments = [];
@@ -69,8 +68,6 @@ export class Schedule {
   accountInitiatives = {};
   accountsAssignments = {};
   initiativeAssignments = {};
-  initiativesData = null;
-  resourcesData = null;
 
   visibleAccounts = {};
   visibleInitiatives = {};
@@ -150,10 +147,6 @@ export class Schedule {
     this.initiativeAssignments = {};
 
     this.visibleInitiatives = {};
-    if (resetAll) {
-      this.initiativesData = null;
-      this.resourcesData = null;
-    }
   }
 
   findVisibleAccounts() {
@@ -171,8 +164,8 @@ export class Schedule {
     let demandQuery = this._cache.getObservable('demands') ||
       (queryString.indexOf('demand=false') < 0 && (queryString.indexOf('demand') >= 0 || queryString.indexOf('comments') >= 0) ?
               this.demandService.getAll(query) : from([[]]));
-    let initiativesQuery = this._cache.getObservable('initiatives') || (this.initiativesData ? from([this.initiativesData]) : this.initiativeService.getAll());
-    let resourcesQuery = this._cache.getObservable('resources') || (this.resourcesData ? from([this.resourcesData]) : this.resourceService.getAll());
+    let initiativesQuery = this._cache.getObservable('initiatives') || this.initiativeService.getAll();
+    let resourcesQuery = this._cache.getObservable('resources') || this.resourceService.getAll();
 
     let shift = serviceData['shift'];
     let withModifiers = Object.assign(query, {
@@ -198,10 +191,6 @@ export class Schedule {
         this.reset(fetchAll);
 
         [this.items, this.message] = [assignments.data, assignments.message];
-
-        if (!this.demands.length) {
-          this.demands = demands;
-        }
 
         let showDemand = false;
         (queryString.match(demandCriteria) || []).forEach(criterion => {
@@ -280,16 +269,11 @@ export class Schedule {
           });
         });
 
-        // Fetch Initiatives
-        if (!this.initiativesData) {
-          this.initiativesData = Array.from(initiatives);
-        }
-
+        let shownInitiatives = [...initiatives];
         if (showDemand) {
           let demandInitiative = initiatives.find(demand => demand.name === 'Demand');
-
           Object.keys(demandAccounts).forEach(account => {
-            initiatives.push(Object.assign(
+            shownInitiatives.push(Object.assign(
               {},
               demandInitiative,
               {
@@ -300,8 +284,7 @@ export class Schedule {
             ));
           });
         }
-
-        this.initiatives = initiatives.reduce((result, initiative) => {
+        this.initiatives = shownInitiatives.reduce((result, initiative) => {
           result[initiative._id] = initiative;
 
           this._push(this.accountInitiatives, initiative.account, initiative);
@@ -310,19 +293,14 @@ export class Schedule {
         }, {});
         this.findVisibleAccounts();
 
-        // Fetch resources
-        if (!this.resourcesData) {
-          this.resourcesData = resources;
-        }
-
-        demandResources.forEach(demand => resources.push({
+        this.resources = [...resources];
+        demandResources.forEach(demand => this.resources.push({
           _id: demand._id,
           name: demand.name,
           isDemand: true
         }));
 
-        this.resources = resources;
-        this.resourcesById = resources.reduce((result, person) => {
+        this.resourcesById = this.resources.reduce((result, person) => {
           person.status = personStati[person._id];
           result[person.login] = person;
           return result;
