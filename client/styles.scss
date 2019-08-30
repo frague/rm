@@ -436,12 +436,14 @@ ul.badges {
             padding: 0;
           }
         }
-        ul {
+        ul.typeahead {
           @extend .shadow;
           position: absolute;
           margin-top: 24px;
           padding: 0;
-          width: 84px;
+          min-width: 85px;
+          max-width: 150px;
+          overflow-x: hidden;
           background-color: #FFF;
           z-index: 10;
 
@@ -451,9 +453,9 @@ ul.badges {
             margin: 0;
             border-radius: 0;
             background-color: $body;
+            white-space: nowrap;
 
             &.selected {
-              font-weight: bold;
               background-color: $body - #222;
             }
           }
