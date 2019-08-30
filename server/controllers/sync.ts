@@ -35,6 +35,8 @@ const reqId = new RegExp(/^.*(GD\d+).*$/, 'i');
 const dateExpr = new RegExp(/^\d{1,4}-\d{1,2}-\d{1,4}$/);
 const accountManagementSource = 'Account management';
 
+const approvedVacations = ['approved', 'requested'];
+
 export default class SyncCtrl {
 
   data: any = [];
@@ -312,7 +314,7 @@ export default class SyncCtrl {
           if (todayYear - endYear > 1) return;
 
           // Add vacation if it is approved
-          if (request.status && request.status['$t'] === 'approved') {
+          if (request.status && approvedVacations.includes(request.status['$t'])) {
             addVacation(resource.login, request.start, request.end);
             vacationsCount++;
           }

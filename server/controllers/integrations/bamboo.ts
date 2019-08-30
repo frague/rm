@@ -79,7 +79,7 @@ export default class BambooIntegrationsCtrl {
   }
 
   // getReport = (req, res) => {
-  //   this.getPRs()
+  //   this.getTimeoffs()
   //     .then(data => {
   //       res.setHeader('Content-Type', 'application/json');
   //       res.send(data);
