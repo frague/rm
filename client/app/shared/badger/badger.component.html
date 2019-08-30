@@ -6,8 +6,8 @@
       <ul class="typeahead" *ngIf="suggestions">
         <li *ngFor="let existingBadge of suggestions;let i = index" [ngClass]="{selected:i==suggestionIndex}" (click)="selectSuggestion(i, true)">{{ existingBadge.title }}</li>
       </ul>
-      <input type="text" [(ngModel)]="newBadge.title" name="title" (keyup)="hotKeysHandler($event)">
-      <input type="color" [(ngModel)]="newBadge.color" name="color">
+      <input type="text" [(ngModel)]="newBadge.title" name="title" (keyup)="hotKeysHandler($event)" #title>
+      <input type="color" [(ngModel)]="newBadge.color" name="color" (change)="focus()">
     </form>
   </li>
 </ul>

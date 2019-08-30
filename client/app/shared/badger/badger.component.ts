@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild } from '@angular/core';
 
 import { BadgeService } from '../../services/badge.service';
 import { ItemBadgeService } from '../../services/itemBadge.service';
@@ -14,6 +14,7 @@ export class BadgerComponent {
   @Input() itemId;
   @Input() allowManagement: boolean = true;
   @Input() compactView: boolean = false;
+  @ViewChild('title') titleInput: ElementRef;
 
   isHovered = false;
   isEditing = false;
@@ -71,6 +72,7 @@ export class BadgerComponent {
     if (this.isEditing) return;
     this.reset();
     this.isEditing = true;
+    this.focus();
   }
 
   cancel() {
@@ -95,6 +97,10 @@ export class BadgerComponent {
         this._updateBadges();
       }
     });
+  }
+
+  focus() {
+    setTimeout(() => this.titleInput.nativeElement.focus(), 0);
   }
 
   private _addBadge(badge) {
