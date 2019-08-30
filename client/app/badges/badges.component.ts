@@ -67,4 +67,13 @@ export class BadgesComponent {
   cancel() {
     this.selected = null;
   }
+
+  hotKeysHandler(event: KeyboardEvent) {
+    switch (event.key) {
+      case 'Escape':
+        return this.cancel();
+      case 'Enter':
+        return this.save();
+    }
+  }
 }

@@ -14,7 +14,7 @@
     <tr *ngFor="let badge of getBadges()">
       <td>
         <span *ngIf="selected!=badge._id">{{ badge.title }}</span>
-        <input *ngIf="selected==badge._id" type="text" name="title" [(ngModel)]="newBadge.title" placeholder="Title">
+        <input *ngIf="selected==badge._id" type="text" name="title" [(ngModel)]="newBadge.title" placeholder="Title" (keyup)="hotKeysHandler($event)">
       </td>
       <td>
         <span *ngIf="selected!=badge._id">
@@ -24,11 +24,11 @@
       </td>
       <td>
         <span *ngIf="selected!=badge._id">{{ badge.short }}</span>
-        <input *ngIf="selected==badge._id" type="text" name="short" [(ngModel)]="newBadge.short" placeholder="Compact title">
+        <input *ngIf="selected==badge._id" type="text" name="short" [(ngModel)]="newBadge.short" placeholder="Compact title" (keyup)="hotKeysHandler($event)">
       </td>
       <td>
         <span *ngIf="selected!=badge._id">{{ badge.description }}</span>
-        <input *ngIf="selected==badge._id" type="text" name="description" [(ngModel)]="newBadge.description" placeholder="Description">
+        <input *ngIf="selected==badge._id" type="text" name="description" [(ngModel)]="newBadge.description" placeholder="Description" (keyup)="hotKeysHandler($event)">
       </td>
       <td>
         <span *ngIf="selected!=badge._id">
