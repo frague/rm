@@ -509,15 +509,15 @@ export class Schedule {
     if (item.stage || item.isDemand) {
       // Only demand entity always contains "stage" key
       let [entity, source] = this.getDemandFrom(item);
-      return this._showModal(entity, source, this.demandModal, showComments);
+      this._showModal(entity, source, this.demandModal, showComments);
     } else if (item.isHiree) {
       let [entity, source] = this.getCandidateFrom(item);
-      return this._showModal(entity, source, this.candidateModal, showComments);
+      this._showModal(entity, source, this.candidateModal, showComments);
     } else if (item.candidates) {
-      return this.showRequisition(item.requisitionId);
+      this.showRequisition(item.requisitionId);
     } else {
       let [entity, source] = this.getPersonFrom(item);
-      return this._showModal(entity, source, this.personModal, showComments);
+      this._showModal(entity, source, this.personModal, showComments);
     }
   }
 

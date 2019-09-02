@@ -71,7 +71,7 @@ export class ReportsComponent extends Schedule {
   }
 
   showUser(name: string, line: any) {
-    return this.showResource(line);
+    this.showResource(line);
   }
 
   fetchData(query={}, fetchAll=false, serviceData: any={}): Subscription {
