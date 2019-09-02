@@ -64,6 +64,19 @@ export class PlannerComponent extends Schedule {
     this.accountsDemand = {};
   }
 
+  private _sortCandidates() {
+    this.candidates = this.candidates.sort((a, b) => {
+      let [aChosen, bChosen] = [this.deserved[a.login], this.deserved[b.login]];
+      let [aIsHiree, bIsHiree] = [a.isHiree, b.isHiree];
+
+      if (aChosen && !bChosen) return -1
+      else if (!aChosen && bChosen) return 1
+      else if (aIsHiree && !bIsHiree) return 1
+      else if (!aIsHiree && bIsHiree) return -1;
+      return a.name < b.name ? -1 : 1;
+    });
+  }
+
   postFetch = query => {
     this.now = new Date();
 
@@ -81,15 +94,8 @@ export class PlannerComponent extends Schedule {
       this.candidates = Object.keys(query).length
         ?
           this.items
-            .slice(0, 100)
             .filter(item => !item.isDemand)
-            .sort((a, b) => {
-              let [aChosen, bChosen] = [this.deserved[a.login], this.deserved[b.login]];
-              if (aChosen && !bChosen) return -1
-              else if (!aChosen && bChosen) return 1;
-              return a.name < b.name ? -1 : 1;
-            })
-            .slice(0, 30)
+            .slice(0, 50)
             .map(item => {
               let result = this.resourcesById[item.login] || {};
               if (item.login.indexOf(' ') > 0) {
@@ -97,12 +103,12 @@ export class PlannerComponent extends Schedule {
               };
               ['canTravel', 'billable', 'onTrip'].forEach(key => result[key] = item[key] === 'true');
               result.onVacation = item.onVacation;
-              result.badges = item.badges;
               peopleLogins.push(result.login);
               return result;
             })
         :
           [];
+
 
       data.slice(0, 20).forEach(candidate => {
         candidate.isHiree = true;
@@ -111,6 +117,7 @@ export class PlannerComponent extends Schedule {
       });
 
       this.candidatesCount = this.candidates.length;
+      this._sortCandidates();
 
       let demands = this.items
         .filter(item => item.isDemand)
@@ -227,6 +234,7 @@ export class PlannerComponent extends Schedule {
       this.reserved[row] = login;
       this.deserved[login] = row;
     });
+    this._sortCandidates();
   }
 
   getCheckStyles(candidate, demand) {

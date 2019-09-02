@@ -74,11 +74,6 @@ export class ReportsComponent extends Schedule {
     return this.showResource(line);
   }
 
-  showComments(candidate, event: MouseEvent) {
-    event.stopPropagation();
-    this.personModal.show(candidate.login, 'comments');
-  }
-
   fetchData(query={}, fetchAll=false, serviceData: any={}): Subscription {
     this.tableColumns = serviceData.columns || defaultColumns;
     this.keys = Object.keys(this.tableColumns);

@@ -40,7 +40,7 @@ export class AssignmentsComponent extends Schedule {
 
   getAssigneeClasses(index, assignee) {
     return {
-      ['an' + Object.keys((this.items[index] || emptyItem).assignments).length]: true,
+      ['an' + Object.keys((this.items[index] || emptyItem).assignments || {}).length]: true,
       'trip': this.isOnTrip(assignee),
       'vacation': this.isOnVacation(assignee),
     };

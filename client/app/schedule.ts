@@ -475,7 +475,7 @@ export class Schedule {
     this.requisitionModal.show(requisitionId);
   }
 
-  _showModal(entity, source, modal: {show: Function}, showComments=false) {
+  private _showModal(entity, source, modal: {show: Function}, showComments=false) {
     if (!entity || !source) {
       return;
     }
