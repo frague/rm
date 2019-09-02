@@ -21,11 +21,11 @@ const defaultColumns = {
 const candidatesQueryKeys = ['requisition', 'candidate', 'comments'];
 
 @Component({
-  selector: 'people',
-  templateUrl: './people.component.html',
+  selector: 'reports',
+  templateUrl: './reports.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PeopleComponent extends Schedule {
+export class ReportsComponent extends Schedule {
   tableColumns = {};
   keys = {};
   isPrintable = false;

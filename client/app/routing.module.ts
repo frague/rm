@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
 import { AssignmentsComponent } from './assignments/assignments.component';
-import { PeopleComponent } from './people/people.component';
+import { ReportsComponent } from './reports/reports.component';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { LogoutComponent } from './logout/logout.component';
@@ -29,7 +29,7 @@ const routes: Routes = [
     children: [
       { path: 'assignments', component: AssignmentsComponent },
       { path: 'accounts', component: AccountsComponent },
-      { path: 'reports', component: PeopleComponent },
+      { path: 'reports', component: ReportsComponent },
       { path: 'hiring', component: CandidatesComponent },
       { path: 'planner', component: PlannerComponent },
       { path: '', redirectTo: '/dashboard', pathMatch: 'full' }

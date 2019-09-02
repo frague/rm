@@ -40,7 +40,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { RequisitionDemandComponent } from './candidates/requisition-demand.component';
 import { InitiativeComponent } from './initiatives/initiative.component';
 import { AssignmentsComponent } from './assignments/assignments.component';
-import { PeopleComponent } from './people/people.component';
+import { ReportsComponent } from './reports/reports.component';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { LogoutComponent } from './logout/logout.component';
@@ -56,7 +56,7 @@ import { PlannerComponent } from './planner/planner.component';
 import { ReportComponent } from './planner/report.component';
 import { DemandPlanComponent } from './planner/demandplan.component';
 import { DpComponent } from './deadpool/dp.component';
-import { AvatarComponent } from './people/avatar.component';
+import { AvatarComponent } from './reports/avatar.component';
 import { AssignmentsReportComponent } from './assignments/report.component';
 import { SkillsetComponent } from './planner/skillset.component';
 import { CandidatesComponent } from './candidates/candidates.component';
@@ -106,7 +106,7 @@ export function tokenGetter() {
     AppComponent,
     InitiativeComponent,
     AssignmentsComponent,
-    PeopleComponent,
+    ReportsComponent,
     RegisterComponent,
     LoginComponent,
     LogoutComponent,
