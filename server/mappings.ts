@@ -2,6 +2,11 @@ export function replaceFromMap(where, what) {
   return where[what] ? where[what] : what;
 }
 
+export function formatDate(date: Date): string {
+  let d = new Date(date);
+  return d.toISOString().substr(0, 10);
+}
+
 export var demandProfilesMap = {
   'QE-Mobile': 'Quality Engineer',
   'BSA-Common': 'Quality Engineer',
