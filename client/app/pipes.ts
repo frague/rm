@@ -125,7 +125,7 @@ const _compare = (demand, requisition): string => {
 
 @Pipe({name: 'column'})
 export class ColumnPipe implements PipeTransform {
-  transform(line: any, name: string) {
+  transform(line: any, name='') {
     let [primary, secondary] = name.split('.');
     let value = line[primary];
     switch (primary) {
