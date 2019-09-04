@@ -65,7 +65,6 @@ export class FeedbacksTabComponent extends BaseTabComponent {
     let data = this.getState('feedbacks', this.userId) || null;
     let fetcher = data ? from([data]) : this.ingridService.get(this.userId);
 
-    this.isLoading = true;
     this.isAvailable = false;
 
     fetcher
@@ -80,7 +79,6 @@ export class FeedbacksTabComponent extends BaseTabComponent {
         //   pointRadius: 10,
         //   data: result
         // }];
-      })
-      .add(() => this.isLoading = false);
+      });
   }
 }

@@ -35,7 +35,6 @@ export class RequisitionModal extends BaseModalComponent {
   show(requisition: any, tabName = ''): Subject<any> {
     this.error = false;
     if (typeof requisition === 'string') {
-      this.isLoading = true;
       this.requisitionService.get(requisition)
         .subscribe(
           data => {
@@ -50,8 +49,7 @@ export class RequisitionModal extends BaseModalComponent {
             this.error = true;
             this.showError(requisition);
           }
-        )
-        .add(() => this.isLoading = false);
+        );
     } else {
       this.requisition = requisition;
     }

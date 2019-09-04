@@ -53,7 +53,6 @@ export class Schedule {
 
   isScrolled = false;
   isCalculated = false;
-  isLoading = false;
   loadingCounter = 0;
 
   items = [];
@@ -157,7 +156,6 @@ export class Schedule {
   }
 
   fetchData(query={}, fetchAll=false, serviceData={}): Subscription {
-    this.isLoading = true;
     this.markForCheck();
 
     let queryString = JSON.stringify(query);
@@ -307,11 +305,7 @@ export class Schedule {
         }, {});
       })
         .add(() => {
-          this.postFetch(query)
-            .add(() => {
-              this.isLoading = false;
-              this.markForCheck();
-            });
+          this.postFetch(query).add(() => this.markForCheck());
         });
   }
 

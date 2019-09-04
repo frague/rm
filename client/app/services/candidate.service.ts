@@ -3,12 +3,13 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Http } from '@angular/http';
 import { BaseService } from './base.service';
+import { LoaderService } from './loader.service';
 
 @Injectable()
 export class CandidateService extends BaseService {
 
-  constructor(http: Http) {
-    super('candidate', http);
+  constructor(http: Http, loader: LoaderService) {
+    super('candidate', http, loader);
   }
 
   getByRequisition(requisitionId: string): Observable<any> {

@@ -34,7 +34,6 @@ export class CommentsTabComponent extends BaseTabComponent {
       return;
     }
 
-    this.isLoading = true;
     return this.commentService.getAll(this.key)
       .subscribe((notes: any[]) => {
         this.status = '';
@@ -53,7 +52,6 @@ export class CommentsTabComponent extends BaseTabComponent {
           this.aggregated.unshift(this.status);
         }
       })
-      .add(() => this.isLoading = false)
       .add(() => this.cd.markForCheck());
   }
 

@@ -9,7 +9,6 @@ import { UserService } from '../services/user.service';
 export class AccountComponent implements OnInit {
 
   user = {};
-  isLoading = true;
 
   constructor(private auth: AuthService, private userService: UserService) { }
 
@@ -20,8 +19,7 @@ export class AccountComponent implements OnInit {
   getUser() {
     this.userService.get(this.auth.currentUser).subscribe(
       data => this.user = data,
-      error => console.log(error),
-      () => this.isLoading = false
+      error => console.log(error)
     );
   }
 

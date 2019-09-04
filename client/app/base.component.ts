@@ -16,7 +16,6 @@ const isDate = new RegExp(/^[12]\d{3}\-/);
 export abstract class BaseComponent {
   items = [];
   item: any = {};
-  isLoading = false;
   isEditing = false;
 
   abstract form: FormGroup;

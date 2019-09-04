@@ -45,7 +45,6 @@ export class AccountProjectTabComponent extends CommentsTabComponent {
   processAssignments(assignments: any[]) {
     let now = this._makeDate.transform(new Date(), 'ten');
     let current = assignments.find(assignment => assignment.start);
-    this.isLoading = false;
 
     if (current) {
       [this.account, this.initiative] = [current.account, current.project];
@@ -72,7 +71,6 @@ export class AccountProjectTabComponent extends CommentsTabComponent {
         return this.processAssignments(assignments);
       }
 
-      this.isLoading = true;
       this.assignmentService.get({_id: this.pmoId})
         .subscribe(
           data => {

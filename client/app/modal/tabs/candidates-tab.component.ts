@@ -22,10 +22,8 @@ export class CandidatesTabComponent extends BaseTabComponent {
 
   fetchData() {
     if (this.requisitionId) {
-      this.isLoading = true;
       this.candidateService.getByRequisition(this.requisitionId)
-        .subscribe(candidates => this.candidates = candidates)
-        .add(() => this.isLoading = false);
+        .subscribe(candidates => this.candidates = candidates);
     }
   }
 

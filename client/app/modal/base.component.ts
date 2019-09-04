@@ -4,7 +4,6 @@ import { BaseComponent } from '../base.component';
 import { NgbModal, ModalDismissReasons, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 
 export abstract class BaseModalComponent {
-	isLoading = false;
   modalRef: any;
   content: any;
   state: Object = {};

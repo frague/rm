@@ -1,5 +1,4 @@
 export abstract class BaseTabComponent {
-  isLoading = false;
   state = {};
 
   fetchData() {}

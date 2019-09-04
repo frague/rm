@@ -2342,6 +2342,14 @@ div.bottom-corner {
       margin-left: -56px;
       margin-top: -37px;
       font-size: 112px;
+
+      animation: spin 2s infinite linear;
+
+      @for $i from 1 through 15 {
+        &.speed#{$i} {
+          animation-duration: (2000ms / $i);
+        }
+      }
     }
 
     & > time {
@@ -2351,6 +2359,20 @@ div.bottom-corner {
       text-align: center;
       display: block;
     }
+
+    & > p {
+      position: absolute;
+      left: 100px;
+    }
+  }
+}
+
+@keyframes spin {
+  from {
+    transform:rotate(0deg);
+  }
+  to {
+    transform:rotate(360deg);
   }
 }
 

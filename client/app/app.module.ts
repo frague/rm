@@ -32,6 +32,7 @@ import { RequisitionDemandService } from './services/requisitionDemand.service';
 import { CacheService } from './services/cache.service';
 import { ItemBadgeService } from './services/itemBadge.service';
 import { BadgeService } from './services/badge.service';
+import { LoaderService } from './services/loader.service';
 
 import { AppComponent } from './app.component';
 import { SyncComponent } from './sync/sync.component';
@@ -181,6 +182,7 @@ export function tokenGetter() {
     CacheService,
     ItemBadgeService,
     BadgeService,
+    LoaderService,
 
     PrintableDatePipe,
   ],

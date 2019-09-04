@@ -1,33 +1,37 @@
-import { Component, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, ChangeDetectorRef, EventEmitter } from '@angular/core';
+import { LoaderService } from '../../services/loader.service';
 
 @Component({
 	selector: 'spinner',
   templateUrl: './spinner.component.html'
 })
 export class SpinnerComponent {
-  private _isShown = false;
-  timer=0;
-  private $timer;
+  private $updated;
 
-  get isShown(): boolean {
-    return this._isShown;
+  ngOnInit() {
+    this.$updated = this.loader.updated.subscribe(() => this.cd.markForCheck());
   }
 
-  @Input('isShown')
-  set isShown(value: boolean) {
-    if (value !== this._isShown) {
-      if (value) {
-        this.timer = 0;
-        this.$timer = setInterval(() => {this.timer++; this.cd.markForCheck()}, 1000);
-      } else {
-        clearInterval(this.$timer);
-      }
-      this.cd.markForCheck();
-    }
-    this._isShown = value;
+  ngOnDestroy() {
+    this.$updated.unsubscribe();
+  }
+
+  get isShown(): boolean {
+    return this.loader.isLoading;
+  }
+
+  get threads(): number {
+    return this.loader.threadsInProgress;
+  }
+
+  get timer(): string {
+    return this.loader.loadingTime;
   }
 
   @Input() showContent = false;
 
-  constructor(private cd: ChangeDetectorRef) {}
+  constructor(
+    private loader: LoaderService,
+    private cd: ChangeDetectorRef,
+  ) {}
 }

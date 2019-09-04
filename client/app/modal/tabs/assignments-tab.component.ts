@@ -28,7 +28,6 @@ export class AssignmentsTabComponent extends BaseTabComponent {
       return;
     }
 
-    this.isLoading = true;
   	this.assignmentService.get({_id: this.pmoId})
       .subscribe(
         data => {
@@ -36,8 +35,7 @@ export class AssignmentsTabComponent extends BaseTabComponent {
           this.setState('assignments', this.pmoId, data);
         },
         error => {}
-      )
-      .add(() => this.isLoading = false);
+      );
   }
 
   getClass(assignment) {

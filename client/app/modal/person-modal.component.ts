@@ -29,14 +29,12 @@ export class PersonModal extends BaseModalComponent {
 
   show(person: any, tabName = ''): Subject<any> {
     if (typeof person === 'string') {
-      this.isLoading = true;
       this.person = {};
       this.personService.getByLogin(person)
         .subscribe(
           person => this.person = person,
           err => console.log(err)
-        )
-        .add(() => this.isLoading = false);
+        );
     } else {
       this.person = person;
     }

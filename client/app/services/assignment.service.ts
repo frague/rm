@@ -3,12 +3,13 @@ import { Http } from '@angular/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { BaseService } from './base.service';
+import { LoaderService } from './loader.service';
 
 @Injectable()
 export class AssignmentService extends BaseService {
 
-  constructor(http: Http) {
-    super('assignment', http);
+  constructor(http: Http, loader: LoaderService) {
+    super('assignment', http, loader);
   }
 
   getByLogin(login: string): Observable<any> {

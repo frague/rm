@@ -3,6 +3,7 @@ import { Http } from '@angular/http';
 import { BaseService } from './base.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { LoaderService } from './loader.service';
 
 
 @Injectable()
@@ -10,8 +11,8 @@ export class ResourceService extends BaseService {
 
   httpService: Http;
 
-  constructor(http: Http) {
-    super('resource', http);
+  constructor(http: Http, loader: LoaderService) {
+    super('resource', http, loader);
   }
 
   getByLogin(login: string): Observable<any> {

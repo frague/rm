@@ -35,7 +35,7 @@ export class TaskComponent {
   getIconStyles() {
     return Object.keys(this.stati).length > 0 ?
     ({
-           progress: 'fa-sun-o fa-spin',
+           progress: 'fa-circle-o-notch fa-spin',
            done: 'fa-check-circle-o text-success',
            skipped: 'fa-stop-circle-o grey',
            error: 'fa-times-circle text-danger',

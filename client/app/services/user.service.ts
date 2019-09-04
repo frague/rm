@@ -1,26 +1,26 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
+import { Observable } from 'rxjs';
 
 import { BaseService } from './base.service';
-
-import { Observable } from 'rxjs';
+import { LoaderService } from './loader.service';
 
 
 @Injectable()
 export class UserService extends BaseService {
 
-  httpService: Http;
+  private _http: Http;
 
-  constructor(http: Http) {
-    super('user', http);
-    this.httpService = http;
+  constructor(http: Http, loader: LoaderService) {
+    super('user', http, loader);
+    this._http = http;
   }
 
   register(user): Observable<any> {
-    return this.httpService.post('/api/user', JSON.stringify(user), this.options);
+    return this._http.post('/api/user', JSON.stringify(user), this.options);
   }
 
   login(credentials): Observable<any> {
-    return this.httpService.post('/api/login', JSON.stringify(credentials), this.options);
+    return this._http.post('/api/login', JSON.stringify(credentials), this.options);
   }
 }

@@ -23,12 +23,10 @@ export class HistoryTabComponent extends BaseTabComponent {
       return;
     }
 
-    this.isLoading = true;
   	this.dpService.getAll({subject: this.key})
       .subscribe(diffs => {
         this.items = diffs;
         this.setState('history', this.key, diffs);
-      })
-      .add(() => this.isLoading = false);
+      });
   }
 }

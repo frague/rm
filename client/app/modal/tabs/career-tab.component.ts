@@ -61,7 +61,6 @@ export class CareerTabComponent extends BaseTabComponent {
     let data = this.getState('career', this.bambooId) || null;
     let fetcher = data ? from([data]) : this.careerService.get(this.bambooId);
 
-    this.isLoading = true;
     this.isForbidden = false;
 
     fetcher
@@ -90,7 +89,6 @@ export class CareerTabComponent extends BaseTabComponent {
           pointRadius: 10,
           data: result
         }];
-      })
-      .add(() => this.isLoading = false);
+      });
   }
 }

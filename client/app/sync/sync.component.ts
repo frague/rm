@@ -34,7 +34,6 @@ export class SyncComponent {
 
   form: FormGroup;
   logs = [];
-  isLoading = false;
   stati = {};
   hasErrors = false;
   file: any = {name: ''};
@@ -76,7 +75,6 @@ export class SyncComponent {
   }
 
   sync() {
-    this.isLoading = true;
     this.logs = [];
     this.stati = {};
     this.hasErrors = false;
@@ -99,16 +97,13 @@ export class SyncComponent {
             if (!this.hasErrors) {
               this.addLog('Diff generation...');
               this.dpService.saveDiff().subscribe(() => {
-                this.isLoading = false;
               });
             } else {
-              this.isLoading = false;
             }
           }
         }
       });
     }, error => {
-      this.isLoading = false;
       this.stati = {};
       this.logs = [error];
     });
@@ -144,17 +139,14 @@ export class SyncComponent {
 
   restore() {
     const formModel = this.form.value;
-    this.isLoading = true;
     this.syncService.restore(formModel)
       .subscribe(
         logs => {
-          this.isLoading = false;
           if (logs) {
             logs.forEach(log => this.addLog(log, 'Restore'));
           }
           this.busService.badgeUpdated.emit();
-        },
-        () => this.isLoading = false
+        }
       );
     // Invalidate badges cache
   }
@@ -166,11 +158,9 @@ export class SyncComponent {
   }
 
   cleanup() {
-    this.isLoading = true;
     this.syncService.cleanup()
       .subscribe(
         data => {
-          this.isLoading = false;
           if (data) {
             this.addLog(`${data.deleted} obsolete comments were deleted:`, 'Cleanup');
             Object.keys(data.logins).sort().forEach(login => {
@@ -184,8 +174,7 @@ export class SyncComponent {
               this.addLog(` * ${item} (${data.logins[login]})`);
             });
           }
-        },
-        () => this.isLoading = false
+        }
       );
   }
 }

@@ -1,6 +1,7 @@
 import { Component, Input, EventEmitter } from '@angular/core';
 import { BaseTabComponent } from './base.component';
 import { SkillsService} from '../../services/skills.service';
+import { forkJoin} from 'rxjs';
 
 @Component({
   selector: 'skills-tab',
@@ -62,25 +63,14 @@ export class SkillsTabComponent extends BaseTabComponent {
       return;
     }
 
-    let loadersCount = 2;
-    let loaded = () => {
-      this.isLoading = !!--loadersCount
-      if (!this.isLoading) {
-        this.setState('skills', this.login, [this.skills, this.skillsInfo]);
-      }
-    };
-
-    this.isLoading = true;
-
-    this.skillsService.get(this.login)
-      .subscribe(skills => {
-        this._countSkillsDefined(skills);
-        this.skills = skills;
-      })
-      .add(loaded);
-
-    this.skillsService.getInfo(this.login)
-      .subscribe(info => this.skillsInfo = info)
-      .add(loaded);
+    forkJoin(
+      this.skillsService.get(this.login),
+      this.skillsService.getInfo(this.login)
+    )
+      .subscribe(skillsData => {
+        this._countSkillsDefined(skillsData[0]);
+        [this.skills, this.skillsInfo] = skillsData;
+        this.setState('skills', this.login, skillsData);
+      });
   }
 }

@@ -34,7 +34,6 @@ export class DemandModal extends BaseModalComponent {
 
     this.notFound = false;
     if (typeof demand === 'string') {
-      this.isLoading = true;
       this.demandService.get({_id: demand})
         .subscribe(
           result => {
@@ -50,8 +49,7 @@ export class DemandModal extends BaseModalComponent {
             }
           },
           error => console.log(error)
-        )
-        .add(() => this.isLoading = false);
+        );
     } else {
       this.demand = demand;
     }

@@ -13,8 +13,6 @@ import { BaseComponent } from '../base.component';
 })
 export class AdminComponent extends BaseComponent implements OnInit {
 
-  isLoading = true;
-
   form = new FormGroup({});
 
   constructor(

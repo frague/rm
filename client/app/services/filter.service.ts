@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import { BaseService } from './base.service';
+import { LoaderService } from './loader.service';
 
 const serviceKeys = ['columns', 'order', 'group', 'limit'];
 
 @Injectable()
 export class FilterService extends BaseService {
 
-  constructor(http: Http) {
-    super('filter', http);
+  constructor(http: Http, loader: LoaderService) {
+    super('filter', http, loader);
   }
 
   private _parseParam(name: string, value: string = '') {
