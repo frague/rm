@@ -8,7 +8,7 @@
   <div class="alert alert-info message" *ngIf="message">{{ message }}</div>
   <h1>Requisitions &amp; candidates</h1>
 
-  <spinner [showContent]="true">
+  <spinner>
     <div class="requisitions" *ngIf="getRequisitions().length">
       <ng-container *ngFor="let category of getCategories()">
         <h3>{{ category }}</h3>

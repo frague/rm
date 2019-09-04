@@ -13,6 +13,7 @@ import { BusService } from './services/bus.service';
 })
 export class AppComponent {
   isFilterVisible = true;
+  private $refetchBadges;
 
   public get isLogged(): boolean {
     return this.auth.loggedIn;
@@ -22,12 +23,12 @@ export class AppComponent {
     public auth: AuthService,
     private itemBadgeService: ItemBadgeService,
     private badgeService: BadgeService,
-    private cacheService: CacheService,
-    private busService: BusService
+    private cache: CacheService,
+    private bus: BusService
   ) {
   }
 
-  ngOnInit() {
+  private _refetchBadges() {
     forkJoin(
       this.badgeService.getAll(),
       this.itemBadgeService.getAll()
@@ -37,7 +38,7 @@ export class AppComponent {
           result[badge._id] = badge;
           return result;
         }, {});
-        this.cacheService.set('badges', badgeById);
+        this.cache.set('badges', badgeById);
 
         let itemsBadges = itemBadges.reduce((result, link) => {
           let ibs = result[link.itemId] || [];
@@ -48,8 +49,17 @@ export class AppComponent {
           result[link.itemId] = ibs;
           return result;
         }, {});
-        this.cacheService.set('itemBadges', itemsBadges);
-        this.busService.badgeUpdated.emit();
+        this.cache.set('itemBadges', itemsBadges);
+        this.bus.badgeUpdated.emit();
       });
+  }
+
+  ngOnInit() {
+    this.$refetchBadges = this.bus.reloadBadges.subscribe(() => this._refetchBadges());
+    this._refetchBadges();
+  }
+
+  ngOnDestroy() {
+    this.$refetchBadges.unsubscribe();
   }
 }

@@ -15,6 +15,7 @@ export class BusService {
   public criteriaUpdated: EventEmitter<string> = new EventEmitter();
   public timeShiftUpdated: EventEmitter<number> = new EventEmitter();
 
+  public reloadBadges: EventEmitter<any> = new EventEmitter();
   public badgeUpdated: EventEmitter<string> = new EventEmitter();
 
   public editedContent: EventEmitter<{data: IEditedContent, resolve: Function, reject: Function}> = new EventEmitter();

@@ -28,7 +28,7 @@ export class SpinnerComponent {
     return this.loader.loadingTime;
   }
 
-  @Input() showContent = false;
+  @Input() showContent = true;
 
   constructor(
     private loader: LoaderService,

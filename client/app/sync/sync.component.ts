@@ -145,10 +145,10 @@ export class SyncComponent {
           if (logs) {
             logs.forEach(log => this.addLog(log, 'Restore'));
           }
-          this.busService.badgeUpdated.emit();
+          // Invalidate badges cache
+          this.busService.reloadBadges.emit();
         }
       );
-    // Invalidate badges cache
   }
 
   getLogStyle(log: string) {
