@@ -931,7 +931,7 @@ i.initiative {
             margin-left: 130px;
             min-width: 60px
           }
-          
+
           li:nth-last-child(-n+2) {
             position: static;
             margin: 0;
@@ -939,6 +939,26 @@ i.initiative {
 
           li:nth-last-child(2) {
             margin-top: 19px;
+          }
+        }
+
+        &:nth-child(4) {
+          margin-left: 270px;
+
+          h6 a {
+            color: $danger;
+          }
+
+          a {
+            @extend .clickable;
+          }
+
+          li {
+            border-radius: 6px;
+            padding: 0 6px;
+            display: inline-block;
+            margin: 0 4px 6px 0;
+            border: solid 1px $text-normal;
           }
         }
 

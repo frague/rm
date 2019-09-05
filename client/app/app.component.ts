@@ -18,7 +18,7 @@ export class AppComponent {
   public get isLogged(): boolean {
     return this.auth.loggedIn;
   }
-  
+
   constructor(
     public auth: AuthService,
     private itemBadgeService: ItemBadgeService,

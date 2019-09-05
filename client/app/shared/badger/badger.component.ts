@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, Output, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef, EventEmitter } from '@angular/core';
 
 import { BadgeService } from '../../services/badge.service';
 import { ItemBadgeService } from '../../services/itemBadge.service';
@@ -14,6 +14,7 @@ export class BadgerComponent {
   @Input() itemId;
   @Input() allowManagement: boolean = true;
   @Input() compactView: boolean = false;
+  @Output() click: EventEmitter<any> = new EventEmitter();
   @ViewChild('title') titleInput: ElementRef;
 
   isHovered = false;
@@ -85,7 +86,9 @@ export class BadgerComponent {
     this.busService.badgeUpdated.emit(this.itemId);
   }
 
-  delete(badge) {
+  delete(badge, event: MouseEvent) {
+    event.stopPropagation();
+
     this.itemBadgeService.deleteByIds(this.itemId, badge._id).subscribe(() => {
       let allItemBadges = this.cacheService.get('itemBadges');
       let ibs = allItemBadges[this.itemId] || [];
@@ -200,5 +203,12 @@ export class BadgerComponent {
 
   getBadgeStyle(badge: any) {
     return {'background-color': badge.color};
+  }
+
+  clicked(badge, event: MouseEvent) {
+    event.stopPropagation();
+    if (this.click.observers.length) {
+      this.click.emit(badge);
+    }
   }
 }

@@ -43,6 +43,10 @@
             <li><label><input type="checkbox" (click)="toggleLocations($event)" checked>Toggle all</label></li>
             <li><label><input type="checkbox" [(ngModel)]="filterUsers">Apply to users</label></li>
           </ul>
+          <ul>
+            <h6>Badges <a (click)="resetBadges()">&times;</a></h6>
+            <li *ngFor="let badge of chosenBadges;let i = index" [ngStyle]="getBadgeStyle(badge)">{{ badge.short }} <a (click)="removeBadge(i)">&times;</a></li>
+          </ul>
         </div>
         <div class="account" *ngFor="let account of getAccounts()">
           <h3>{{ account }}</h3>
@@ -66,7 +70,7 @@
               >
                 <b>{{ demand.commentsCount || '' }}</b>
               </div>
-              <badger [itemId]="demand.login" [compactView]="true" [allowManagement]="false"></badger>
+              <badger [itemId]="demand.login" [compactView]="true" [allowManagement]="false" (click)="toggleBadge($event)"></badger>
               <div
                 class="bottom-corner"
                 container="body"
@@ -97,7 +101,7 @@
                 [ngClass]="getCardClass(candidate)"
               >
                 <avatar [login]="candidate.login" [useDefault]="candidate.isHiree">
-                  <badger [itemId]="candidate.login" [compactView]="true" [allowManagement]="false"></badger>
+                  <badger [itemId]="candidate.login" [compactView]="true" [allowManagement]="false" (click)="toggleBadge($event)"></badger>
                   <a (click)="showRequisition(candidate.requisitionId, $event)" *ngIf="candidate.requisitionId">
                     {{ candidate.requisitionId }}
                   </a>

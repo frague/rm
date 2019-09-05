@@ -59,6 +59,16 @@ export class PlannerComponent extends Schedule {
   filterLocations = {};
   filterUsers = false;
 
+  chosenBadges = [];
+  private _chosenBadgesNames = {};
+  private get _allBadges() {
+    return this._cache ? this._cache.get('badges') : [];
+  }
+  private get _itemBadges() {
+    return this._cache ? this._cache.get('itemBadges') : {};
+  };
+  private _visibleCandidates = {};
+
   private _reset() {
     this.candidates = [];
     this.accountsDemand = {};
@@ -140,6 +150,7 @@ export class PlannerComponent extends Schedule {
         demandsLogins.push(demand.login);
       });
       this.sanitizePlan(peopleLogins, demandsLogins);
+      this._calculateVisibleCandidates();
       this.markForCheck();
     });
 
@@ -260,16 +271,21 @@ export class PlannerComponent extends Schedule {
   }
 
   isUserVisible(user: any) {
-    if (!this.filterUsers) return true;
-    return this.filterLocations[user.location];
+    let badgesSelected = this.chosenBadges.length > 0;
+    if (!this.filterUsers && !badgesSelected) return true;
+    let locations = this.filterLocations[user.location];
+    let badges = badgesSelected ? this._visibleCandidates[user._id] : true;
+    return locations && badges;
   }
 
   getCandidatesCount() {
-    if (!this.filterUsers) return this.candidatesCount;
+    let badgesSelected = this.chosenBadges.length > 0;
+    if (!this.filterUsers && !badgesSelected) return this.candidatesCount;
     return this.candidates.reduce((p, v) => {
-      p += this.filterLocations[v.location] ? 1 : 0;
+      p += (!this.filterUsers || this.filterLocations[v.location]) && (!badgesSelected || this._visibleCandidates[v._id]) ? 1 : 0;
       return p;
     }, 0);
+    console.log();
   }
 
   toggleLocations(event: any) {
@@ -340,5 +356,50 @@ export class PlannerComponent extends Schedule {
       accepted: candidate.login && candidate.login.indexOf(' ') > 0,
       vacation: !!candidate.onVacation
     };
+  }
+
+  // Badges section
+  private _calculateVisibleCandidates() {
+    let badgesSelected = this.chosenBadges.length > 0;
+    this._visibleCandidates = this.candidates
+      .filter(user => {
+        if (!badgesSelected) return true;
+        let userBadges = this._itemBadges[user.login];
+        return userBadges ? this.chosenBadges.every(b => userBadges.includes(b._id)) : false;
+      })
+      .reduce((p, user) => {
+        p[user._id] = true;
+        return p;
+      }, {});
+    this.markForCheck();
+  }
+
+  resetBadges() {
+    this.chosenBadges = [];
+    this._chosenBadgesNames = {};
+    this._calculateVisibleCandidates();
+  }
+
+  toggleBadge(badge) {
+    if (!this._chosenBadgesNames[badge.short]) {
+      this._chosenBadgesNames[badge.short] = true;
+      this.chosenBadges.push(badge);
+      this._calculateVisibleCandidates();
+    } else {
+      this.removeBadge(this.chosenBadges.indexOf(badge));
+    }
+  }
+
+  removeBadge(index: number) {
+    let badge = this.chosenBadges[index];
+    delete this._chosenBadgesNames[badge.short];
+    this.chosenBadges.splice(index, 1);
+    this._calculateVisibleCandidates();
+  }
+
+  getBadgeStyle(badge) {
+    return {
+      backgroundColor: badge.color
+    }
   }
 }
