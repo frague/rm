@@ -1,5 +1,5 @@
 import { Component, Input, Output, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef, EventEmitter } from '@angular/core';
-
+import { Subscription } from 'rxjs';
 import { BadgeService } from '../../services/badge.service';
 import { ItemBadgeService } from '../../services/itemBadge.service';
 import { CacheService } from '../../services/cache.service';
@@ -106,8 +106,8 @@ export class BadgerComponent {
     setTimeout(() => this.titleInput.nativeElement.focus(), 0);
   }
 
-  private _addBadge(badge) {
-    this.itemBadgeService.add({itemId: this.itemId, badgeId: badge._id}).subscribe(itemBadge => {
+  private _addBadge(badge): Subscription {
+    return this.itemBadgeService.add({itemId: this.itemId, badgeId: badge._id}).subscribe(itemBadge => {
       let allItemBadges = this.cacheService.get('itemBadges');
       let ibs = allItemBadges[this.itemId] || [];
       ibs.push(badge._id);
@@ -126,20 +126,28 @@ export class BadgerComponent {
     event.cancelBubble = true;
   }
 
-  save() {
+  save(keepAdding=false) {
     this.badgeService.save(this.newBadge).subscribe(
       item => {
         // Add/update the badge
-        this._addBadge(item);
-        this.allBadges[item._id] = item;
-        this.cacheService.set('badges', this.allBadges);
+        this._addBadge(item).add(() => {
+          this.allBadges[item._id] = item;
+          this.cacheService.set('badges', this.allBadges);
+          if (keepAdding) {
+            this.add();
+          }
+        });
       },
       error => {
         if (error._body && error._body.includes('duplicate')) {
           // Failed to create a new badge with duplicate title
           let badge: any = Object.values(this.allBadges).find((badge: any) => badge.title == this.newBadge.title);
           if (badge && !this._isBadgeIncluded(badge._id)) {
-            this._addBadge(badge);
+            this._addBadge(badge).add(() => {
+              if (keepAdding) {
+                this.add();
+              }
+            });
           } else {
             console.log(`Unable to find existing badge ${this.newBadge.title} in`, this.allBadges);
           }
@@ -178,7 +186,7 @@ export class BadgerComponent {
       case 'Escape':
         return this.cancel();
       case 'Enter':
-        return this.save();
+        return this.save(true);
       case 'ArrowUp':
         return this.selectSuggestion(this.suggestionIndex - 1);
       case 'ArrowDown':
