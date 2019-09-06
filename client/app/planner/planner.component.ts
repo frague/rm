@@ -273,7 +273,7 @@ export class PlannerComponent extends Schedule {
   isUserVisible(user: any) {
     let badgesSelected = this.chosenBadges.length > 0;
     if (!this.filterUsers && !badgesSelected) return true;
-    let locations = this.filterLocations[user.location];
+    let locations = !this.filterUsers || this.filterLocations[user.location];
     let badges = badgesSelected ? this._visibleCandidates[user._id] : true;
     return locations && badges;
   }

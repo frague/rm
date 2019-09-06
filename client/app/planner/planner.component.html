@@ -40,8 +40,8 @@
           <ul>
             <h6>Location</h6>
             <li *ngFor="let location of locations"><label><input type="checkbox" [(ngModel)]="filterLocations[location]">{{ location }}</label></li>
-            <li><label><input type="checkbox" (click)="toggleLocations($event)" checked>Toggle all</label></li>
-            <li><label><input type="checkbox" [(ngModel)]="filterUsers">Apply to users</label></li>
+            <li><label><input type="checkbox" (click)="toggleLocations($event)" checked>ALL</label></li>
+            <li><label><input type="checkbox" [(ngModel)]="filterUsers">Users</label></li>
           </ul>
           <ul>
             <h6>Badges <a (click)="resetBadges()">&times;</a></h6>

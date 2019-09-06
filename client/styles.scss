@@ -932,18 +932,16 @@ i.initiative {
             min-width: 60px
           }
 
-          li:nth-last-child(-n+2) {
+          li:nth-last-child(2), li:last-child {
             position: static;
+            display: inline-block;
             margin: 0;
-          }
-
-          li:nth-last-child(2) {
-            margin-top: 19px;
           }
         }
 
         &:nth-child(4) {
-          margin-left: 270px;
+          margin-top: 140px;
+          margin-left: 75px;
 
           h6 a {
             color: $danger;
@@ -954,11 +952,13 @@ i.initiative {
           }
 
           li {
-            border-radius: 6px;
+            border-radius: 8px;
             padding: 0 6px;
             display: inline-block;
             margin: 0 4px 6px 0;
-            border: solid 1px $text-normal;
+            border: solid 1px $body - #555;
+            white-space: nowrap;
+            line-height: 1.4;
           }
         }
 
