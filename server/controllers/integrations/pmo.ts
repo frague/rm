@@ -91,7 +91,7 @@ export default class PmoIntegrationsCtrl {
             }, {});
             resolve(body);
           } catch (e) {
-            console.log(e);
+            console.log(e, body);
             reject('Error parsing PMO response for dict: ' + name);
           }
         })
@@ -118,8 +118,13 @@ export default class PmoIntegrationsCtrl {
         'stages',
         'types',
         'statuses',
-        'deploy-destinations'
-      ].map((dict, index) => this.getDemandDict(dict, index).then(data => _dicts[dict] = data))
+        'deploy-destinations',
+        // 'candidate/statuses',
+      ]
+        .map((dict, index) =>
+          this.getDemandDict(dict, index)
+            .then(data => _dicts[dict.indexOf('/') > 0 ? 'cstatuses' : dict] = data)
+        )
     )
       .then(() => _dicts);
   }

@@ -15,6 +15,7 @@ const demandSchema = new mongoose.Schema({
   end: Date,
   deployment: String,
   stage: String,
+  isBooked: Boolean,
   grades: String,
   locations: String,
   requestId: [String],

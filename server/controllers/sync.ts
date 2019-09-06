@@ -627,6 +627,7 @@ export default class SyncCtrl {
         return reject(_error);
       }
 
+      // let { load, locations, accounts, grades, workProfiles, stages, types, statuses, cstatuses } = data;
       let { load, locations, accounts, grades, workProfiles, stages, types, statuses } = data;
       let destinations = data['deploy-destinations'];
 
@@ -691,6 +692,7 @@ export default class SyncCtrl {
             start: item.startDate,
             specializations: specs,
             stage: stages[item.stageId].code,
+            isBooked: status === 'Booked',
             requestId,
             requirements: item.requirements,
 

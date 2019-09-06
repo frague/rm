@@ -1004,6 +1004,15 @@ i.initiative {
       &.FC {
         border-left: solid 4px $good;
       }
+      &.booked {
+        background: repeating-linear-gradient(
+          45deg,
+          rgba(0, 0, 0, 0),
+          rgba(0, 0, 0, 0) 10px,
+          rgba(0, 0, 0, 0.05) 10px,
+          rgba(0, 0, 0, 0.05) 20px
+        );
+      }
     }
 
     ul.requisitions {
