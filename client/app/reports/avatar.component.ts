@@ -15,7 +15,7 @@ export class AvatarComponent {
     let avatar = '';
     if (!this.useDefault && typeof this.login !== 'undefined' && loginValidator.test(this.login)) {
       let url = md5(this.login + '@griddynamics.com');
-      avatar = 'url("https://in.griddynamics.net/service/photos/' + this.login + '.jpg"), ';
+      // avatar = 'url("https://in.griddynamics.net/service/photos/' + this.login + '.jpg"), ';
       avatar += 'url("https://griddynamics.bamboohr.com/employees/photos/?h=' + url + '"), ';
     }
 

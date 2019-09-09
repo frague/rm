@@ -42,10 +42,8 @@
             <li *ngFor="let location of locations"><label><input type="checkbox" [(ngModel)]="filterLocations[location]">{{ location }}</label></li>
             <li><label><input type="checkbox" (click)="toggleLocations($event)" checked>ALL</label></li>
             <li><label><input type="checkbox" [(ngModel)]="filterUsers">Users</label></li>
-          </ul>
-          <ul>
             <h6>Badges <a (click)="resetBadges()">&times;</a></h6>
-            <li *ngFor="let badge of chosenBadges;let i = index" [ngStyle]="getBadgeStyle(badge)">{{ badge.short }} <a (click)="removeBadge(i)">&times;</a></li>
+            <li *ngFor="let badge of chosenBadges;let i = index" [ngStyle]="getBadgeStyle(badge)" class="badge">{{ badge.short }} <a (click)="removeBadge(i)">&times;</a></li>
           </ul>
         </div>
         <div class="account" *ngFor="let account of getAccounts()">

@@ -925,21 +925,20 @@ i.initiative {
             display: inline-block;
             min-width: 56px;
           }
-        }
 
-        &:nth-child(4) {
-          margin-top: 140px;
-          margin-left: 75px;
+          li + h6 {
+            margin-top: 15px;
 
-          h6 a {
-            color: $danger;
+            a {
+              color: $danger;
+            }
           }
 
           a {
             @extend .clickable;
           }
 
-          li {
+          li.badge {
             border-radius: 8px;
             padding: 0 6px;
             display: inline-block;
@@ -947,6 +946,7 @@ i.initiative {
             border: solid 1px $body - #555;
             white-space: nowrap;
             line-height: 1.4;
+            min-width: auto;
           }
         }
 
