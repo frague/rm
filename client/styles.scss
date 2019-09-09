@@ -921,21 +921,9 @@ i.initiative {
         &:nth-child(3) {
           margin-left: 75px;
 
-          li:nth-child(3n+2) {
-            position: absolute;
-            margin-left: 65px;
-            min-width: 60px
-          }
-          li:nth-child(3n+3) {
-            position: absolute;
-            margin-left: 130px;
-            min-width: 60px
-          }
-
-          li:nth-last-child(2), li:last-child {
-            position: static;
+          li {
             display: inline-block;
-            margin: 0;
+            min-width: 56px;
           }
         }
 

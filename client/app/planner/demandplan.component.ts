@@ -69,7 +69,7 @@ export class DemandPlanComponent {
 
     operation.subscribe(data => {
       this.plans[data._id] = data;
-      this.select(data);
+      this.select(data, false);
       this.cache.reset('plans');
     });
   }
