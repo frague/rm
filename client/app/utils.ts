@@ -7,5 +7,8 @@ export var Utils = {
   },
   cleanupJvStatus: (status: string): string => {
     return (status || '').replace(/^\d{2} /, '');
+  },
+  abbreviate: (text = '') => {
+    return text.toUpperCase().split(' ').map(w => w.substr(0, 1)).join('');
   }
 };

@@ -382,8 +382,9 @@ export class PlannerComponent extends Schedule {
   }
 
   toggleBadge(badge) {
-    if (!this._chosenBadgesNames[badge.short]) {
-      this._chosenBadgesNames[badge.short] = true;
+    let short = badge.short || Utils.abbreviate(badge.title);
+    if (!this._chosenBadgesNames[short]) {
+      this._chosenBadgesNames[short] = true;
       this.chosenBadges.push(badge);
       this._calculateVisibleCandidates();
     } else {
@@ -393,7 +394,7 @@ export class PlannerComponent extends Schedule {
 
   removeBadge(index: number) {
     let badge = this.chosenBadges[index];
-    delete this._chosenBadgesNames[badge.short];
+    delete this._chosenBadgesNames[badge.short || Utils.abbreviate(badge.title)];
     this.chosenBadges.splice(index, 1);
     this._calculateVisibleCandidates();
   }
@@ -402,5 +403,9 @@ export class PlannerComponent extends Schedule {
     return {
       backgroundColor: badge.color
     }
+  }
+
+  getBadgeCaption(badge) {
+    return badge.short || Utils.abbreviate(badge.title);
   }
 }

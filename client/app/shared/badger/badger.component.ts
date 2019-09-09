@@ -4,6 +4,7 @@ import { BadgeService } from '../../services/badge.service';
 import { ItemBadgeService } from '../../services/itemBadge.service';
 import { CacheService } from '../../services/cache.service';
 import { BusService } from '../../services/bus.service';
+import { Utils } from '../../utils';
 
 @Component({
   selector: 'badger',
@@ -206,7 +207,7 @@ export class BadgerComponent {
     } else if (badge.short) {
       return badge.short;
     }
-    return (badge.title || '').toUpperCase().split(' ').map(w => w.substr(0, 1)).join('');
+    return Utils.abbreviate(badge.title);
   }
 
   getBadgeStyle(badge: any) {
