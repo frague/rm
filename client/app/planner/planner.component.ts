@@ -113,6 +113,7 @@ export class PlannerComponent extends Schedule {
               };
               ['canTravel', 'billable', 'onTrip'].forEach(key => result[key] = item[key] === 'true');
               result.onVacation = item.onVacation;
+              result.proposed = item.proposed;
               peopleLogins.push(result.login);
               return result;
             })
@@ -355,7 +356,8 @@ export class PlannerComponent extends Schedule {
       assigned: this.isAssigned(candidate),
       hiree: candidate.isHiree,
       accepted: candidate.login && candidate.login.indexOf(' ') > 0,
-      vacation: !!candidate.onVacation
+      vacation: !!candidate.onVacation,
+      proposed: candidate.proposed && candidate.proposed.length
     };
   }
 

@@ -106,6 +106,9 @@
                   <span *ngIf="candidate.onVacation">{{ candidate.onVacation|date }}</span>
                   <span *ngIf="candidate.starts">{{ candidate.starts|date }}</span>
                 </avatar>
+                <section>
+                  <p *ngFor="let prop of candidate.proposed">{{ prop }}</p>
+                </section>
                 <caption>
                   {{ candidate.name }}
                   <span>

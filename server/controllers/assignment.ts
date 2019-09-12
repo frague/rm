@@ -211,6 +211,28 @@ export default class AssignmentCtrl extends BaseCtrl {
           }
         },
         {
+          '$lookup': {
+            from: 'demands',
+            let: {
+              login: '$login',
+              name: '$name'
+            },
+            pipeline: [
+              {
+                '$match': {
+                  '$expr': {
+                    '$or': [
+                      {'$in': ['$$login', '$candidates']},
+                      {'$in': ['$$name', '$candidates']}
+                    ]
+                  }
+                }
+              }
+            ],
+            as: 'proposed'
+          }
+        },
+        {
           '$addFields': {
             'onVacation': {
               '$cond': {
@@ -330,6 +352,7 @@ export default class AssignmentCtrl extends BaseCtrl {
             status: { '$first': '$status' },
             commentsCount: { '$first': '$commentsCount' },
             comments: {'$first': '$comments'},
+            proposed: {'$first': '$proposed.login'},
           })
         },
         {
@@ -361,7 +384,8 @@ export default class AssignmentCtrl extends BaseCtrl {
             canTravel: 1,
             login: 1,
             status: 1,
-            commentsCount: 1
+            commentsCount: 1,
+            proposed: 1
           })
         },
         {

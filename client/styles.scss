@@ -1127,6 +1127,26 @@ i.initiative {
             }
           }
 
+          &.proposed {
+            border-bottom: solid 1px #000;
+          }
+
+          &:hover {
+            @extend .shadow;
+
+            & > section {
+              top: $demandCardHeight + 15px;
+              line-height: 0.3;
+            }
+          }
+
+          & > section {
+            position: absolute;
+            top: 125px;
+            z-index: -10;
+            transition: all 0.3s ease;
+            line-height: 0;
+          }
 
           .avatar {
             width: $demandCardWidth - 10px;

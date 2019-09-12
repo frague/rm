@@ -32,7 +32,8 @@ export class ReportsComponent extends Schedule {
   requisitions = {};
 
   private _clickability = {
-    name: this.showUser
+    name: this.showUser,
+    requisitionId: this.showUser
   };
 
   _cache: CacheService;
