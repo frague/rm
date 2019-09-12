@@ -66,6 +66,7 @@ import { SpinnerComponent } from './shared/spinner/spinner.component';
 import { CommentComponent } from './shared/comment/comment.component';
 import { BadgerComponent } from './shared/badger/badger.component';
 import { BadgesComponent } from './badges/badges.component';
+import { DemandInfo } from './planner/demandinfo.component';
 
 import { PersonModal } from './modal/person-modal.component';
 import { AssignmentModal } from './modal/assignment-modal.component';
@@ -138,7 +139,7 @@ export function tokenGetter() {
     AssignmentTabComponent, AssignmentsTabComponent, HistoryTabComponent, DemandTabComponent,
     RequisitionTabComponent, CandidatesTabComponent, CandidateTabComponent,
     DemandRequisitionTabComponent, AccountProjectTabComponent, FeedbacksTabComponent, CommentComponent,
-    BadgerComponent,
+    BadgerComponent, DemandInfo,
 
     QueryWidget, BirthdaysWidget, CommentsWidget,
   ],
