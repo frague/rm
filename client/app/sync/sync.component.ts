@@ -4,7 +4,8 @@ import { SyncService } from '../services/sync.service';
 import { DpService } from '../services/dp.service';
 import { SocketService } from '../services/socket.service';
 import { BadgeService} from '../services/badge.service';
-import { BusService } from '../services/bus.service'
+import { BusService } from '../services/bus.service';
+import { CacheService } from '../services/cache.service';
 
 const tasks = {
   mandatory: true, dependants: {
@@ -52,7 +53,8 @@ export class SyncComponent {
     private builder: FormBuilder,
     private socket: SocketService,
     private badgeService: BadgeService,
-    private busService: BusService
+    private bus: BusService,
+    private cache: CacheService
  ) {
     this.form = this.builder.group({
       backup: null,
@@ -96,6 +98,7 @@ export class SyncComponent {
             this.socket.unsubscribe();
             if (!this.hasErrors) {
               this.addLog('Diff generation...');
+              this.cache.reset(['plans', 'demands', 'assignments', 'candidates', 'requisitions', 'initiatives', 'resources']);
               this.dpService.saveDiff().subscribe(() => {
               });
             } else {
@@ -146,7 +149,7 @@ export class SyncComponent {
             logs.forEach(log => this.addLog(log, 'Restore'));
           }
           // Invalidate badges cache
-          this.busService.reloadBadges.emit();
+          this.bus.reloadBadges.emit();
         }
       );
   }
@@ -162,7 +165,7 @@ export class SyncComponent {
       .subscribe(
         data => {
           if (data) {
-            this.addLog(`${data.deleted} obsolete comments were deleted:`, 'Cleanup');
+            this.addLog(`${data.deleted} obsolete comments have been deleted:`, 'Cleanup');
             Object.keys(data.logins).sort().forEach(login => {
               let item = '';
               if (/^[a-z]+$/.test(login)) {
