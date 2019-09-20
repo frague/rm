@@ -23,7 +23,7 @@ const valueModifiers = {
     return [key, { '$eq': [] }, false];
   },
   'exists': (key, value) => {
-    return [key, { '$ne': null }, false];
+    return [key, { '$nin': [null, []], '$exists': true }, false];
   },
   'month': (key, value, [month]) => {
     if (!/^\d+$/.test('' + month)) {
