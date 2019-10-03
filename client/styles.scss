@@ -2455,7 +2455,7 @@ div.bottom-corner {
     grid-template-columns: 50% 50%;
     grid-template-rows: 50px auto;
 
-    h1:nth-child(2) {
+    & > h1:nth-child(2) {
       padding-left: 15px;
     }
 
