@@ -20,7 +20,7 @@ export class DemandInfo {
     [this.id, this.account, this.project] = [id, account.replace(unders, ' '), project.join(' ')];
   }
 
-  @Output() show: EventEmitter<string> = new EventEmitter();
+  @Output() show: EventEmitter<any> = new EventEmitter();
 
   showDemand(event: MouseEvent) {
     event.stopPropagation();

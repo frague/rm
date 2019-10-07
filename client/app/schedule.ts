@@ -159,6 +159,12 @@ export class Schedule {
     this.markForCheck();
 
     let queryString = JSON.stringify(query);
+    if (!query || !query.or || !query.or.length) {
+      // Returns empty sets for an empty query
+      ['demands', 'requisitions', 'candidates'].forEach((entity: string) => this._cache.set(entity, []));
+      this._cache.set('assignments', {message: '', data: []});
+    }
+
     let demandQuery = this._cache.getObservable('demands') ||
       (queryString.indexOf('demand=false') < 0 && (queryString.indexOf('demand') >= 0 || queryString.indexOf('comments') >= 0) ?
               this.demandService.getAll(query) : from([[]]));
