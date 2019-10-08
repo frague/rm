@@ -155,7 +155,7 @@ export class Schedule {
     );
   }
 
-  fetchData(query={}, fetchAll=false, serviceData={}): Subscription {
+  fetchData(query: any={}, fetchAll=false, serviceData={}): Subscription {
     this.markForCheck();
 
     let queryString = JSON.stringify(query);
@@ -165,18 +165,21 @@ export class Schedule {
       this._cache.set('assignments', {message: '', data: []});
     }
 
+    let shift = serviceData['shift'];
+    let order = serviceData['order'];
+
     let demandQuery = this._cache.getObservable('demands') ||
       (queryString.indexOf('demand=false') < 0 && (queryString.indexOf('demand') >= 0 || queryString.indexOf('comments') >= 0) ?
-              this.demandService.getAll(query) : from([[]]));
+        this.demandService.getAll({...query, order}) : from([[]]));
     let initiativesQuery = this._cache.getObservable('initiatives') || this.initiativeService.getAll();
     let resourcesQuery = this._cache.getObservable('resources') || this.resourceService.getAll();
 
-    let shift = serviceData['shift'];
-    let withModifiers = Object.assign(query, {
-      order: serviceData['order'],
+    let withModifiers = {
+      ...query,
       columns: this.columns.concat(Object.keys(serviceData['columns'] || {})).join(','),
+      order,
       shift
-    });
+    };
 
     let assignmentsQuery = this._cache.getObservable('assignments') || this.assignmentService.getAll(withModifiers);
 

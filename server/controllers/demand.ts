@@ -35,6 +35,7 @@ export default class DemandCtrl extends BaseCtrl {
       return res.status(500);
     }
 
+    let order = this.determineOrder(req, {login: 1});
     let query = this.fixOr(this.modifyCriteria(or, this.modifiers));
 
     console.log('- Demand ----------------------------------------------------------');
@@ -183,9 +184,7 @@ export default class DemandCtrl extends BaseCtrl {
           }
         },
         {
-          '$sort': {
-            login: 1
-          }
+          '$sort': order
         }
       ]
     )

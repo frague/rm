@@ -168,7 +168,7 @@ abstract class BaseCtrl {
     group[column] = { '$first': `$${column}` };
   }
 
-  determineOrder(req) {
+  determineOrder(req, defaultOrder: any={name: 1}) {
     try {
       let orders = JSON.parse(req.query.order || '""').split(',').reduce((result, criterion) => {
         let [param, order] = criterion.split(':');
@@ -186,7 +186,7 @@ abstract class BaseCtrl {
       }
     } catch (e) {
     }
-    return { name: 1 };
+    return defaultOrder;
   }
 
   determineColumns(req): string[] {

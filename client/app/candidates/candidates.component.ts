@@ -86,7 +86,7 @@ export class CandidatesComponent implements OnInit {
     return result.join('\n');
   }
 
-  fetchData(query={}): Subscription {
+  fetchData(query: any={}): Subscription {
     this.allExpanded = false;
     this.cd.markForCheck();
 
