@@ -136,9 +136,7 @@ export default class RequisitionCtrl extends BaseCtrl {
           '$match': query
         },
         {
-          '$sort': {
-            'candidate.updated': -1
-          }
+          '$sort': order
         },
         {
           '$group': {

@@ -73,7 +73,7 @@ export class Schedule {
 
   _cache: CacheService;
 
-  postFetch = query => from([]).subscribe();
+  postFetch = (query, serviceData?) => from([]).subscribe();
 
   private $query;
 
@@ -314,7 +314,7 @@ export class Schedule {
         }, {});
       })
         .add(() => {
-          this.postFetch(query).add(() => this.markForCheck());
+          this.postFetch(query, serviceData).add(() => this.markForCheck());
         });
   }
 

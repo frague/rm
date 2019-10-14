@@ -82,13 +82,14 @@ export class ReportsComponent extends Schedule {
     return super.fetchData(query, fetchAll, serviceData);
   }
 
-  postFetch = query => {
+  postFetch = (query, serviceData={}) => {
+    let order = serviceData['order'];
     let queryString = JSON.stringify(query['or']) || '';
     let hideRequisitions = queryString.includes('"requisitions":"false"');
     let hideCandidates = queryString.includes('"candidates":"false"');
     let requisitionsQuery = this._cache.getObservable('requisitions') || (
       candidatesQueryKeys.some(key => queryString.indexOf(key + '.') >= 0) ?
-          this.requisitionService.getAll(query) : from([[]])
+        this.requisitionService.getAll({...query, order}) : from([[]])
     );
 
     return requisitionsQuery.subscribe(data => {
