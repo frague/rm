@@ -5,7 +5,6 @@ import BaseCtrl from './base';
 export default class RequisitionCtrl extends BaseCtrl {
   model = Requisition;
   limit = 1000;
-  order;
 
   modifiers = {
     include: ['candidate', 'comments'],
@@ -41,7 +40,7 @@ export default class RequisitionCtrl extends BaseCtrl {
 
   // Get all
   getAll = (req, res) => {
-    let or;
+    let or, order;
     try {
       or = req.query.or ? JSON.parse(req.query.or) : [];
     } catch (e) {
@@ -52,12 +51,13 @@ export default class RequisitionCtrl extends BaseCtrl {
     let requisitionQuery = this.fixOr(this.modifyCriteria(or, this.requisitionModifiers));
     let query = this.fixOr(this.modifyCriteria(or, this.modifiers));
     this.limit = (Object.keys(query).length || Object.keys(requisitionQuery).length) ? 1000 : 100;
-    this.order = this.determineOrder(req);
+    order = this.determineOrder(req);
 
     console.log('- Requisitions & Candidates -------------------------------------------');
     console.log('Initial:', JSON.stringify(or));
     console.log('Requisition query:', JSON.stringify(requisitionQuery));
     console.log('Query:', JSON.stringify(query));
+    console.log('Order:', JSON.stringify(order));
 
     this.model
       .aggregate([
@@ -247,7 +247,7 @@ export default class RequisitionCtrl extends BaseCtrl {
           }
         },
         {
-          '$sort': this.order
+          '$sort': order
         },
         {
           '$limit': this.limit

@@ -55,11 +55,11 @@ export class CandidatesComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.$query = this.bus.filterUpdated.subscribe(([query]) => {
+    this.$query = this.bus.filterUpdated.subscribe(([query, serviceData]) => {
       this.cache.reset(['requisitions']);
-      this.fetchData(query);
+      this.fetchData(query, serviceData);
     });
-    this.fetchData(this.bus.filterQuery);
+    this.fetchData(this.bus.filterQuery, this.bus.serviceData);
   }
 
   ngOnDestroy() {
@@ -86,7 +86,7 @@ export class CandidatesComponent implements OnInit {
     return result.join('\n');
   }
 
-  fetchData(query: any={}): Subscription {
+  fetchData(query: any={}, serviceData={}): Subscription {
     this.allExpanded = false;
     this.cd.markForCheck();
 
@@ -94,7 +94,8 @@ export class CandidatesComponent implements OnInit {
       this.cache.set('requisitions', []);
     }
 
-    let requisitionsQuery = this.cache.getObservable('requisitions') || this.requisitionService.getAll(query);
+    let order = serviceData['order'];
+    let requisitionsQuery = this.cache.getObservable('requisitions') || this.requisitionService.getAll({...query, order});
 
     return requisitionsQuery.subscribe(data => {
       this.cache.set('requisitions', data);
