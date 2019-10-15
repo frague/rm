@@ -36,8 +36,7 @@ export default class AssignmentCtrl extends BaseCtrl {
   model = Assignment;
 
   modifiers = {
-    exclude: ['demand', 'skills', 'candidate', 'requisition'],
-    comments: this.commentTransform
+    exclude: ['demand', 'skills', 'candidate', 'requisition']
   };
 
   order;
@@ -73,6 +72,10 @@ export default class AssignmentCtrl extends BaseCtrl {
     return result;
   };
 
+  private _returnEmpty(res, message='') {
+    return res.json({message, data: []})
+  }
+
   getAll = async (req, res) => {
     let or;
     let columns = [], group = [];
@@ -88,7 +91,7 @@ export default class AssignmentCtrl extends BaseCtrl {
 
     let skillsList = this.filterSkills(or) || [];
 
-    console.log('- Assignments -----------------------------------------------------');
+    console.log('\n- Assignments -----------------------------------------------------');
     console.log('Extra columns:', columns);
     console.log('Initial:', JSON.stringify(or));
     console.log('Order:', JSON.stringify(this.order));
@@ -102,12 +105,12 @@ export default class AssignmentCtrl extends BaseCtrl {
         console.log('Skills suggestions are fetched:', suggestions, ids);
 
         if (!ids || !ids.length) {
-          return res.json({message: 'No skills found', data: []})
+          return this._returnEmpty(res, 'No skills found');
         }
 
         let people = await skillTree.getEngineersBySkills(ids)
           .catch(error => {
-            res.json({message: 'No skills found', data: []})
+            this._returnEmpty(res, 'No skills found');
             throw error;
           });
 
@@ -129,7 +132,7 @@ export default class AssignmentCtrl extends BaseCtrl {
           console.log('With skills:', JSON.stringify(or));
         } else {
           let message = `No people with the following skills found: ${skillsRequested}`;
-          return res.json({message, data: []})
+          return this._returnEmpty(res, message);
         }
         let query = this.modifyCriteria(or, this.modifiers, group);
         this._query(res, this.fixOr(query), columns, group, skillsRequested, skillsByUser);
@@ -139,7 +142,11 @@ export default class AssignmentCtrl extends BaseCtrl {
       }
     } else {
       let query = this.modifyCriteria(or, this.modifiers, group);
-      this._query(res, this.fixOr(query), columns, group);
+      if (Object.keys(query).length > 0) {
+        this._query(res, this.fixOr(query), columns, group);
+      } else {
+        return this._returnEmpty(res);
+      }
     }
   }
 
@@ -163,7 +170,7 @@ export default class AssignmentCtrl extends BaseCtrl {
       if (!defaultColumns.includes(column) && columnName.test(column)) {
         [column, ] = column.split('.', 2);
         this._addGroup(group, column);
-        project[column] = 1;
+        project[column] = column === 'comments' ? '$commentsTemp' : 1;
       }
     });
     console.log('Group:', group);
@@ -339,22 +346,6 @@ export default class AssignmentCtrl extends BaseCtrl {
           }
         },
         {
-          '$unwind': {
-            path: '$comments',
-            preserveNullAndEmptyArrays: true
-          }
-        },
-        {
-          '$addFields': {
-            cm: {
-              '$arrayToObject': [
-                ['key', 'value'],
-                ['key1', 'value1'],
-              ]
-            }
-          }
-        },
-        {
           '$group': Object.assign(group, {
             _id: '$_id',
             assignments: { '$push': '$assignment' },
@@ -369,9 +360,8 @@ export default class AssignmentCtrl extends BaseCtrl {
             login: { '$first': '$login' },
             status: { '$first': '$status' },
             commentsCount: { '$first': '$commentsCount' },
-            comments: {'$push': '$comments'},
+            commentsTemp: {'$first': '$comments'},
             proposed: {'$first': '$proposed.login'},
-            cm: {'$push': '$cm'},
           })
         },
         {
@@ -381,6 +371,24 @@ export default class AssignmentCtrl extends BaseCtrl {
                 if: '$assignmentsSet',
                 then: '$assignments',
                 else: []
+              }
+            },
+            comments: {
+              '$arrayToObject': {
+                '$map': {
+                  input: '$commentsTemp',
+                  as: 'comment',
+                  in: [
+                    {
+                      '$cond': {
+                        if: '$$comment.source',
+                        then: '$$comment.source',
+                        else: '0',
+                      }
+                    },
+                    '$$comment.text'
+                  ]
+                }
               }
             }
           }
@@ -408,7 +416,6 @@ export default class AssignmentCtrl extends BaseCtrl {
             status: 1,
             commentsCount: 1,
             proposed: 1,
-            cm: 1
           })
         }
       ])

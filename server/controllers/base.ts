@@ -129,6 +129,7 @@ abstract class BaseCtrl {
     }, {});
   }
 
+  // Obsolete
   commentTransform(key, value, prefix='') {
     prefix = prefix ? `${prefix}.` : prefix;
     if (key.indexOf('.') >= 0) {
@@ -173,11 +174,7 @@ abstract class BaseCtrl {
       let orders = JSON.parse(req.query.order || '""').split(',').reduce((result, criterion) => {
         let [param, order] = criterion.split(':');
         if (+order == order) {
-          if (!param.indexOf('comments.')) {
-            result['comments.text'] = +order;
-          } else if (/^[\S]+$/.test(param)) {
-            result[param] = +order;
-          }
+          result[param] = +order;
         }
         return result;
       }, {});

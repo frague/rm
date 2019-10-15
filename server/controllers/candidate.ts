@@ -8,7 +8,6 @@ export default class CandidateCtrl extends BaseCtrl {
 
   modifiers = {
     include: ['comments'],
-    comments: this.commentTransform
   };
 
   candidatesModifiers = {

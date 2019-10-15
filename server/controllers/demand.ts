@@ -5,9 +5,8 @@ export default class DemandCtrl extends BaseCtrl {
   model = Demand;
 
   modifiers = {
-    include: ['demand', 'comments'],
+    include: ['demand'],
     demand: this.demandTransform,
-    comments: this.commentTransform
   };
 
   demandTransform(key, value) {
@@ -38,7 +37,7 @@ export default class DemandCtrl extends BaseCtrl {
     let order = this.determineOrder(req, {login: 1});
     let query = this.fixOr(this.modifyCriteria(or, this.modifiers));
 
-    console.log('- Demand ----------------------------------------------------------');
+    console.log('\n- Demand ----------------------------------------------------------');
     console.log('Initial:', JSON.stringify(or));
     console.log('Query:', JSON.stringify(query));
 
@@ -122,11 +121,11 @@ export default class DemandCtrl extends BaseCtrl {
             locations: { '$first': '$locations' },
             requestId: { '$push': '$requestId' },
             requirements: { '$first': '$requirements' },
-            comment: { '$first': '$comment' },
-            comments: {'$first': '$comments'},
             specializations: { '$first': '$specializations' },
             candidates: { '$first': '$candidates' },
             login: { '$first': '$login' },
+            comment: { '$first': '$comment' },
+            commentsTemp: {'$first': '$comments'},
             commentsCount: { '$first': '$commentsCount' },
             status: { '$first': '$status' },
             billable: { '$first': '$billable' },
@@ -149,11 +148,32 @@ export default class DemandCtrl extends BaseCtrl {
                 then: [],
                 else: '$requestId'
               }
+            },
+            comments: {
+              '$arrayToObject': {
+                '$map': {
+                  input: '$commentsTemp',
+                  as: 'comment',
+                  in: [
+                    {
+                      '$cond': {
+                        if: '$$comment.source',
+                        then: '$$comment.source',
+                        else: '0',
+                      }
+                    },
+                    '$$comment.text'
+                  ]
+                }
+              }
             }
           }
         },
         {
           '$match': query
+        },
+        {
+          '$sort': order
         },
         {
           '$project': {
@@ -173,18 +193,16 @@ export default class DemandCtrl extends BaseCtrl {
             locations: 1,
             requestId: 1,
             requirements: 1,
-            comment: 1,
             specializations: 1,
             candidates: 1,
             login: 1,
+            comment: 1,
+            comments: '$commentsTemp',
             commentsCount: 1,
             status: 1,
             billable: 1,
             requisitionsStates: 1
           }
-        },
-        {
-          '$sort': order
         }
       ]
     )

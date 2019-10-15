@@ -18,7 +18,7 @@ const defaultColumns = {
   status: 'Status'
 };
 
-const candidatesQueryKeys = ['requisition', 'candidate', 'comments'];
+const candidatesQueryKeys = ['requisition', 'candidate'];
 
 @Component({
   selector: 'reports',

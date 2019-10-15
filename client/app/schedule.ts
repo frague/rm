@@ -168,9 +168,11 @@ export class Schedule {
     let shift = serviceData['shift'];
     let order = serviceData['order'];
 
-    let demandQuery = this._cache.getObservable('demands') ||
-      (queryString.indexOf('demand=false') < 0 && (queryString.indexOf('demand') >= 0 || queryString.indexOf('comments') >= 0) ?
-        this.demandService.getAll({...query, order}) : from([[]]));
+    let demandQuery = this._cache.getObservable('demands') || (
+      (!queryString.includes('demand=false') && queryString.includes('demand')) ?
+      this.demandService.getAll({...query, order}) :
+      from([[]])
+    );
     let initiativesQuery = this._cache.getObservable('initiatives') || this.initiativeService.getAll();
     let resourcesQuery = this._cache.getObservable('resources') || this.resourceService.getAll();
 
@@ -235,6 +237,7 @@ export class Schedule {
               login: demand.login,
               status: demand.status,
               commentsCount: demand.commentsCount,
+              comments: demand.comments,
               assignments: [{
                 _id: demandId,
                 start: demand.start,
