@@ -145,6 +145,8 @@ export default class AssignmentCtrl extends BaseCtrl {
 
   _query = (res, query, columns=[], group=[], skillsRequested='', skillsByUser={}) => {
     console.log('Query:', JSON.stringify(query));
+    console.log('Columns1:', group);
+    console.log('Group1:', group);
 
     let now = new Date();
     now.setDate(this.shift + now.getDate());
@@ -337,6 +339,22 @@ export default class AssignmentCtrl extends BaseCtrl {
           }
         },
         {
+          '$unwind': {
+            path: '$comments',
+            preserveNullAndEmptyArrays: true
+          }
+        },
+        {
+          '$addFields': {
+            cm: {
+              '$arrayToObject': [
+                ['key', 'value'],
+                ['key1', 'value1'],
+              ]
+            }
+          }
+        },
+        {
           '$group': Object.assign(group, {
             _id: '$_id',
             assignments: { '$push': '$assignment' },
@@ -351,8 +369,9 @@ export default class AssignmentCtrl extends BaseCtrl {
             login: { '$first': '$login' },
             status: { '$first': '$status' },
             commentsCount: { '$first': '$commentsCount' },
-            comments: {'$first': '$comments'},
+            comments: {'$push': '$comments'},
             proposed: {'$first': '$proposed.login'},
+            cm: {'$push': '$cm'},
           })
         },
         {
@@ -370,6 +389,9 @@ export default class AssignmentCtrl extends BaseCtrl {
           '$match': query
         },
         {
+          '$sort': this.order
+        },
+        {
           '$project': Object.assign(project, {
             _id: 1,
             assignments: 1,
@@ -385,11 +407,9 @@ export default class AssignmentCtrl extends BaseCtrl {
             login: 1,
             status: 1,
             commentsCount: 1,
-            proposed: 1
+            proposed: 1,
+            cm: 1
           })
-        },
-        {
-          '$sort': this.order
         }
       ])
       .cursor({})
