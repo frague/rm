@@ -27,7 +27,7 @@ const defaultColumns = [
   'commentsCount',
   'comments'
 ];
-const columnName = new RegExp(/^[a-z.]+$/, 'i');
+const columnName = new RegExp(/^[a-z0-9.]+$/, 'i');
 
 // const billableStatuses = ['Billable', 'Booked', 'PTO Coverage', 'Funded'];
 const billableStatuses = ['Billable', 'PTO Coverage'];
