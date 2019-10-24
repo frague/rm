@@ -214,7 +214,7 @@ export const requisitionsAvailability = [
 ];
 
 export const requisitionsLocations = {
-  'All Offshore': 'BEL, KHR, KR, LV, SAR, SPB, WR',
+  'All Offshore': 'BEL, KHR, KR, KY, LV, SAR, SPB, WR',
   'Belgrade, Serbia': 'BEL',
   'Kharkov, Ukraine': 'KHR',
   'Krakow, Poland': 'KR',
