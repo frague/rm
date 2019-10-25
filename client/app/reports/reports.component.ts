@@ -37,6 +37,12 @@ export class ReportsComponent extends Schedule {
   };
 
   _cache: CacheService;
+  private get _allBadges() {
+    return this._cache ? this._cache.get('badges') : {};
+  }
+  private get _itemBadges() {
+    return this._cache ? this._cache.get('itemBadges') : {};
+  };
 
   constructor(
     assignmentService: AssignmentService,
@@ -92,6 +98,8 @@ export class ReportsComponent extends Schedule {
         this.requisitionService.getAll({...query, order}) : from([[]])
     );
 
+    let addBadges = JSON.stringify(serviceData['columns'] || {}).includes('badges');
+
     return requisitionsQuery.subscribe(data => {
       this._cache.set('requisitions', data);
 
@@ -107,6 +115,9 @@ export class ReportsComponent extends Schedule {
           });
         }
       });
+      if (addBadges) {
+        this.items.forEach(item => item.badges = (this._itemBadges[item.login] || []).map(id => this._allBadges[id]));
+      }
       this.markForCheck();
     });
   };

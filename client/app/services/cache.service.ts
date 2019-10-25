@@ -15,7 +15,7 @@ export class CacheService {
   }
 
   set(key: string, value: any) {
-    // console.log(`Setting ${key} to ${JSON.stringify(value).substr(0, 100)}...`);
+    // console.log(`Setting ${key} to ${JSON.stringify(value).substr(0, 200)}...`);
     this.store[key] = value;
   }
 

@@ -183,6 +183,12 @@ export class ColumnPipe implements PipeTransform {
         if (value && typeof value === 'object') {
           return value.text;
         }
+      case 'badges': {
+        return (value || [])
+          .map(badge => secondary ? badge[secondary] : `${badge.short || Utils.abbreviate(badge.title)} (${badge.title})`)
+          .join(', ');
+
+      }
       case 'demand':
         if (line.isDemand) {
           return this.transform(line.demand, secondary);
