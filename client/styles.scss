@@ -908,27 +908,22 @@ i.initiative {
       height: $demandCardHeight;
 
       ul {
-        position: absolute;
+        position: block;
+        padding: 0;
 
         label {
           margin: 0;
         }
 
-        &:nth-child(2) {
-          margin-top: 115px;
-        }
-
         &:nth-child(3) {
-          margin-left: 75px;
-
           li {
             display: inline-block;
             min-width: 56px;
           }
+        }
 
-          li + h6 {
-            margin-top: 15px;
-
+        &:nth-child(4) {
+          h6 {
             a {
               color: $danger;
             }
@@ -936,6 +931,10 @@ i.initiative {
 
           a {
             @extend .clickable;
+          }
+
+          caption {
+            padding: 0;
           }
 
           li.badge {
@@ -947,10 +946,9 @@ i.initiative {
             white-space: nowrap;
             line-height: 1.4;
             min-width: auto;
+            font-size: 80%;
           }
         }
-
-        padding: 0;
 
         li {
           list-style: none;

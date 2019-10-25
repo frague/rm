@@ -60,6 +60,10 @@ export class PlannerComponent extends Schedule {
   filterUsers = false;
 
   chosenBadges = [];
+  get badgesAreSelected() {
+    return this.chosenBadges.length > 0;
+  }
+
   private _chosenBadgesNames = {};
   private get _allBadges() {
     return this._cache ? this._cache.get('badges') : [];
