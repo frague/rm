@@ -1526,9 +1526,10 @@ ul.tasks {
           background-color: #FFF;
 
           th, td {
-            padding: 4px;
+            padding: 2px;
             border: solid 1px #000;
             border-width: 1px 0 0 1px;
+            font-size: 80%;
           }
         }
       }
@@ -1546,7 +1547,7 @@ ul.tasks {
             }
 
             ul {
-              padding-left: 30px;
+              padding-left: 25px;
             }
           }
         }
