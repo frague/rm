@@ -129,4 +129,13 @@ export class ReportsComponent extends Schedule {
   togglePrintable() {
     this.isPrintable = !this.isPrintable;
   }
+
+  copy() {
+    let [range, node, selection] = [document.createRange(), document.getElementById('report'), window.getSelection()];
+    range.selectNodeContents(node);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    document.execCommand('copy');
+    selection.removeAllRanges();
+  }
 }

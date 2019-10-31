@@ -1,6 +1,7 @@
 <div class="people" [ngClass]="getPrintableClass()">
   <h1>
     <i class="fa fa-print" (click)="togglePrintable()"></i>
+    <i class="fa fa-copy" (click)="copy()" *ngIf="isPrintable"></i>
     Report ({{ items.length }})
   </h1>
 
@@ -15,7 +16,7 @@
   <requisition-modal></requisition-modal>
 
   <spinner>
-    <table [ngClass]="!isPrintable && 'table'">
+    <table [ngClass]="!isPrintable && 'table'" id="report">
       <thead>
         <tr>
           <th *ngFor="let column of keys">{{ tableColumns[column]|deCamel }}</th>
