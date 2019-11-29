@@ -21,7 +21,7 @@ import { Utils } from '../utils';
 const stripIndex = new RegExp(/^\d{2} /);
 const rowNumber = new RegExp(/^(\d+):/);
 const allowedStates = ['Open', 'Approved', 'Awaiting Approval', 'Draft'];
-const candidatesQueryKeys = ['requisition', 'candidate', 'comments'];
+const candidatesQueryKeys = ['requisition', 'candidate'];
 
 @Component({
 	selector: 'planner',

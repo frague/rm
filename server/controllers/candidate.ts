@@ -7,7 +7,8 @@ export default class CandidateCtrl extends BaseCtrl {
   limit = 1000;
 
   modifiers = {
-    include: ['comments'],
+    include: ['candidate'],
+    'candidate': this.candidateCommentsTransform,
   };
 
   candidatesModifiers = {
@@ -16,8 +17,19 @@ export default class CandidateCtrl extends BaseCtrl {
   };
 
   candidateTransform(key, value) {
-    key = key.replace('candidate.', '');
-    return {[key]: value};
+    if (!key.includes('.comments')) {
+      key = key.replace('candidate.', '');
+      return {[key]: value};
+    }
+    return null;
+  }
+
+  candidateCommentsTransform(key, value) {
+    if (key.includes('candidate.comments')) {
+      key = key.replace('candidate.', '');
+      return {[key]: value};
+    }
+    return null;
   }
 
   // Get all
@@ -35,6 +47,7 @@ export default class CandidateCtrl extends BaseCtrl {
 
     this.limit = Object.keys(query).length ? 1000 : 100;
 
+    console.log('');
     console.log('- Candidates ---------------------------------------------------');
     console.log('Initial:', JSON.stringify(or));
     console.log('Query:', JSON.stringify(candidatesQuery));
@@ -50,12 +63,30 @@ export default class CandidateCtrl extends BaseCtrl {
             from: 'comments',
             localField: 'login',
             foreignField: 'login',
-            as: 'comments'
+            as: 'commentsTemp'
           }
         },
         {
           '$addFields': {
-            commentsCount: {'$size': '$comments'},
+            commentsCount: {'$size': '$commentsTemp'},
+            comments: {
+              '$arrayToObject': {
+                '$map': {
+                  input: '$commentsTemp',
+                  as: 'comment',
+                  in: [
+                    {
+                      '$cond': {
+                        if: '$$comment.source',
+                        then: '$$comment.source',
+                        else: '0',
+                      }
+                    },
+                    '$$comment.text'
+                  ]
+                }
+              }
+            },
             status: {
               '$arrayElemAt': [
                 {
@@ -79,7 +110,7 @@ export default class CandidateCtrl extends BaseCtrl {
           '$project': {
             applicationId: 1,
             city: 1,
-            comments: 1,
+            comments: '$commentsTemp',
             commentsCount: 1,
             country: 1,
             location: 1,

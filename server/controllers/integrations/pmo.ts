@@ -143,4 +143,13 @@ export default class PmoIntegrationsCtrl {
       .catch(err => res.sendStatus(500));
   }
 
+  getPeopleRequest = (req, res) => {
+    this.getPeople()
+      .then(data => {
+        res.setHeader('Content-Type', 'application/json');
+        res.json(data);
+      })
+      .catch(err => res.sendStatus(500));
+  }
+
 }
