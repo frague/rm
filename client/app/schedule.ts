@@ -275,8 +275,9 @@ export class Schedule {
             this.initiativeAssignments[initiativeId] = (this.initiativeAssignments[initiativeId] || {});
             this.initiativeAssignments[initiativeId][resource.login] = resource.assignments[initiativeId];
 
-            resource.funded = (resource.assignments[initiativeId] || []).some(assignment => assignment.billability === 'Funded');
-
+            resource.funded = resource.funded || (resource.assignments[initiativeId] || []).some(assignment => 
+              (assignment.billability === 'Funded' && assignment.initiativeId != 'vacation')
+            );
             this.visibleInitiatives[initiativeId] = true;
           });
         });
