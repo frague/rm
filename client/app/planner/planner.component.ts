@@ -116,8 +116,7 @@ export class PlannerComponent extends Schedule {
                 result.starts = item.minDate;
               };
               ['canTravel', 'billable', 'onTrip'].forEach(key => result[key] = item[key] === 'true');
-              result.onVacation = item.onVacation;
-              result.proposed = item.proposed;
+              [result.onVacation, result.proposed, result.funded] = [item.onVacation, item.proposed, item.funded];
               peopleLogins.push(result.login);
               return result;
             })

@@ -1186,6 +1186,14 @@ i.initiative {
               color: $link;
               text-shadow: none;
             }
+
+            i.fa {
+              position: absolute;
+              color: #444;
+              top: 0px;
+              right: 2px;
+              font-size: 20px;
+            }
           }
 
           caption {

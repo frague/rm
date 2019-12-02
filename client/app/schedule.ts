@@ -270,10 +270,12 @@ export class Schedule {
 
         this.items.forEach(resource => {
           personStati[resource._id] = resource.status;
-
-          Object.keys(resource.assignments).forEach(initiativeId => {
+          resource.funded = false;
+          Object.keys(resource.assignments || {}).forEach(initiativeId => {
             this.initiativeAssignments[initiativeId] = (this.initiativeAssignments[initiativeId] || {});
             this.initiativeAssignments[initiativeId][resource.login] = resource.assignments[initiativeId];
+
+            resource.funded = (resource.assignments[initiativeId] || []).some(assignment => assignment.billability === 'Funded');
 
             this.visibleInitiatives[initiativeId] = true;
           });

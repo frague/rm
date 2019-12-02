@@ -108,6 +108,7 @@
                   </a>
                   <span *ngIf="candidate.onVacation">{{ candidate.onVacation|date }}</span>
                   <span *ngIf="candidate.starts">{{ candidate.starts|date }}</span>
+                  <i class="fa fa-umbrella" *ngIf="candidate.funded"></i>
                 </avatar>
                 <section>
                   <demand *ngFor="let login of candidate.proposed" [login]="login" (show)="showResource($event)"></demand>
