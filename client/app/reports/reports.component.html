@@ -26,13 +26,13 @@
         <tr *ngFor="let resource of items">
           <td
             *ngFor="let column of keys"
-            (click)="click(column, resource)"
+            (click)="click(resource, false, column, $event)"
             [ngClass]="getClasses(column, resource)"
             ><div *ngIf="isClickable(column)">
                 <div
                   class="corner"
                   [ngClass]="{'has-status': resource.status}"
-                  (click)="showResource(resource, true, $event)"
+                  (click)="click(resource, true, column, $event)"
                 >
                   <b>{{ resource.commentsCount || '' }}</b>
                 </div>

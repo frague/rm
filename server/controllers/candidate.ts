@@ -135,7 +135,10 @@ export default class CandidateCtrl extends BaseCtrl {
     .cursor({})
     .exec()
     .toArray()
-    .then(data => res.json(data))
+    .then(data => {
+      console.log('${data && data.lenght} records matched');
+      return res.json(data);
+    })
     .catch(error => {
       console.log('Error', error);
       res.sendStatus(500);

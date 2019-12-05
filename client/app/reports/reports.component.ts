@@ -20,6 +20,8 @@ const defaultColumns = {
 
 const candidatesQueryKeys = ['requisition', 'candidate'];
 
+const clickabiles = ['name', 'requisitionId'];
+
 @Component({
   selector: 'reports',
   templateUrl: './reports.component.html',
@@ -31,10 +33,6 @@ export class ReportsComponent extends Schedule {
   isPrintable = false;
   requisitions = {};
 
-  private _clickability = {
-    name: this.showUser,
-    requisitionId: this.showUser
-  };
 
   _cache: CacheService;
   private get _allBadges() {
@@ -59,7 +57,7 @@ export class ReportsComponent extends Schedule {
   }
 
   isClickable(name: string): boolean {
-    return Object.keys(this._clickability).includes(name);
+    return clickabiles.includes(name);
   }
 
   getClasses(name: string, resource: any) {
@@ -68,17 +66,6 @@ export class ReportsComponent extends Schedule {
       name: name === 'name',
       hiree: resource.isHiree
     };
-  }
-
-  click(name: string, line: any) {
-    const handler = this._clickability[name];
-    if (handler) {
-      handler.call(this, name, line);
-    }
-  }
-
-  showUser(name: string, line: any) {
-    this.showResource(line);
   }
 
   fetchData(query={}, fetchAll=false, serviceData: any={}): Subscription {
@@ -123,7 +110,9 @@ export class ReportsComponent extends Schedule {
   };
 
   getPrintableClass() {
-    return this.isPrintable && 'printable';
+    return {
+      printable: this.isPrintable
+    };
   }
 
   togglePrintable() {
@@ -137,5 +126,16 @@ export class ReportsComponent extends Schedule {
     selection.addRange(range);
     document.execCommand('copy');
     selection.removeAllRanges();
+  }
+
+  click(item, showComments: boolean, column: string, event: MouseEvent = null) {
+    if (this.isClickable(column)) {
+      let i = {...item};
+      if (column === 'requisitionId') {
+        i.candidates = true;
+        delete i.isHiree;
+      }
+      return this.showResource(i, showComments, event);
+    }
   }
 }

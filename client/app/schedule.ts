@@ -479,9 +479,9 @@ export class Schedule {
     }
   };
 
-  showRequisition(requisitionId: string, event: any = {}) {
+  showRequisition(requisitionId: string, event: any = {}, showComments=false) {
     event.cancelBubble = true;
-    this.requisitionModal.show(requisitionId);
+    this.requisitionModal.show(requisitionId, showComments && 'comments');
   }
 
   private _showModal(entity, source, modal: {show: Function}, showComments=false) {
@@ -523,7 +523,7 @@ export class Schedule {
       let [entity, source] = this.getCandidateFrom(item);
       this._showModal(entity, source, this.candidateModal, showComments);
     } else if (item.candidates) {
-      this.showRequisition(item.requisitionId);
+      this.showRequisition(item.requisitionId, event, showComments);
     } else {
       let [entity, source] = this.getPersonFrom(item);
       this._showModal(entity, source, this.personModal, showComments);
