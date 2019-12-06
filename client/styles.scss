@@ -916,6 +916,7 @@ i.initiative {
 
       &.sticky {
         @extend .shadow;
+        opacity: 0.94;
       }
 
       ul {
