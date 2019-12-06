@@ -903,10 +903,20 @@ i.initiative {
   }
 
   .demands {
-    padding-top: 0;
+    padding-top: $demandCardHeight;
 
     div.filters {
       height: $demandCardHeight;
+      padding: 15px 15px 0 15px;
+      margin-top: -$demandCardHeight;
+      position: absolute;
+      background-color: $body;
+      z-index: 10;
+      overflow: hidden;
+
+      &.sticky {
+        @extend .shadow;
+      }
 
       ul {
         position: block;
@@ -919,7 +929,7 @@ i.initiative {
         &:nth-child(3) {
           li {
             display: inline-block;
-            min-width: 56px;
+            min-width: 48px;
           }
         }
 
@@ -955,9 +965,11 @@ i.initiative {
           list-style: none;
           padding: 0;
           margin: 0;
+          font-size: 12px;
+          font-weight: 600;
 
           input {
-            margin-right: 6px;
+            margin-right: 4px;
           }
         }
       }

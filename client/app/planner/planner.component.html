@@ -25,7 +25,7 @@
   <spinner>
     <div class="planner row" *ngIf="items.length">
       <div class="col-md-3 demands lines">
-        <div class="filters row">
+        <div class="filters row" [ngStyle]="{top: bofOffset}" [ngClass]="{sticky: bofOffset !== 'auto'}">
           <ul class="col-xl-2 col-lg-3 col-md-6">
             <h6>Shore</h6>
             <li><label><input type="checkbox" [(ngModel)]="filterDeployments.onsite">ON</label></li>
@@ -43,7 +43,7 @@
             <li><label><input type="checkbox" (click)="toggleLocations($event)" checked>ALL</label></li>
             <li><label><input type="checkbox" [(ngModel)]="filterUsers">Users</label></li>
           </ul>
-          <ul class="col">
+          <ul class="col-xs-12">
             <h6>Badges <a (click)="resetBadges()" *ngIf="badgesAreSelected">&times;</a></h6>
             <li *ngFor="let badge of chosenBadges;let i = index" [ngStyle]="getBadgeStyle(badge)" class="badge">{{ getBadgeCaption(badge) }} <a (click)="removeBadge(i)">&times;</a></li>
             <caption *ngIf="!badgesAreSelected">Any</caption>

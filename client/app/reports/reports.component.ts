@@ -130,10 +130,14 @@ export class ReportsComponent extends Schedule {
 
   click(item, showComments: boolean, column: string, event: MouseEvent = null) {
     if (this.isClickable(column)) {
-      let i = {...item};
+      let i;
       if (column === 'requisitionId') {
-        i.candidates = true;
-        delete i.isHiree;
+        i = {
+          requisitionId: item.requisitionId,
+          candidates: true
+        };
+      } else {
+         i = {...item};
       }
       return this.showResource(i, showComments, event);
     }
