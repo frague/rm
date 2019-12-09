@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, URLSearchParams } from '@angular/http';
 
 import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map, tap, finalize } from 'rxjs/operators';
 
 import { LoaderService } from './loader.service';
 
@@ -27,26 +27,29 @@ export class BaseService {
     for (let key in params) {
       query.set(key, JSON.stringify(params[key]));
     }
-    return this.http.get('/api/' + this.entity + 's?' + query.toString()).pipe(
-      tap(() => this.loader.complete(id)),
-      map(res => res.json())
-    );
+    return this.http.get('/api/' + this.entity + 's?' + query.toString())
+      .pipe(
+        map(res => res.json()),
+        finalize(() => this.loader.complete(id))
+      );
   }
 
   count(): Observable<any> {
     let id = this.loader.start();
-    return this.http.get('/api/' + this.entity + '/count').pipe(
-      tap(() => this.loader.complete(id)),
-      map(res => res.json())
-    );
+    return this.http.get('/api/' + this.entity + '/count')
+      .pipe(
+        map(res => res.json()),
+        finalize(() => this.loader.complete(id))
+      );
   }
 
   get(item: any): Observable<any> {
     let id = this.loader.start();
-    return this.http.get('/api/' + this.entity + '/' + (item._id || item)).pipe(
-      tap(() => this.loader.complete(id)),
-      map(res => res.json())
-    );
+    return this.http.get('/api/' + this.entity + '/' + (item._id || item))
+      .pipe(
+        map(res => res.json()),
+        finalize(() => this.loader.complete(id))
+      );
   }
 
   save(item: any): Observable<any> {
@@ -55,31 +58,35 @@ export class BaseService {
 
   add(item: any): Observable<any> {
     let id = this.loader.start();
-    return this.http.post('/api/' + this.entity, JSON.stringify(item), this.options).pipe(
-      tap(() => this.loader.complete(id)),
-      map(res => res.json())
-    );
+    return this.http.post('/api/' + this.entity, JSON.stringify(item), this.options)
+      .pipe(
+        map(res => res.json()),
+        finalize(() => this.loader.complete(id))
+      );
   }
 
   edit(item: any): Observable<any> {
     let id = this.loader.start();
-    return this.http.put('/api/' + this.entity + '/' + item._id, JSON.stringify(item), this.options).pipe(
-      tap(() => this.loader.complete(id)),
-      map(res => res.json())
-    );
+    return this.http.put('/api/' + this.entity + '/' + item._id, JSON.stringify(item), this.options)
+      .pipe(
+        map(res => res.json()),
+        finalize(() => this.loader.complete(id))
+      );
   }
 
   delete(item: any): Observable<any> {
     let id = this.loader.start();
-    return this.http.delete('/api/' + this.entity + '/' + item._id, this.options).pipe(
-      tap(() => this.loader.complete(id)),
-    );
+    return this.http.delete('/api/' + this.entity + '/' + item._id, this.options)
+      .pipe(
+        finalize(() => this.loader.complete(id))
+      );
   }
 
   deleteAll(): Observable<any> {
     let id = this.loader.start();
-    return this.http.delete('/api/' + this.entity + 's', this.options).pipe(
-      tap(() => this.loader.complete(id)),
-    );
+    return this.http.delete('/api/' + this.entity + 's', this.options)
+      .pipe(
+        finalize(() => this.loader.complete(id))
+      );
   }
 }
