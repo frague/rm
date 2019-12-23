@@ -187,7 +187,7 @@ export class PlannerComponent extends Schedule {
   }
 
   scroll = (event: Event) => {
-    this.markForCheck();
+    let old = this.bofOffset;
     if (this.boardOfFame && this.boardOfFame.nativeElement) {
       let windowOffset = window.pageYOffset;
       let element = this.boardOfFame.nativeElement;
@@ -195,10 +195,14 @@ export class PlannerComponent extends Schedule {
       let cardsHeight = element.clientHeight;
       if (windowOffset > offset) {
         this.bofOffset = (windowOffset - offset + cardsHeight) + 'px';
-        return;
+        this.markForCheck();
+      } else {
+        this.bofOffset = 'auto';
+      }
+      if (old !== this.bofOffset) {
+        this.markForCheck();
       }
     }
-    this.bofOffset = 'auto';
   };
 
   sanitizePlan(people, demands) {

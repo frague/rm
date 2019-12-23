@@ -908,7 +908,7 @@ i.initiative {
     div.filters {
       height: $demandCardHeight;
       padding: 15px 15px 0 15px;
-      margin-top: -$demandCardHeight;
+      margin: -$demandCardHeight 0px 0px 0px;
       position: absolute;
       background-color: $body;
       z-index: 10;
@@ -916,7 +916,10 @@ i.initiative {
 
       &.sticky {
         @extend .shadow;
+        position: sticky;
+        top: 0px;
         opacity: 0.94;
+        background-color: $body + #222;
       }
 
       ul {
@@ -1819,6 +1822,7 @@ div.corner {
   border-left: 16px solid transparent;
   margin-top: -1px;
   right: 0;
+  z-index: 3;
 
   b {
     display: inline-block;
