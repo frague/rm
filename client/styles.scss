@@ -919,7 +919,8 @@ i.initiative {
         position: sticky;
         top: 0px;
         opacity: 0.94;
-        background-color: $body + #222;
+        background-color: $body - #111;
+        border: solid 1px $grid;
       }
 
       ul {
