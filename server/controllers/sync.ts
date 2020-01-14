@@ -638,10 +638,18 @@ export default class SyncCtrl {
       }, {});
 
       const transformLocations = (item) => {
-        return item.locations.map(lId => {
-          const name = locations[lId].name;
-          return locationsMap[name] || name;
-        }).sort().join(', ');
+        return Object.keys(
+          item.locations.reduce((result, lId) => {
+            const name = locations[lId].name;
+            let location = locationsMap[name] || name;
+            if (Array.isArray(location)) {
+              location.forEach(l => result[l] = true);
+            } else {
+              result[location] = true;
+            }
+            return result;
+          }, {})
+        ).sort().join(', ');
       };
 
       const transformDestinations = (item) => {
