@@ -640,8 +640,10 @@ export default class SyncCtrl {
       const transformLocations = (item) => {
         return Object.keys(
           item.locations.reduce((result, lId) => {
-            const name = locations[lId].name;
-            let location = locationsMap[name] || name;
+            var l = locations[lId];
+            if (!l) return result;  // Unknown location ID
+            
+            let location = locationsMap[l.name] || l.name;
             if (Array.isArray(location)) {
               location.forEach(l => result[l] = true);
             } else {
