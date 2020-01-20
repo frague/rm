@@ -1,15 +1,17 @@
 <ng-template #content let-c="close" let-d="dismiss">
-  <div class="modal-header">
+  <div class="modal-header" [ngClass]="{printable: isPrintable}">
     <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
-    <h4 class="modal-title">Demand Staffing Report</h4>
+    <h4 class="modal-title right-buttons"><i class="fa fa-print" (click)="togglePrintable()"></i>
+      <i class="fa fa-copy" (click)="copy()" *ngIf="isPrintable"></i>
+      Demand Staffing Report
+    </h4>
   </div>
-  <div class="modal-body demand report">
-
+  <div class="modal-body demand report" [ngClass]="{printable: isPrintable}" id="report">
     <div *ngFor="let account of getAccounts()">
       <h2>{{ account }}</h2>
-      <table>
+      <table [ngClass]="{table: !isPrintable}">
         <thead>
           <tr>
             <th>Demand</th>
@@ -19,24 +21,23 @@
         </thead>
         <tbody>
           <tr *ngFor="let demand of getAccountDemand(account)">
-            <th>
-              <h6>#{{ demand.name }} @{{ demand.project }}</h6>
-              <p><span>{{ demand.start|date:'noyear' }}</span><span>{{ demand.grades }}</span></p>
-              <p>{{ demand.locations || 'Any location' }} &rarr; {{ demand.deployment }}</p>
-              <p *ngIf="demand.requestId.length">Jobvite: <b>{{ demand.requestId }}</b></p>
-              <p class="description" *ngIf="demand.comment" [innerHTML]="demand.comment|cut:200|markdown"></p>
-            </th>
             <td>
-              <span *ngIf="demand.candidate.name">
+              <p><b>#{{ getDemandTitle(demand) }}</b> @{{ demand.project }}</p>
+              <p>{{ demand.locations || 'Any location' }} &rarr; {{ demand.deployment }}</p>
+              <p>Start: {{ demand.start|date }}</p>
+              <p *ngIf="demand.requestId.length">Jobvite: {{ demand.requestId }}</p>
+            </td>
+            <td>
+              <ng-container *ngIf="demand.candidate.name">
                 <p>{{ demand.candidate.name }} ({{ demand.candidate.grade }}, {{ demand.candidate.location }})</p>
                 <p *ngIf="demand.candidate.canTravel">Has US visa</p>
-              </span>
+              </ng-container>
             </td>
             <td class="md" [innerHTML]="demand.combinedStatus|markdown"></td>
           </tr>
         </tbody>
       </table>
     </div>
-
+    &nbsp;
   </div>
 </ng-template>

@@ -528,10 +528,23 @@ table.badges {
       font-weight: 300;
       line-height: 2;
 
-      i.fa {
-        font-size: 16px;
-        position: relative;
-        bottom: 4px;
+      &.right-buttons {
+        padding-right: 30px;
+
+        i.fa {
+          @extend .clickable;
+          float: right;
+          margin: 0px 4px;
+          position: relative;
+          top: 15px;
+          color: $body - #444;
+        }
+      }
+    }
+
+    &.printable {
+      h4.modal-title i.fa {
+        color: $body - #777;
       }
     }
 
@@ -1526,7 +1539,7 @@ ul.tasks {
   }
 }
 
-.people, .query-widget {
+.people, .query-widget, .report {
 
   h1 {
     i {
@@ -1986,112 +1999,11 @@ div.bottom-corner {
   max-height: 450px;
   overflow: auto;
 
-  table,
-  td,
-  th {
-    font-size: 12px;
-    border: solid $grid;
-  }
+  th, td {
+    vertical-align: top;
 
-  table {
-    width: 100%;
-    border-width: 0;
-
-    thead {
-      tr {
-        th {
-          font-weight: 600;
-          font-size: 120%;
-        }
-      }
-    }
-
-    tr {
-      th {
-        font-weight: 400;
-        background-color: $body + #040404;
-      }
-
-      td,
-      th {
-        padding: 4px;
-        border-width: 1px 0 0 1px;
-
-        h6, strong {
-          display: inline-block;
-          font-weight: 400;
-          font-size: 100%;
-        }
-
-        h6 {
-          font-size: 120%;
-          padding: 0;
-        }
-
-        p, h6 {
-          margin-bottom: 4px;
-
-          &:last-child {
-            margin-bottom: 0px;
-          }
-        }
-      }
-    }
-  }
-
-  &.demand table {
-    thead {
-      th {
-        &:nth-child(n + 2) {
-          text-align: center;
-        }
-        &:nth-child(1) {
-          width: 40%;
-        }
-        &:nth-child(2) {
-          width: 30%;
-        }
-        &:last-child {
-          border-right-width: 1px;
-        }
-      }
-    }
-
-    tbody {
-      tr {
-        th {
-          font-weight: 100;
-        }
-        th, td {
-          vertical-align: top;
-
-          p {
-            span:not(:empty) + span:not(:empty):before {
-              content: ' / ';
-            }
-            &.description:not(:empty) {
-              border-top: dotted 1px;
-              padding-top: 4px;
-            }
-          }
-        }
-      }
-    }
-
-    tr {
-      &:last-child td,
-      &:last-child th {
-        border-bottom-width: 1px;
-      }
-
-      td {
-        font-weight: 100;
-        text-align: left;
-
-        &:last-child {
-          border-right-width: 1px;
-        }
-      }
+    p {
+      margin: 4px 0;
     }
   }
 

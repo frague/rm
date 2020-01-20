@@ -13,6 +13,8 @@ export class ReportComponent {
   matches: any = {};
   candidatesByLogin: any = {};
 
+  isPrintable = false;
+
   stages = {
     SP: 'sales prospect',
     VA: 'verbally agreed',
@@ -56,5 +58,23 @@ export class ReportComponent {
     this.updateCandidates();
     this.injectDemandCandidates();
     this.modalService.open(this.content, {size: 'lg'});
+  }
+
+  togglePrintable() {
+    this.isPrintable = !this.isPrintable;
+  }
+
+  copy() {
+    let [range, node, selection] = [document.createRange(), document.getElementById('report'), window.getSelection()];
+    range.selectNodeContents(node);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    document.execCommand('copy');
+    selection.removeAllRanges();
+  }
+
+  getDemandTitle(demand): string {
+    console.log(demand);
+    return demand.name.replace(/ /, ` ${demand.grades} `);
   }
 }
