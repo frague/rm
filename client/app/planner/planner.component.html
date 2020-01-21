@@ -25,7 +25,7 @@
   <spinner>
     <div class="planner row" *ngIf="items.length">
       <div class="col-md-3 demands lines">
-        <div class="filters row" [ngClass]="{sticky: bofOffset !== 'auto'}">
+        <div class="filters row" [ngClass]="stickyClass">
           <ul class="col-xl-2 col-lg-3 col-md-6">
             <h6>Shore</h6>
             <li><label><input type="checkbox" [(ngModel)]="filterDeployments.onsite">ON</label></li>
@@ -94,7 +94,7 @@
       </div>
       <div class="col-md-9 candidates">
         <div class="lines" [ngStyle]="{width: (getCandidatesCount() * cardWidth) + 'px'}">
-          <ol #sticky [ngStyle]="{top: bofOffset}" [ngClass]="{sticky: bofOffset !== 'auto'}">
+          <ol #sticky [ngStyle]="{top: bofOffset}" [ngClass]="stickyClass">
             <ng-container *ngFor="let candidate of candidates">
               <li
                 *ngIf="isUserVisible(candidate)"

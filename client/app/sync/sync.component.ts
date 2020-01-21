@@ -100,6 +100,8 @@ export class SyncComponent {
               this.addLog('Diff generation...');
               this.cache.reset(['plans', 'demands', 'assignments', 'candidates', 'requisitions', 'initiatives', 'resources']);
               this.dpService.saveDiff().subscribe(() => {
+                // Refresh update date on the UI
+                this.bus.dbUpdated.emit();
               });
             } else {
             }

@@ -74,7 +74,6 @@ export class ReportComponent {
   }
 
   getDemandTitle(demand): string {
-    console.log(demand);
     return demand.name.replace(/ /, ` ${demand.grades} `);
   }
 }

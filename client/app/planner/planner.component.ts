@@ -37,6 +37,7 @@ export class PlannerComponent extends Schedule {
   bofOffset: any = 'auto';
 
   get cardWidth() {return 120};
+  get stickyClass() {return {sticky: this.bofOffset != 'auto'}};
 
   candidates = [];
   candidatesCount = 0;
@@ -195,13 +196,10 @@ export class PlannerComponent extends Schedule {
       let cardsHeight = element.clientHeight;
       if (windowOffset > offset) {
         this.bofOffset = (windowOffset - offset + cardsHeight) + 'px';
-        this.markForCheck();
       } else {
         this.bofOffset = 'auto';
       }
-      if (old !== this.bofOffset) {
-        this.markForCheck();
-      }
+      requestAnimationFrame(() => this.markForCheck());
     }
   };
 
@@ -293,7 +291,6 @@ export class PlannerComponent extends Schedule {
       p += (!this.filterUsers || this.filterLocations[v.location]) && (!badgesSelected || this._visibleCandidates[v._id]) ? 1 : 0;
       return p;
     }, 0);
-    console.log();
   }
 
   toggleLocations(event: any) {

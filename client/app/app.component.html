@@ -76,6 +76,8 @@
       </a>
 
       <div class="pull-right">
+        <span class="nav-item padded"><i class="fa fa-database"></i>{{ dbUpdated }}</span>
+
         <a [routerLink]="['account']" class="nav-item nav-link" routerLinkActive="active" *ngIf="auth.loggedIn">
           <i class="fa fa-user-circle-o"></i> Account ({{auth.currentUser.username}})
         </a>

@@ -179,6 +179,7 @@ export default function setRoutes(app) {
   // Deadpool
   router.route('/dps').get(diffCtrl.getAll);
   router.route('/dps').post(snapshotCtrl.saveDiffs);
+  router.route('/updated').get(diffCtrl.getLastUpdate);
 
   // Bamboo
   router.route('/career/:bambooId').get(bamboo.getCareer);

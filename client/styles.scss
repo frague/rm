@@ -82,7 +82,7 @@ a {
 i.fa-external-link-square {
   position: relative;
   bottom: 5px;
-  font-size: 70%; 
+  font-size: 70%;
 }
 
 h1 {
@@ -391,6 +391,21 @@ pre {
   }
 }
 
+.nav {
+  .nav-item {
+    padding-top: .425rem;
+    padding-bottom: .425rem;
+
+    &.padded {
+      margin-right: 40px;
+
+      i.fa {
+        margin-right: 4px;
+      }
+    }
+  }
+}
+
 .avatar {
   background-size: cover;
   border: solid 1px $grid;
@@ -544,7 +559,7 @@ table.badges {
 
     &.printable {
       h4.modal-title i.fa {
-        color: $body - #777;
+        color: $body - #888;
       }
     }
 
