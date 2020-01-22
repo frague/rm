@@ -20,8 +20,9 @@ app.use(bodyParser.urlencoded({limit: '1mb', extended: true}));
 app.use(morgan('dev'));
 
 const mongoOptions = {
-  useMongoClient: true,
-  promiseLibrary: global.Promise
+  promiseLibrary: global.Promise,
+  useNewUrlParser: true,
+  useUnifiedTopology: true
 };
 
 if (process.env.NODE_ENV === 'test') {
@@ -29,6 +30,7 @@ if (process.env.NODE_ENV === 'test') {
 } else {
   mongoose.connect(process.env.MONGODB_URI, mongoOptions);
 }
+mongoose.set('useCreateIndex', true);
 
 const server = httpServer.createServer(app);
 IO.initialize(server);
@@ -48,7 +50,7 @@ db.once('open', () => {
 
   if (!module.parent) {
     server.listen(app.get('port'), () => {
-      console.log('RM is listening on port ' + app.get('port'));
+      console.log('Backend server is listening on port ' + app.get('port'));
     });
 
     IO.client().on('connection', socket => {

@@ -132,9 +132,6 @@ export default class CandidateCtrl extends BaseCtrl {
         }
       ]
     )
-    .cursor({})
-    .exec()
-    .toArray()
     .then(data => {
       console.log('${data && data.lenght} records matched');
       return res.json(data);

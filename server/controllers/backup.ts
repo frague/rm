@@ -243,9 +243,6 @@ export default class BackupCtrl {
         }
       }
     ])
-      .cursor({})
-      .exec()
-      .toArray()
       .then(data => data[0].ids);
   }
 

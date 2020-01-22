@@ -419,9 +419,6 @@ export default class AssignmentCtrl extends BaseCtrl {
           })
         }
       ])
-      .cursor({})
-      .exec()
-      .toArray()
       .then(data => {
         let message = skillsRequested ? `Skills matched: ${skillsRequested}` : '';
         if (data && skillsByUser) {

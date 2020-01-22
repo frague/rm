@@ -69,9 +69,6 @@ export default class BadgeCtrl extends BaseCtrl {
         }
       }
     ])
-      .cursor({})
-      .exec()
-      .toArray()
       .then(data => {
         res.json(data);
       })

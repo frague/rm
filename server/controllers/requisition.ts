@@ -252,9 +252,6 @@ export default class RequisitionCtrl extends BaseCtrl {
         }
       ]
     )
-    .cursor({})
-    .exec()
-    .toArray()
     .then(data => res.json(data))
     .catch(error => {
       console.log('Error', error);

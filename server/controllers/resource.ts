@@ -96,9 +96,6 @@ export default class ResourceCtrl extends BaseCtrl {
         }
       ]
     )
-    .cursor({})
-    .exec()
-    .toArray()
     .then(data => res.json(data))
     .catch(error => {
       console.log('Error', error);
