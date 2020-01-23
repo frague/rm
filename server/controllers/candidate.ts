@@ -133,7 +133,7 @@ export default class CandidateCtrl extends BaseCtrl {
       ]
     )
     .then(data => {
-      console.log('${data && data.lenght} records matched');
+      console.log(`${data && data.length} records matched`);
       return res.json(data);
     })
     .catch(error => {
