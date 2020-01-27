@@ -107,7 +107,6 @@ abstract class BaseCtrl {
         or.push(criterion);
       }
     });
-    // console.log(JSON.stringify(or));
     return or;
   }
 

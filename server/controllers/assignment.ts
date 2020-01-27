@@ -27,6 +27,23 @@ const defaultColumns = [
   'commentsCount',
   'comments'
 ];
+
+const resourceColumns = [
+  'name',
+  'login',
+  'grade',
+  'location',
+  'profile',
+  'specialization',
+  'pool',
+  'manager',
+  'nextPr',
+  'payRate',
+  'onTrip',
+  'birthday',
+  'english',
+];
+
 const columnName = new RegExp(/^[a-z0-9.]+$/, 'i');
 
 // const billableStatuses = ['Billable', 'Booked', 'PTO Coverage', 'Funded'];
@@ -78,12 +95,14 @@ export default class AssignmentCtrl extends BaseCtrl {
 
   getAll = async (req, res) => {
     let or;
-    let columns = [], group = [];
+    let columns = [];
+    let group = [];
+    let orString = req.query.or || '[]';
     try {
-      or = req.query.or ? JSON.parse(req.query.or) : [];
+      or = JSON.parse(orString);
       columns = this.determineColumns(req);
     } catch (e) {
-      console.error('Error parsing search query: ' + req.query.or);
+      console.error(`Error parsing search query: ${orString}`);
       return res.sendStatus(500);
     }
     this.order = this.determineOrder(req);
@@ -134,29 +153,35 @@ export default class AssignmentCtrl extends BaseCtrl {
           let message = `No people with the following skills found: ${skillsRequested}`;
           return this._returnEmpty(res, message);
         }
-        let query = this.modifyCriteria(or, this.modifiers, group);
-        this._query(res, this.fixOr(query), columns, group, skillsRequested, skillsByUser);
+        this._query(res, or, columns, skillsRequested, skillsByUser);
       } catch (e) {
         console.log('Error', e);
         return res.sendStatus(500);
       }
     } else {
-      let query = this.modifyCriteria(or, this.modifiers, group);
-      if (Object.keys(query).length > 0) {
-        this._query(res, this.fixOr(query), columns, group);
-      } else {
-        return this._returnEmpty(res);
-      }
+      this._query(res, or, columns);
     }
   }
 
-  _query = (res, query, columns=[], group=[], skillsRequested='', skillsByUser={}) => {
+  _query = (res, or, columns=[], skillsRequested='', skillsByUser={}) => {
+    let group = [];
+    let criteria = this.modifyCriteria(or, this.modifiers, group);
+    if (!criteria || Object.keys(criteria).length === 0) {
+      return this._returnEmpty(res);
+    }
+    let query = this.fixOr(criteria);
+
+    let resourceMatch = this.fixOr(this.modifyCriteria(or, {include: resourceColumns}));
+    // console.log('!!!!', JSON.stringify(temp));
+
     console.log('Query:', JSON.stringify(query));
+    console.log('Resource query:', JSON.stringify(resourceMatch));
     console.log('Columns1:', group);
     console.log('Group1:', group);
 
     let now = new Date();
     now.setDate(this.shift + now.getDate());
+
 
     // Extended columns information
     group = group.reduce((result, column) => {
@@ -178,6 +203,9 @@ export default class AssignmentCtrl extends BaseCtrl {
 
     let cursor = Resource
       .aggregate([
+        {
+          '$match': resourceMatch
+        },
         {
           '$lookup': {
             from: 'comments',
