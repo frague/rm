@@ -6,34 +6,40 @@ export default class CandidateCtrl extends BaseCtrl {
   model = Candidate;
   limit = 1000;
 
-  modifiers = {
+  initialCommentsModifiers = {
     include: ['candidate'],
-    'candidate': this.candidateCommentsTransform,
+    'candidate': (key, value) => {
+      if (key.includes('candidate.comments')) {
+        key = key.replace('candidate.comments.', '');
+        return {'commentsTemp.source': key};
+      }
+    },
+  };
+
+  finalCommentsModifiers = {
+    include: ['candidate'],
+    'candidate': (key, value) => {
+      if (key.includes('candidate.comments')) {
+        key = key.replace('candidate.', '');
+        return {[key]: value};
+      }
+    },
   };
 
   candidatesModifiers = {
     include: ['candidate'],
-    candidate: this.candidateTransform,
+    candidate: (key, value) => {
+      if (!key.includes('.comments')) {
+        key = key.replace('candidate.', '');
+        return {[key]: value};
+      }
+    },
   };
-
-  candidateTransform(key, value) {
-    if (!key.includes('.comments')) {
-      key = key.replace('candidate.', '');
-      return {[key]: value};
-    }
-    return null;
-  }
-
-  candidateCommentsTransform(key, value) {
-    if (key.includes('candidate.comments')) {
-      key = key.replace('candidate.', '');
-      return {[key]: value};
-    }
-    return null;
-  }
 
   // Get all
   getAll = (req, res) => {
+    this._printTitle('Candidates');
+
     let or;
     try {
       or = req.query.or ? JSON.parse(req.query.or) : [];
@@ -43,15 +49,15 @@ export default class CandidateCtrl extends BaseCtrl {
     }
 
     let candidatesQuery = this.fixOr(this.modifyCriteria(or, this.candidatesModifiers));
-    let query = this.fixOr(this.modifyCriteria(or, this.modifiers));
+    let initialCommentsQuery = this.fixOr(this.modifyCriteria(or, this.initialCommentsModifiers));
+    let finalCommentsQuery = this.fixOr(this.modifyCriteria(or, this.finalCommentsModifiers));
 
-    this.limit = Object.keys(query).length ? 1000 : 100;
+    this.limit = Object.keys(finalCommentsQuery).length ? 1000 : 100;
 
-    console.log('');
-    console.log('- Candidates ---------------------------------------------------');
     console.log('Initial:', JSON.stringify(or));
     console.log('Query:', JSON.stringify(candidatesQuery));
-    console.log('Comments query:', JSON.stringify(query));
+    console.log('Comments initial query:', JSON.stringify(initialCommentsQuery));
+    console.log('Comments final query:', JSON.stringify(finalCommentsQuery));
 
     this.model
       .aggregate([
@@ -65,6 +71,9 @@ export default class CandidateCtrl extends BaseCtrl {
             foreignField: 'login',
             as: 'commentsTemp'
           }
+        },
+        {
+          '$match': initialCommentsQuery
         },
         {
           '$addFields': {
@@ -104,7 +113,7 @@ export default class CandidateCtrl extends BaseCtrl {
           }
         },
         {
-          '$match': query
+          '$match': finalCommentsQuery
         },
         {
           '$project': {

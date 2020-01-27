@@ -168,6 +168,11 @@ abstract class BaseCtrl {
     group[column] = { '$first': `$${column}` };
   }
 
+  _printTitle(title: string) {
+    let l = title.length;
+    console.log(`\n- ${title} ${'-'.repeat(100-l)}`);
+  }
+
   determineOrder(req, defaultOrder: any={name: 1}) {
     try {
       let orders = JSON.parse(req.query.order || '""').split(',').reduce((result, criterion) => {

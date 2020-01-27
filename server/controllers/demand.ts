@@ -1,19 +1,49 @@
 import Demand from '../models/demand';
 import BaseCtrl from './base';
 
+const demandColumns = [
+  'name',
+  'account',
+  'accountId',
+  'project',
+  'pool',
+  'role',
+  'profile',
+  'specializations',
+  'start',
+  'end',
+  'deployment',
+  'stage',
+  'isBooked',
+  'grades',
+  'locations',
+  'requestId',
+  'requirements',
+  'comment',
+  'candidates',
+  'login',
+];
+
 export default class DemandCtrl extends BaseCtrl {
   model = Demand;
 
   modifiers = {
     include: ['demand'],
-    demand: this.demandTransform,
+    demand: (key, value) => {
+      if (key === 'demand') return;
+      key = key.replace('demand.', '');
+      return {[key]: value};
+    },
   };
 
-  demandTransform(key, value) {
-    if (key === 'demand') return;  // For cases with demand='true'|'false'|'only'
-    key = key.replace('demand.', '');
-    return {[key]: value};
-  }
+  baseModifiers = {
+    include: ['demand'],
+    demand: (key, value) => {
+      key = key.replace('demand.', '');
+      if (!demandColumns.includes(key)) return;
+      return {[key]: value};
+    },
+  };
 
   get = (req, res) => {
     this.model.findOne({login: req.params.id}, (err, obj) => {
@@ -25,6 +55,8 @@ export default class DemandCtrl extends BaseCtrl {
   }
 
   getAll = (req, res) => {
+    this._printTitle('Demand');
+
     let now = new Date();
     let or;
     try {
@@ -36,13 +68,17 @@ export default class DemandCtrl extends BaseCtrl {
 
     let order = this.determineOrder(req, {login: 1});
     let query = this.fixOr(this.modifyCriteria(or, this.modifiers));
+    let baseQuery = this.fixOr(this.modifyCriteria(or, this.baseModifiers));
 
-    console.log('\n- Demand ----------------------------------------------------------');
     console.log('Initial:', JSON.stringify(or));
     console.log('Query:', JSON.stringify(query));
+    console.log('Base query:', JSON.stringify(baseQuery));
 
     this.model
       .aggregate([
+        {
+          '$match': baseQuery
+        },
         {
           '$lookup': {
             from: 'comments',

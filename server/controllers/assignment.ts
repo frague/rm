@@ -94,6 +94,8 @@ export default class AssignmentCtrl extends BaseCtrl {
   }
 
   getAll = async (req, res) => {
+    this._printTitle('Assignments');
+    
     let or;
     let columns = [];
     let group = [];
@@ -110,7 +112,6 @@ export default class AssignmentCtrl extends BaseCtrl {
 
     let skillsList = this.filterSkills(or) || [];
 
-    console.log('\n- Assignments -----------------------------------------------------');
     console.log('Extra columns:', columns);
     console.log('Initial:', JSON.stringify(or));
     console.log('Order:', JSON.stringify(this.order));
@@ -170,9 +171,7 @@ export default class AssignmentCtrl extends BaseCtrl {
       return this._returnEmpty(res);
     }
     let query = this.fixOr(criteria);
-
     let resourceMatch = this.fixOr(this.modifyCriteria(or, {include: resourceColumns}));
-    // console.log('!!!!', JSON.stringify(temp));
 
     console.log('Query:', JSON.stringify(query));
     console.log('Resource query:', JSON.stringify(resourceMatch));
