@@ -95,7 +95,7 @@ export default class AssignmentCtrl extends BaseCtrl {
 
   getAll = async (req, res) => {
     this._printTitle('Assignments');
-    
+
     let or;
     let columns = [];
     let group = [];
