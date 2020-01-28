@@ -1,5 +1,6 @@
 import Demand from '../models/demand';
 import BaseCtrl from './base';
+import { printTitle } from '../utils';
 
 const demandColumns = [
   'name',
@@ -55,7 +56,7 @@ export default class DemandCtrl extends BaseCtrl {
   }
 
   getAll = (req, res) => {
-    this._printTitle('Demand');
+    printTitle('Demand');
 
     let now = new Date();
     let or;

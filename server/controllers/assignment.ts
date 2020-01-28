@@ -3,6 +3,7 @@ import Assignment from '../models/assignment';
 import Resource from '../models/resource';
 import SkillTreeCtrl from './integrations/skilltree';
 import { fakeRes } from './fakeresponse';
+import { printTitle } from '../utils';
 
 const andKey = '$and';
 const inKey = '$in';
@@ -53,7 +54,7 @@ export default class AssignmentCtrl extends BaseCtrl {
   model = Assignment;
 
   modifiers = {
-    exclude: ['demand', 'skills', 'candidate', 'requisition']
+    exclude: ['demand', 'skills', 'candidate', 'candidates', 'requisition', 'requisitions', 'requisitionId']
   };
 
   order;
@@ -89,12 +90,12 @@ export default class AssignmentCtrl extends BaseCtrl {
     return result;
   };
 
-  private _returnEmpty(res, message='') {
+  private _emptyResult(res, message='') {
     return res.json({message, data: []})
   }
 
   getAll = async (req, res) => {
-    this._printTitle('Assignments');
+    printTitle('Assignments');
 
     let or;
     let columns = [];
@@ -125,12 +126,12 @@ export default class AssignmentCtrl extends BaseCtrl {
         console.log('Skills suggestions are fetched:', suggestions, ids);
 
         if (!ids || !ids.length) {
-          return this._returnEmpty(res, 'No skills found');
+          return this._emptyResult(res, 'No skills found');
         }
 
         let people = await skillTree.getEngineersBySkills(ids)
           .catch(error => {
-            this._returnEmpty(res, 'No skills found');
+            this._emptyResult(res, 'No skills found');
             throw error;
           });
 
@@ -152,7 +153,7 @@ export default class AssignmentCtrl extends BaseCtrl {
           console.log('With skills:', JSON.stringify(or));
         } else {
           let message = `No people with the following skills found: ${skillsRequested}`;
-          return this._returnEmpty(res, message);
+          return this._emptyResult(res, message);
         }
         this._query(res, or, columns, skillsRequested, skillsByUser);
       } catch (e) {
@@ -168,7 +169,7 @@ export default class AssignmentCtrl extends BaseCtrl {
     let group = [];
     let criteria = this.modifyCriteria(or, this.modifiers, group);
     if (!criteria || Object.keys(criteria).length === 0) {
-      return this._returnEmpty(res);
+      return this._emptyResult(res);
     }
     let query = this.fixOr(criteria);
     let resourceMatch = this.fixOr(this.modifyCriteria(or, {include: resourceColumns}));

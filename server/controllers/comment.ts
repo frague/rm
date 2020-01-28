@@ -1,11 +1,14 @@
 import Comment from '../models/comment';
 import BaseCtrl from './base';
+import { printTitle } from '../utils';
 
 export default class CommentCtrl extends BaseCtrl {
   model = Comment;
 
   // Get all
   getAll = (req, res) => {
+    printTitle('Comments');
+
     let query = this.reduceQuery(req.query);
     console.log('Finding all', query);
     this.model

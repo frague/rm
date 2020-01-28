@@ -2,6 +2,7 @@ import Requisition from '../models/requisition';
 import Candidate from '../models/candidate';
 import Comment from '../models/comment';
 import BaseCtrl from './base';
+import { printTitle } from '../utils';
 
 export default class CandidateCtrl extends BaseCtrl {
   model = Candidate;
@@ -49,7 +50,7 @@ export default class CandidateCtrl extends BaseCtrl {
 
   // Get all
   getAll = (req, res) => {
-    this._printTitle('Candidates');
+    printTitle('Candidates');
 
     let or;
     try {

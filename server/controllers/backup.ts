@@ -8,6 +8,7 @@ import Requisition from '../models/requisition';
 import Candidate from '../models/candidate';
 import Badge from '../models/badge';
 import ItemBadge from '../models/itemBadge';
+import { printTitle } from '../utils';
 
 import Comment from '../models/comment';
 
@@ -29,7 +30,8 @@ export default class BackupCtrl {
   download = (req, res) => {
     Promise.all([Comment, Filter, Plan, Badge, ItemBadge].map(model => model.find({})))
       .then(([comments, filters, plans, badges, itemBadges]) => {
-        console.log('- Backup -----------------------------------------------------');
+        printTitle('Backup');
+        
         console.log(`${comments.length} comments`);
         console.log(`${filters.length} filters`);
         console.log(`${plans.length} demand plans`);

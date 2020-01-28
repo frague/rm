@@ -1,10 +1,13 @@
 import Diff from '../models/diff';
 import BaseCtrl from './base';
+import { printTitle } from '../utils';
 
 export default class DiffCtrl extends BaseCtrl {
   model = Diff;
 
   getAll = (req, res) => {
+    printTitle('Diffs');
+    
     let query = this.reduceQuery(req.query);
     console.log('Finding all', query);
     this.model.find(query).sort({date: -1, subject: 1}).limit(100).exec((err, docs) => {

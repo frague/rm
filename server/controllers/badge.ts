@@ -1,6 +1,6 @@
 import Badge from '../models/badge';
 import ItemBadge from '../models/itemBadge';
-
+import { printTitle } from '../utils';
 import BaseCtrl from './base';
 
 export default class BadgeCtrl extends BaseCtrl {
@@ -14,9 +14,9 @@ export default class BadgeCtrl extends BaseCtrl {
   }
 
   getAll = (req, res) => {
-    let query = this.reduceQuery(req.query);
+    printTitle('Badge');
 
-    console.log('- Badge ----------------------------------------------------------');
+    let query = this.reduceQuery(req.query);
     console.log('Query: ', query);
 
     this.model.find(query).sort({title: 1}).limit(100).exec((err, docs) => {

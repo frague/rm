@@ -2,31 +2,27 @@ import Requisition from '../models/requisition';
 import Candidate from '../models/candidate';
 import BaseCtrl from './base';
 
+import { printTitle } from '../utils';
+
 export default class RequisitionCtrl extends BaseCtrl {
   model = Requisition;
   limit = 1000;
 
   modifiers = {
     include: ['candidate', 'comments'],
-    comments: this.candidateCommentTransform
+    comments: (key, value) => this.commentTransform(key, value, 'candidate')
   };
 
   requisitionModifiers = {
     include: ['requisition'],
-    requisition: this.requisitionTransform,
+    requisition: (key, value) => {
+      if (key === 'requisition') {
+        return false;
+      }
+      key = key.replace('requisition.', '');
+      return {[key]: value};
+    },
   };
-
-  requisitionTransform(key, value) {
-    if (key === 'requisition') {
-      return false;
-    }
-    key = key.replace('requisition.', '');
-    return {[key]: value};
-  }
-
-  candidateCommentTransform(key, value) {
-    return this.commentTransform(key, value, 'candidate');
-  }
 
   // Get by id
   get = (req, res) => {
@@ -40,6 +36,8 @@ export default class RequisitionCtrl extends BaseCtrl {
 
   // Get all
   getAll = (req, res) => {
+    printTitle('Requisitions & Candidates');
+
     let or, order;
     try {
       or = req.query.or ? JSON.parse(req.query.or) : [];
@@ -53,7 +51,6 @@ export default class RequisitionCtrl extends BaseCtrl {
     this.limit = (Object.keys(query).length || Object.keys(requisitionQuery).length) ? 1000 : 100;
     order = this.determineOrder(req);
 
-    console.log('- Requisitions & Candidates -------------------------------------------');
     console.log('Initial:', JSON.stringify(or));
     console.log('Requisition query:', JSON.stringify(requisitionQuery));
     console.log('Query:', JSON.stringify(query));
@@ -81,8 +78,16 @@ export default class RequisitionCtrl extends BaseCtrl {
         {
           '$lookup': {
             from: 'comments',
-            localField: 'candidate.login',
-            foreignField: 'login',
+            let: {
+              login: 'login'
+            },
+            pipeline: [{
+              '$match': {
+                '$expr': {
+                  '$eq': ['$login', '$$login']
+                }
+              }
+            }],
             as: 'candidate.comments'
           }
         },
