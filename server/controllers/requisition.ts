@@ -79,7 +79,7 @@ export default class RequisitionCtrl extends BaseCtrl {
           '$lookup': {
             from: 'comments',
             let: {
-              login: 'login'
+              login: '$candidate.login'
             },
             pipeline: [{
               '$match': {
