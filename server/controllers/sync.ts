@@ -566,11 +566,17 @@ export default class SyncCtrl {
                     if (err) return reject1(err);
                     resolve1(initiative);
                   });
-                }).then((initiative: any) => {
-                  initiatives[name] = initiative;
-                  assignment['initiativeId'] = initiative._id;
-                  new Assignment(assignment).save();
-                });
+                })
+                  .then((initiative: any) => {
+                    initiatives[name] = initiative;
+                    assignment['initiativeId'] = initiative._id;
+                    new Assignment(assignment).save();
+                  })
+                  .catch(error => {
+                    console.log('Initiative already exists:', _id);
+                    assignment['initiativeId'] = _id;
+                    new Assignment(assignment).save();
+                  });
               }
             });
             return resolve();
