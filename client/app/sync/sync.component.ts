@@ -158,7 +158,7 @@ export class SyncComponent {
 
   getLogStyle(log: string) {
     return {
-      error: log.indexOf('rror') > 0
+      error: `${log}`.includes('rror')
     };
   }
 
