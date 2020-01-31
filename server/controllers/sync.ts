@@ -547,10 +547,11 @@ export default class SyncCtrl {
               if (initiative) {
                 // Initiative has been created already, its ID can be added to the
                 // newly created assignment
-                initiative.then(() => {
-                  assignment['initiativeId'] = initiatives[name]._id;
-                  new Assignment(assignment).save();
-                });
+                initiative
+                  .then(initiativeId => {
+                    assignment['initiativeId'] = initiativeId;
+                    new Assignment(assignment).save();
+                  });
               } else {
                 // ... otherwise new Initiative should be created
                 hue = (hue + 10) % 360;
@@ -571,11 +572,13 @@ export default class SyncCtrl {
                     initiatives[name] = initiative;
                     assignment['initiativeId'] = initiative._id;
                     new Assignment(assignment).save();
+                    return initiative._id;
                   })
                   .catch(error => {
                     console.log('Initiative already exists:', _id);
                     assignment['initiativeId'] = _id;
                     new Assignment(assignment).save();
+                    return _id;
                   });
               }
             });
