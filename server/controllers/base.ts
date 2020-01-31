@@ -8,8 +8,13 @@ const funcValue = new RegExp(/^([a-z]+)\(/i);
 const valueModifiers = {
   'in': (key, value, [days]) => {
     let d = new Date();
-    d.setDate(d.getDate() + +days);
-    return[key, { '$gte': new Date(), '$lt': d }, false];
+    days = +days;
+    d.setDate(d.getDate() + days);
+    return [
+      key,
+      days > 0 ? { '$gte': new Date(), '$lt': d } : { '$gte': d, '$lt': new Date() },
+      false
+    ];
   },
   'after': (key, value, [days]) => {
     let d = new Date();
