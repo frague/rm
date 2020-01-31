@@ -243,7 +243,10 @@ export default class DemandCtrl extends BaseCtrl {
         }
       ]
     )
-    .then(data => res.json(data))
+    .then(data => {
+      console.log(`Records matched: ${data && data.length}`);
+      return res.json(data)
+    })
     .catch(error => {
       console.log('Error', error);
       res.sendStatus(500);

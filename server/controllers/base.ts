@@ -197,6 +197,7 @@ abstract class BaseCtrl {
       if (err) {
         return this._respondWithError(res, err);
       }
+      console.log(`Records matched: ${docs && docs.length}`);
       res.json(docs);
     });
   }

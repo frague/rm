@@ -458,6 +458,7 @@ export default class AssignmentCtrl extends BaseCtrl {
             }, {}) : {};
           });
         }
+        console.log(`Records matched: ${data && data.length}`);
         res.json({message, data});
       })
       .catch(error => {

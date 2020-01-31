@@ -70,6 +70,7 @@ export default class BadgeCtrl extends BaseCtrl {
       }
     ])
       .then(data => {
+        console.log(`Records matched: ${data && data.length}`);
         res.json(data);
       })
       .catch(error => {
