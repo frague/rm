@@ -159,6 +159,9 @@ export class Schedule {
     this.markForCheck();
 
     let queryString = JSON.stringify(query);
+
+    ['demands', 'requisitions', 'candidates', 'assignments', 'initiatives', 'resources'].forEach((entity: string) => this._cache.get(entity));
+
     if (!query || !query.or || !query.or.length) {
       // Returns empty sets for an empty query
       ['demands', 'requisitions', 'candidates'].forEach((entity: string) => this._cache.set(entity, []));
@@ -199,7 +202,7 @@ export class Schedule {
 
         this.reset(fetchAll);
 
-        [this.items, this.message] = [assignments.data, assignments.message];
+        [this.items, this.message] = [[].concat(assignments.data), assignments.message];
 
         let showDemand = false;
         (queryString.match(demandCriteria) || []).forEach(criterion => {

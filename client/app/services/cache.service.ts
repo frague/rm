@@ -6,7 +6,7 @@ export class CacheService {
   get(key: string) {
     let result = (this.store && this.store[key]) || null;
     // console.log(`Getting ${key}: ${JSON.stringify(result).substr(0, 100)}...`);
-    return result;
+    return Object.seal(result);
   }
 
   getObservable(key: string): Observable<any> {
