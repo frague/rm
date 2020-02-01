@@ -275,6 +275,7 @@ export default class RequisitionCtrl extends BaseCtrl {
       Candidate
         .aggregate()
         .match(candidatesAltQuery)
+
         .lookup({
           from: 'comments',
           let: {
@@ -362,6 +363,7 @@ export default class RequisitionCtrl extends BaseCtrl {
           candidates: {'$push': '$candidate'},
         })
         .match(requisitionsQuery)
+        
         .lookup({
           from: 'comments',
           localField: 'requisitionId',
