@@ -1,11 +1,6 @@
 <div class="filter form-row">
 	<div class="form-group col-md-7">
     <div class="input-group">
-      <div class="input-group-btn">
-        <button type="button" class="btn btn-secondary" (click)="clear()" [disabled]="!criteria">
-          <i class="fa fa-times"></i>
-        </button>
-      </div>
   	  <input
         (keyup)="parseCriteria($event)"
         type="text"
@@ -32,7 +27,7 @@
       <input
         type="text"
         class="form-control"
-        placeholder="Filter name"
+        placeholder="E.g. [Report] T3 Engineers"
         [(ngModel)]="title"
       >
       <div class="input-group-btn">
@@ -46,7 +41,7 @@
           <i class="fa fa-clone"></i>
         </button>
         <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <span class="sr-only">Toggle Dropdown</span>
+          <span class="sr-only">Show filters</span>
         </button>
         <div class="dropdown-menu dropdown-menu-right">
           <a
