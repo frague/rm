@@ -65,6 +65,8 @@ import { EditorComponent } from './shared/editor/editor.component';
 import { SpinnerComponent } from './shared/spinner/spinner.component';
 import { CommentComponent } from './shared/comment/comment.component';
 import { BadgerComponent } from './shared/badger/badger.component';
+import { PrintableComponent } from './shared/printable/printable.component';
+
 import { BadgesComponent } from './badges/badges.component';
 import { DemandInfo } from './planner/demandinfo.component';
 
@@ -139,7 +141,7 @@ export function tokenGetter() {
     AssignmentTabComponent, AssignmentsTabComponent, HistoryTabComponent, DemandTabComponent,
     RequisitionTabComponent, CandidatesTabComponent, CandidateTabComponent,
     DemandRequisitionTabComponent, AccountProjectTabComponent, FeedbacksTabComponent, CommentComponent,
-    BadgerComponent, DemandInfo,
+    BadgerComponent, DemandInfo, PrintableComponent,
 
     QueryWidget, BirthdaysWidget, CommentsWidget,
   ],

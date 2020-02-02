@@ -1,7 +1,6 @@
 <div class="people" [ngClass]="getPrintableClass()">
   <h1>
-    <i class="fa fa-print" (click)="togglePrintable()"></i>
-    <i class="fa fa-copy" (click)="copy()" *ngIf="isPrintable"></i>
+    <printable [elementId]="'report'" (stateChanged)="setPrintable($event)"></printable>
     Report ({{ items.length }})
   </h1>
 

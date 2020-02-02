@@ -3,8 +3,8 @@
     <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
-    <h4 class="modal-title right-buttons"><i class="fa fa-print" (click)="togglePrintable()"></i>
-      <i class="fa fa-copy" (click)="copy()" *ngIf="isPrintable"></i>
+    <h4 class="modal-title right-buttons">
+      <printable [elementId]="'report'" (stateChanged)="setPrintable($event)"></printable>
       Demand Staffing Report
     </h4>
   </div>

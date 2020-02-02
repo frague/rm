@@ -19,13 +19,14 @@ import { LoadingComponent } from './loading/loading.component';
     FormsModule,
     ReactiveFormsModule,
     HttpModule,
+    
     // Shared Components
     ToastComponent,
-    LoadingComponent
+    LoadingComponent,
   ],
   declarations: [
     ToastComponent,
-    LoadingComponent
+    LoadingComponent,
   ],
   providers: [
     ToastComponent

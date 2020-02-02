@@ -1,0 +1,4 @@
+<span [ngClass]="className" class="btn-printable">
+  <i class="fa fa-print" (click)="togglePrintable()"></i>
+  <i class="fa fa-copy" (click)="copy()" *ngIf="isPrintable"></i>
+</span>
