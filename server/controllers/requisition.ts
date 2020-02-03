@@ -363,7 +363,7 @@ export default class RequisitionCtrl extends BaseCtrl {
           candidates: {'$push': '$candidate'},
         })
         .match(requisitionsQuery)
-        
+
         .lookup({
           from: 'comments',
           localField: 'requisitionId',
@@ -389,7 +389,7 @@ export default class RequisitionCtrl extends BaseCtrl {
         })
         .match(commentsQuery)
         .sort(order)
-        
+
         .lookup({
           from: 'requisitiondemands',
           localField: 'requisitionId',
