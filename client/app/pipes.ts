@@ -6,7 +6,8 @@ import { Utils } from './utils';
 // Custom markdown renderer for links
 var renderer = new marked.Renderer();
 renderer.link = function (href: string, title: string, text: string) {
-  return `<a href="${href}" title="${title}" target="_blank">${text}</a> <i class="fa fa-external-link-square"></i>`;
+  let target = `${href}`.replace(/^.+:\/\//, '').replace(/\/.*/, '');
+  return `<a href="${href}" title="${title}" target="${target}">${text}</a> <i class="fa fa-external-link-square"></i>`;
 };
 marked.setOptions({renderer});
 //
