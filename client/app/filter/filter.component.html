@@ -31,14 +31,14 @@
         [(ngModel)]="title"
       >
       <div class="input-group-btn">
-        <button type="button" class="btn btn-secondary" *ngIf="criteria" (click)="save()" [disabled]="!title">
+        <button type="button" class="btn btn-secondary" *ngIf="title" (click)="save()" title="Save">
           <i class="fa fa-check"></i>
         </button>
-        <button type="button" class="btn btn-secondary" *ngIf="selectedFilter._id" (click)="delete()">
-          <i class="fa fa-trash"></i>
+        <button type="button" class="btn btn-secondary" *ngIf="selectedFilter._id" (click)="delete()" title="Delete">
+          <i class="fa fa-times"></i>
         </button>
-        <button type="button" class="btn btn-secondary" *ngIf="selectedFilter._id" (click)="reset()">
-          <i class="fa fa-clone"></i>
+        <button type="button" class="btn btn-secondary" *ngIf="selectedFilter._id" (click)="reset()" title="Clone">
+          <i class="fa fa-clipboard"></i>
         </button>
         <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <span class="sr-only">Show filters</span>

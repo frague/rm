@@ -1915,6 +1915,12 @@ div.bottom-corner {
   }
 }
 
+.open>.btn-secondary.dropdown-toggle {
+  &, &:focus, &:hover {
+    background-color: $form-body - #222;
+  }
+}
+
 .filter {
   .btn {
     width: 35px;
