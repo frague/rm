@@ -1,5 +1,13 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
+const stati = {
+  progress: 'fa-spinner fa-spin',
+  done: 'fa-check text-success',
+  skipped: 'fa-lock grey',
+  error: 'fa-exclamation-triangle text-danger',
+  pending: 'fa-hourglass-start grey',
+};
+
 @Component({
   selector: 'task',
   templateUrl: './task.component.html'
@@ -33,20 +41,14 @@ export class TaskComponent {
   }
 
   getIconStyles() {
-    return Object.keys(this.stati).length > 0 ?
-    ({
-           progress: 'fa-circle-o-notch fa-spin',
-           done: 'fa-check-circle-o text-success',
-           skipped: 'fa-stop-circle-o grey',
-           error: 'fa-times-circle text-danger',
-           pending: 'fa-clock-o grey',
-         }[this.status]) || 'fa-ban'
-      :
-    {
-      'fa-check-square': this.checked,
-      'fa-square': !this.checked,
-
-    };
+    return Object.keys(this.stati).length > 0
+    ?
+      (stati[this.status] || 'fa-ban')
+    :
+      {
+        'fa-check-square': this.checked,
+        'fa-square': !this.checked,
+      };
   }
 
   registerState() {
