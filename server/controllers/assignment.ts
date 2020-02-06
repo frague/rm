@@ -48,6 +48,8 @@ const columnName = new RegExp(/^[a-z0-9_ .]+$/, 'i');
 
 // const billableStatuses = ['Billable', 'Booked', 'PTO Coverage', 'Funded'];
 const billableStatuses = ['Billable', 'PTO Coverage'];
+const bookedStatus = 'Booked';
+const fundedStatus = 'Funded';
 
 export default class AssignmentCtrl extends BaseCtrl {
   model = Assignment;
@@ -252,19 +254,54 @@ export default class AssignmentCtrl extends BaseCtrl {
         as: 'proposed'
       })
       .addFields({
+        'assignment.isActive': {
+          '$and': [
+            {'$lte': ['$assignment.start', now]},
+            {'$or': [
+              {'$gte': ['$assignment.end', now]},
+              {'$eq': ['$assignment.end', null]}
+            ]}
+          ]
+        },
+      })
+      .addFields({
         'onVacation': {
           '$cond': {
             if: {
               '$and': [
-                {'$lte': ['$assignment.start', now]},
-                {'$gte': ['$assignment.end', now]},
+                '$assignment.isActive',
                 {'$eq': ['$assignment.initiativeId', 'vacation']},
               ]
             },
             then: '$assignment.end',
             else: ''
           }
-        }
+        },
+        'isBillable': {
+          '$toString': {
+            '$and': [
+              '$assignment.isActive',
+              {'$in': ['$assignment.billability', billableStatuses]},
+              {'$gt': ['$assignment.involvement', 0]}
+            ]
+          }
+        },
+        'isBooked': {
+          '$toString': {
+            '$and': [
+              '$assignment.isActive',
+              {'$eq': ['$assignment.billability', bookedStatus]},
+            ]
+          }
+        },
+        'isFunded': {
+          '$toString': {
+            '$and': [
+              '$assignment.isActive',
+              {'$eq': ['$assignment.billability', fundedStatus]},
+            ]
+          }
+        },
       })
       .addFields({
         'activeUsVisa': {
@@ -291,25 +328,9 @@ export default class AssignmentCtrl extends BaseCtrl {
       .addFields({
         'assignment.account': '$initiative.account',
         'assignment.initiative': '$initiative.name',
-        'assignment.billable': {
-          '$cond': {
-            if: {
-              '$and': [
-                {'$in': ['$assignment.billability', billableStatuses]},
-                {'$gt': ['$assignment.involvement', 0]}
-              ]
-            },
-            then: 'true',
-            else: 'false'
-          }
-        },
         canTravel: {
-          '$cond': {
-            if: {
-              '$gt': ['$activeUsVisa.till', now]
-            },
-            then: 'true',
-            else: 'false'
+          '$toString': {
+            '$gt': ['$activeUsVisa.till', now]
           }
         },
         status: {
@@ -327,26 +348,6 @@ export default class AssignmentCtrl extends BaseCtrl {
           ]
         }
       })
-      .addFields({
-        'assignment.billableNow': {
-          '$cond': {
-            if: {
-              '$and': [
-                {'$eq': ['$assignment.billable', 'true']},
-                {'$lte': ['$assignment.start', now]},
-                {'$or': [
-                    {'$gte': ['$assignment.end', now]},
-                    {'$eq': ['$assignment.end', null]}
-                  ]
-                },
-                {'$gt': ['$assignment.involvement', 0]}
-              ]
-            },
-            then: 'true',
-            else: 'false'
-          }
-        }
-      })
       .group(Object.assign(group, {
         _id: '$_id',
         assignments: { '$push': '$assignment' },
@@ -355,7 +356,9 @@ export default class AssignmentCtrl extends BaseCtrl {
         grade: { '$first': '$grade' },
         minDate: {'$min': '$assignment.start'},
         maxDate: {'$max': '$assignment.end'},
-        billable: {'$max': '$assignment.billableNow'},
+        isBillable: {'$max': '$isBillable'},
+        isBooked: {'$max': '$isBooked'},
+        isFunded: {'$max': '$isFunded'},
         canTravel: { '$max': '$canTravel' },
         onVacation: { '$max': '$onVacation' },
         login: { '$first': '$login' },
@@ -403,7 +406,9 @@ export default class AssignmentCtrl extends BaseCtrl {
         ends: 1,
         minDate: 1,
         maxDate: 1,
-        billable: 1,
+        // isBillable: 1,
+        // isBooked: 1,
+        // isFunded: 1,
         canTravel: 1,
         login: 1,
         status: 1,

@@ -273,14 +273,9 @@ export class Schedule {
 
         this.items.forEach(resource => {
           personStati[resource._id] = resource.status;
-          resource.funded = false;
           Object.keys(resource.assignments || {}).forEach(initiativeId => {
             this.initiativeAssignments[initiativeId] = (this.initiativeAssignments[initiativeId] || {});
             this.initiativeAssignments[initiativeId][resource.login] = resource.assignments[initiativeId];
-
-            resource.funded = resource.funded || (resource.assignments[initiativeId] || []).some(assignment => 
-              (assignment.billability === 'Funded' && assignment.initiativeId != 'vacation')
-            );
             this.visibleInitiatives[initiativeId] = true;
           });
         });

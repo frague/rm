@@ -18,6 +18,8 @@ $yellow: #ffb;
 $blue: #1ca1c0;
 $red: #ff6e27;
 
+$super-green: #adff63;
+
 $good: #bbe2ba;
 $average: #e8ea9a;
 $bad: #eac39a;
@@ -1157,6 +1159,12 @@ i.initiative {
 
           &.vacation {
             background: $vacation url(assets/palm-tree.png) no-repeat 175% bottom/75%;
+          }
+
+          &.booked {
+            .avatar .fa {
+              color: $super-green;
+            }
           }
 
           &.accepted {

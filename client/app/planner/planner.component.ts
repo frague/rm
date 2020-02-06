@@ -22,6 +22,7 @@ const stripIndex = new RegExp(/^\d{2} /);
 const rowNumber = new RegExp(/^(\d+):/);
 const allowedStates = ['Open', 'Approved', 'Awaiting Approval', 'Draft'];
 const candidatesQueryKeys = ['requisition', 'candidate'];
+const boolenise = ['canTravel', 'isBillable', 'isFunded', 'isBooked', 'onTrip'];
 
 @Component({
 	selector: 'planner',
@@ -46,7 +47,7 @@ export class PlannerComponent extends Schedule {
   deserved = {};
 
   accountsDemand = {};
-  columns = ['pool', 'billable', 'onTrip', 'canTravel', 'onVacation'];
+  columns = ['pool', 'isBillable', 'isFunded', 'isBooked', 'onTrip', 'canTravel', 'onVacation'];
 
   _cd: ChangeDetectorRef;
   _cache: CacheService;
@@ -116,8 +117,8 @@ export class PlannerComponent extends Schedule {
               if (item.login.indexOf(' ') > 0) {
                 result.starts = item.minDate;
               };
-              ['canTravel', 'billable', 'onTrip'].forEach(key => result[key] = item[key] === 'true');
-              [result.onVacation, result.proposed, result.funded] = [item.onVacation, item.proposed, item.funded];
+              boolenise.forEach(key => result[key] = item[key] === 'true');
+              [result.onVacation, result.proposed] = [item.onVacation, item.proposed];
               peopleLogins.push(result.login);
               return result;
             })
@@ -356,7 +357,9 @@ export class PlannerComponent extends Schedule {
 
   getCardClass(candidate: any) {
     return {
-      billable: candidate.billable,
+      billable: candidate.isBillable,
+      funded: candidate.isFunded,
+      booked: candidate.isBooked,
       assigned: this.isAssigned(candidate),
       hiree: candidate.isHiree,
       accepted: candidate.login && candidate.login.indexOf(' ') > 0,
