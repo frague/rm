@@ -12,7 +12,7 @@
       <tr *ngFor="let candidate of candidates">
         <td>
           {{ candidate.name }}
-          <a [href]="getJvApplicationLink(candidate)" target="_blank"><i class="fa fa-external-link-square"></i></a>
+          <a [href]="getJvApplicationLink(candidate)" target="_jobvite"><i class="fa fa-external-link-square"></i></a>
         </td>
         <td>{{ cleanupStatus(candidate.state) }}, {{ candidate.updated|date }}</td>
         <td>{{ candidate.location }}</td>

@@ -3,7 +3,7 @@
     <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
-    <div class="stage" [ngClass]="demand.stage">{{ getId() }}</div>
+    <div class="stage" [ngClass]="demand.stage"><span>{{ getId() }}</span></div>
     <h4 class="modal-title">
       Demand for {{ demand.specializations }} {{ demand.profile }}
       <a [href]="getPmoLink()" *ngIf="getPmoLink()" target="_pmo"><i class="fa fa-external-link-square"></i></a>
