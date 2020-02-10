@@ -514,9 +514,13 @@ table.badges {
 
     .stage {
       text-align: center;
-      font-size: 36px;
-      font-weight: 100;
-      line-height: 2.2;
+
+      span {
+        font-size: 36px;
+        font-weight: 100;
+        line-height: 2.2;
+        letter-spacing: -2px;
+      }
 
       &.FC, &.Filled {
         background-color: $good;
