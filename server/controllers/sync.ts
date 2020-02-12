@@ -689,7 +689,10 @@ export default class SyncCtrl {
           end.setDate(end.getDate() + item.duration * 7);
 
           const profile = workProfiles[item.workProfileId].name;
-          const specs = item.specializations.map(sid => specializations[sid].name).join(', ');
+          const specs = item.specializations
+            .filter(sid => !!specializations[sid])
+            .map(sid => specializations[sid].name)
+            .join(', ');
           const pool = demandPoolsMap[profile + '-' + specs] || '';
 
           demand = {
