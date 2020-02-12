@@ -47,7 +47,7 @@ export class AccountsComponent extends Schedule {
       name: (demand ? (demand.name + (demand.comment ? ': ' + demand.comment : '')) : resource.name + ', ' + resource.grade),
       account: initiative.account,
       color: initiative.color,
-      billable: (demand || assignment).billable,
+      isBillable: (demand || assignment).isBillable,
       involvement: assignment.involvement,
       offset: assignment.offset,
       width: assignment.width,

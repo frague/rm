@@ -14,19 +14,19 @@ const skillsExpr = new RegExp(/^skills/);
 const skillExprExpr = new RegExp(/^\/([^\/]*)\/i$/);
 const delimiter = skillTree.delimiter;
 
-const defaultColumns = [
-  'assignments',
-  'assignmentsSet',
-  'login',
-  'name',
-  'grade',
-  'minDate',
-  'maxDate',
-  'billable',
-  'canTravel',
-  'status',
-  'commentsCount',
-];
+const defaultColumns = {
+  'assignments': 1,
+  'assignmentsSet': 1,
+  'login': 1,
+  'name': 1,
+  'grade': 1,
+  'minDate': 1,
+  'maxDate': 1,
+  'isBillable': 1,
+  'canTravel': 1,
+  'status': 1,
+  'commentsCount': 1,
+};
 
 const resourceColumns = [
   'name',
@@ -192,7 +192,7 @@ export default class AssignmentCtrl extends BaseCtrl {
 
     let project = {};
     columns.forEach(column => {
-      if (!defaultColumns.includes(column) && columnName.test(column)) {
+      if (!defaultColumns[column] && columnName.test(column)) {
         [column, ] = column.split('.', 2);
         this._addGroup(group, column);
         project[column] = column === 'comments' ? '$commentsTemp' : 1;
@@ -277,7 +277,7 @@ export default class AssignmentCtrl extends BaseCtrl {
             else: ''
           }
         },
-        'isBillable': {
+        'assignment.isBillable': {
           '$toString': {
             '$and': [
               '$assignment.isActive',
@@ -286,7 +286,7 @@ export default class AssignmentCtrl extends BaseCtrl {
             ]
           }
         },
-        'isBooked': {
+        'assignment.isBooked': {
           '$toString': {
             '$and': [
               '$assignment.isActive',
@@ -294,7 +294,7 @@ export default class AssignmentCtrl extends BaseCtrl {
             ]
           }
         },
-        'isFunded': {
+        'assignment.isFunded': {
           '$toString': {
             '$and': [
               '$assignment.isActive',
@@ -356,9 +356,9 @@ export default class AssignmentCtrl extends BaseCtrl {
         grade: { '$first': '$grade' },
         minDate: {'$min': '$assignment.start'},
         maxDate: {'$max': '$assignment.end'},
-        isBillable: {'$max': '$isBillable'},
-        isBooked: {'$max': '$isBooked'},
-        isFunded: {'$max': '$isFunded'},
+        isBillable: {'$max': '$assignment.isBillable'},
+        isBooked: {'$max': '$assignment.isBooked'},
+        isFunded: {'$max': '$assignment.isFunded'},
         canTravel: { '$max': '$canTravel' },
         onVacation: { '$max': '$onVacation' },
         login: { '$first': '$login' },
@@ -396,23 +396,12 @@ export default class AssignmentCtrl extends BaseCtrl {
       })
       .match(query)
       .sort(this.order)
-      .project(Object.assign(project, {
+      .project(Object.assign(project, defaultColumns, {
         _id: 1,
-        assignments: 1,
-        assignmentsSet: 1,
-        name: 1,
-        grade: 1,
         starts: 1,
         ends: 1,
-        minDate: 1,
-        maxDate: 1,
-        // isBillable: 1,
         // isBooked: 1,
         // isFunded: 1,
-        canTravel: 1,
-        login: 1,
-        status: 1,
-        commentsCount: 1,
         proposed: 1,
       }))
       .exec()

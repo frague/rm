@@ -9,7 +9,7 @@ export class InitiativeComponent {
   @Input() data: any = {
     color: '',
     name: 'None',
-    billable: false,
+    isBillable: false,
     imvolvement: 100,
     isAcceptor: false
   };
@@ -30,7 +30,7 @@ export class InitiativeComponent {
 
   getClass() {
     return {
-      nb: !Utils.isTrue(this.data.billable),
+      nb: !Utils.isTrue(this.data.isBillable),
       accepted: this.data.isAcceptor
     }
   }

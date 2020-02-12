@@ -76,181 +76,156 @@ export default class DemandCtrl extends BaseCtrl {
     console.log('Base query:', JSON.stringify(baseQuery));
 
     this.model
-      .aggregate([
-        {
-          '$match': baseQuery
-        },
-        {
-          '$lookup': {
-            from: 'comments',
-            localField: 'login',
-            foreignField: 'login',
-            as: 'comments'
-          }
-        },
-        {
-          '$addFields': {
-            commentsCount: {'$size': '$comments'},
-            status: {
-              '$arrayElemAt': [
-                {
-                  '$filter': {
-                    input: '$comments',
-                    as: 'status',
-                    cond: {
-                      '$eq': ['$$status.isStatus', true]
-                    }
-                  }
-                },
-                0
-              ]
-            },
-            billable: {
-              '$cond': {
-                if: {
-                  '$in': ['$role', ['Billable', 'Booked', 'PTO Coverage', 'Funded']]
-                },
-                then: 'true',
-                else: 'false'
-              }
-            }
-          }
-        },
-        {
-          '$unwind': {
-            path: '$requestId',
-            preserveNullAndEmptyArrays: true
-          }
-        },
-        {
-          '$lookup': {
-            from: 'requisitions',
-            let: {
-              id: '$requestId'
-            },
-            pipeline: [
-              {
-                '$match': {
-                  '$expr': {
-                    '$eq': ['$$id', '$requisitionId']
-                  }
+      .aggregate()
+      .match(baseQuery)
+      .lookup({
+        from: 'comments',
+        localField: 'login',
+        foreignField: 'login',
+        as: 'comments'
+      })
+      .addFields({
+        commentsCount: {'$size': '$comments'},
+        status: {
+          '$arrayElemAt': [
+            {
+              '$filter': {
+                input: '$comments',
+                as: 'status',
+                cond: {
+                  '$eq': ['$$status.isStatus', true]
                 }
               }
-            ],
-            as: 'requisition'
-          }
-        },
-        {
-          '$group': {
-            _id: '$_id',
-            account: { '$first': '$account' },
-            name: { '$first': '$name' },
-            pool: { '$first': '$pool' },
-            role: { '$first': '$role' },
-            profile: { '$first': '$profile' },
-            project: { '$first': '$project' },
-            start: { '$first': '$start' },
-            end: { '$first': '$end' },
-            deployment: { '$first': '$deployment' },
-            stage: { '$first': '$stage' },
-            isBooked: { '$first': '$isBooked' },
-            grades: { '$first': '$grades' },
-            locations: { '$first': '$locations' },
-            requestId: { '$push': '$requestId' },
-            requirements: { '$first': '$requirements' },
-            specializations: { '$first': '$specializations' },
-            candidates: { '$first': '$candidates' },
-            login: { '$first': '$login' },
-            comment: { '$first': '$comment' },
-            commentsTemp: {'$first': '$comments'},
-            commentsCount: { '$first': '$commentsCount' },
-            status: { '$first': '$status' },
-            billable: { '$first': '$billable' },
-            requisitionsStates: { '$push': {
-              '$cond': {
-                if: {'$gt': [{'$size': '$requisition.jobState'}, 0]},
-                then: {'$arrayElemAt': ['$requisition.jobState', 0]},
-                else: null
-              }
-            }}
-          }
-        },
-        {
-          '$addFields': {
-            requestId: {
-              '$cond': {
-                if: {
-                  '$eq': ['$requestId', ['']]
-                },
-                then: [],
-                else: '$requestId'
-              }
             },
-            comments: {
-              '$arrayToObject': {
-                '$map': {
-                  input: '$commentsTemp',
-                  as: 'comment',
-                  in: [
-                    {
-                      '$cond': {
-                        if: '$$comment.source',
-                        then: '$$comment.source',
-                        else: '0',
-                      }
-                    },
-                    '$$comment.text'
-                  ]
-                }
-              }
-            }
-          }
+            0
+          ]
         },
-        {
-          '$match': query
-        },
-        {
-          '$sort': order
-        },
-        {
-          '$project': {
-            _id: 1,
-            account: 1,
-            name: 1,
-            pool: 1,
-            role: 1,
-            profile: 1,
-            project: 1,
-            start: 1,
-            end: 1,
-            deployment: 1,
-            stage: 1,
-            isBooked: 1,
-            grades: 1,
-            locations: 1,
-            requestId: 1,
-            requirements: 1,
-            specializations: 1,
-            candidates: 1,
-            login: 1,
-            comment: 1,
-            comments: '$commentsTemp',
-            commentsCount: 1,
-            status: 1,
-            billable: 1,
-            requisitionsStates: 1
+        isBillable: {
+          '$toString': {
+            '$in': ['$role', ['Billable', 'Booked', 'PTO Coverage', 'Funded']]
           }
         }
-      ]
-    )
-    .then(data => {
-      console.log(`Records matched: ${data && data.length}`);
-      return res.json(data)
-    })
-    .catch(error => {
-      console.log('Error', error);
-      res.sendStatus(500);
-    });
+      })
+      .unwind({
+        path: '$requestId',
+        preserveNullAndEmptyArrays: true
+      })
+      .lookup({
+        from: 'requisitions',
+        let: {
+          id: '$requestId'
+        },
+        pipeline: [
+          {
+            '$match': {
+              '$expr': {
+                '$eq': ['$$id', '$requisitionId']
+              }
+            }
+          }
+        ],
+        as: 'requisition'
+      })
+      .group({
+        _id: '$_id',
+        account: { '$first': '$account' },
+        name: { '$first': '$name' },
+        pool: { '$first': '$pool' },
+        role: { '$first': '$role' },
+        profile: { '$first': '$profile' },
+        project: { '$first': '$project' },
+        start: { '$first': '$start' },
+        end: { '$first': '$end' },
+        deployment: { '$first': '$deployment' },
+        stage: { '$first': '$stage' },
+        isBooked: { '$first': '$isBooked' },
+        grades: { '$first': '$grades' },
+        locations: { '$first': '$locations' },
+        requestId: { '$push': '$requestId' },
+        requirements: { '$first': '$requirements' },
+        specializations: { '$first': '$specializations' },
+        candidates: { '$first': '$candidates' },
+        login: { '$first': '$login' },
+        comment: { '$first': '$comment' },
+        commentsTemp: {'$first': '$comments'},
+        commentsCount: { '$first': '$commentsCount' },
+        status: { '$first': '$status' },
+        isBillable: { '$first': '$isBillable' },
+        requisitionsStates: { '$push': {
+          '$cond': {
+            if: {'$gt': [{'$size': '$requisition.jobState'}, 0]},
+            then: {'$arrayElemAt': ['$requisition.jobState', 0]},
+            else: null
+          }
+        }}
+      })
+      .addFields({
+        requestId: {
+          '$cond': {
+            if: {
+              '$eq': ['$requestId', ['']]
+            },
+            then: [],
+            else: '$requestId'
+          }
+        },
+        comments: {
+          '$arrayToObject': {
+            '$map': {
+              input: '$commentsTemp',
+              as: 'comment',
+              in: [
+                {
+                  '$cond': {
+                    if: '$$comment.source',
+                    then: '$$comment.source',
+                    else: '0',
+                  }
+                },
+                '$$comment.text'
+              ]
+            }
+          }
+        }
+      })
+      .match(query)
+      .sort(order)
+      .project({
+        _id: 1,
+        account: 1,
+        name: 1,
+        pool: 1,
+        role: 1,
+        profile: 1,
+        project: 1,
+        start: 1,
+        end: 1,
+        deployment: 1,
+        stage: 1,
+        isBooked: 1,
+        grades: 1,
+        locations: 1,
+        requestId: 1,
+        requirements: 1,
+        specializations: 1,
+        candidates: 1,
+        login: 1,
+        comment: 1,
+        comments: '$commentsTemp',
+        commentsCount: 1,
+        status: 1,
+        isBillable: 1,
+        requisitionsStates: 1
+      })
+      .exec()
+      .then(data => {
+        console.log(`Records matched: ${data && data.length}`);
+        return res.json(data)
+      })
+      .catch(error => {
+        console.log('Error', error);
+        res.sendStatus(500);
+      });
   }
 
   cleanup = (req, res) => {
