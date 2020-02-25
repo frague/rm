@@ -143,7 +143,6 @@ export var accountsParse = (html: string) => {
         .split(tr)
         .map(line => stripTags(line.replace(/<\/td>/g, '|').replace(/<br[^>]*>/gi, '+')))
         .forEach(line => {
-          if (line.charAt(1) === 'A') console.log(line);
           let [account, project, ams, dds, cp, dms, timesheets, ] =
             line.split('|').map(param =>
               param.includes('+') ?
