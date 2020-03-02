@@ -165,6 +165,9 @@ abstract class BaseCtrl {
       if (modifier) {
         return modifier(key, value, this._getParameters(value));
       }
+    } else if (key.includes('location') && !value.includes('/')) {
+      // Makes it possible to query locations in lower case
+      value = value.toUpperCase();
     }
     return [key, value, false];
   }
