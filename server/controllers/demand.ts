@@ -23,6 +23,7 @@ const demandColumns = [
   'comment',
   'candidates',
   'login',
+  'duration',
 ];
 
 export default class DemandCtrl extends BaseCtrl {
@@ -151,6 +152,7 @@ export default class DemandCtrl extends BaseCtrl {
         commentsCount: { '$first': '$commentsCount' },
         status: { '$first': '$status' },
         isBillable: { '$first': '$isBillable' },
+        duration: { '$first': '$duration' },
         requisitionsStates: { '$push': {
           '$cond': {
             if: {'$gt': [{'$size': '$requisition.jobState'}, 0]},
@@ -215,7 +217,8 @@ export default class DemandCtrl extends BaseCtrl {
         commentsCount: 1,
         status: 1,
         isBillable: 1,
-        requisitionsStates: 1
+        requisitionsStates: 1,
+        duration: 1,
       })
       .exec()
       .then(data => {

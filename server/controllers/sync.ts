@@ -651,7 +651,7 @@ export default class SyncCtrl {
           item.locations.reduce((result, lId) => {
             var l = locations[lId];
             if (!l) return result;  // Unknown location ID
-            
+
             let location = locationsMap[l.name] || l.name;
             if (Array.isArray(location)) {
               location.forEach(l => result[l] = true);
@@ -717,6 +717,7 @@ export default class SyncCtrl {
             isBooked: status === 'Booked',
             requestId,
             requirements: item.requirements,
+            duration: item.duration,
 
             pool
           };

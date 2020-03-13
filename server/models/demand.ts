@@ -22,7 +22,8 @@ const demandSchema = new mongoose.Schema({
   requirements: String,
   comment: String,
   candidates: [String],
-  login: String
+  login: String,
+  duration: Number,
 });
 
 const Demand = mongoose.model('Demand', demandSchema);
