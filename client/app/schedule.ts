@@ -226,6 +226,7 @@ export class Schedule {
         if (showDemand) {
           demands.forEach((demand, index) => {
             let demandId = demand._id;
+            let id = demand.name.split(' ')[0];
             let initiativeId = demandId;
             if (demandAccounts[demand.account]) {
               initiativeId = demandAccounts[demand.account];
@@ -236,6 +237,7 @@ export class Schedule {
 
             let item = {
               _id: demandId,
+              id,
               name: demand.name,
               login: demand.login,
               status: demand.status,
