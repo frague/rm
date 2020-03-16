@@ -21,6 +21,7 @@ const visaTypes = {
   'B1/B2': /\/B2/,
   'B-1 in lieu of H-1b': /lieu/,
   'L1': /L\s*1/,
+  'J visa': /J/,
   'Polish': /VWP/,
   'Schengen': /schengen/i
 };
@@ -29,6 +30,7 @@ export const usPriorities = {
   'B1/B2': 1,
   'B1 in lieu of H1B': 2,
   'B-1 in lieu of H-1b': 2,
+  'J visa': 3,
   'L1': 3,
   'H-1b': 4,
 };
