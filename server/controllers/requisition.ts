@@ -13,6 +13,11 @@ export default class RequisitionCtrl extends BaseCtrl {
     comments: (key, value) => this.commentTransform(key, value, 'candidate')
   };
 
+  candidateCommentsModifiers = {
+    include: ['comments'],
+    comments: (key, value) => this.commentTransform(key, value)
+  };
+
   requisitionsModifiers = {
     include: ['requisition'],
     requisition: (key, value) => {
@@ -38,7 +43,7 @@ export default class RequisitionCtrl extends BaseCtrl {
   candidatesAltModifiers = {
     include: ['candidate'],
     candidate: (key, value) => {
-      if (key === 'candidates') {  // Exclude candidates=true/false from becoming a condition
+      if (key === 'candidates' || key.includes('.comments')) {  // Exclude candidates=true/false from becoming a condition
         return false;
       }
       key = key.replace('candidate.', '');
@@ -70,6 +75,7 @@ export default class RequisitionCtrl extends BaseCtrl {
 
     let requisitionsQuery = this.fixOr(this.modifyCriteria(or, this.requisitionsModifiers));
     let commentsQuery = this.fixOr(this.modifyCriteria(or, this.commentsModifiers));
+    let candidateCommentsQuery = this.fixOr(this.modifyCriteria(or, this.candidateCommentsModifiers));
     let candidatesQuery = this.fixOr(this.modifyCriteria(or, this.candidatesModifiers));
     let candidatesAltQuery = this.fixOr(this.modifyCriteria(or, this.candidatesAltModifiers));
 
@@ -79,7 +85,9 @@ export default class RequisitionCtrl extends BaseCtrl {
     console.log('Initial:', JSON.stringify(or));
     console.log('Requisitions query:', JSON.stringify(requisitionsQuery));
     console.log('Candidates query:', JSON.stringify(candidatesQuery));
+    console.log('Candidates alt query:', JSON.stringify(candidatesAltQuery));
     console.log('Comments query:', JSON.stringify(commentsQuery));
+    console.log('Candidates comments query:', JSON.stringify(candidateCommentsQuery));
     console.log('Order:', JSON.stringify(order));
 
     if (Object.keys(requisitionsQuery).length) {
@@ -307,7 +315,7 @@ export default class RequisitionCtrl extends BaseCtrl {
             ]
           }
         })
-        .match(commentsQuery)
+        .match(candidateCommentsQuery)
 
         .lookup({
           from: 'requisitions',
@@ -387,7 +395,6 @@ export default class RequisitionCtrl extends BaseCtrl {
             ]
           }
         })
-        .match(commentsQuery)
         .sort(order)
 
         .lookup({

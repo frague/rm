@@ -80,12 +80,20 @@ export class ReportsComponent extends Schedule {
     let queryString = JSON.stringify(query['or']) || '';
     let hideRequisitions = queryString.includes('"requisitions":"false"');
     let hideCandidates = queryString.includes('"candidates":"false"');
+    let addBadges = JSON.stringify(serviceData['columns'] || {}).includes('badges');
+
     let requisitionsQuery = this._cache.getObservable('requisitions') || (
-      candidatesQueryKeys.some(key => queryString.indexOf(key + '.') >= 0) ?
+      candidatesQueryKeys.some(key => {
+        console.log(queryString.includes(key + '.'));
+        return queryString.includes(key + '.');
+      }) ?
         this.requisitionService.getAll({...query, order}) : from([[]])
     );
 
-    let addBadges = JSON.stringify(serviceData['columns'] || {}).includes('badges');
+    // let candidatesQuery = this._cache.getObservable('candidates') || (
+    //   (!hideCandidates && queryString.includes('candidates.')) ? this.candidateService.getAll(query) : from([[]])
+    // );
+
 
     return requisitionsQuery.subscribe(data => {
       this._cache.set('requisitions', data);
