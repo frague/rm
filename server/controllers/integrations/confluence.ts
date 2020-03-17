@@ -1,4 +1,7 @@
 const request = require('request');
+const https = require('https');
+
+const { URLSearchParams } = require('url');
 // const Confluence = require('confluence-api');
 import { visasParse, accountsParse } from '../htmlparser';
 
@@ -7,34 +10,60 @@ import { login, fillRequest } from './utils';
 const env = process.env;
 
 class Confluence {
-  auth = `${env.CONFLUENCE_LOGIN}:${env.CONFLUENCE_PASSWORD}`;
+  auth = Buffer.from(`${env.CONFLUENCE_LOGIN}:${env.CONFLUENCE_PASSWORD}`).toString('base64');
   headers = {
     'Authorization': `Basic ${this.auth}`,
     'Content-Type': 'application/json'
   };
-  baseUrl = 'https://griddynamics.atlassian.net/wiki';
+  baseUrl = 'https://griddynamics.atlassian.net/wiki/rest/api/content/';
 
-  _get(uri, callback) {
-    var params = {
-      expand: ['body.view']
-    };
-
-    request.get(
-      this.baseUrl + uri + '?' + new URLSearchParams(params),
-      {
-        auth: this.auth,
-        headers: this.headers
-      },
-      (res) => callback(res.statusCode, res)
+  _get(uri, params, callback) {
+    let searchParams = new URLSearchParams(
+      Object.assign({
+        expand: ['body.view']
+      }, params)
     );
+    let url = this.baseUrl + uri + '?' + searchParams.toString();
+    let data = '';
+
+    let req = https.request(
+      {
+        hostname: 'griddynamics.atlassian.net',
+        path: '/wiki/rest/api/content/' + uri + '?' + searchParams.toString(),
+        headers: this.headers,
+        method: 'GET'
+      },
+      (res) => {
+        if (!res || res.statusCode !== 200) {
+          return callback('Error fetching data', null);
+        }
+        res.on('data', (chunk) => {
+          data = `${data}${chunk}`;
+        });
+
+        res.on('end', () => {
+          let result;
+          try {
+            result = JSON.parse(data);
+          } catch {
+            return callback('Error parsing confluence response', '');
+          }
+          console.log(result.body, Object.keys(result.body));
+          callback(null, result.body.view.value);
+        });
+      }
+    );
+
+    req.on('error', (error) => callback(error, null));
+    req.end();
   }
 
-  getContentByPageTitle = (space, title, callback) => {
-
+  getContentByPageTitle = (spaceKey, title, callback) => {
+    this._get('', {title, spaceKey}, callback);
   };
 
-  getCustomContentById = (options, callback) => {
-
+  getCustomContentById = (pageId, callback) => {
+    this._get(`${pageId}`, {}, callback);
   };
 }
 
@@ -84,13 +113,15 @@ export default class ConfluenceIntegrationsCtrl {
   // Accounts management
   getAccountManagement = (): Promise<any> => {
     return new Promise((resolve, reject) => {
-      confluence.getContentByPageTitle('HQ', 'Accounts+and+Projects+Summary', function(error, data) {
+      confluence.getCustomContentById('524617', function(error, data) {
         if (error) {
           return reject(error);
         }
 
         try {
-          resolve(accountsParse(data.body.view.value));
+          console.log(data);
+          resolve(accountsParse(data));
+          // resolve(accountsParse(data.body.view.value));
         } catch (e) {
           reject(e);
         }
