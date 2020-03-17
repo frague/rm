@@ -1,16 +1,44 @@
 const request = require('request');
-const Confluence = require('confluence-api');
+// const Confluence = require('confluence-api');
 import { visasParse, accountsParse } from '../htmlparser';
 
 import { login, fillRequest } from './utils';
 
 const env = process.env;
-const confluenceConfig = {
-  username: env.CONFLUENCE_LOGIN,
-  password: env.CONFLUENCE_PASSWORD,
-  baseUrl: 'https://wiki.griddynamics.net'
-};
-const confluence = new Confluence(confluenceConfig);
+
+class Confluence {
+  auth = `${env.CONFLUENCE_LOGIN}:${env.CONFLUENCE_PASSWORD}`;
+  headers = {
+    'Authorization': `Basic ${this.auth}`,
+    'Content-Type': 'application/json'
+  };
+  baseUrl = 'https://griddynamics.atlassian.net/wiki';
+
+  _get(uri, callback) {
+    var params = {
+      expand: ['body.view']
+    };
+
+    request.get(
+      this.baseUrl + uri + '?' + new URLSearchParams(params),
+      {
+        auth: this.auth,
+        headers: this.headers
+      },
+      (res) => callback(res.statusCode, res)
+    );
+  }
+
+  getContentByPageTitle = (space, title, callback) => {
+
+  };
+
+  getCustomContentById = (options, callback) => {
+
+  };
+}
+
+const confluence = new Confluence();
 
 export default class ConfluenceIntegrationsCtrl {
 
@@ -56,10 +84,7 @@ export default class ConfluenceIntegrationsCtrl {
   // Accounts management
   getAccountManagement = (): Promise<any> => {
     return new Promise((resolve, reject) => {
-      confluence.getCustomContentById({
-        id: '136693048',
-        expanders: ['body.view']
-      }, function(error, data) {
+      confluence.getContentByPageTitle('HQ', 'Accounts+and+Projects+Summary', function(error, data) {
         if (error) {
           return reject(error);
         }
