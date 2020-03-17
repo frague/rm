@@ -1,13 +1,16 @@
 const request = require('request');
 const https = require('https');
-
+const http = require('http');
+const Url = require('url');
 const { URLSearchParams } = require('url');
-// const Confluence = require('confluence-api');
-import { visasParse, accountsParse } from '../htmlparser';
 
+import { visasParse, accountsParse } from '../htmlparser';
 import { login, fillRequest } from './utils';
 
 const env = process.env;
+
+const accountsUrl = RegExp(/\"url\":\"([^\"]+)\"/);
+const iframeUrl = RegExp(/<iframe[^>]+src=\"([^\"]+)\"/);
 
 class Confluence {
   auth = Buffer.from(`${env.CONFLUENCE_LOGIN}:${env.CONFLUENCE_PASSWORD}`).toString('base64');
@@ -17,54 +20,46 @@ class Confluence {
   };
   baseUrl = 'https://griddynamics.atlassian.net/wiki/rest/api/content/';
 
-  _get(uri, params, callback) {
+  _request(url: string, options: any): Promise<string> {
+    return new Promise((resolve, reject) => {
+      let urlParsed = Url.parse(url);
+      let protocol = urlParsed.protocol === 'https:' ? https : http;
+      options = Object.assign(
+        {
+          headers: this.headers,
+          hostname: urlParsed.hostname,
+          path: urlParsed.path,
+        },
+        options
+      );
+
+      let data = '';
+      let req = protocol.request(options, (res) => {
+          if (!res || res.statusCode !== 200) {
+            return reject(`Error fetching data from ${url}`);
+          }
+          res.on('data', (chunk) => data = `${data}${chunk}`);
+          res.on('end', () => resolve(data));
+        }
+      );
+      req.on('error', (error) => reject(error));
+      req.end();
+    });
+  }
+
+  confluenceGet(uri, params): Promise<string> {
     let searchParams = new URLSearchParams(
       Object.assign({
         expand: ['body.view']
       }, params)
     );
     let url = this.baseUrl + uri + '?' + searchParams.toString();
-    let data = '';
 
-    let req = https.request(
-      {
-        hostname: 'griddynamics.atlassian.net',
-        path: '/wiki/rest/api/content/' + uri + '?' + searchParams.toString(),
-        headers: this.headers,
-        method: 'GET'
-      },
-      (res) => {
-        if (!res || res.statusCode !== 200) {
-          return callback('Error fetching data', null);
-        }
-        res.on('data', (chunk) => {
-          data = `${data}${chunk}`;
-        });
-
-        res.on('end', () => {
-          let result;
-          try {
-            result = JSON.parse(data);
-          } catch {
-            return callback('Error parsing confluence response', '');
-          }
-          console.log(result.body, Object.keys(result.body));
-          callback(null, result.body.view.value);
-        });
-      }
-    );
-
-    req.on('error', (error) => callback(error, null));
-    req.end();
+    return this._request(url, {method: 'GET'});
   }
 
-  getContentByPageTitle = (spaceKey, title, callback) => {
-    this._get('', {title, spaceKey}, callback);
-  };
-
-  getCustomContentById = (pageId, callback) => {
-    this._get(`${pageId}`, {}, callback);
-  };
+  getContentByPageTitle = (spaceKey: string, title: string): Promise<any> => this.confluenceGet('', {title, spaceKey});
+  getCustomContentById = (pageId: string): Promise<any> => this.confluenceGet(`${pageId}`, {});
 }
 
 const confluence = new Confluence();
@@ -74,58 +69,68 @@ export default class ConfluenceIntegrationsCtrl {
   // Whois information
   getWhois = (): Promise<any> => {
     return new Promise((resolve, reject) => {
-      confluence.getContentByPageTitle('HQ', 'New WhoIs', function(error, data) {
-        if (error) {
-          return reject(error);
-        }
-
-        try {
-          let [, , body, ,] = data.results[0].body.storage.value.split(/(var dataSet = |;\s+var newData =)/g);
-          let whois = JSON.parse(body.replace(/\t/g, ' '));
-          resolve(whois);
-        } catch (e) {
-          reject(e);
-        }
-      });
+      confluence.getCustomContentById('524725')
+        .then((data) => {
+          try {
+            // let json = JSON.parse(data);
+            // let [, , body, ,] = json.body.view.value.split(/(var dataSet = |;\s+var newData =)/g);
+            // let whois = JSON.parse(body.replace(/\t/g, ' '));
+            let whois = [];
+            resolve(whois);
+          } catch (e) {
+            reject(e);
+          }
+        })
+        .catch(reject);
     });
   }
 
   // Visas
   getVisas = (): Promise<any> => {
     return new Promise((resolve, reject) => {
-      confluence.getCustomContentById({
-        id: '1802301',
-        expanders: ['body.view']
-      }, function(error, data) {
-        if (error) {
-          return reject(error);
-        }
-        try {
-          let visas = visasParse(data.body.view.value);
-          resolve(visas);
-        } catch (e) {
-          reject(e);
-        }
-      });
+      confluence.getCustomContentById('524547')
+        .then((data) => {
+          try {
+            let json = JSON.parse(data).body.view.value;
+            let visas = visasParse(json);
+            resolve(visas);
+          } catch (e) {
+            reject(e);
+          }
+        })
+        .catch(reject);
     });
   }
 
   // Accounts management
   getAccountManagement = (): Promise<any> => {
     return new Promise((resolve, reject) => {
-      confluence.getCustomContentById('524617', function(error, data) {
-        if (error) {
-          return reject(error);
-        }
-
+      confluence.getCustomContentById('524617')
+      .then((data) => {
         try {
-          console.log(data);
-          resolve(accountsParse(data));
-          // resolve(accountsParse(data.body.view.value));
+          // Fetching the wiki page and searching for the widget source
+          let level1 = JSON.parse(data).body.view.value;
+          let [, url1] = accountsUrl.exec(level1);
+          if (!url1) throw 'Unable to find the link to accounts iFrame';
+
+          // Fetching the widget markup and searching for the iframe src
+          confluence._request(url1, {method: 'GET'})
+            .then((level2) => {
+              let [, url2] = iframeUrl.exec(level2);
+              console.log('Url2: ', url2);
+              if (!url2) throw 'Unable to find the link to accounts data inside the iFrame';
+
+              // Fetching the final data to parse
+              confluence._request(url2, {method: 'GET'})
+                .then((level3) => resolve(accountsParse(level3)))   // Thanks god, we don't have to go deeper...
+                .catch(reject);
+            })
+            .catch(reject);
         } catch (e) {
           reject(e);
         }
-     });
+      })
+      .catch(reject);
     });
   }
 
