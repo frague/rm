@@ -1,4 +1,3 @@
-const request = require('request');
 const https = require('https');
 const http = require('http');
 const Url = require('url');
@@ -20,7 +19,7 @@ class Confluence {
   };
   baseUrl = 'https://griddynamics.atlassian.net/wiki/rest/api/content/';
 
-  _request(url: string, options: any): Promise<string> {
+  request(url: string, options: any): Promise<string> {
     return new Promise((resolve, reject) => {
       let urlParsed = Url.parse(url);
       let protocol = urlParsed.protocol === 'https:' ? https : http;
@@ -36,6 +35,7 @@ class Confluence {
       let data = '';
       let req = protocol.request(options, (res) => {
           if (!res || res.statusCode !== 200) {
+            console.log(res.statusCode);
             return reject(`Error fetching data from ${url}`);
           }
           res.on('data', (chunk) => data = `${data}${chunk}`);
@@ -55,7 +55,7 @@ class Confluence {
     );
     let url = this.baseUrl + uri + '?' + searchParams.toString();
 
-    return this._request(url, {method: 'GET'});
+    return this.request(url, {method: 'GET'});
   }
 
   getContentByPageTitle = (spaceKey: string, title: string): Promise<any> => this.confluenceGet('', {title, spaceKey});
@@ -114,14 +114,14 @@ export default class ConfluenceIntegrationsCtrl {
           if (!url1) throw 'Unable to find the link to accounts iFrame';
 
           // Fetching the widget markup and searching for the iframe src
-          confluence._request(url1, {method: 'GET'})
+          confluence.request(url1, {method: 'GET'})
             .then((level2) => {
               let [, url2] = iframeUrl.exec(level2);
               console.log('Url2: ', url2);
               if (!url2) throw 'Unable to find the link to accounts data inside the iFrame';
 
               // Fetching the final data to parse
-              confluence._request(url2, {method: 'GET'})
+              confluence.request(url2, {method: 'GET'})
                 .then((level3) => resolve(accountsParse(level3)))   // Thanks god, we don't have to go deeper...
                 .catch(reject);
             })

@@ -15,7 +15,11 @@ export default class PmoIntegrationsCtrl {
       this.sessionCookies = '';
       return login(pmo + 'j_spring_security_check', env.PMO_LOGIN, env.PMO_PASSWORD)
         .on('response', response => {
-          this.sessionCookies = request.cookie(response.headers['set-cookie'][0]);
+          try {
+            this.sessionCookies = request.cookie(response.headers['set-cookie'][0]);
+          } catch (error) {
+            return reject(error);
+          }
           resolve();
         })
         .on('error', error => {
