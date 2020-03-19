@@ -148,7 +148,7 @@ export var accountsParse = (html: string) => {
           let [account, project, ams, dds, cp, dms, timesheets, ] =
             line.split('|').map(param =>
               param.includes(',') ?
-              param.split(',').map(name => name.trim()).join(', ') :
+              param.split(',').map(name => name.trim()).sort().join(', ') :
               param.trim()
             );
           if (account && project) {

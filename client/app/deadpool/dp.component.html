@@ -24,9 +24,8 @@
             {{ makeDemandCaption(diff.subject) }}
           </a>
         </span>
-      	<span *ngIf="type === 'c'">
-          <a (click)="showRequisition(diff)">{{ makeReq(diff.subject) }}</a>:
-          <a (click)="showCandidate(diff)">{{ diff.title }}</a>
+      	<span *ngIf="type === 'a'">
+          {{ diff.title }}
         </span>
       	<ul *ngIf="hasDiff(diff)">
       		<li *ngFor="let key of diff.diff|keys">
@@ -36,7 +35,7 @@
               &rarr;
               {{ diff.diff[key][1]|ellipsis:'...' }}
             </ng-container>
-              <i *ngIf="key === 'payRate'" class="fa fa-eye" [ngbTooltip]="diff.diff[key][0] + ' &rarr; ' + diff.diff[key][1]"></i>
+            <i *ngIf="key === 'payRate'" class="fa fa-eye" [ngbTooltip]="diff.diff[key][0] + ' &rarr; ' + diff.diff[key][1]"></i>
           </li>
       	</ul>
         <span *ngIf="diff.diff === 1" class="joined">added</span>

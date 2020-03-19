@@ -23,9 +23,9 @@ export class DpComponent extends BaseComponent {
   @ViewChild(CandidateModal) candidateModal: CandidateModal;
 
   public form = new FormGroup({});
-  types = ['r', 'd', 'c'];
+  types = ['r', 'd', 'a'];
 
-  typeNames = {r: 'Employees', d: 'Demands', c: 'Candidates'};
+  typeNames = {r: 'Employees', d: 'Demands', c: 'Candidates', a: 'Accounts Management'};
   diffs = {};
 
   constructor(

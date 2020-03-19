@@ -795,7 +795,9 @@ export default class SyncCtrl {
           date: now,
           login: '%' + md5(project.account) + '_' + md5(project.project),
           source: accountManagementSource,
+          isStatus: true,
           text: [
+            `## ${project.account} (${project.project})`,
             project.ams && `Account Directors: ${project.ams}`,
             project.dds && `Delivery Directors: ${project.dds}`,
             project.cp && `Customer Partners: ${project.cp}`,

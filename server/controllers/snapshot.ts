@@ -2,11 +2,13 @@ import Snapshot from '../models/snapshot';
 import Resource from '../models/resource';
 import Demand from '../models/demand';
 import Candidate from '../models/candidate';
+import Comment from '../models/comment';
 import Diff from '../models/diff';
 import DiffCtrl from '../controllers/diff';
 import BaseCtrl from './base';
 
 var diffCtrl = new DiffCtrl();
+const accountManagementSource = 'Account management';
 const keys = [
   'account',
   'comment',
@@ -41,6 +43,10 @@ const keys = [
   'onTrip',
   'birthday',
   'english',
+  'Account Directors',
+  'Delivery Directors',
+  'Customer Partners',
+  'Delivery Managers',
 ];
 
 const dateKeys = [
@@ -146,7 +152,7 @@ export default class SnapshotCtrl extends BaseCtrl {
   saveDiff(model, entity: string): Promise<any> {
     return new Promise((resolve, reject) => {
       model.find({}, (err, docs) => {
-        if (err) reject(err);
+        if (err) return reject(err);
         let updated = docs.reduce((result, doc) => {
           result[doc.login] = doc;
           return result;
@@ -157,11 +163,49 @@ export default class SnapshotCtrl extends BaseCtrl {
     });
   }
 
+  _parseTitle(data: string): any {
+    let lines = data.split('\n\n');
+    let title = lines.splice(0, 1);
+    let management = lines.reduce((result, line) => {
+      let [managers, list] = line.split(': ');
+      result[managers] = list.split(', ');
+      return result;
+    }, {});
+    return [
+      title[0].replace(/\./g, ' dot ').replace('## ', ''),
+      management
+    ];
+  }
+
+  saveAMDiff(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      Comment.find({source: accountManagementSource}, (err, docs) => {
+        if (err) return reject(err);
+        let updated = docs.reduce((result, doc) => {
+          let [login, management] = this._parseTitle(doc.text);
+          if (login) {
+            result[login] = Object.assign(
+              {
+                _id: doc._id,
+                login,
+              },
+              management
+            )
+          }
+          return result;
+        }, {});
+        this.makeDiff(updated, 'a');
+        resolve();
+      })
+    });
+  }
+
   saveDiffs = (req, res) => {
     Promise.all([
       this.saveDiff(Resource, 'r'),
       this.saveDiff(Demand, 'd'),
-      this.saveDiff(Candidate, 'c')
+      this.saveDiff(Candidate, 'c'),
+      this.saveAMDiff()
     ])
       .then(() => {
         res.sendStatus(200);
