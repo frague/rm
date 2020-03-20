@@ -20,16 +20,18 @@ export const login = (url: string, j_username: string, j_password: string) => {
 }
 
 const ssoLogin = (): Promise<any> => {
+  let payload = {
+    userName: env.INGRID_LOGIN,
+    encodedPassword: env.INGRID_PASSWORD,
+    // encodedPassword: Buffer.from(env.INGRID_PASSWORD).toString('base64')
+  };
   return new Promise((resolve, reject) =>
     postJson(
       sso,
-      {
-        userName: env.CONFLUENCE_LOGIN,
-        encodedPassword: Buffer.from(env.CONFLUENCE_PASSWORD).toString('base64')
-      },
+      payload,
       (err, response, body) => {
         console.log('SSO authentication...');
-        if (err) {
+        if (err || !body.accessToken) {
           console.log('   error');
           return reject('Error logging in via SSO');
         }
@@ -56,7 +58,7 @@ export const ssoQuery = (url: string, options: any = null, isRecurred=false): Pr
 
     let opts = Object.assign({url}, ssoHeader, options);
 
-    console.log('SSO query: ', opts);
+    console.log('SSO query: ', url);
 
     request[options ? 'post' : 'get'](
       opts,

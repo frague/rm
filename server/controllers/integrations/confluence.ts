@@ -12,7 +12,7 @@ const accountsUrl = RegExp(/\"url\":\"([^\"]+)\"/);
 const iframeUrl = RegExp(/<iframe[^>]+src=\"([^\"]+)\"/);
 
 class Confluence {
-  auth = Buffer.from(`${env.CONFLUENCE_LOGIN}:${env.CONFLUENCE_PASSWORD}`).toString('base64');
+  auth = Buffer.from(`${env.CONFLUENCE_LOGIN}:${env.CONFLUENCE_TOKEN}`).toString('base64');
   headers = {
     'Authorization': `Basic ${this.auth}`,
     'Content-Type': 'application/json'
