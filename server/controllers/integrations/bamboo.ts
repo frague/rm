@@ -67,6 +67,9 @@ export default class BambooIntegrationsCtrl {
             <field id="4733" />
             <field id="4734" />
             <field id="4737" />
+            <field id="4901" />
+            <field id="4893" />
+            <field id="4894" />
           </fields>
         </report>`
       );

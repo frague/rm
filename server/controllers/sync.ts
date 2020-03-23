@@ -341,8 +341,8 @@ export default class SyncCtrl {
             result[employee.lastName + ' ' + employee.firstName] = employee;
             return result;
           }, {});
-          this._addLog(Object.keys(prs).length + ' employees records received', 'pr');
-          resolve(prs);
+        this._addLog(Object.keys(prs).length + ' employees records received', 'pr');
+        resolve(prs);
       } catch (e) {
         console.log('Error parsing employees data', e);
         return reject(e);
@@ -449,6 +449,7 @@ export default class SyncCtrl {
             let visaType = newPR.customVisaType;
             let payRate = newPR.payRate;
             let english = this._formatEnglish(newPR.customEnglishproficiency, newPR.customTest, newPR.customLevel, newPR.customNotes1);
+            let CV = newPR.customLinktotheCV;
 
             pr = {
               nextPr: this._makeDate(newPR.customPerformanceReviewDue),
@@ -456,6 +457,7 @@ export default class SyncCtrl {
               birthday: this._makeDate(newPR.dateOfBirth),
               bambooId: newPR.id,
               english,
+              CV,
             };
 
             // Visas are received from two sources: wiki and bamboo.
@@ -506,6 +508,7 @@ export default class SyncCtrl {
             birthday: pr.birthday,
             bambooId: pr.bambooId,
             english: pr.english,
+            CV: pr.CV,
             pmoId: person.id,
           });
 

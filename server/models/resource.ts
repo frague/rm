@@ -24,6 +24,7 @@ const resourceSchema = new mongoose.Schema({
   pmoId: String,
   visas: Array,
   english: String,
+  CV: String,
 });
 
 const Resource = mongoose.model('Resource', resourceSchema);

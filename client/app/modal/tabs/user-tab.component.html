@@ -36,6 +36,11 @@
               {{ visa.type }}<span [ngClass]="{expired: isExpired(visa.till)}">{{ visa.till|date }}</span></li>
           </ul></dd>
 
+        <ng-container *ngIf="person.CV">
+          <dt>CV</dt>
+          <dd><a [href]="person.CV" target="_cv">Link</a></dd>
+        </ng-container>
+
         <dt>English</dt>
         <dd class="md english" [innerHTML]="person.english|markdown"></dd>
 
@@ -53,8 +58,8 @@
           <dd>{{ person.birthday|date }}</dd>
         </ng-container>
 
-        <dt>Driver's License</dt>
-        <dd>{{ person.license }}</dd>
+        <!-- <dt>Driver's License</dt>
+        <dd>{{ person.license }}</dd> -->
       </dl>
     </div>
   </div>

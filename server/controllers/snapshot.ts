@@ -43,6 +43,7 @@ const keys = [
   'onTrip',
   'birthday',
   'english',
+  'CV',
   'Account Directors',
   'Delivery Directors',
   'Customer Partners',

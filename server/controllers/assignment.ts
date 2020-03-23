@@ -42,6 +42,7 @@ const resourceColumns = [
   'onTrip',
   'birthday',
   'english',
+  'CV',
 ];
 
 const columnName = new RegExp(/^[a-z0-9_ .]+$/, 'i');

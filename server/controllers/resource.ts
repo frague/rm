@@ -81,6 +81,7 @@ export default class ResourceCtrl extends BaseCtrl {
         pmoId: 1,
         visas: 1,
         english: 1,
+        CV: 1,
       })
       .match(query)
       .sort({
