@@ -143,12 +143,12 @@ export var accountsParse = (html: string) => {
     if (tableMarkup) {
       tableMarkup
         .split(tr)
-        .map(line => stripTags(line.replace(/<\/td>/g, '|')))
+        .map(line => stripTags(line.replace(/<\/td>/g, '|').replace(/<\/div>/g, ',')))
         .forEach(line => {
           let [account, project, ams, dds, cp, dms, timesheets, ] =
             line.split('|').map(param =>
               param.includes(',') ?
-              param.split(',').map(name => name.trim()).sort().join(', ') :
+              param.split(',').map(name => name.trim()).filter(name => !!name).sort().join(', ') :
               param.trim()
             );
           if (account && project) {

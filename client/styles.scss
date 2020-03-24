@@ -2507,10 +2507,6 @@ div.bottom-corner {
       border-bottom: solid 1px $grid;
     }
 
-    i.fa {
-      margin-left: 4px;
-    }
-
     div.date {
       margin-bottom: 10px;
       overflow-x: hidden;
@@ -2526,11 +2522,32 @@ div.bottom-corner {
         li {
           list-style: none;
           font-size: 12px;
+          margin-bottom: 4px;
+
+          b {
+            margin-right: 4px;
+          }
+
+          span {
+            p {
+              display: inline;
+            }
+          }
+
+          strong {
+            font-weight: normal;
+            color: $primary - #555;
+          }
+
+          em {
+            font-style: normal;
+            color: $red;
+          }
         }
       }
 
       .joined {
-        color: $primary - #444;
+        color: $primary - #555;
       }
 
       .left {

@@ -3,6 +3,17 @@ import * as marked from 'marked';
 import { months, monthsRoman } from './sync/mappings';
 import { Utils } from './utils';
 
+const listDiffs = [
+  'candidates',
+  'locations',
+  'grades',
+  'visas',
+  'Account Directors',
+  'Delivery Directors',
+  'Customer Partners',
+  'Delivery Managers',
+];
+
 // Custom markdown renderer for links
 var renderer = new marked.Renderer();
 renderer.link = function (href: string, title: string, text: string) {
@@ -77,13 +88,17 @@ export class SplitPipe implements PipeTransform {
   }
 }
 
+const _ellipsis = (source: any, ifEmpty = '...'): string => {
+  if (typeof source === 'boolean') {
+    source = source.toString();
+  }
+  return source || ifEmpty;
+}
+
 @Pipe({name: 'ellipsis'})
 export class EllipsisPipe implements PipeTransform {
   transform(source: any, ifEmpty: string): string {
-    if (typeof source === 'boolean') {
-      source = source.toString();
-    }
-    return source || ifEmpty;
+    return _ellipsis(source, ifEmpty);
   }
 }
 
@@ -239,5 +254,21 @@ export class MarkdownPipe implements PipeTransform {
 export class DeCamelPipe implements PipeTransform {
   transform(source: string = '') {
     return source.replace(/\./g, ' ').replace(deCamelExpr, '$1 $2').trim();
+  }
+}
+
+@Pipe({name: 'diff'})
+export class DiffPipe implements PipeTransform {
+  transform(source: any, key: string) {
+    let diff = source.diff;
+    if (!diff || !diff[key]) return '';
+    let [before, after] = diff[key];
+
+    if (listDiffs.includes(key)) {
+      let [b, a] = [before.split(/ *, */), after.split(/ *, */)];
+      if (before) before = b.map(item => a.includes(item) ? item : `*${item}*`).join(', ');
+      if (after) after = a.map(item => b.includes(item) ? item : `**${item}**`).join(', ');
+    }
+    return `${_ellipsis(before)} &rarr; ${_ellipsis(after)}`;
   }
 }
