@@ -314,7 +314,7 @@ export default class SyncCtrl {
           if (todayYear - endYear > 1) return;
 
           // Add vacation if it is approved
-          if (request.status && approvedVacations.includes(request.status['$t'])) {
+          if (request.status && approvedVacations.includes(request.status['$t']) && request.type && request.type['$t'].includes('acation')) {
             addVacation(resource.login, request.start, request.end);
             vacationsCount++;
           }
