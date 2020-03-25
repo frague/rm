@@ -56,7 +56,10 @@ export const ssoQuery = (url: string, options: any = null, isRecurred=false): Pr
       if (_error) return reject(_error);
     }
 
-    let opts = Object.assign({url}, ssoHeader, options);
+    let opts = Object.assign({url}, options, ssoHeader);
+    if (options && options.headers) {
+      opts.headers = Object.assign(opts.headers, options.headers);
+    }
 
     console.log('SSO query: ', url);
 

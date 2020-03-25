@@ -5,8 +5,6 @@ import ResourceCtrl from './controllers/resource';
 import InitiativeCtrl from './controllers/initiative';
 import AssignmentCtrl from './controllers/assignment';
 import UserCtrl from './controllers/user';
-import SkillTreeCtrl from './controllers/integrations/skilltree';
-import InGridCtrl from './controllers/integrations/ingrid';
 import DemandCtrl from './controllers/demand';
 import FilterCtrl from './controllers/filter';
 import SyncCtrl from './controllers/sync';
@@ -16,12 +14,16 @@ import DiffCtrl from './controllers/diff';
 import SnapshotCtrl from './controllers/snapshot';
 import CandidateCtrl from './controllers/candidate';
 import RequisitionCtrl from './controllers/requisition';
-import BambooIntegrationsCtrl from './controllers/integrations/bamboo';
-import PmoIntegrationsCtrl from './controllers/integrations/pmo';
 import BackupCtrl from './controllers/backup';
 import RequisitionDemandCtrl from './controllers/requisitionDemand';
 import BadgeCtrl from './controllers/badge';
 import ItemBadgeCtrl from './controllers/itemBadge';
+
+import InGridCtrl from './controllers/integrations/ingrid';
+import PmoIntegrationsCtrl from './controllers/integrations/pmo';
+import SkillTreeCtrl from './controllers/integrations/skilltree';
+import BambooIntegrationsCtrl from './controllers/integrations/bamboo';
+import StaffingToolCtrl from './controllers/integrations/staffingTool';
 
 import Resource from './models/resource';
 import User from './models/user';
@@ -54,6 +56,7 @@ export default function setRoutes(app) {
 
   const bamboo = new BambooIntegrationsCtrl();
   const pmo = new PmoIntegrationsCtrl();
+  const stuffing = new StaffingToolCtrl();
 
   const backupCtrl = new BackupCtrl();
 
@@ -186,6 +189,7 @@ export default function setRoutes(app) {
   // router.route('/report').get(bamboo.getReport);
 
   // router.route('/people').get(pmo.getPeopleRequest);
+  router.route('/stuffing').get(stuffing.getDemands);
 
   // Apply the routes to our application with the prefix /api
   app.use('/api', router);
