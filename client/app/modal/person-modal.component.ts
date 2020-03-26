@@ -1,5 +1,5 @@
 import { Component, ViewChild, Input } from '@angular/core';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
 import { BaseModalComponent } from './base.component';
 import { ResourceService } from '../services/resource.service';
