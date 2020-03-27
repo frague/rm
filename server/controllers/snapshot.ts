@@ -82,8 +82,9 @@ export default class SnapshotCtrl extends BaseCtrl {
       } else if (deepsKeys.includes(key)) {
         let modifier = deeps[key];
         [c, d] = [modifier(c), modifier(d)];
-      } else if (Array.isArray(c) && Array.isArray(d)) {
-        [c, d] = [c.sort().join(','), d.sort().join(',')];
+      } else {
+        if (Array.isArray(c)) c = c.sort().join(',');
+        if (Array.isArray(d)) d = d.sort().join(',');
       }
 
       c = !!c ? c : '';
