@@ -32,4 +32,13 @@ export class UserTabComponent extends BaseTabComponent {
       this.sanitizer.bypassSecurityTrustUrl('skype:' + this.person.skype + '?chat') :
       '';
   }
+
+  copy() {
+    const el = document.createElement('textarea');
+    el.value = this.person.CV;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+  }
 }

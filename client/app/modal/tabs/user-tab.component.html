@@ -38,7 +38,10 @@
 
         <ng-container *ngIf="person.CV">
           <dt>CV</dt>
-          <dd><a [href]="person.CV" target="_cv">Link</a></dd>
+          <dd>
+            <a [href]="person.CV" target="_cv">Link</a>
+            <i class="fa fa-copy clickable" (click)="copy()"></i>
+          </dd>
         </ng-container>
 
         <dt>English</dt>
