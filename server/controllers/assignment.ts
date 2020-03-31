@@ -43,6 +43,7 @@ const resourceColumns = [
   'birthday',
   'english',
   'CV',
+  'comments',
 ];
 
 const columnName = new RegExp(/^[a-z0-9_ .]+$/, 'i');
@@ -58,6 +59,22 @@ export default class AssignmentCtrl extends BaseCtrl {
   modifiers = {
     exclude: ['demand', 'skills', 'candidate', 'candidates', 'requisition', 'requisitions', 'requisitionId']
   };
+
+  commentsModifiers = {
+    include: ['comments'],
+    comments: (key, value) => this.commentPreTransform(key, value)
+  };
+
+  resourceModifiers = {
+    include: resourceColumns,
+    // comments: (key, value) => this.commentTransform(key, value)
+  };
+
+  commentPreTransform(key: string, value) {
+    if (!key.includes('.')) return null;
+    let [comment, source] = key.split('.', 2);
+    return source;
+  }
 
   order;
   shift;
@@ -174,10 +191,12 @@ export default class AssignmentCtrl extends BaseCtrl {
       return this._emptyResult(res);
     }
     let query = this.fixOr(criteria);
-    let resourceMatch = this.fixOr(this.modifyCriteria(or, {include: resourceColumns}));
+    let resourceMatch = this.fixOr(this.modifyCriteria(or, this.resourceModifiers));
+    let commentsQuery = this.modifyCriteria(or, this.commentsModifiers);
 
     console.log('Query:', JSON.stringify(query));
     console.log('Resource query:', JSON.stringify(resourceMatch));
+    console.log('Comments query:', JSON.stringify(commentsQuery));
     console.log('Columns1:', columns);
     console.log('Group1:', group);
 
@@ -202,17 +221,70 @@ export default class AssignmentCtrl extends BaseCtrl {
     console.log('Group:', group);
     console.log('Project:', project);
 
-    let cursor = Resource
-      .aggregate()
+    let cursor = Resource.aggregate()
+      .lookup({
+        from: 'comments',
+        let: {
+          login: '$login',
+        },
+        pipeline: [
+          {
+            '$match': {
+              '$expr': {
+                '$and': [
+                  {'$eq': ['$$login', '$login']},
+                  {'$in': ['$source', commentsQuery]},
+                ]
+              }
+            }
+          }
+        ],
+        as: 'commentsTemp'
+      })
+      .addFields({
+        'comments': {
+          '$arrayToObject': {
+            '$map': {
+              input: '$commentsTemp',
+              as: 'comment',
+              in: [
+                {
+                  '$cond': {
+                    if: '$$comment.source',
+                    then: '$$comment.source',
+                    else: '0',
+                  }
+                },
+                '$$comment.text'
+              ]
+            }
+          }
+        }
+      })
       .match(resourceMatch)
+
       .lookup({
         from: 'comments',
         localField: 'login',
         foreignField: 'login',
-        as: 'comments'
+        as: 'commentsTemp'
       })
       .addFields({
-        commentsCount: {'$size': '$comments'}
+        'commentsCount': {'$size': '$commentsTemp'},
+        'status': {
+          '$arrayElemAt': [
+            {
+              '$filter': {
+                input: '$commentsTemp',
+                as: 'status',
+                cond: {
+                  '$eq': ['$$status.isStatus', true]
+                }
+              }
+            },
+            0
+          ]
+        }
       })
       .lookup({
         from: 'assignments',
@@ -329,25 +401,11 @@ export default class AssignmentCtrl extends BaseCtrl {
       .addFields({
         'assignment.account': '$initiative.account',
         'assignment.initiative': '$initiative.name',
-        canTravel: {
+        'canTravel': {
           '$toString': {
             '$gt': ['$activeUsVisa.till', now]
           }
         },
-        status: {
-          '$arrayElemAt': [
-            {
-              '$filter': {
-                input: '$comments',
-                as: 'status',
-                cond: {
-                  '$eq': ['$$status.isStatus', true]
-                }
-              }
-            },
-            0
-          ]
-        }
       })
       .group(Object.assign(group, {
         _id: '$_id',
@@ -365,7 +423,7 @@ export default class AssignmentCtrl extends BaseCtrl {
         login: { '$first': '$login' },
         status: { '$first': '$status' },
         commentsCount: { '$first': '$commentsCount' },
-        commentsTemp: {'$first': '$comments'},
+        commentsTemp: {'$first': '$commentsTemp'},
         proposed: {'$first': '$proposed.login'},
       }))
       .addFields({
@@ -376,7 +434,7 @@ export default class AssignmentCtrl extends BaseCtrl {
             else: []
           }
         },
-        comments: {
+        'comments': {
           '$arrayToObject': {
             '$map': {
               input: '$commentsTemp',
