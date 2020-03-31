@@ -214,6 +214,13 @@ export class BadgerComponent {
     return {'background-color': badge.color};
   }
 
+  getClass() {
+    return {
+      ['n' + this.badges.length]: this.compactView,
+      hover: this.isHovered
+    };
+  }
+
   clicked(badge, event: MouseEvent) {
     event.stopPropagation();
     if (this.click.observers.length) {

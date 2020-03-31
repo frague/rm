@@ -432,6 +432,8 @@ ul.badges {
     display: inline;
     border-radius: 6px;
     background-color: $body - #222;
+    white-space: nowrap;
+    transition: margin 0.3s ease;
 
     a {
       @extend .clickable;
@@ -483,6 +485,43 @@ ul.badges {
       }
 
     }
+  }
+
+  &.hover li {
+    margin-left: 1px !important;
+    transition: margin 0.3s ease;
+  }
+
+  & li:first-child {
+    margin-left: 1px !important;
+  }
+
+  &.n1 li, &.n2 li {
+    margin-left: 1px;
+  }
+
+  &.n3 li {
+    margin-left: -3px;
+  }
+
+  &.n4 li {
+    margin-left: -16px;
+  }
+
+  &.n5 li {
+    margin-left: -17px;
+  }
+
+  &.n6 li {
+    margin-left: -18px;
+  }
+
+  &.n7 li {
+    margin-left: -22px;
+  }
+
+  &.n8 li {
+    margin-left: -3px;
   }
 }
 
@@ -1193,6 +1232,8 @@ i.initiative {
 
           &:hover {
             @extend .shadow;
+
+            z-index: 100;
 
             & > section {
               top: $demandCardHeight + 15px;
