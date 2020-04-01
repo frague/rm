@@ -11,6 +11,7 @@ import PmoIntegrationsCtrl from './integrations/pmo';
 import ConfluenceIntegrationsCtrl from './integrations/confluence';
 import BambooIntegrationsCtrl from './integrations/bamboo';
 import JobViteIntegrationsCtrl from './integrations/jobvite';
+import StaffingToolIntegrationsCtrl from './integrations/staffingTool';
 
 import { IO } from '../io';
 import { usPriorities } from './htmlparser';
@@ -24,8 +25,11 @@ import {
   demandPoolsMap,
   candidateStates,
   profilesInvertedMap,
-  requisitionsLocations
+  requisitionsLocations,
+  stagesMap,
 } from '../mappings';
+
+import { getDeepProperty } from '../utils';
 
 const candidatesChunk = 500;
 const requisitionsChunk = 500;
@@ -56,6 +60,7 @@ export default class SyncCtrl {
   wiki = new ConfluenceIntegrationsCtrl();
   bamboo = new BambooIntegrationsCtrl();
   jv = new JobViteIntegrationsCtrl();
+  st = new StaffingToolIntegrationsCtrl();
 
   private _isTaskEnabled(name: string) {
     return this._tasks.includes(name);
@@ -166,11 +171,11 @@ export default class SyncCtrl {
           .then(() => this._finishOverall('requisitions'));
       }
 
-      // Demand in PMO
+      // Demand in staffingTool
       if (this._setTimer('demand')) {
         this._threads['demand'] = true;
         await Demand.deleteMany({});
-        this._queryDemand()
+        this._queryNewDemand()
           .then(() => {
             this._getDelay('demand');
           })
@@ -610,15 +615,13 @@ export default class SyncCtrl {
     return (index > 9 ? '' : '0') + index;
   }
 
-  private _queryDemand(): Promise<any> {
-    let _error;
-
-    // Create new initiative to show demand (if not exists)
+  private _checkDemandInitiative(): void {
+    // Create new initiative to show demand (if does not exist)
     Initiative.findOne(
       { _id: 'demand' },
       (error, demand) => {
+        if (error) throw error;
         if (!demand) {
-          _error = error;
           new Initiative({
             _id: 'demand',
             name: 'Demand',
@@ -628,6 +631,12 @@ export default class SyncCtrl {
         }
       }
     );
+  }
+
+  private _queryDemand(): Promise<any> {
+    let _error;
+
+    this._checkDemandInitiative();
 
     return new Promise(async (resolve, reject) => {
       await RequisitionDemand.deleteMany({}).exec();
@@ -758,6 +767,123 @@ export default class SyncCtrl {
       Object.keys(newRd).forEach(r => new RequisitionDemand(newRd[r]).save());
 
       return resolve();
+    });
+  }
+
+  private _queryNewDemand(): Promise<any> {
+    let _error;
+    return new Promise(async (resolve, reject) => {
+      try {
+        this._checkDemandInitiative();
+
+        await RequisitionDemand.deleteMany({}).exec();
+        let requisitionDemands = {};
+        let now = new Date();
+
+        let data = await this.st.queryDemands().catch(error => _error = error);
+        if (_error) {
+          return reject(_error);
+        }
+
+        let load = getDeepProperty(data, 'data.positionDemands.content');
+
+        load.forEach(item => {
+// id: 3354
+// status: {id: 1, name: "Active", __typename: "DefPositionDemandStatus"}
+// stage: {id: 3, name: "Fully Confirmed", __typename: "DefStage"}
+// type: {id: 1, billableStatus: "Billable", __typename: "AssignmentBillableStatus"}
+// startedOn: "2020-05-01"
+// account: {id: 43, name: "Google",…}
+// project: {id: 531, name: "Other", __typename: "Project"}
+// workProfile: {id: 25, name: "Quality Engineer",…}
+// specializations: [{id: 25, name: "Mobile", __typename: "DefSpecialization"}]
+// gradeTracks: [{id: 60, name: "Technical track", code: "T", level: 2, __typename: "DefGradeTrack"},…]
+// deployDestinations: [{id: 1, name: "Offshore", __typename: "DefDeployDestination"}]
+// jobviteId: ""
+// stakeholder: null
+// permissions: {canViewCandidates: true, __typename: "DemandPermissions", canEditFields: false, canEditComments: true,…}
+// __typename: "PositionDemand"
+// recognizedBySales: false
+// recognizedByDelivery: true
+// source: "Delivery"
+// availabilityForShortTrips: false
+// expiredOn: null
+// durationWeeks: 56
+// locations: [{id: 11, name: "Wroclaw", __typename: "Location"}, {id: 6, name: "Krakow", __typename: "Location"}]
+// requirements: "QA of Google Family Link for parents application (don’t post to WWW). Team of 20+ mobile developers. 10M+ installations.  Team starts from 2 Android QA in Poland, later will be extended with several iOs/Android developers. We’ll help with replatforming. Very well documented project, good processes and unit tests coverage, reliable code review procedures. We have already 2 years of engagement on this project from QA side. ↵↵Requirements: ↵↵Experience: Android, UiAutomator/Espresso↵java 8, guice, guava, blaze↵↵Availability for 1-2 months onsite trips (once applicable)↵"
+// comment: "There are 2 demands. These 2 engineers should be co-allocated"
+// candidates: [{id: 4416, employee: {id: 1287, firstName: "Piotr", familyName: "Michalski",…},…}]
+// demandManager: {id: 1087, firstName: "Sergey", familyName: "Podoynitsyn",…}
+
+          const id = item.id;
+          const status = item.status.name;
+          const account = item.account.name;
+          const start = new Date(item.startedOn);
+          const end = new Date(item.startedOn);
+          end.setDate(end.getDate() + item.durationWeeks * 7);
+
+          const profile = item.workProfile.name;
+          const specializations = item.specializations.map(({name}) => name).join(', ');
+          const pool = demandPoolsMap[profile + '-' + specializations] || '';
+          const login = (id + ':' + specializations + '_' + profile + '_for_' + account).replace(/[ .:]/g, '_');
+          const requestId = item.jobviteId
+            .split(',')
+            .map((id: string) => {
+              id = (id || '').toUpperCase().replace(reqId, '$1');
+
+              // Map requisition to demand
+              let rd = requisitionDemands[id];
+              if (!rd) {
+                rd = {
+                  requisitionId: id,
+                  demandIds: [],
+                  updated: now
+                };
+              }
+              if (!rd.demandIds.includes(login)) {
+                rd.demandIds.push(login);
+                requisitionDemands[id] = rd;
+              }
+              return id;
+            });
+
+          let demand = {
+            login,
+            name: id + ' ' + specializations + ' ' + profile,
+            account: account,
+            project: item.project.name,
+            comment: item.comment,
+            candidates: item.candidates.map(({employee, status}) => `${employee ? employee.username : 'N/A'}:${status.name}`),
+            deployment: item.deployDestinations.map(({name}) => name).join(', '),
+            start: start.toISOString().substr(0, 10),
+            end: end.toISOString().substr(0, 10),
+            grades: item.gradeTracks.map(({code, level}) => `${code}${level}`).sort().join(', '),
+            locations: item.locations.map(({name}) => locationsMap[name] || name).sort().join(', '),
+            profile,
+            specializations,
+            role: item.type.billableStatus,
+            stage: stagesMap[item.stage.name],
+            isBooked: status === 'Booked',
+            requestId,
+            requirements: item.requirements,
+            duration: item.durationWeeks,
+            pool
+          };
+
+          // Save demand
+          setTimeout(() => new Demand(demand).save((err, data) => {
+            if (err) reject(err);
+          }), 0);
+
+        });
+
+        // Save requisition demands
+        Object.keys(requisitionDemands).forEach(id => new RequisitionDemand(requisitionDemands[id]).save());
+
+        return resolve();
+      } catch (e) {
+        reject(e);
+      }
     });
   }
 

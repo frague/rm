@@ -299,3 +299,9 @@ export const demandStatusesMap = {
   'Staffed internally': 'Filled',
   'Staffed externally': 'Filled'
 };
+
+export const stagesMap = {
+  'Fully Confirmed': 'FC',
+  'Verbally Agreed': 'VA',
+  'Sales Prospect': 'SP',
+};
