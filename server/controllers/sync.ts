@@ -847,13 +847,22 @@ export default class SyncCtrl {
               return id;
             });
 
+          let candidatesStati = [];
+          let candidates = item.candidates
+            .filter(({employee}) => !!employee)
+            .map(({employee, status}) => {
+              candidatesStati.push(status.name);
+              return employee.username;
+            });
+
           let demand = {
             login,
             name: id + ' ' + specializations + ' ' + profile,
             account: account,
             project: item.project.name,
             comment: item.comment,
-            candidates: item.candidates.map(({employee, status}) => `${employee ? employee.username : 'N/A'}:${status.name}`),
+            candidates,
+            candidatesStati,
             deployment: item.deployDestinations.map(({name}) => name).join(', '),
             start: start.toISOString().substr(0, 10),
             end: end.toISOString().substr(0, 10),

@@ -30,6 +30,7 @@ const keys = [
   'skype',
   'specializations',
   'candidates',
+  'candidatesStati',
   'start',
   'requestId',
   'requirements',

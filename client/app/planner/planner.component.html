@@ -112,7 +112,7 @@
                   <i class="fa fa-star" *ngIf="candidate.isBooked" title="Booked"></i>
                 </avatar>
                 <section>
-                  <demand *ngFor="let login of candidate.proposed" [login]="login" (show)="showResource($event)"></demand>
+                  <demand *ngFor="let demandLogin of candidate.proposed" [login]="demandLogin" (show)="showResource($event)"></demand>
                 </section>
                 <caption>
                   {{ candidate.name }}
@@ -150,6 +150,7 @@
                     (click)="reserve(candidate, demand)"
                     [ngClass]="getCheckStyles(candidate, demand)"
                   >
+                    <span>{{ getCellCaption(candidate, demand) }}</span>
                     <i class="fa fa-check"></i><i class="fa fa-check"></i>&nbsp;
                   </div>
                 </ng-container>

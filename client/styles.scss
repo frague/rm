@@ -1208,7 +1208,7 @@ i.initiative {
 
           &.booked {
             .avatar .fa {
-              color: $super-green;
+              color: white;
             }
           }
 
@@ -1244,7 +1244,7 @@ i.initiative {
 
           & > section {
             position: absolute;
-            top: 125px;
+            top: 200px;
             z-index: -10;
             transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
             line-height: 0;
@@ -1384,6 +1384,17 @@ i.initiative {
           font-size: 24px;
           padding-top: 12px;
 
+          span {
+            position: absolute;
+            color: $text-normal;
+            display: block;
+            width: $demandCardWidth;
+            font-size: 10px;
+            white-space: normal;
+            margin-top: -10px;
+            line-height: 1;
+          }
+
           &:first-child {
             border-left-width: 1px;
           }
@@ -1415,14 +1426,32 @@ i.initiative {
           }
 
           &.proposed i.fa {
-            position: relative;
             opacity: 1;
-            &:first-child {
-              left: 11px;
+            &:nth-child(2) {
+            }
+            &:nth-child(3) {
+              margin-left: -18px;
               opacity: 0.8;
             }
-            &:nth-child(2) {
-              right: 11px;
+          }
+
+          &.Rejected {
+            &.proposed {
+              background-color: $danger;
+            }
+
+            i.fa {
+              color: $red;
+            }
+          }
+
+          &.another {
+            &.proposed {
+              background-color: $body - #333;
+            }
+
+            i.fa {
+              opacity: 0.5;
             }
           }
         }

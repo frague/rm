@@ -1,6 +1,5 @@
 import { postJson, sendJson, ssoQuery } from './utils';
 
-const request = require('request');
 const env = process.env;
 const graphQlUrl = 'https://st.griddynamics.net/api/graphql';
 const options = {

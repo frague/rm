@@ -22,6 +22,7 @@ const demandSchema = new mongoose.Schema({
   requirements: String,
   comment: String,
   candidates: [String],
+  candidatesStati: [String],
   login: String,
   duration: Number,
 });

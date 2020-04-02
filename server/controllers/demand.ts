@@ -22,6 +22,7 @@ const demandColumns = [
   'requirements',
   'comment',
   'candidates',
+  'candidatesStati',
   'login',
   'duration',
 ];
@@ -146,6 +147,7 @@ export default class DemandCtrl extends BaseCtrl {
         requirements: { '$first': '$requirements' },
         specializations: { '$first': '$specializations' },
         candidates: { '$first': '$candidates' },
+        candidatesStati: { '$first': '$candidatesStati' },
         login: { '$first': '$login' },
         comment: { '$first': '$comment' },
         commentsTemp: {'$first': '$comments'},
@@ -211,6 +213,7 @@ export default class DemandCtrl extends BaseCtrl {
         requirements: 1,
         specializations: 1,
         candidates: 1,
+        candidatesStati: 1,
         login: 1,
         comment: 1,
         comments: '$commentsTemp',
