@@ -76,7 +76,8 @@ export const ssoQuery = (url: string, options: any = null, isRecurred=false): Pr
           console.log('Error decoding json', body);
           return reject(error);
         }
-        if (data && data.status === 401) {
+
+        if ((data && data.status === 401) || (response && response.statusCode === 401)) {
           if (!hasAuthenticated && !isRecurred) {
             console.log('!!!! Reauthenticate');
             ssoHeader = null;

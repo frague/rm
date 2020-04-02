@@ -10,6 +10,7 @@ const states = {
   false: 'Inactive'
 };
 const pmoDemandUrl = 'https://pmo.griddynamics.net/dashboard/position/demand/view.action?cs_id=';
+const staffingToolUrl = 'https://st.griddynamics.net/demand?id=';
 
 @Component({
   selector: 'demand-modal',
@@ -64,5 +65,10 @@ export class DemandModal extends BaseModalComponent {
   getPmoLink() {
     let id = this.getId();
     return id ? pmoDemandUrl + id : null;
+  }
+
+  getStaffingToolLink() {
+    let id = this.getId();
+    return id ? staffingToolUrl + id : null;
   }
 }

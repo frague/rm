@@ -516,12 +516,12 @@ ul.badges {
     margin-left: -18px;
   }
 
-  &.n7 li {
+  &.n7 li, &.n8 li {
     margin-left: -22px;
   }
 
-  &.n8 li {
-    margin-left: -3px;
+  &.n9 li, &.n10 li, &.n11 li  {
+    margin-left: -24px;
   }
 }
 
