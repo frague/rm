@@ -29,8 +29,7 @@ const keys = [
   'room',
   'skype',
   'specializations',
-  'candidates',
-  'candidatesStati',
+  'proposed',
   'start',
   'requestId',
   'requirements',
@@ -75,17 +74,38 @@ const redate = (c: Date) => c ? c.toISOString().substr(0, 10) : '';
 export default class SnapshotCtrl extends BaseCtrl {
   model = Snapshot;
 
-  _areEqual(a, b): any {
+  _modifyCandidates(source: any) {
+    if (!source || !source.candidates || !source.candidatesStati) return source;
+    let stati = source.candidatesStati;
+    source.proposed = source.candidates
+      .filter(candidate => !!candidate)
+      .map((candidate, index) => `${candidate} (${stati[index]})`)
+      .sort((a, b) => {
+        [[a], [b]] = [a.split(' ('), b.split(' (')];
+        return a < b ? -1 : 1;
+      });
+    return source;
+  }
+
+  _joinArray(value, key) {
+    if (!Array.isArray(value)) return value;
+    return key === 'proposed' ? value.join(',') : value.sort().join(',');
+  };
+
+  _areEqual(prev, actual): any {
+    prev = this._modifyCandidates(prev);
+    actual = this._modifyCandidates(actual);
+
     return keys.reduce((result, key) => {
-      let [c, d] = [a[key], b[key]];
+      let [c, d] = [prev[key], actual[key]];
       if (dateKeys.includes(key)) {
         [c, d] = [redate(c), redate(d)];
       } else if (deepsKeys.includes(key)) {
         let modifier = deeps[key];
         [c, d] = [modifier(c), modifier(d)];
       } else {
-        if (Array.isArray(c)) c = c.sort().join(',');
-        if (Array.isArray(d)) d = d.sort().join(',');
+        c = this._joinArray(c, key);
+        d = this._joinArray(d, key);
       }
 
       c = !!c ? c : '';

@@ -10,6 +10,10 @@ const month = 60 * 60 * 24 * 30 * 1000;
 export class DemandTabComponent extends BaseTabComponent {
   @Input() demand: any = {};
 
+  public get hasCandidates(): boolean {
+    return this.demand && this.demand.candidates && this.demand.candidates.length;
+  }
+
   datesDiff(): string {
     if (!this.demand.start || !this.demand.end) return '';
     let s = new Date(this.demand.start).getTime();

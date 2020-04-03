@@ -5,6 +5,7 @@ import { Utils } from './utils';
 
 const listDiffs = [
   'candidates',
+  'proposed',
   'locations',
   'grades',
   'visas',

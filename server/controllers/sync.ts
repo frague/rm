@@ -852,7 +852,7 @@ export default class SyncCtrl {
             .filter(({employee}) => !!employee)
             .map(({employee, status}) => {
               candidatesStati.push(status.name);
-              return employee.username;
+              return `${employee.familyName} ${employee.firstName}`;
             });
 
           let demand = {

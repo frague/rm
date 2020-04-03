@@ -1,5 +1,5 @@
 <div class="demand row">
-  <div class="col-md-6">
+  <div class="col-md-5">
     <dl class="attributes">
       <dt>Account</dt>
       <dd>{{ demand.account }}</dd>
@@ -11,7 +11,10 @@
       <dd>{{ demand.pool }}</dd>
 
       <dt>Dates</dt>
-      <dd>{{ demand.start|date }} - {{ demand.end|date }} {{ datesDiff() }}</dd>
+      <dd>{{ demand.start|date }} - {{ demand.end|date }}</dd>
+
+      <dt>Duration</dt>
+      <dd>{{ demand.duration }} weeks</dd>
 
       <dt>Grades</dt>
       <dd>{{ demand.grades }}</dd>
@@ -29,7 +32,7 @@
       <dd>{{ demand.stage }}</dd>
     </dl>
   </div>
-  <div class="col-md-6">
+  <div class="col-md-7">
     <dl class="attributes">
       <dt>Profile</dt>
       <dd>
@@ -41,7 +44,11 @@
       <dd>{{ demand.requestId }}</dd>
 
       <dt>Candidates</dt>
-      <dd>{{ demand.candidates }}</dd>
+      <dd>
+        <ul *ngIf="hasCandidates">
+          <li *ngFor="let candidate of demand.candidates;let i = index" [ngClass]="demand.candidatesStati[i]">{{ candidate }} ({{ demand.candidatesStati[i] }})</li>
+        </ul>
+      </dd>
 
       <dt>Requirements</dt>
       <dd class="full-width"><div class="md scrollable" [innerHTML]="demand.requirements|markdown"></div></dd>

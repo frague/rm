@@ -1236,8 +1236,8 @@ i.initiative {
             z-index: 100;
 
             & > section {
-              top: $demandCardHeight + 15px;
-              line-height: 0.3;
+              top: $demandCardHeight + 4px;
+              line-height: 1.3;
               opacity: 1;
             }
           }
@@ -1254,6 +1254,7 @@ i.initiative {
               white-space: nowrap;
               font-size: 100%;
               font-weight: 100;
+              margin: 0;
 
               a {
                 @extend .clickable;
@@ -1500,6 +1501,15 @@ dl.attributes {
         list-style: none;
         &:empty {
           display: none;
+        }
+
+        &.Rejected {
+          color: $red;
+          text-decoration: line-through;
+        }
+
+        &.another {
+          color: $body - #333;
         }
       }
     }

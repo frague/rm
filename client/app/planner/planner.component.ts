@@ -82,7 +82,7 @@ export class PlannerComponent extends Schedule {
 
   private _sortCandidates() {
     this.candidates = this.candidates.sort((a, b) => {
-      let [aChosen, bChosen] = [this.deserved[a.login], this.deserved[b.login]];
+      let [aChosen, bChosen] = [this.deserved[a.name], this.deserved[b.name]];
       let [aIsHiree, bIsHiree] = [a.isHiree, b.isHiree];
 
       if (aChosen && !bChosen) return -1
@@ -105,7 +105,7 @@ export class PlannerComponent extends Schedule {
     return candidatesQuery.subscribe(data => {
       this._cache.set('candidates', data);
 
-      let peopleLogins = [], demandsLogins = [];
+      let names = [], demandsLogins = [];
 
       this.candidates = Object.keys(query).length
         ?
@@ -119,7 +119,7 @@ export class PlannerComponent extends Schedule {
               };
               boolenise.forEach(key => result[key] = item[key] === 'true');
               [result.onVacation, result.proposed] = [item.onVacation, item.proposed];
-              peopleLogins.push(result.login);
+              names.push(result.name);
               return result;
             })
         :
@@ -129,7 +129,7 @@ export class PlannerComponent extends Schedule {
       data.slice(0, 20).forEach(candidate => {
         candidate.isHiree = true;
         this.candidates.push(candidate);
-        peopleLogins.push(candidate.login);
+        names.push(candidate.name);
       });
 
       this.candidatesCount = this.candidates.length;
@@ -155,7 +155,7 @@ export class PlannerComponent extends Schedule {
         this.accountsDemand[account].push(demand);
         demandsLogins.push(demand.login);
       });
-      this.sanitizePlan(peopleLogins, demandsLogins);
+      this.sanitizePlan(names, demandsLogins);
       this._calculateVisibleCandidates();
       this.markForCheck();
     });
@@ -230,7 +230,7 @@ export class PlannerComponent extends Schedule {
   }
 
   reserve(candidate: any, demand: any) {
-    let demandRow = this.deserved[candidate.login];
+    let demandRow = this.deserved[candidate.name];
     let candidateId = this.reserved[demand.login];
     if (demandRow) {
       this.reserved[demandRow] = '';
@@ -238,17 +238,18 @@ export class PlannerComponent extends Schedule {
     if (candidateId) {
       this.deserved[candidateId] = '';
     }
-    if (candidate.login != candidateId) {
-      this.reserved[demand.login] = candidate.login;
-      this.deserved[candidate.login] = demand.login;
+    if (candidate.name != candidateId) {
+      this.reserved[demand.login] = candidate.name;
+      this.deserved[candidate.name] = demand.login;
     }
   }
 
-  setReservations(data: {rows: string[], logins: string[]}) {
+  setReservations({rows, logins}) {
     this.reserved = {};
     this.deserved = {};
-    data.rows.forEach((row, index) => {
-      let login = data.logins[index];
+
+    rows.forEach((row, index) => {
+      let login = logins[index];
       this.reserved[row] = login;
       this.deserved[login] = row;
     });
@@ -257,7 +258,7 @@ export class PlannerComponent extends Schedule {
 
   getCheckStyles(candidate, demand) {
     let matched = this.isReserved(candidate, demand);
-    let preselected = demand.candidates.includes(candidate.login);
+    let preselected = demand.candidates.includes(candidate.name);
     return {
       matched: matched && !preselected,
       preselected: preselected && !matched,
@@ -267,13 +268,13 @@ export class PlannerComponent extends Schedule {
   }
 
   getCellCaption(candidate, demand) {
-    let index = (demand.candidates || []).indexOf(candidate.login);
+    let index = (demand.candidates || []).indexOf(candidate.name);
     if (index < 0) return '';
     return demand.candidatesStati[index];
   }
 
   isReserved(candidate: any, demand: any) {
-    return this.reserved[demand.login] === candidate.login;
+    return this.reserved[demand.login] === candidate.name;
   }
 
   isDemandVisible(demand: any) {
@@ -323,7 +324,16 @@ export class PlannerComponent extends Schedule {
   }
 
   getDemandCandidate(demand: any) {
-    return [].concat(this.reserved[demand.login], demand.candidates).filter(c => !!c).join(', ');
+    return Object.keys(
+      []
+        .concat(this.reserved[demand.login], demand.candidates)
+        .filter(c => !!c)
+        .reduce((result, c) => {
+          result[c] = true;
+          return result;
+        }, {})
+    ).sort().join(', ');
+
   }
 
   getDemandAttrs(demand) {
@@ -335,7 +345,7 @@ export class PlannerComponent extends Schedule {
   }
 
   isAssigned(candidate: any) {
-    return Object.values(this.reserved).indexOf(candidate.login) >= 0;
+    return Object.values(this.reserved).indexOf(candidate.name) >= 0;
   }
 
   isOnsite(demand) {
