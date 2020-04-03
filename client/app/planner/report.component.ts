@@ -11,7 +11,7 @@ export class ReportComponent {
   @Input() candidates: any[] = [];
 
   matches: any = {};
-  candidatesByLogin: any = {};
+  candidatesByName: any = {};
 
   isPrintable = false;
 
@@ -24,8 +24,8 @@ export class ReportComponent {
   constructor(private modalService: NgbModal) {}
 
   updateCandidates() {
-    this.candidatesByLogin = this.candidates.reduce((result, candidate) => {
-      result[candidate.login] = candidate;
+    this.candidatesByName = this.candidates.reduce((result, candidate) => {
+      result[candidate.name] = candidate;
       return result;
     }, {});
   }
@@ -40,7 +40,7 @@ export class ReportComponent {
 
   injectDemandCandidates() {
     this.getAccounts().forEach(account => this.getAccountDemand(account).forEach(demand => {
-      let candidate = this.candidatesByLogin[this.matches[demand.login]] || {};
+      let candidate = this.candidatesByName[this.matches[demand.login]] || {};
       demand.combinedStatus = this.combineStatus(demand, candidate);
       demand.candidate = candidate;
     }));
