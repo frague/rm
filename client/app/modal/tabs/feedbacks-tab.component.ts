@@ -58,6 +58,7 @@ export class FeedbacksTabComponent extends BaseTabComponent {
   }
 
   deUnder(source: string) {
+    if (!source || typeof source !== 'string') return source;
     return source.replace(/_/g, ' ');
   }
 

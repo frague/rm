@@ -84,7 +84,6 @@ export class ReportsComponent extends Schedule {
 
     let requisitionsQuery = this._cache.getObservable('requisitions') || (
       candidatesQueryKeys.some(key => {
-        console.log(queryString.includes(key + '.'));
         return queryString.includes(key + '.');
       }) ?
         this.requisitionService.getAll({...query, order}) : from([[]])

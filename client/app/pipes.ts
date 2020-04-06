@@ -152,6 +152,7 @@ export class ColumnPipe implements PipeTransform {
       case 'passport':
       case 'updated':
       case 'birthday':
+      case 'onVacation':
         return formatDate(value);
       case 'activeUsVisa':
         if (value) {
