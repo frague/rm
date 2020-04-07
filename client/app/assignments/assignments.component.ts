@@ -22,7 +22,7 @@ const emptyItem = {assignments: []};
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AssignmentsComponent extends Schedule {
-  @ViewChild(AssignmentsReportComponent) reportModal: AssignmentsReportComponent;
+  @ViewChild(AssignmentsReportComponent, { static: true }) reportModal: AssignmentsReportComponent;
 
   columns = ['onTrip', 'onVacation'];
 

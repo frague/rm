@@ -12,7 +12,7 @@ import { jobViteRequisition } from '../consts';
 })
 export class RequisitionModal extends BaseModalComponent {
   isLarge = true;
-  @ViewChild('content') content;
+  @ViewChild('content', { static: true }) content;
   requisition: any = {};
   error = false;
 

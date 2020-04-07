@@ -28,13 +28,13 @@ const demandCriteria = new RegExp(/\{['"]{0,1}(demand[.a-z]*)['"]{0,1}:['"]{0,1}
 
 export class Schedule {
 
-  @ViewChild(DemandModal) demandModal: DemandModal;
-  @ViewChild(PersonModal) personModal: PersonModal;
-  @ViewChild(AssignmentModal) assignmentModal: AssignmentModal;
-  @ViewChild(RequisitionModal) requisitionModal: RequisitionModal;
-  @ViewChild(CandidateModal) candidateModal: CandidateModal;
+  @ViewChild(DemandModal, { static: true }) demandModal: DemandModal;
+  @ViewChild(PersonModal, { static: true }) personModal: PersonModal;
+  @ViewChild(AssignmentModal, { static: true }) assignmentModal: AssignmentModal;
+  @ViewChild(RequisitionModal, { static: true }) requisitionModal: RequisitionModal;
+  @ViewChild(CandidateModal, { static: true }) candidateModal: CandidateModal;
 
-  @ViewChild('schedule') schedule: ElementRef;
+  @ViewChild('schedule', { static: false }) schedule: ElementRef;
 
   fromDate: any;
   shownWeeks = 0;

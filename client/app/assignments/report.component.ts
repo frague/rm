@@ -8,7 +8,7 @@ const billables = ['Billable', 'Funded', 'PTO Coverage', 'Booked'];
   templateUrl: './report.component.html'
 })
 export class AssignmentsReportComponent {
-  @ViewChild('content') content;
+  @ViewChild('content', { static: true }) content;
   assignments: any = {};
 
   constructor(private modalService: NgbModal) {}

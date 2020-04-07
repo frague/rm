@@ -12,7 +12,7 @@ import { jobViteCandidate } from '../consts';
 })
 export class CandidateModal extends BaseModalComponent {
   isLarge = true;
-  @ViewChild('content') content;
+  @ViewChild('content', { static: true }) content;
   candidate: any = {};
 
   constructor(

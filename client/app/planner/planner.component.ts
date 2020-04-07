@@ -30,11 +30,11 @@ const boolenise = ['canTravel', 'isBillable', 'isFunded', 'isBooked', 'onTrip'];
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlannerComponent extends Schedule {
-  @ViewChild(ReportComponent) reportModal: ReportComponent;
-  @ViewChild(DemandPlanComponent) demandPlan: DemandPlanComponent;
-  @ViewChild(RequisitionModal) requisitionModal: RequisitionModal;
-  @ViewChild(CandidateModal) candidateModal: CandidateModal;
-  @ViewChild('sticky') boardOfFame: ElementRef;
+  @ViewChild(ReportComponent, { static: true }) reportModal: ReportComponent;
+  @ViewChild(DemandPlanComponent, { static: true }) demandPlan: DemandPlanComponent;
+  @ViewChild(RequisitionModal, { static: true }) requisitionModal: RequisitionModal;
+  @ViewChild(CandidateModal, { static: true }) candidateModal: CandidateModal;
+  @ViewChild('sticky', { static: false }) boardOfFame: ElementRef;
   bofOffset: any = 'auto';
 
   get cardWidth() {return 120};

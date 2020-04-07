@@ -10,7 +10,7 @@ import { CommentService } from '../services/comments.service';
 })
 export class CommentsModal extends BaseModalComponent {
   isLarge = true;
-  @ViewChild('content') content;
+  @ViewChild('content', { static: true }) content;
   title: any = '';
   key: string = '';
 

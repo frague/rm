@@ -12,7 +12,7 @@ const pmoEngineerUrl = 'https://pmo.griddynamics.net/dashboard/engineering/view.
   templateUrl: './person-modal.component.html'
 })
 export class PersonModal extends BaseModalComponent {
-  @ViewChild('content') content;
+  @ViewChild('content', { static: true }) content;
   person: any = {};
   isLarge = true;
 

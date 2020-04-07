@@ -8,7 +8,7 @@ import { AssignmentService } from '../services/assignment.service';
   templateUrl: './assignment-modal.component.html'
 })
 export class AssignmentModal extends BaseModalComponent {
-  @ViewChild('content') content;
+  @ViewChild('content', { static: true }) content;
   person: any = {};
   assignment: any = {};
 

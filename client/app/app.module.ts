@@ -150,7 +150,7 @@ export function tokenGetter() {
     HttpClientModule,
     ChartsModule,
     SharedModule,
-    NgbModule.forRoot(),
+    NgbModule,
     SocketIoModule.forRoot(config),
     JwtModule.forRoot({
       config: {

@@ -18,7 +18,7 @@ const staffingToolUrl = 'https://st.griddynamics.net/demand?id=';
 })
 export class DemandModal extends BaseModalComponent {
   isLarge = true;
-  @ViewChild('content') content;
+  @ViewChild('content', { static: true }) content;
   demand: any = {};
   requisitionDiff = null;
   notFound = false;

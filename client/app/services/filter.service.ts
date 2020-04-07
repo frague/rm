@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { BaseService } from './base.service';
 import { LoaderService } from './loader.service';
 
@@ -8,7 +8,7 @@ const serviceKeys = ['columns', 'order', 'group', 'limit'];
 @Injectable()
 export class FilterService extends BaseService {
 
-  constructor(http: Http, loader: LoaderService) {
+  constructor(http: HttpClient, loader: LoaderService) {
     super('filter', http, loader);
   }
 

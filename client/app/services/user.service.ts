@@ -1,17 +1,16 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { BaseService } from './base.service';
 import { LoaderService } from './loader.service';
 
-
 @Injectable()
 export class UserService extends BaseService {
 
-  private _http: Http;
+  private _http: HttpClient;
 
-  constructor(http: Http, loader: LoaderService) {
+  constructor(http: HttpClient, loader: LoaderService) {
     super('user', http, loader);
     this._http = http;
   }

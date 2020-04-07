@@ -7,7 +7,7 @@ import { BusService, IEditedContent } from '../../services/bus.service';
   templateUrl: './editor.component.html'
 })
 export class EditorComponent {
-  @ViewChild('markdown') markdown: ElementRef;
+  @ViewChild('markdown', { static: false }) markdown: ElementRef;
 
   form = new FormGroup({
     _id: new FormControl(''),
@@ -77,7 +77,7 @@ export class EditorComponent {
 
   reposition(event: Event) {
     setTimeout(() => {
-      let textarea = event.srcElement;
+      let textarea = event.srcElement as Element;
       let markdown = this.markdown;
       if (textarea && markdown) {
         let percents = textarea.scrollTop / (textarea.scrollHeight - textarea.clientHeight);

@@ -17,10 +17,10 @@ const rowNumber = /^\d+$:/g;
   templateUrl: './dp.component.html'
 })
 export class DpComponent extends BaseComponent {
-  @ViewChild(DemandModal) demandModal: DemandModal;
-  @ViewChild(RequisitionModal) requisitionModal: RequisitionModal;
-  @ViewChild(PersonModal) personModal: PersonModal;
-  @ViewChild(CandidateModal) candidateModal: CandidateModal;
+  @ViewChild(DemandModal, { static: true }) demandModal: DemandModal;
+  @ViewChild(RequisitionModal, { static: true }) requisitionModal: RequisitionModal;
+  @ViewChild(PersonModal, { static: true }) personModal: PersonModal;
+  @ViewChild(CandidateModal, { static: true }) candidateModal: CandidateModal;
 
   public form = new FormGroup({});
   types = ['r', 'd', 'a'];

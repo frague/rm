@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { BaseService } from './base.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -9,9 +9,9 @@ import { LoaderService } from './loader.service';
 @Injectable()
 export class ResourceService extends BaseService {
 
-  httpService: Http;
+  httpService: HttpClient;
 
-  constructor(http: Http, loader: LoaderService) {
+  constructor(http: HttpClient, loader: LoaderService) {
     super('resource', http, loader);
   }
 

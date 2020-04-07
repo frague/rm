@@ -31,9 +31,9 @@ const states = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CandidatesComponent implements OnInit {
-  @ViewChild(CandidateModal) candidateModal: CandidateModal;
-  @ViewChild(RequisitionModal) requisitionModal: RequisitionModal;
-  @ViewChild(DemandModal) demandModal: DemandModal;
+  @ViewChild(CandidateModal, { static: true }) candidateModal: CandidateModal;
+  @ViewChild(RequisitionModal, { static: true }) requisitionModal: RequisitionModal;
+  @ViewChild(DemandModal, { static: true }) demandModal: DemandModal;
 
   items = [];
   requisitionsIds = [];

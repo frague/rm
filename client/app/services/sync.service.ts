@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -7,7 +7,7 @@ import { map } from 'rxjs/operators';
 @Injectable()
 export class SyncService {
 
-  constructor(private http: Http) {
+  constructor(private http: HttpClient) {
   }
 
   goOn(tasks: string): Observable<any> {
@@ -15,14 +15,14 @@ export class SyncService {
   }
 
   backup(): Observable<any> {
-    return this.http.get('/api/backup', {}).pipe(map(res => res.json()));
+    return this.http.get('/api/backup', {});
   }
 
   restore(data: any): Observable<any> {
-    return this.http.post('/api/restore', data).pipe(map(res => res.json()));
+    return this.http.post('/api/restore', data);
   }
 
   cleanup(): Observable<any> {
-    return this.http.get('/api/cleanup').pipe(map(res => res.json()));
+    return this.http.get('/api/cleanup');
   }
 }

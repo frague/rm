@@ -1,16 +1,18 @@
+@use "sass:color";
+
 $body: #f5feff;
 
 $primary: #dfd;
 $danger: #fdd;
 $grid: #aaa;
 
-$form-border: $body - #555;
-$text-normal: $body - #888;
+$form-border: color.scale($body, $lightness: -30%);  // #555
+$text-normal: color.scale($body, $lightness: -50%);  // #888
 $form-body: #f9efdd;
-$form-border-rest: $form-body - #111;
+$form-border-rest: color.scale($form-body, $lightness: - 10%); // #111
 $form-perspective: 2px;
 
-$btn-color: $form-body - #111;
+$btn-color: color.scale($form-body, $lightness: -10%); // #111
 $btn-border: rgba(0, 0, 0, 0.1);
 
 $green: #dfd;
@@ -104,7 +106,7 @@ h1 {
 
   i.fa {
     font-size: 24px;
-    color: $body - #222;
+    color: color.scale($body, $lightness: -15%);
     margin-left: 10px;
   }
 }

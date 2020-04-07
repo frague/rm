@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { BaseService } from './base.service';
@@ -8,7 +8,7 @@ import { LoaderService } from './loader.service';
 @Injectable()
 export class AssignmentService extends BaseService {
 
-  constructor(http: Http, loader: LoaderService) {
+  constructor(http: HttpClient, loader: LoaderService) {
     super('assignment', http, loader);
   }
 

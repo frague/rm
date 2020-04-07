@@ -30,8 +30,8 @@ const tasks = {
 })
 export class SyncComponent {
 
-  @ViewChild('log') logWindow: ElementRef;
-  @ViewChild('fileInput') fileInput: ElementRef;
+  @ViewChild('log', { static: true }) logWindow: ElementRef;
+  @ViewChild('fileInput', { static: true }) fileInput: ElementRef;
 
   form: FormGroup;
   logs = [];

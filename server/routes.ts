@@ -1,5 +1,4 @@
 import * as express from 'express';
-import { Http } from '@angular/http';
 
 import ResourceCtrl from './controllers/resource';
 import InitiativeCtrl from './controllers/initiative';

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { BaseService } from './base.service';
 import { Observable } from 'rxjs';
 import { LoaderService } from './loader.service';
@@ -7,9 +7,9 @@ import { LoaderService } from './loader.service';
 @Injectable()
 export class CommentService extends BaseService {
 
-  private _http: Http;
+  private _http: HttpClient;
 
-  constructor(http: Http, loader: LoaderService) {
+  constructor(http: HttpClient, loader: LoaderService) {
     super('comment', http, loader);
     this._http = http;
   }

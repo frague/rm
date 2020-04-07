@@ -16,7 +16,7 @@ export class BadgerComponent {
   @Input() allowManagement: boolean = true;
   @Input() compactView: boolean = false;
   @Output() click: EventEmitter<any> = new EventEmitter();
-  @ViewChild('title') titleInput: ElementRef;
+  @ViewChild('title', { static: false }) titleInput: ElementRef;
 
   isHovered = false;
   isEditing = false;

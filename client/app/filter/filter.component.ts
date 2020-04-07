@@ -119,7 +119,7 @@ export class FilterComponent {
   }
 
   populate(e: MouseEvent, prefix: string = '') {
-    let srcElement = e.srcElement;
+    let srcElement = e.srcElement as Element;
     if (srcElement && srcElement.tagName === 'LI') {
       let appendix = (prefix ? prefix + '.' : '') + srcElement['innerText'];
       this.criteria += (!this.criteria || this.criteria.endsWith(',') ? '' : ',') + appendix;

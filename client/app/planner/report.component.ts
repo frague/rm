@@ -6,7 +6,7 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
   templateUrl: './report.component.html'
 })
 export class ReportComponent {
-  @ViewChild('content') content;
+  @ViewChild('content', { static: true }) content;
   @Input() accountsDemand: any[] = [];
   @Input() candidates: any[] = [];
 
