@@ -51,7 +51,7 @@ db.once('open', () => {
 
   if (!module.parent) {
     server.listen(app.get('port'), () => {
-      console.log('Backend server is listening on port ' + app.get('port'));
+      console.log('Socket IO is listening port ' + app.get('port'));
     });
 
     IO.client().on('connection', socket => {

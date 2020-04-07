@@ -1,4 +1,4 @@
-import { ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
+import { ViewChild, ElementRef, ChangeDetectorRef, Directive } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subscription, from, forkJoin } from 'rxjs';
 
@@ -26,6 +26,7 @@ const transparent = 'rgba(0,0,0,0)';
 const demandPrefix = 'Demand';
 const demandCriteria = new RegExp(/\{['"]{0,1}(demand[.a-z]*)['"]{0,1}:['"]{0,1}([^'"]+)['"]{0,1}/, 'ig');
 
+@Directive()
 export class Schedule {
 
   @ViewChild(DemandModal, { static: true }) demandModal: DemandModal;
@@ -34,7 +35,7 @@ export class Schedule {
   @ViewChild(RequisitionModal, { static: true }) requisitionModal: RequisitionModal;
   @ViewChild(CandidateModal, { static: true }) candidateModal: CandidateModal;
 
-  @ViewChild('schedule', { static: false }) schedule: ElementRef;
+  @ViewChild('schedule') schedule: ElementRef;
 
   fromDate: any;
   shownWeeks = 0;

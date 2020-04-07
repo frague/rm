@@ -2,7 +2,7 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { SyncService } from '../services/sync.service';
 import { DpService } from '../services/dp.service';
-import { SocketService } from '../services/socket.service';
+import { SocketIOService } from '../services/socket.service';
 import { BadgeService} from '../services/badge.service';
 import { BusService } from '../services/bus.service';
 import { CacheService } from '../services/cache.service';
@@ -51,7 +51,7 @@ export class SyncComponent {
     private syncService: SyncService,
     private dpService: DpService,
     private builder: FormBuilder,
-    private socket: SocketService,
+    private socket: SocketIOService,
     private badgeService: BadgeService,
     private bus: BusService,
     private cache: CacheService

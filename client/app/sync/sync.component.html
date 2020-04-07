@@ -10,7 +10,6 @@
     <button
       (click)="sync()"
       class="btn btn-danger"
-      [disabled]="isLoading"
     >
       Sync
     </button>
@@ -46,7 +45,7 @@
           <input type="checkbox" formControlName="merge"> Merge with the current state
         </label>
       </div>
-      <button type="submit" [disabled]="!fileChosen || isLoading" class="btn btn-primary">
+      <button type="submit" [disabled]="!fileChosen" class="btn btn-primary">
         {{ getButtonTitle() }}
       </button>
     </form>

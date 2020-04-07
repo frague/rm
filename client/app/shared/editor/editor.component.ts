@@ -7,7 +7,7 @@ import { BusService, IEditedContent } from '../../services/bus.service';
   templateUrl: './editor.component.html'
 })
 export class EditorComponent {
-  @ViewChild('markdown', { static: false }) markdown: ElementRef;
+  @ViewChild('markdown') markdown: ElementRef;
 
   form = new FormGroup({
     _id: new FormControl(''),

@@ -34,7 +34,7 @@ export class PlannerComponent extends Schedule {
   @ViewChild(DemandPlanComponent, { static: true }) demandPlan: DemandPlanComponent;
   @ViewChild(RequisitionModal, { static: true }) requisitionModal: RequisitionModal;
   @ViewChild(CandidateModal, { static: true }) candidateModal: CandidateModal;
-  @ViewChild('sticky', { static: false }) boardOfFame: ElementRef;
+  @ViewChild('sticky') boardOfFame: ElementRef;
   bofOffset: any = 'auto';
 
   get cardWidth() {return 120};

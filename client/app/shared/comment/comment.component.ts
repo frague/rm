@@ -12,7 +12,7 @@ const isDate = new RegExp(/^[12]\d{3}\-/);
   templateUrl: './comment.component.html'
 })
 export class CommentComponent {
-  @Input() comment = {};
+  @Input() comment: any = {};
   @Output() callback: EventEmitter<any> = new EventEmitter();
 
   constructor(

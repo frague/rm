@@ -5,8 +5,7 @@ import { JwtModule } from '@auth0/angular-jwt';
 
 import { RoutingModule } from './routing.module';
 import { SharedModule } from './shared/shared.module';
-import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
-import { ChartsModule } from 'ng4-charts/ng4-charts';
+import { ChartsModule } from '@rinminase/ng-charts';
 
 import { AssignmentService } from './services/assignment.service';
 import { ResourceService } from './services/resource.service';
@@ -22,7 +21,7 @@ import { AuthGuardLogin } from './services/auth-guard-login.service';
 import { AuthGuardAdmin } from './services/auth-guard-admin.service';
 import { BusService } from './services/bus.service';
 import { FilterService } from './services/filter.service';
-import { SocketService } from './services/socket.service';
+import { SocketIOService } from './services/socket.service';
 import { SkillsService } from './services/skills.service';
 import { InGridService } from './services/ingrid.service';
 import { RequisitionService } from './services/requisition.service';
@@ -96,11 +95,6 @@ import { QueryWidget } from './dashboard/query.widget';
 import { BirthdaysWidget } from './dashboard/birthdays.widget';
 import { CommentsWidget } from './dashboard/comments.widget';
 
-const config: SocketIoConfig = {
-  url: ':3030',
-  options: {}
-}
-
 export function tokenGetter() {
   return localStorage.getItem('token');
 }
@@ -151,7 +145,6 @@ export function tokenGetter() {
     ChartsModule,
     SharedModule,
     NgbModule,
-    SocketIoModule.forRoot(config),
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
@@ -175,7 +168,7 @@ export function tokenGetter() {
     CommentService,
     DemandPlanService,
     DpService,
-    SocketService,
+    SocketIOService,
     SkillsService,
     InGridService,
     RequisitionService,

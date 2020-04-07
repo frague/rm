@@ -1,4 +1,4 @@
-import { EventEmitter } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 
 export type IEditedContent = {
   source: string,
@@ -6,6 +6,7 @@ export type IEditedContent = {
   isStatus: boolean
 };
 
+@Injectable()
 export class BusService {
   filterQuery = {};
   criteria = '';

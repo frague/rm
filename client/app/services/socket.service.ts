@@ -1,31 +1,47 @@
 import { Injectable } from '@angular/core';
-import { Socket } from 'ngx-socket-io';
+import { SocketController, OnConnect, OnDisconnect, OnSocketEvent, SocketService } from 'a4-socket-io';
 import { map } from 'rxjs/operators';
 
+const dummyCallback = (message: string, status: string = '') => {};
+
+@SocketController('localhost:3030')
 @Injectable()
-export class SocketService {
+export class SocketIOService {
+  private _callback = dummyCallback;
 
-  constructor(private socket: Socket) {}
+  constructor(private socket: SocketService) {}
 
-  sendMessage(msg: string){
-    this.socket.emit('message', msg);
+  sendMessage(message: string, type: string = 'message') {
+    this.socket.emit(type, message);
   }
 
-  getMessage() {
-    return this.socket
-      .fromEvent('message')
-      .pipe(map((data: any) => {
-        console.log(data);
-        return data.msg;
-      }));
+  @OnSocketEvent('message')
+  getMessage(message: string) {
+    this._callback(message);
+    console.log(`Socket message: ${message}`);
+  }
+
+  @OnSocketEvent('status')
+  getstatus(status: string) {
+    this._callback('', status);
+    console.log(`Socket status: ${status}`);
   }
 
   subscribe(callback) {
-    this.socket.on('message', data => callback(data));
-    this.socket.on('status', data => callback('', data));
+    this._callback = callback;
   }
 
   unsubscribe() {
-    this.socket.removeAllListeners('message');
+    this._callback = dummyCallback;
+  }
+
+  @OnConnect()
+  connect() {
+    console.log(`Socket connected`);
+  }
+
+  @OnDisconnect()
+  disconnect() {
+    console.log(`Socket disconnected`);
   }
 }
