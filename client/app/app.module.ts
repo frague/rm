@@ -21,7 +21,9 @@ import { AuthGuardLogin } from './services/auth-guard-login.service';
 import { AuthGuardAdmin } from './services/auth-guard-admin.service';
 import { BusService } from './services/bus.service';
 import { FilterService } from './services/filter.service';
-import { SocketIOService } from './services/socket.service';
+
+import { SocketService } from './services/socket.service';
+
 import { SkillsService } from './services/skills.service';
 import { InGridService } from './services/ingrid.service';
 import { RequisitionService } from './services/requisition.service';
@@ -168,7 +170,7 @@ export function tokenGetter() {
     CommentService,
     DemandPlanService,
     DpService,
-    SocketIOService,
+    SocketService,
     SkillsService,
     InGridService,
     RequisitionService,

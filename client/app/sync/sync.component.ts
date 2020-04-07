@@ -1,8 +1,8 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { SyncService } from '../services/sync.service';
 import { DpService } from '../services/dp.service';
-import { SocketIOService } from '../services/socket.service';
+import { SocketService } from '../services/socket.service';
 import { BadgeService} from '../services/badge.service';
 import { BusService } from '../services/bus.service';
 import { CacheService } from '../services/cache.service';
@@ -26,11 +26,12 @@ const tasks = {
 
 @Component({
   selector: 'sync',
-  templateUrl: './sync.component.html'
+  templateUrl: './sync.component.html',
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SyncComponent {
 
-  @ViewChild('log', { static: true }) logWindow: ElementRef;
+  @ViewChild('log', { static: false }) logWindow: ElementRef;
   @ViewChild('fileInput', { static: true }) fileInput: ElementRef;
 
   form: FormGroup;
@@ -46,23 +47,36 @@ export class SyncComponent {
   };
 
   selectedTasks = {};
+  private $heartbeat;
 
   constructor(
     private syncService: SyncService,
     private dpService: DpService,
     private builder: FormBuilder,
-    private socket: SocketIOService,
+    private socket: SocketService,
     private badgeService: BadgeService,
     private bus: BusService,
-    private cache: CacheService
+    private cache: CacheService,
+    private cd: ChangeDetectorRef
  ) {
     this.form = this.builder.group({
       backup: null,
       merge: new FormControl(false)
     });
+
+    // Workaround: after sync request completion log stops updating
+    this.socket.subscribe((log, status) => this.trackSyncing(log, status));
   }
 
-  private addLog(text: string, source='') {
+  ngOnInit() {
+    this.$heartbeat = setInterval(() => this.trackSyncing(null, null), 1000);
+  }
+
+  ngOnDestroy() {
+    clearInterval(this.$heartbeat);
+  }
+
+  addLog(text: string, source='') {
     let line = (source ? source + ': ' : '') + text;
     this.logs.push(line);
     this.hasErrors = this.hasErrors || line.indexOf('rror') > 0;
@@ -76,42 +90,46 @@ export class SyncComponent {
     this.selectedTasks = states;
   }
 
+  trackSyncing(log, status=null) {
+    if (status && status[0]) {
+      this.stati[status[0]] = status[1];
+      if (status[1] === 'error') {
+        this.hasErrors = true;
+      }
+    }
+
+    if (log) {
+      this.addLog(log);
+      if (log === 'done') {
+        this.stati = {};
+        if (!this.hasErrors) {
+          this.addLog('Diff generation...');
+          this.cache.reset(['plans', 'demands', 'assignments', 'candidates', 'requisitions', 'initiatives', 'resources']);
+          this.dpService.saveDiff().subscribe(() => {
+            // Refresh update date on the UI
+            this.bus.dbUpdated.emit();
+          });
+        } else {
+        }
+      }
+    }
+    this.cd.markForCheck();
+  };
+
   sync() {
-    this.logs = [];
     this.stati = {};
     this.hasErrors = false;
 
     let tasksToExecute = Object.keys(this.selectedTasks).filter(key => !!this.selectedTasks[key]).join(',');
-    this.syncService.goOn(tasksToExecute).subscribe(() => {
-      this.socket.subscribe((log, status=null) => {
-        if (status) {
-          this.stati[status[0]] = status[1];
-          if (status[1] === 'error') {
-            this.hasErrors = true;
-          }
-        }
 
-        if (log) {
-          this.addLog(log);
-          if (log === 'done') {
-            this.stati = {};
-            this.socket.unsubscribe();
-            if (!this.hasErrors) {
-              this.addLog('Diff generation...');
-              this.cache.reset(['plans', 'demands', 'assignments', 'candidates', 'requisitions', 'initiatives', 'resources']);
-              this.dpService.saveDiff().subscribe(() => {
-                // Refresh update date on the UI
-                this.bus.dbUpdated.emit();
-              });
-            } else {
-            }
-          }
-        }
-      });
-    }, error => {
-      this.stati = {};
-      this.logs = [error];
-    });
+    this.syncService.goOn(tasksToExecute).subscribe(
+      () => {},
+      error => {
+        this.stati = {};
+        this.hasErrors = true;
+        this.addLog(error.message, 'error');
+      }
+    );
   }
 
   backup() {

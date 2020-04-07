@@ -136,7 +136,7 @@ export default class SyncCtrl {
 
   sync = async (req, res) => {
     res.setHeader('Content-Type', 'application/json');
-    res.sendStatus(200);
+    res.json({});
 
     this._tasks = [];
     this._timers = {};

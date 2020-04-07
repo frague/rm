@@ -1,47 +1,45 @@
 import { Injectable } from '@angular/core';
-import { SocketController, OnConnect, OnDisconnect, OnSocketEvent, SocketService } from 'a4-socket-io';
 import { map } from 'rxjs/operators';
+import io from 'socket.io-client';
 
-const dummyCallback = (message: string, status: string = '') => {};
+const socket = io('http://localhost:3030');
+const dummyCallback: Function = (message: string, status: string = '') => {
+  console.log('This is dummy callback: ', message, status);
+};
 
-@SocketController('localhost:3030')
 @Injectable()
-export class SocketIOService {
+export class SocketService {
   private _callback = dummyCallback;
 
-  constructor(private socket: SocketService) {}
+  constructor() {
+    socket.on('connect', () => this.connect());
+    socket.on('disconnect', socket.open);  // Reconnecting on disconnect
+    socket.on('message', message => {
+      // console.log(`[Socket] Message: ${message}`);
+      this._callback(message);
+    });
+    socket.on('status', status => {
+      // console.log(`[Socket] Status: ${JSON.stringify(status)}`);
+      this._callback('', status);
+    });
+    // setInterval(() => {this._callback(null, null)}, 1000);
+  }
 
   sendMessage(message: string, type: string = 'message') {
-    this.socket.emit(type, message);
+    socket.emit(type, message);
   }
 
-  @OnSocketEvent('message')
-  getMessage(message: string) {
-    this._callback(message);
-    console.log(`Socket message: ${message}`);
+  connect() {
+    // console.log('[Socket] Connected');
   }
 
-  @OnSocketEvent('status')
-  getstatus(status: string) {
-    this._callback('', status);
-    console.log(`Socket status: ${status}`);
-  }
-
-  subscribe(callback) {
+  subscribe(callback: Function) {
+    // console.log('! Subscribed');
     this._callback = callback;
   }
 
   unsubscribe() {
+    // console.log('!! Unubscribed');
     this._callback = dummyCallback;
-  }
-
-  @OnConnect()
-  connect() {
-    console.log(`Socket connected`);
-  }
-
-  @OnDisconnect()
-  disconnect() {
-    console.log(`Socket disconnected`);
   }
 }

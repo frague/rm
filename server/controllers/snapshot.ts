@@ -231,7 +231,7 @@ export default class SnapshotCtrl extends BaseCtrl {
       this.saveAMDiff()
     ])
       .then(() => {
-        res.sendStatus(200);
+        res.json({});
       })
       .catch(err => {
         console.log(err);
