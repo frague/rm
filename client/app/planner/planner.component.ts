@@ -263,7 +263,8 @@ export class PlannerComponent extends Schedule {
       matched: matched && !preselected,
       preselected: preselected && !matched,
       proposed: preselected && matched,
-      [this.getCellCaption(candidate, demand)]: true
+      [this.getCellCaption(candidate, demand)]: true,
+      vacation: !!candidate.onVacation,
     };
   }
 

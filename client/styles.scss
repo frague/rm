@@ -1420,6 +1420,18 @@ i.initiative {
             }
           }
 
+          &.vacation {
+            background-color: $vacation+#111;
+
+            &.proposed, &.matched {
+              background-color: $vacation - #202;
+            }
+
+            &.Rejected.proposed, &.Rejected.matched {
+              background-color: $vacation - #022 !important;
+            }
+          }
+
           &.matched, &.preselected {
             i.fa:nth-child(2) {
               display: none;
@@ -2013,6 +2025,9 @@ div.bottom-corner {
 
     li {
       list-style: none;
+      &:first-letter {
+        text-transform: uppercase;
+      };
       &.error {
         color: $red;
       }
