@@ -63,7 +63,10 @@ const dateKeys = [
 
 const deeps = {
   visas: (value: any) => {
-    return (value || []).sort((a, b) => a.type > b.type).map(visa => `${visa.type} - ${redate(visa.till)}`).join(', ')
+    return (value || [])
+      .sort((a, b) => (a.type == b.type ? (a.till < b.till) : (a.type < b.type)) ? -1 : 1)
+      .map(visa => `${visa.type} - ${redate(visa.till)}`)
+      .join(', ')
   }
 };
 
