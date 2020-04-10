@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, ChangeDetectorRef, ChangeDetect
 import { BusService } from '../services/bus.service';
 import { CacheService } from '../services/cache.service';
 import { DemandPlanService } from '../services/demandplan.service';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'demand-plan',
@@ -18,11 +19,16 @@ export class DemandPlanComponent {
   plans = {};
   title = '';
 
+  $paramsChange;
+  private _routePlanId = null;
+
   constructor(
     private bus: BusService,
     private demandPlans: DemandPlanService,
     private cache: CacheService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private router: Router,
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit() {
@@ -32,18 +38,42 @@ export class DemandPlanComponent {
       let criteria = this.bus.criteria;
       let selectedPlan = null;
       this.plans = data.reduce((result, plan) => {
-          result[plan._id] = plan;
-          if (criteria === plan.filter) {
-            selectedPlan = plan;
-          }
-          return result;
-        }, {});
+        result[plan._id] = plan;
+        if (criteria === plan.filter) {
+          selectedPlan = plan;
+        }
+        return result;
+      }, {});
+
       if (selectedPlan) {
         this.select(selectedPlan, false);
+      } if (this._routePlanId) {
+        this.select(this.plans[this._routePlanId], true);
+        this._routePlanId = null;
       } else {
         this.cd.markForCheck();
       }
     });
+
+    this.$paramsChange = this.route.queryParams
+      .subscribe(params => {
+        this._routeToPlan(params['plan'])
+      }
+    );
+  }
+
+  OnDestroy() {
+    this.$paramsChange.unsubscribe();
+  }
+
+  private _routeToPlan(planId: string) {
+    // console.log('Switching to', planId);
+    this._routePlanId = planId;
+
+    let newSelection = this.plans[planId];
+    if (newSelection && newSelection !== this.selectedPlan) {
+      this.select(newSelection);
+    }
   }
 
   getPlans() {
@@ -82,17 +112,20 @@ export class DemandPlanComponent {
     });
   }
 
-  select(plan, updateCriteria=true) {
+  select(plan, updateCriteria=true): void {
+    if (!plan) return;
+
     this.selectedPlan = plan;
     this.title = plan.title;
     if (updateCriteria) {
       this.bus.criteriaUpdated.emit(plan.filter);
     }
     this.planHasChanged.emit({rows: plan.rows, logins: plan.logins});
+    this.router.navigate([], {queryParams: {plan: plan._id}});
     this.cd.markForCheck();
   }
 
-  reset() {
+  reset(): void {
     this.title = '';
     this.selectedPlan = {};
     this.cd.markForCheck();
