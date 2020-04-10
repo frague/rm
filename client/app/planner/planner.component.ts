@@ -111,7 +111,7 @@ export class PlannerComponent extends Schedule {
         ?
           this.items
             .filter(item => !item.isDemand)
-            .slice(0, 50)
+            .slice(0, 100)
             .map(item => {
               let result = this.resourcesById[item.login] || {};
               if (item.login.indexOf(' ') > 0) {
