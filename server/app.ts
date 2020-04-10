@@ -8,16 +8,16 @@ import * as httpServer from 'http';
 import { IO } from './io';
 import setRoutes from './routes';
 
-require('dotenv').config();
+require('dotenv').config();  // Puts .env contents to Environment variables
 
 const app = express();
 app.set('port', (process.env.PORT || 3030));
 
 app.use('/', express.static(path.join(__dirname, '../public')));
-app.use(bodyParser.json({limit: '1mb', extended: true}));
-app.use(bodyParser.urlencoded({limit: '1mb', extended: true}));
+app.use(bodyParser.json({limit: '1mb', extended: true}));  // Parses request responses to body
+app.use(bodyParser.urlencoded({limit: '1mb', extended: true})); // ...
 
-app.use(morgan('dev'));
+app.use(morgan('dev'));  // Requests logging middleware
 
 const mongoOptions = {
   promiseLibrary: global.Promise,
@@ -50,7 +50,7 @@ db.once('open', () => {
 
   if (!module.parent) {
     server.listen(app.get('port'), () => {
-      console.log('Socket IO is listening port ' + app.get('port'));
+      console.log('Server is started on localhost:' + app.get('port'));
     });
 
     IO.client().on('connection', socket => {

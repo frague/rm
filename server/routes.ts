@@ -28,7 +28,7 @@ import Resource from './models/resource';
 import User from './models/user';
 
 var multer = require("multer");
-var upload = multer();
+var upload = multer();  // Handles multipart/form-data requests
 
 export default function setRoutes(app) {
 
