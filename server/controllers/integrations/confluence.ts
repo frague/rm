@@ -12,20 +12,20 @@ const accountsUrl = RegExp(/\"url\":\"([^\"]+)\"/);
 const iframeUrl = RegExp(/<iframe[^>]+src=\"([^\"]+)\"/);
 
 class Confluence {
-  auth = Buffer.from(`${env.CONFLUENCE_LOGIN}:${env.CONFLUENCE_TOKEN}`).toString('base64');
-  headers = {
-    'Authorization': `Basic ${this.auth}`,
-    'Content-Type': 'application/json'
-  };
   baseUrl = 'https://griddynamics.atlassian.net/wiki/rest/api/content/';
 
   request(url: string, options: any): Promise<string> {
+    let auth = Buffer.from(`${env.CONFLUENCE_LOGIN}:${env.CONFLUENCE_TOKEN}`, 'utf8').toString('base64');
+    let headers = {
+      'Authorization': `Basic ${auth}`,
+      'Content-Type': 'application/json'
+    };
     return new Promise((resolve, reject) => {
       let urlParsed = Url.parse(url);
       let protocol = urlParsed.protocol === 'https:' ? https : http;
       options = Object.assign(
         {
-          headers: this.headers,
+          headers,
           hostname: urlParsed.hostname,
           path: urlParsed.path,
         },
@@ -34,14 +34,12 @@ class Confluence {
 
       let data = '';
       let req = protocol.request(options, (res) => {
-          if (!res || res.statusCode !== 200) {
-            console.log(res.statusCode);
-            return reject(`Error fetching data from ${url}`);
-          }
-          res.on('data', (chunk) => data = `${data}${chunk}`);
-          res.on('end', () => resolve(data));
+        if (!res || res.statusCode !== 200) {
+          return reject(`Error fetching data from ${url}`);
         }
-      );
+        res.on('data', (chunk) => data = `${data}${chunk}`);
+        res.on('end', () => resolve(data));
+      });
       req.on('error', (error) => reject(error));
       req.end();
     });
