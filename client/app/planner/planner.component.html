@@ -4,6 +4,7 @@
     <h1 class="col-md-7">
       <span (click)="showReport()"><i class="fa fa-file-text-o"></i></span>
       Demand Planning Board
+      <p>Demands: {{ demands?.length }}, employees: {{ assignmentsFound }}, candidates: {{ candidatesFound }}</p>
     </h1>
     <div class="col-md-5">
       <demand-plan [rowsLogins]="reserved" (planHasChanged)="setReservations($event)"></demand-plan>

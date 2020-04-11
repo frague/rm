@@ -107,6 +107,11 @@ h1 {
     color: $body - #222;
     margin-left: 10px;
   }
+
+  p {
+    display: block;
+    font-size: 14px;
+  }
 }
 
 h2 {
@@ -1170,7 +1175,7 @@ i.initiative {
             border-left: solid 1px $grid;
           }
 
-          @for $i from 0 through 50 {
+          @for $i from 0 through 100 {
             &:nth-child(#{$i + 1}) {
               left: ($demandCardWidth * $i);
             }

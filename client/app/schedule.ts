@@ -72,6 +72,8 @@ export class Schedule {
   visibleAccounts = {};
   visibleInitiatives = {};
 
+  assignmentsFound = 0;
+
   _cache: CacheService;
 
   postFetch = (query, serviceData?) => from([]).subscribe();
@@ -204,6 +206,7 @@ export class Schedule {
         this.reset(fetchAll);
 
         [this.items, this.message] = [[].concat(assignments.data), assignments.message];
+        this.assignmentsFound = this.items.length;
 
         let showDemand = false;
         (queryString.match(demandCriteria) || []).forEach(criterion => {

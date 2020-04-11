@@ -42,6 +42,9 @@ export class PlannerComponent extends Schedule {
 
   candidates = [];
   candidatesCount = 0;
+  candidatesFound = 0;
+
+  demands = [];
 
   reserved = {};
   deserved = {};
@@ -104,6 +107,7 @@ export class PlannerComponent extends Schedule {
 
     return candidatesQuery.subscribe(data => {
       this._cache.set('candidates', data);
+      this.candidatesFound = data.length;
 
       let names = [], demandsLogins = [];
 
@@ -135,7 +139,7 @@ export class PlannerComponent extends Schedule {
       this.candidatesCount = this.candidates.length;
       this._sortCandidates();
 
-      let demands = this.items
+      this.demands = this.items
         .filter(item => item.isDemand)
         .map(item => {
           let assignments = item.assignments;
@@ -147,7 +151,8 @@ export class PlannerComponent extends Schedule {
           let assignments = item.assignments;
           return assignments[Object.keys(assignments)[0]][0].demand;
         });
-      demands.forEach(demand => {
+
+      this.demands.forEach(demand => {
         let account = demand.account;
         if (!this.accountsDemand[account]) {
           this.accountsDemand[account] = [];
