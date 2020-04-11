@@ -1,6 +1,8 @@
 import { Component, EventEmitter } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { BusService } from '../services/bus.service';
 import { FilterService } from '../services/filter.service';
+import { switchMap } from 'rxjs/operators';
 
 const serviceKeys = ['columns', 'order', 'group'];
 
@@ -14,27 +16,41 @@ export class FilterComponent {
   selectedFilter: any = {};
   filters = {};
   title = '';
+  private _routeFilterId = null;
   $externalCriteria;
   $externalTimeShift;
+  $paramsChange;
   isHelpShown = false;
 
   timeShift = 0;
 
   constructor(
     private bus: BusService,
-    private filter: FilterService
+    private filter: FilterService,
+    private router: Router,
+    private route: ActivatedRoute,
   ) {
     this.criteria = this.bus.criteria;
   }
 
   ngOnInit() {
-    this.filter.getAll().subscribe(data => this.filters = data.reduce((result, filter) => {
-      result[filter._id] = filter;
-      if (this.criteria && this.criteria === filter.filter) {
-        this.set(filter);
+    this.filter.getAll().subscribe(data => {
+      this.filters = data.reduce((result, filter) => {
+        result[filter._id] = filter;
+        if (this.criteria && this.criteria === filter.filter) {
+          this.set(filter);
+        }
+        return result;
+      }, {});
+
+      // Catch up with the initial filter Id from the route
+      if (this.selectedFilter && this._routeFilterId) {
+        let filter = this.filters[this._routeFilterId];
+        if (filter) {
+          this.select(filter);
+        }
       }
-      return result;
-    }, {}));
+    });
 
     this.$externalCriteria = this.bus.criteriaUpdated.subscribe(criteria => {
       this.criteria = criteria;
@@ -44,10 +60,27 @@ export class FilterComponent {
       }
     });
     this.$externalTimeShift = this.bus.timeShiftUpdated.subscribe((shift: number) => this.setTimeShift(shift));
+
+    this.$paramsChange = this.route.queryParams
+      .subscribe(params => {
+        // console.log('Route paramMap:', params);
+        this._routeToFilter(params['filter'])
+      }
+    );
   }
 
   ngOnDestroy() {
-    [this.$externalCriteria, this.$externalTimeShift].forEach($s => $s.unsubscribe());
+    [this.$externalCriteria, this.$externalTimeShift, this.$paramsChange].forEach($s => $s.unsubscribe());
+  }
+
+  private _routeToFilter(filterId: string) {
+    // console.log('Switching to', filterId);
+    this._routeFilterId = filterId;
+
+    let newSelection = this.filters[filterId];
+    if (newSelection && newSelection !== this.selectedFilter) {
+      this.select(newSelection);
+    }
   }
 
   getFilters() {
@@ -85,6 +118,7 @@ export class FilterComponent {
     this.set(filter);
     this.criteria = filter.filter;
     this.parseCriteria(null, true);
+    this.router.navigate([], { queryParams: { filter: filter._id } });
   }
 
   set(filter) {
