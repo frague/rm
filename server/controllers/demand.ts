@@ -30,20 +30,23 @@ const demandColumns = [
 export default class DemandCtrl extends BaseCtrl {
   model = Demand;
 
-  modifiers = {
+  baseModifiers = {
+    include: ['demand', 'login'],
+    demand: (key, value) => {
+      if (key === 'demand') return;
+      if (!key.includes('.comments')) {
+        key = key.replace('demand.', '');
+        if (!demandColumns.includes(key)) return;
+        return {[key]: value};
+      }
+    },
+  };
+
+  finalModifiers = {
     include: ['demand'],
     demand: (key, value) => {
       if (key === 'demand') return;
       key = key.replace('demand.', '');
-      return {[key]: value};
-    },
-  };
-
-  baseModifiers = {
-    include: ['demand'],
-    demand: (key, value) => {
-      key = key.replace('demand.', '');
-      if (!demandColumns.includes(key)) return;
       return {[key]: value};
     },
   };
@@ -57,7 +60,7 @@ export default class DemandCtrl extends BaseCtrl {
     });
   }
 
-  getAll = (req, res) => {
+  getAll = async (req, res) => {
     printTitle('Demand');
 
     let now = new Date();
@@ -68,18 +71,20 @@ export default class DemandCtrl extends BaseCtrl {
       console.error('Error parsing search query: ' + req.query.or);
       return res.status(500);
     }
+    or = await this.updateOr(or, 'demand');
 
     let order = this.determineOrder(req, {login: 1});
-    let query = this.fixOr(this.modifyCriteria(or, this.modifiers));
     let baseQuery = this.fixOr(this.modifyCriteria(or, this.baseModifiers));
+    let finalQuery = this.fixOr(this.modifyCriteria(or, this.finalModifiers));
 
     console.log('Initial:', JSON.stringify(or));
-    console.log('Query:', JSON.stringify(query));
     console.log('Base query:', JSON.stringify(baseQuery));
+    console.log('Final query:', JSON.stringify(finalQuery));
 
     this.model
       .aggregate()
       .match(baseQuery)
+
       .lookup({
         from: 'comments',
         localField: 'login',
@@ -101,6 +106,24 @@ export default class DemandCtrl extends BaseCtrl {
             },
             0
           ]
+        },
+        comments: {
+          '$arrayToObject': {
+            '$map': {
+              input: '$comments',
+              as: 'comment',
+              in: [
+                {
+                  '$cond': {
+                    if: '$$comment.source',
+                    then: '$$comment.source',
+                    else: '0',
+                  }
+                },
+                '$$comment.text'
+              ]
+            }
+          }
         },
         isBillable: {
           '$toString': {
@@ -150,7 +173,7 @@ export default class DemandCtrl extends BaseCtrl {
         candidatesStati: { '$first': '$candidatesStati' },
         login: { '$first': '$login' },
         comment: { '$first': '$comment' },
-        commentsTemp: {'$first': '$comments'},
+        comments: { '$first': '$comments' },
         commentsCount: { '$first': '$commentsCount' },
         status: { '$first': '$status' },
         isBillable: { '$first': '$isBillable' },
@@ -173,26 +196,8 @@ export default class DemandCtrl extends BaseCtrl {
             else: '$requestId'
           }
         },
-        comments: {
-          '$arrayToObject': {
-            '$map': {
-              input: '$commentsTemp',
-              as: 'comment',
-              in: [
-                {
-                  '$cond': {
-                    if: '$$comment.source',
-                    then: '$$comment.source',
-                    else: '0',
-                  }
-                },
-                '$$comment.text'
-              ]
-            }
-          }
-        }
       })
-      .match(query)
+      .match(finalQuery)
       .sort(order)
       .project({
         _id: 1,
@@ -216,7 +221,7 @@ export default class DemandCtrl extends BaseCtrl {
         candidatesStati: 1,
         login: 1,
         comment: 1,
-        comments: '$commentsTemp',
+        comments: 1,
         commentsCount: 1,
         status: 1,
         isBillable: 1,
@@ -225,7 +230,7 @@ export default class DemandCtrl extends BaseCtrl {
       })
       .exec()
       .then(data => {
-        console.log(`Records matched: ${data && data.length}`);
+        console.log(`Demand: ${data && data.length} records matched`);
         return res.json(data)
       })
       .catch(error => {

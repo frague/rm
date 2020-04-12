@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import Comment from '../models/comment';
 
 const andKey = '$and';
 const orKey = '$or';
@@ -6,6 +7,7 @@ const orKey = '$or';
 const keywordExtender = new RegExp(/\.[^\s]+$/);
 const funcValue = new RegExp(/^([a-z]+)\(/i);
 const valueModifiers = {
+  'among': (key, value, [values]) => [key, {'$in': values.split('|')}, false],
   'in': (key, value, [days]) => {
     let d = new Date();
     days = +days;
@@ -21,15 +23,9 @@ const valueModifiers = {
     d.setDate(d.getDate() + +days);
     return [key, { '$gte': d }, false];
   },
-  'empty': (key, value) => {
-    return [key, null, false];
-  },
-  'emptySet': (key, value) => {
-    return [key, { '$eq': [] }, false];
-  },
-  'exists': (key, value) => {
-    return [key, { '$nin': [null, []], '$exists': true }, false];
-  },
+  'empty': (key, value) => [key, null, false],
+  'emptySet': (key, value) => [key, { '$eq': [] }, false],
+  'exists': (key, value) => [key, { '$nin': [null, []], '$exists': true }, false],
   'month': (key, value, [month]) => {
     if (!/^\d+$/.test('' + month)) {
       month = 1 + new Date().getMonth();
@@ -38,10 +34,7 @@ const valueModifiers = {
       key,
       {
         '$expr': {
-          '$eq': [
-            {'$month': '$' + key},
-            +month
-          ]
+          '$eq': [{'$month': '$' + key}, +month]
         }
       },
       true
@@ -61,6 +54,63 @@ abstract class BaseCtrl {
 
   // Remove related items to keep DB consistent
   cleanup = (req, res) => res.sendStatus(200);
+
+  // Prepares a list of enities, matched by comments.* criteria.
+  // Strict - affect "and" conditions, soft - "or" conditions.
+  async preCommentsQuery(criteria: any[], prefix=''): Promise<{strict: string[], soft: string[]}> {
+    let strict = [];
+    let soft = [];
+    let found = false;
+    let matchedKey = prefix ? `${prefix}.comments.` : 'comments.';
+    let l = criteria.length - 1;
+
+    for (let index = 0; index <= l; index++) {  // Blocking loop needed here
+      let criterion = criteria[index];
+      if (!criterion) return;
+      let key = Object.keys(criterion)[0];
+
+      if (key === andKey) {
+        strict = (await this.preCommentsQuery(criterion[key], prefix)).soft;
+      } else if (!key.indexOf(matchedKey)) {
+        let [, title] = key.split(matchedKey);
+        soft.push(title);
+      }
+      if (l === index) {
+        soft = await this.fillModelsLogins(soft);
+      }
+    };
+    return {strict, soft};
+  }
+
+  // Fetches logins of matched comments
+  async fillModelsLogins(titles: string[]): Promise<string[]> {
+    if (!titles.length) return [];
+    let result = (await Comment
+      .find({source: {'$in': titles}})
+      .exec()).map(comment => comment.login);
+    return result;
+  }
+
+  // Updates existing query with comments filters
+  async updateOr(or: any[], prefix=''): Promise<any[]> {
+    // Cloning into the new array
+    let newOr = [...or.map(item => Object.assign({}, item))];
+
+    let preComments = await this.preCommentsQuery(newOr, prefix);
+    let foundAt = -1;
+    newOr.some((criterion, index) => {
+      let result = Object.keys(criterion)[0] === andKey;
+      if (result) foundAt = index;
+      return result;
+    });
+    let and = foundAt >= 0 ? [...newOr[foundAt][andKey]] : null;
+    newOr[foundAt][andKey] = and;
+
+    if (preComments.soft.length) newOr.push({login: `among(${preComments.soft.join('|')})`});
+    if (preComments.strict.length) and.push({login: `among(${preComments.strict.join('|')})`});
+    // console.log('+++ OR: ', JSON.stringify(newOr));
+    return newOr;
+  }
 
   modifyCriteria(criteria: any[], modifiers: any = {}, group = []): any[] {
     let or = [];
@@ -131,18 +181,6 @@ abstract class BaseCtrl {
       result[param] = JSON.parse(query[param]);
       return result;
     }, {});
-  }
-
-  // Obsolete
-  commentTransform(key, value, prefix='') {
-    prefix = prefix ? `${prefix}.` : prefix;
-    if (key.indexOf('.') >= 0) {
-      let [comment, source] = key.split('.', 2);
-      return {'$and': [{[`${prefix}comments.source`]: source}, { [`${prefix}comments.text`]: value }]};
-    } else {
-      key = `${prefix}${key}.text`;
-    }
-    return { [key]: value };
   }
 
   _respondWithError(res, error='') {

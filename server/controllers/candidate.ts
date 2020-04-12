@@ -8,38 +8,8 @@ export default class CandidateCtrl extends BaseCtrl {
   model = Candidate;
   limit = 1000;
 
-  baseCommentsModifiers = {
-    include: ['candidate'],
-    'candidate': (key, value) => {
-      if (key.includes('candidate.comments')) {
-        key = key.replace('candidate.comments.', '');
-        return {'source': key};
-      }
-    },
-  };
-
-  initialCommentsModifiers = {
-    include: ['candidate'],
-    'candidate': (key, value) => {
-      if (key.includes('candidate.comments')) {
-        key = key.replace('candidate.comments.', '');
-        return {'commentsTemp.source': key};
-      }
-    },
-  };
-
-  finalCommentsModifiers = {
-    include: ['candidate'],
-    'candidate': (key, value) => {
-      if (key.includes('candidate.comments')) {
-        key = key.replace('candidate.', '');
-        return {[key]: value};
-      }
-    },
-  };
-
-  candidatesModifiers = {
-    include: ['candidate'],
+  baseModifiers = {
+    include: ['candidate', 'login'],
     candidate: (key, value) => {
       if (!key.includes('.comments')) {
         key = key.replace('candidate.', '');
@@ -48,8 +18,16 @@ export default class CandidateCtrl extends BaseCtrl {
     },
   };
 
+  finalModifiers = {
+    include: ['candidate'],
+    'candidate': (key, value) => {
+      key = key.replace('candidate.', '');
+      return {[key]: value};
+    },
+  };
+
   // Get all
-  getAll = (req, res) => {
+  getAll = async (req, res) => {
     printTitle('Candidates');
 
     let or;
@@ -60,208 +38,91 @@ export default class CandidateCtrl extends BaseCtrl {
       return res.sendStatus(500);
     }
 
-    let candidatesQuery = this.fixOr(this.modifyCriteria(or, this.candidatesModifiers));
-    let initialCommentsQuery = this.fixOr(this.modifyCriteria(or, this.initialCommentsModifiers));
-    let finalCommentsQuery = this.fixOr(this.modifyCriteria(or, this.finalCommentsModifiers));
-    let baseCommentsQuery = this.fixOr(this.modifyCriteria(or, this.baseCommentsModifiers));
+    or = await this.updateOr(or, 'candidate');
 
-    this.limit = Object.keys(finalCommentsQuery).length ? 1000 : 100;
+    let baseQuery = this.fixOr(this.modifyCriteria(or, this.baseModifiers));
+    let finalQuery = this.fixOr(this.modifyCriteria(or, this.finalModifiers));
+
+    this.limit = Object.keys(finalQuery).length ? 1000 : 100;
 
     console.log('Initial:', JSON.stringify(or));
-    console.log('Candidates query:', JSON.stringify(candidatesQuery));
-    console.log('Comments base query:', JSON.stringify(baseCommentsQuery));
-    console.log('Comments initial query:', JSON.stringify(initialCommentsQuery));
-    console.log('Comments final query:', JSON.stringify(finalCommentsQuery));
+    console.log('Base query:', JSON.stringify(baseQuery));
+    console.log('Final query:', JSON.stringify(finalQuery));
 
-    if (Object.keys(candidatesQuery).length > 0) {
-      // Candidates criteria provided
-      console.log('Primary filtering by candidates:');
-      return this.model
-        .aggregate()
-        .match(candidatesQuery)
+    return this.model
+      .aggregate()
+      .match(baseQuery)
 
-        .lookup({
-          from: 'comments',
-          localField: 'login',
-          foreignField: 'login',
-          as: 'commentsTemp'
-        })
-        .match(initialCommentsQuery)
-
-        .addFields({
-          commentsCount: {'$size': '$commentsTemp'},
-          comments: {
-            '$arrayToObject': {
-              '$map': {
-                input: '$commentsTemp',
-                as: 'comment',
-                in: [
-                  {
-                    '$cond': {
-                      if: '$$comment.source',
-                      then: '$$comment.source',
-                      else: '0',
-                    }
-                  },
-                  '$$comment.text'
-                ]
-              }
-            }
-          },
-          status: {
-            '$arrayElemAt': [
-              {
-                '$filter': {
-                  input: '$comments',
-                  as: 'status',
-                  cond: {
-                    '$eq': ['$$status.isStatus', true]
-                  }
+      .lookup({
+        from: 'comments',
+        localField: 'login',
+        foreignField: 'login',
+        as: 'comments'
+      })
+      .addFields({
+        commentsCount: {'$size': '$comments'},
+        status: {
+          '$arrayElemAt': [
+            {
+              '$filter': {
+                input: '$comments',
+                as: 'status',
+                cond: {
+                  '$eq': ['$$status.isStatus', true]
                 }
-              },
-              0
-            ]
-          }
-        })
-        .match(finalCommentsQuery)
-        .project({
-          applicationId: 1,
-          city: 1,
-          comments: '$commentsTemp',
-          commentsCount: 1,
-          country: 1,
-          location: 1,
-          login: 1,
-          name: 1,
-          profile: 1,
-          requisitionId: 1,
-          state: 1,
-          updated: 1,
-          status: 1,
-          _id: 1
-        })
-        .sort({
-          updated: -1,
-          state: -1,
-        })
-        .exec()
-        .then(data => {
-          console.log(`${data && data.length} records matched`);
-          return res.json(data);
-        })
-        .catch(error => {
-          console.log('Error', error);
-          res.sendStatus(500);
-        });
-    } else if (Object.keys(baseCommentsQuery).length > 0) {
-      // Comments criteria provided
-      console.log('Primary filtering by comments:');
-      return Comment
-        .aggregate()
-        .match(baseCommentsQuery)
-
-        .lookup({
-          from: 'candidates',
-          localField: 'login',
-          foreignField: 'login',
-          as: 'candidate'
-        })
-        .unwind({
-          path: '$candidate',
-          preserveNullAndEmptyArrays: false
-        })
-        .group({
-          _id: '$login',
-          login: {'$first': '$candidate.login'},
-          name: {'$first': '$candidate.name'},
-          country: {'$first': '$candidate.country'},
-          city: {'$first': '$candidate.city'},
-          location: {'$first': '$candidate.location'},
-          profile: {'$first': '$candidate.profile'},
-          state: {'$first': '$candidate.state'},
-          updated: {'$first': '$candidate.updated'},
-          requisitionId: {'$first': '$candidate.requisitionId'},
-          applicationId: {'$first': '$candidate.applicationId'},
-        })
-        .match(candidatesQuery)
-
-        // Mixing in the full set of comments
-        .lookup({
-          from: 'comments',
-          localField: 'login',
-          foreignField: 'login',
-          as: 'commentsTemp'
-        })
-
-        .addFields({
-          commentsCount: {'$size': '$commentsTemp'},
-          comments: {
-            '$arrayToObject': {
-              '$map': {
-                input: '$commentsTemp',
-                as: 'comment',
-                in: [
-                  {
-                    '$cond': {
-                      if: '$$comment.source',
-                      then: '$$comment.source',
-                      else: '0',
-                    }
-                  },
-                  '$$comment.text'
-                ]
               }
-            }
-          },
-          status: {
-            '$arrayElemAt': [
-              {
-                '$filter': {
-                  input: '$commentsTemp',
-                  as: 'status',
-                  cond: {
-                    '$eq': ['$$status.isStatus', true]
+            },
+            0
+          ]
+        },
+        comments: {
+          '$arrayToObject': {
+            '$map': {
+              input: '$comments',
+              as: 'comment',
+              in: [
+                {
+                  '$cond': {
+                    if: '$$comment.source',
+                    then: '$$comment.source',
+                    else: '0',
                   }
-                }
-              },
-              0
-            ]
+                },
+                '$$comment.text'
+              ]
+            }
           }
-        })
-        .match(finalCommentsQuery)
-        
-        .project({
-          applicationId: 1,
-          city: 1,
-          comments: '$commentsTemp',
-          commentsCount: 1,
-          country: 1,
-          location: 1,
-          login: 1,
-          name: 1,
-          profile: 1,
-          requisitionId: 1,
-          state: 1,
-          updated: 1,
-          status: 1,
-          _id: 1
-        })
-        .sort({
-          updated: -1,
-          state: -1,
-        })
-        .exec()
-        .then(data => {
-          console.log(`Records matched: ${data && data.length}`);
-          return res.json(data);
-        })
-        .catch(error => {
-          console.log('Error', error);
-          res.sendStatus(500);
-        });
-    } else {
-      // Return empty set
-      return res.json([]);
+        },
+      })
+      .match(finalQuery)
+      .project({
+        applicationId: 1,
+        city: 1,
+        comments: 1,
+        commentsCount: 1,
+        country: 1,
+        location: 1,
+        login: 1,
+        name: 1,
+        profile: 1,
+        requisitionId: 1,
+        state: 1,
+        updated: 1,
+        status: 1,
+        _id: 1
+      })
+      .sort({
+        updated: -1,
+        state: -1,
+      })
+      .exec()
+      .then(data => {
+        console.log(`Demand: ${data && data.length} records matched`);
+        return res.json(data);
+      })
+      .catch(error => {
+        console.log('Error', error);
+        res.sendStatus(500);
+      });
     }
-  }
 }

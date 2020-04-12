@@ -43,7 +43,6 @@ const resourceColumns = [
   'birthday',
   'english',
   'CV',
-  'comments',
 ];
 
 const columnName = new RegExp(/^[a-z0-9_ .]+$/, 'i');
@@ -56,25 +55,13 @@ const fundedStatus = 'Funded';
 export default class AssignmentCtrl extends BaseCtrl {
   model = Assignment;
 
-  modifiers = {
+  baseModifiers = {
+    include: resourceColumns,
+  };
+
+  finalModifiers = {
     exclude: ['demand', 'skills', 'candidate', 'candidates', 'requisition', 'requisitions', 'requisitionId']
   };
-
-  commentsModifiers = {
-    include: ['comments'],
-    comments: (key, value) => this.commentPreTransform(key, value)
-  };
-
-  resourceModifiers = {
-    include: resourceColumns,
-    // comments: (key, value) => this.commentTransform(key, value)
-  };
-
-  commentPreTransform(key: string, value) {
-    if (!key.includes('.')) return null;
-    let [comment, source] = key.split('.', 2);
-    return source;
-  }
 
   order;
   shift;
@@ -127,6 +114,8 @@ export default class AssignmentCtrl extends BaseCtrl {
       console.error(`Error parsing search query: ${orString}`);
       return res.sendStatus(500);
     }
+    or = await this.updateOr(or);
+
     this.order = this.determineOrder(req);
     this.shift = +JSON.parse(req.query.shift || '0');
 
@@ -174,31 +163,26 @@ export default class AssignmentCtrl extends BaseCtrl {
           let message = `No people with the following skills found: ${skillsRequested}`;
           return this._emptyResult(res, message);
         }
-        this._query(res, or, columns, skillsRequested, skillsByUser);
+        await this._query(res, or, columns, skillsRequested, skillsByUser);
       } catch (e) {
         console.log('Error', e);
         return res.sendStatus(500);
       }
     } else {
-      this._query(res, or, columns);
+      await this._query(res, or, columns);
     }
   }
 
   _query = (res, or, columns=[], skillsRequested='', skillsByUser={}) => {
     let group = [];
-    let criteria = this.modifyCriteria(or, this.modifiers, group);
-    if (!criteria || Object.keys(criteria).length === 0) {
-      return this._emptyResult(res);
-    }
-    let query = this.fixOr(criteria);
-    let resourceMatch = this.fixOr(this.modifyCriteria(or, this.resourceModifiers));
-    let commentsQuery = this.modifyCriteria(or, this.commentsModifiers);
 
-    console.log('Query:', JSON.stringify(query));
-    console.log('Resource query:', JSON.stringify(resourceMatch));
-    console.log('Comments query:', JSON.stringify(commentsQuery));
-    console.log('Columns1:', columns);
-    console.log('Group1:', group);
+    let baseQuery = this.fixOr(this.modifyCriteria(or, this.baseModifiers));
+    let finalQuery = this.fixOr(this.modifyCriteria(or, this.finalModifiers, group));
+
+    if (!Object.keys(baseQuery).length) return this._emptyResult(res, 'Assignments query is empty');
+
+    console.log('Base query:', JSON.stringify(baseQuery));
+    console.log('Final query:', JSON.stringify(finalQuery));
 
     let now = new Date();
     now.setDate(this.shift + now.getDate());
@@ -215,67 +199,29 @@ export default class AssignmentCtrl extends BaseCtrl {
       if (!defaultColumns[column] && columnName.test(column)) {
         [column, ] = column.split('.', 2);
         this._addGroup(group, column);
-        project[column] = column === 'comments' ? '$commentsTemp' : 1;
+        project[column] = 1;
       }
     });
     console.log('Group:', group);
     console.log('Project:', project);
 
-    let cursor = Resource.aggregate()
-      .lookup({
-        from: 'comments',
-        let: {
-          login: '$login',
-        },
-        pipeline: [
-          {
-            '$match': {
-              '$expr': {
-                '$and': [
-                  {'$eq': ['$$login', '$login']},
-                  {'$in': ['$source', commentsQuery]},
-                ]
-              }
-            }
-          }
-        ],
-        as: 'commentsTemp'
-      })
-      .addFields({
-        'comments': {
-          '$arrayToObject': {
-            '$map': {
-              input: '$commentsTemp',
-              as: 'comment',
-              in: [
-                {
-                  '$cond': {
-                    if: '$$comment.source',
-                    then: '$$comment.source',
-                    else: '0',
-                  }
-                },
-                '$$comment.text'
-              ]
-            }
-          }
-        }
-      })
-      .match(resourceMatch)
+    Resource
+      .aggregate()
+      .match(baseQuery)
 
       .lookup({
         from: 'comments',
         localField: 'login',
         foreignField: 'login',
-        as: 'commentsTemp'
+        as: 'comments'
       })
       .addFields({
-        'commentsCount': {'$size': '$commentsTemp'},
+        'commentsCount': {'$size': '$comments'},
         'status': {
           '$arrayElemAt': [
             {
               '$filter': {
-                input: '$commentsTemp',
+                input: '$comments',
                 as: 'status',
                 cond: {
                   '$eq': ['$$status.isStatus', true]
@@ -423,7 +369,7 @@ export default class AssignmentCtrl extends BaseCtrl {
         login: { '$first': '$login' },
         status: { '$first': '$status' },
         commentsCount: { '$first': '$commentsCount' },
-        commentsTemp: {'$first': '$commentsTemp'},
+        comments: {'$first': '$comments'},
         proposed: {'$first': '$proposed.login'},
       }))
       .addFields({
@@ -437,7 +383,7 @@ export default class AssignmentCtrl extends BaseCtrl {
         'comments': {
           '$arrayToObject': {
             '$map': {
-              input: '$commentsTemp',
+              input: '$comments',
               as: 'comment',
               in: [
                 {
@@ -453,7 +399,7 @@ export default class AssignmentCtrl extends BaseCtrl {
           }
         }
       })
-      .match(query)
+      .match(finalQuery)
       .sort(this.order)
       .project(Object.assign(project, defaultColumns, {
         _id: 1,
@@ -475,7 +421,7 @@ export default class AssignmentCtrl extends BaseCtrl {
             }, {}) : {};
           });
         }
-        console.log(`Records matched: ${data && data.length}`);
+        console.log(`Assignment: ${data && data.length} records matched`);
         res.json({message, data});
       })
       .catch(error => {

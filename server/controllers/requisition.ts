@@ -8,48 +8,25 @@ export default class RequisitionCtrl extends BaseCtrl {
   model = Requisition;
   limit = 1000;
 
-  commentsModifiers = {
-    include: ['comments'],
-    comments: (key, value) => this.commentTransform(key, value, 'candidate')
-  };
-
-  candidateCommentsModifiers = {
-    include: ['comments'],
-    comments: (key, value) => this.commentTransform(key, value)
-  };
-
-  requisitionsModifiers = {
-    include: ['requisition'],
-    requisition: (key, value) => {
-      if (key === 'requisitions') {  // Exclude requsitions=true/false from becoming a condition
-        return false;
+  private _getModifiers = (model: string, isFinal: boolean, preservePrefix: boolean): any => {
+    return {
+      include: isFinal ? [model] : [model, 'login'],
+      [model]: isFinal ?
+        (key, value) => {
+          if (!preservePrefix) key = key.replace(`${model}.`, '');
+          return {[key]: value};
+        } :
+        (key, value) => {
+          if (!key.includes('.comments')) {
+            if (!preservePrefix) key = key.replace(`${model}.`, '');
+            return {[key]: value};
+          }
+        },
+      login: (key, value) => {
+        return {[preservePrefix ? `${model}.${key}` : key]: value};
       }
-      key = key.replace('requisition.', '');
-      return {[key]: value};
-    },
-  };
-
-  candidatesModifiers = {
-    include: ['candidate'],
-    candidate: (key, value) => {
-      if (key === 'candidates') {  // Exclude candidates=true/false from becoming a condition
-        return false;
-      }
-      // key = key.replace('candidate.', '');
-      return {[key]: value};
-    },
-  };
-
-  candidatesAltModifiers = {
-    include: ['candidate'],
-    candidate: (key, value) => {
-      if (key === 'candidates' || key.includes('.comments')) {  // Exclude candidates=true/false from becoming a condition
-        return false;
-      }
-      key = key.replace('candidate.', '');
-      return {[key]: value};
-    },
-  };
+    };
+  }
 
   // Get by id
   get = (req, res) => {
@@ -62,7 +39,7 @@ export default class RequisitionCtrl extends BaseCtrl {
   }
 
   // Get all
-  getAll = (req, res) => {
+  getAll = async (req, res) => {
     printTitle('Requisitions & Candidates');
 
     let or, order;
@@ -73,21 +50,22 @@ export default class RequisitionCtrl extends BaseCtrl {
       return res.sendStatus(500);
     }
 
-    let requisitionsQuery = this.fixOr(this.modifyCriteria(or, this.requisitionsModifiers));
-    let commentsQuery = this.fixOr(this.modifyCriteria(or, this.commentsModifiers));
-    let candidateCommentsQuery = this.fixOr(this.modifyCriteria(or, this.candidateCommentsModifiers));
-    let candidatesQuery = this.fixOr(this.modifyCriteria(or, this.candidatesModifiers));
-    let candidatesAltQuery = this.fixOr(this.modifyCriteria(or, this.candidatesAltModifiers));
+    let ors = {
+      candidate: await this.updateOr(or, 'candidate'),
+      requisition: await this.updateOr(or, 'requisition'),
+    };
+    let makeQuery = (model: string, isFinal: boolean, preservePrefix: boolean) => {
+      let query = this.fixOr(this.modifyCriteria(ors[model], this._getModifiers(model, isFinal, preservePrefix)));
+      console.log(`${model} ${isFinal ? 'final' : 'base'} ${preservePrefix ? 'prefixed' : 'trimmed'}:`, JSON.stringify(query));
+      return query;
+    };
 
-    this.limit = (Object.keys(commentsQuery).length || Object.keys(requisitionsQuery).length) ? 1000 : 100;
+    let requisitionsQuery = makeQuery('requisition', true, false);
+    let candidatesQuery = makeQuery('candidate', true, false);
+
+    this.limit = (Object.keys(requisitionsQuery).length || Object.keys(candidatesQuery).length) ? 1000 : 100;
     order = this.determineOrder(req);
 
-    console.log('Initial:', JSON.stringify(or));
-    console.log('Requisitions query:', JSON.stringify(requisitionsQuery));
-    console.log('Candidates query:', JSON.stringify(candidatesQuery));
-    console.log('Candidates alt query:', JSON.stringify(candidatesAltQuery));
-    console.log('Comments query:', JSON.stringify(commentsQuery));
-    console.log('Candidates comments query:', JSON.stringify(candidateCommentsQuery));
     console.log('Order:', JSON.stringify(order));
 
     if (Object.keys(requisitionsQuery).length) {
@@ -95,7 +73,7 @@ export default class RequisitionCtrl extends BaseCtrl {
       // Filter by requisition properties first
       return Requisition
         .aggregate()
-        .match(requisitionsQuery)
+        .match(makeQuery('requisition', false, false))
 
         // Lookup requisitions comments
         .lookup({
@@ -119,9 +97,27 @@ export default class RequisitionCtrl extends BaseCtrl {
               },
               0
             ]
-          }
+          },
+          comments: {
+            '$arrayToObject': {
+              '$map': {
+                input: '$comments',
+                as: 'comment',
+                in: [
+                  {
+                    '$cond': {
+                      if: '$$comment.source',
+                      then: '$$comment.source',
+                      else: '0',
+                    }
+                  },
+                  '$$comment.text'
+                ]
+              }
+            }
+          },
         })
-        .match(commentsQuery)
+        .match(requisitionsQuery)
 
         // Lookup candidates
         .lookup({
@@ -134,7 +130,7 @@ export default class RequisitionCtrl extends BaseCtrl {
           path: '$candidate',
           preserveNullAndEmptyArrays: true
         })
-        .match(candidatesQuery)
+        .match(makeQuery('candidate', false, true))
 
         // Lookup candidates comments
         .lookup({
@@ -166,9 +162,27 @@ export default class RequisitionCtrl extends BaseCtrl {
               },
               0
             ]
-          }
+          },
+          'candidate.comments': {
+            '$arrayToObject': {
+              '$map': {
+                input: '$candidate.comments',
+                as: 'comment',
+                in: [
+                  {
+                    '$cond': {
+                      if: '$$comment.source',
+                      then: '$$comment.source',
+                      else: '0',
+                    }
+                  },
+                  '$$comment.text'
+                ]
+              }
+            }
+          },
         })
-        .match(commentsQuery)
+        .match(makeQuery('candidate', true, true))
 
         // Group by requisition
         .group({
@@ -282,7 +296,7 @@ export default class RequisitionCtrl extends BaseCtrl {
       // Filter by candidates properties first
       Candidate
         .aggregate()
-        .match(candidatesAltQuery)
+        .match(makeQuery('candidate', false, false))
 
         .lookup({
           from: 'comments',
@@ -313,9 +327,27 @@ export default class RequisitionCtrl extends BaseCtrl {
               },
               0
             ]
-          }
+          },
+          comments: {
+            '$arrayToObject': {
+              '$map': {
+                input: '$comments',
+                as: 'comment',
+                in: [
+                  {
+                    '$cond': {
+                      if: '$$comment.source',
+                      then: '$$comment.source',
+                      else: '0',
+                    }
+                  },
+                  '$$comment.text'
+                ]
+              }
+            }
+          },
         })
-        .match(candidateCommentsQuery)
+        .match(makeQuery('candidate', true, false))
 
         .lookup({
           from: 'requisitions',
@@ -370,8 +402,6 @@ export default class RequisitionCtrl extends BaseCtrl {
           title: {'$first': '$title'},
           candidates: {'$push': '$candidate'},
         })
-        .match(requisitionsQuery)
-
         .lookup({
           from: 'comments',
           localField: 'requisitionId',
@@ -418,6 +448,8 @@ export default class RequisitionCtrl extends BaseCtrl {
           foreignField: 'login',
           as: 'demand'
         })
+
+        // TODO: Check if this left after debugging
         .addFields({
           'd': {
             '$cond': {
