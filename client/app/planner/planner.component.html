@@ -121,7 +121,7 @@
                     <i class="fa fa-bed" *ngIf="candidate.onVacation"></i>
                     <i class="fa fa-globe" *ngIf="candidate.onTrip"></i>
                     <i class="fa fa-plane" *ngIf="candidate.canTravel"></i>
-                    {{ getCandidateCaption(candidate) }}
+                    {{ getCandidateCaption(candidate)|cut:20 }}
                   </span>
                 </caption>
                 <div
