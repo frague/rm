@@ -31,7 +31,7 @@ export default class BackupCtrl {
     Promise.all([Comment, Filter, Plan, Badge, ItemBadge].map(model => model.find({})))
       .then(([comments, filters, plans, badges, itemBadges]) => {
         printTitle('Backup');
-        
+
         console.log(`${comments.length} comments`);
         console.log(`${filters.length} filters`);
         console.log(`${plans.length} demand plans`);

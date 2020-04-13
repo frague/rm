@@ -53,7 +53,7 @@ abstract class BaseCtrl {
   abstract model: mongoose.Schema;
 
   // Remove related items to keep DB consistent
-  cleanup = (req, res) => res.sendStatus(200);
+  cleanup = (req, res) => res.json({});
 
   // Prepares a list of enities, matched by comments.* criteria.
   // Strict - affect "and" conditions, soft - "or" conditions.
@@ -291,7 +291,7 @@ abstract class BaseCtrl {
       if (err) {
         return this._respondWithError(res, err);
       }
-      res.status(200).json(item);
+      res.json(item);
     });
   }
 
@@ -320,7 +320,7 @@ abstract class BaseCtrl {
   // Delete all
   deleteAll = (req, res) => {
     this.deleteMany({})
-      .then(res.sendStatus(200))
+      .then(res.json({}))
       .catch(err => this._respondWithError(res, err));
   }
 }

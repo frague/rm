@@ -186,6 +186,7 @@ export default class AssignmentCtrl extends BaseCtrl {
 
     let now = new Date();
     now.setDate(this.shift + now.getDate());
+    now.setHours(0, 0, 0, 0);  // Good morning!
 
     // Extended columns information
     group = group.reduce((result, column) => {
@@ -289,7 +290,7 @@ export default class AssignmentCtrl extends BaseCtrl {
             if: {
               '$and': [
                 '$assignment.isActive',
-                {'$eq': ['$assignment.initiativeId', 'vacation']},
+                {'$in': ['$assignment.initiativeId', ['paid vacation', 'unpaid vacation']]},
               ]
             },
             then: '$assignment.end',

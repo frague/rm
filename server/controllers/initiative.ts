@@ -8,7 +8,7 @@ export default class InitiativeCtrl extends BaseCtrl {
   cleanup = (req, res) => {
     Assignment.deleteMany({initiativeId: req.params.id}, (err) => {
       if (err) { return console.error(err); }
-      res.sendStatus(200);
+      res.json({});
     })
   };
 }

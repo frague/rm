@@ -9,7 +9,7 @@ export default class BadgeCtrl extends BaseCtrl {
   cleanup = (req, res) => {
     ItemBadge.deleteMany({badgeId: req.params.id}, (err) => {
       if (err) { return console.error(err); }
-      res.sendStatus(200);
+      res.json({});
     })
   }
 

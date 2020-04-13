@@ -15,6 +15,8 @@ const listDiffs = [
   'Delivery Managers',
 ];
 
+const vacations = ['paid vacation', 'unpaid vacation'];
+
 // Custom markdown renderer for links
 var renderer = new marked.Renderer();
 renderer.link = function (href: string, title: string, text: string) {
@@ -165,7 +167,7 @@ export class ColumnPipe implements PipeTransform {
       case 'assignments':
         if (value) {
           return Object.keys(value)
-            .filter(account => account !== 'vacation')
+            .filter(account => !vacations.includes(account))
             .map((account: any) => {
               let accountAssignments = value[account];
               if (!(accountAssignments instanceof Array)) {
@@ -186,14 +188,12 @@ export class ColumnPipe implements PipeTransform {
       case 'comments':
         if (value) {
           if (secondary) {
-            return value
-              .filter(comment => comment.source === secondary)
-              .map(comment => comment.text)
-              .join(', ')
+            console.log(value);
+            return (value || {})[secondary];
           }
-          return value
-            .map((comment, index) => {
-              return comment  ? (index ? '\n---\n# ' : '# ') + formatDate(comment.date) + (comment.source ? ', ' + comment.source : '') + '\n\n' + comment.text : ''
+          return Object.keys(value)
+            .map((key, index) => {
+              return `${index ? '\n---\n# ' : '# '}${key}\n\n${value[key]}`
             })
             .join('\n\n');
         }

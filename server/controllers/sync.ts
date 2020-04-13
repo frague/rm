@@ -27,6 +27,8 @@ import {
   profilesInvertedMap,
   requisitionsLocations,
   stagesMap,
+  approvedVacations,
+  vacationBillabilities,
 } from '../mappings';
 
 import { getDeepProperty } from '../utils';
@@ -38,8 +40,6 @@ const outdated = 1000 * 60 * 60 * 24 * 30 * 3;  // 3 months
 const reqId = new RegExp(/^.*(GD\d+).*$/, 'i');
 const dateExpr = new RegExp(/^\d{1,4}-\d{1,2}-\d{1,4}$/);
 const accountManagementSource = 'Account management';
-
-const approvedVacations = ['approved', 'requested'];
 
 export default class SyncCtrl {
 
@@ -92,9 +92,7 @@ export default class SyncCtrl {
     }
 
     if (eod) {
-      result.setHours(23);
-      result.setMinutes(59);
-      result.setSeconds(59);
+      result.setHours(23, 59, 59);
     }
     return result.toString()
   }
@@ -245,33 +243,36 @@ export default class SyncCtrl {
     }
   };
 
+  private async _createVacationInitiative({_id, name, color}): Promise<any> {
+    let existing = await Initiative.findOne({_id});
+    if (!existing) {
+      new Initiative({
+        _id,
+        name,
+        color,
+        account: 'Griddynamics',
+      }).save()
+    }
+  }
+
   private _queryVacations(): Promise<any> {
     let todayYear = new Date().getFullYear();
     let notFound = {};
     return new Promise(async (resolve, reject) => {
       try {
-        // Create new Vacation initiative
         let _error;
 
-        Initiative.findOne(
-          { _id: 'vacation' },
-          (error, existingVacation) => {
-            if (error) {
-              _error = error;
-              return;
-            }
-            if (!existingVacation) {
-              new Initiative({
-                _id: 'vacation',
-                name: 'Vacation',
-                account: 'Griddynamics',
-                color: '#1ca1c0'
-              })
-                .save()
-                .catch(error => _error = error);
-            }
-          }
-        ).exec();
+        // Create new Vacation initiative
+        this._createVacationInitiative({
+          _id: 'paid vacation',
+          name: 'Vacation',
+          color: '#72c01c'
+        });
+        this._createVacationInitiative({
+          _id: 'unpaid vacation',
+          name: 'Unpaid Leave',
+          color: '#1ca1c0'
+        });
 
         if (_error) {
           return reject(_error);
@@ -283,20 +284,21 @@ export default class SyncCtrl {
           return reject(_error);
         }
 
-        await Assignment.deleteMany({ initiativeId: 'vacation' });
+        await Assignment.deleteMany({ initiativeId: {'$in': ['unpaid vacation', 'paid vacation']} });
 
         this._addLog('received vacations information', 'bamboo');
 
         // Create custom method to add vacation assignment to resource
-        let addVacation = (resourceId, startDate, endDate) => {
+        let addVacation = (resourceId, startDate, endDate, billability='Funded', comment='') => {
           // console.log('add vacation', resourceId, startDate, endDate);
           let vac = new Assignment({
-            initiativeId: 'vacation',
+            initiativeId: billability === 'Funded' ? 'paid vacation' : 'unpaid vacation',
             resourceId,
             start: startDate,
             end: endDate,
-            billability: 'Funded',
-            involvement: 100
+            billability,
+            involvement: 100,
+            comment
           });
           vac.save(reject);
         };
@@ -319,8 +321,10 @@ export default class SyncCtrl {
           if (todayYear - endYear > 1) return;
 
           // Add vacation if it is approved
-          if (request.status && approvedVacations.includes(request.status['$t']) && request.type && request.type['$t'].includes('acation')) {
-            addVacation(resource.login, request.start, request.end);
+          let vacationType = request.type ? request.type['$t'] : '';
+          let vacationBillability = vacationBillabilities[vacationType];
+          if (request.status && approvedVacations.includes(request.status['$t']) && vacationType) {
+            addVacation(resource.login, request.start, request.end, vacationBillability, vacationType);
             vacationsCount++;
           }
         });

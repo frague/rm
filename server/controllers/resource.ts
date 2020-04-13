@@ -12,7 +12,7 @@ export default class ResourceCtrl extends BaseCtrl {
   cleanup = (req, res) => {
     Assignment.deleteMany({resourceId: req.params.id}, (err) => {
       if (err) { return console.error(err); }
-      res.sendStatus(200);
+      res.json({});
     })
   }
 

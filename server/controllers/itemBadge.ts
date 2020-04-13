@@ -9,7 +9,7 @@ export default class ItemBadgeCtrl extends BaseCtrl {
       if (err) {
         return this._respondWithError(res, err);
       }
-      res.sendStatus(200);
+      res.json({});
     });
   }
 }

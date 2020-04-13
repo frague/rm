@@ -7,7 +7,7 @@ export default class RequisitionDemandCtrl extends BaseCtrl {
   cleanup = (req, res) => {
     this.model.deleteMany({}, (err) => {
       if (err) { return console.error(err); }
-      res.sendStatus(200);
+      res.json({});
     })
   };
 }

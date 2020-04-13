@@ -242,7 +242,7 @@ export default class DemandCtrl extends BaseCtrl {
   cleanup = (req, res) => {
     Demand.deleteMany({}, (err) => {
       if (err) { return console.error(err); }
-      res.sendStatus(200);
+      res.json({});
     })
   };
 }
