@@ -22,7 +22,8 @@ app.use(morgan('dev'));  // Requests logging middleware
 const mongoOptions = {
   promiseLibrary: global.Promise,
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
+  useFindAndModify: false,
 };
 
 if (process.env.NODE_ENV === 'test') {
