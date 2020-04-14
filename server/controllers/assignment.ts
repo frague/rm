@@ -51,6 +51,8 @@ const columnName = new RegExp(/^[a-z0-9_ .]+$/, 'i');
 const billableStatuses = ['Billable', 'PTO Coverage'];
 const bookedStatus = 'Booked';
 const fundedStatus = 'Funded';
+const paidVacation = 'paid vacation';
+const vacations = [paidVacation, 'unpaid vacation'];
 
 export default class AssignmentCtrl extends BaseCtrl {
   model = Assignment;
@@ -65,6 +67,8 @@ export default class AssignmentCtrl extends BaseCtrl {
 
   order;
   shift;
+
+  private _hasComments = false;
 
   filterSkills = (source: any[]): any[] => {
     let result = [];
@@ -107,6 +111,7 @@ export default class AssignmentCtrl extends BaseCtrl {
     let columns = [];
     let group = [];
     let orString = req.query.or || '[]';
+    this._hasComments = orString.includes('comments.');
     try {
       or = JSON.parse(orString);
       columns = this.determineColumns(req);
@@ -179,7 +184,7 @@ export default class AssignmentCtrl extends BaseCtrl {
     let baseQuery = this.fixOr(this.modifyCriteria(or, this.baseModifiers));
     let finalQuery = this.fixOr(this.modifyCriteria(or, this.finalModifiers, group));
 
-    if (!Object.keys(baseQuery).length) return this._emptyResult(res, 'Assignments query is empty');
+    if (!Object.keys(finalQuery).length) return this._emptyResult(res, 'Assignments query is empty');
 
     console.log('Base query:', JSON.stringify(baseQuery));
     console.log('Final query:', JSON.stringify(finalQuery));
@@ -206,7 +211,7 @@ export default class AssignmentCtrl extends BaseCtrl {
     console.log('Group:', group);
     console.log('Project:', project);
 
-    Resource
+    let cursor = Resource
       .aggregate()
       .match(baseQuery)
 
@@ -290,7 +295,7 @@ export default class AssignmentCtrl extends BaseCtrl {
             if: {
               '$and': [
                 '$assignment.isActive',
-                {'$in': ['$assignment.initiativeId', ['paid vacation', 'unpaid vacation']]},
+                {'$in': ['$assignment.initiativeId', vacations]},
               ]
             },
             then: '$assignment.end',
@@ -319,6 +324,8 @@ export default class AssignmentCtrl extends BaseCtrl {
             '$and': [
               '$assignment.isActive',
               {'$eq': ['$assignment.billability', fundedStatus]},
+              {'$ne': ['$assignment.initiativeId', paidVacation]},
+              {'$gt': ['$assignment.involvement', 0]}
             ]
           }
         },
@@ -380,7 +387,18 @@ export default class AssignmentCtrl extends BaseCtrl {
             then: '$assignments',
             else: []
           }
-        },
+        }
+      });
+
+    if (!this._hasComments) {
+      // If no comments are in query - no need to
+      // convert them to object prior to matching
+      cursor.match(finalQuery);
+    }
+
+    // Heavy conversion of comments to an object
+    cursor
+      .addFields({
         'comments': {
           '$arrayToObject': {
             '$map': {
@@ -399,8 +417,14 @@ export default class AssignmentCtrl extends BaseCtrl {
             }
           }
         }
-      })
-      .match(finalQuery)
+      });
+
+    if (this._hasComments) {
+      // Otherwise conversion should be made prior to matching
+      cursor.match(finalQuery);
+    }
+
+    cursor
       .sort(this.order)
       .project(Object.assign(project, defaultColumns, {
         _id: 1,
