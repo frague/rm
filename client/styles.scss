@@ -593,7 +593,7 @@ table.badges {
 
     h4.modal-title {
       font-weight: 300;
-      line-height: 2;
+      line-height: 1;
 
       &.right-buttons {
         padding-right: 30px;
@@ -617,7 +617,7 @@ table.badges {
 
     h6 {
       font-weight: 100;
-      display: inline;
+      padding: 8px 0 0 0;
       margin-right: 10px;
     }
 
@@ -1214,6 +1214,10 @@ i.initiative {
           &.booked {
             .avatar .fa {
               color: white;
+
+              &.fa-thumb-tack {
+                right: 6px;
+              }
             }
           }
 
@@ -1623,6 +1627,12 @@ ul.tasks {
         display: block;
         margin: 0;
         padding-top: 6px;
+
+        a {
+          @extend .clickable;
+          font-size: 18px;
+          color: $link;
+        }
       }
 
       div.line {

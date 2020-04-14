@@ -1,4 +1,5 @@
 import { Component, ViewChild, ElementRef, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Router } from '@angular/router';
 import { Schedule } from '../schedule';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { from } from 'rxjs';
@@ -63,6 +64,8 @@ export class PlannerComponent extends Schedule {
   ];
   filterLocations = {};
   filterUsers = false;
+
+  private _bus: BusService;
 
   chosenBadges = [];
   get badgesAreSelected() {
@@ -175,11 +178,13 @@ export class PlannerComponent extends Schedule {
     private candidateService: CandidateService,
     bus: BusService,
     cache: CacheService,
-    cd: ChangeDetectorRef
+    cd: ChangeDetectorRef,
+    private router: Router,
   ) {
     super(assignmentService, resourceService, initiativeService, demandService, bus, cache, cd);
     this._cd = cd;
     this._cache = cache;
+    this._bus = bus;
     this.toggleLocations({target: {checked: true}});
   }
 
@@ -439,5 +444,10 @@ export class PlannerComponent extends Schedule {
 
   getBadgeCaption(badge) {
     return badge.short || Utils.abbreviate(badge.title);
+  }
+
+  showAccount(account: string): void {
+    this._bus.criteriaUpdated.emit(`assignments.account=${account},columns=name|grade|location,order=location|name`);
+    this.router.navigate(['/reports']);
   }
 }

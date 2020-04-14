@@ -51,7 +51,7 @@
           </ul>
         </div>
         <div class="account" *ngFor="let account of getAccounts()">
-          <h3>{{ account }}</h3>
+          <h3>{{ account }} <a (click)="showAccount(account)"><i class="fa fa-pie-chart"></i></a></h3>
           <ng-container
             *ngFor="let demand of accountsDemand[account]"
           >
@@ -110,7 +110,7 @@
                   <span *ngIf="candidate.onVacation">{{ candidate.onVacation|date }}</span>
                   <span *ngIf="candidate.starts">{{ candidate.starts|date }}</span>
                   <i class="fa fa-umbrella" *ngIf="candidate.isFunded" title="Funded"></i>
-                  <i class="fa fa-star" *ngIf="candidate.isBooked" title="Booked"></i>
+                  <i class="fa fa-thumb-tack" *ngIf="candidate.isBooked" title="Booked"></i>
                 </avatar>
                 <section>
                   <demand *ngFor="let demandLogin of candidate.proposed" [login]="demandLogin" (show)="showResource($event)"></demand>
