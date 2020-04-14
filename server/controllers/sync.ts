@@ -323,7 +323,7 @@ export default class SyncCtrl {
           // Add vacation if it is approved
           let vacationType = request.type ? request.type['$t'] : '';
           let vacationBillability = vacationBillabilities[vacationType];
-          if (request.status && approvedVacations.includes(request.status['$t']) && vacationType) {
+          if (request.status && approvedVacations.includes(request.status['$t']) && vacationBillability) {
             addVacation(resource.login, request.start, request.end, vacationBillability, vacationType);
             vacationsCount++;
           }
