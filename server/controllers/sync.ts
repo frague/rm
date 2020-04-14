@@ -637,150 +637,12 @@ export default class SyncCtrl {
     );
   }
 
-  private _queryDemand(): Promise<any> {
-    let _error;
-
-    this._checkDemandInitiative();
-
-    return new Promise(async (resolve, reject) => {
-      await RequisitionDemand.deleteMany({}).exec();
-      let newRd = {};
-      let now = new Date();
-
-      let data = await this.PMO.getDemandDicts().catch(error => _error = error);
-      if (_error) {
-        return reject(_error);
-      }
-
-      // let { load, locations, accounts, grades, workProfiles, stages, types, statuses, cstatuses } = data;
-      let { load, locations, accounts, grades, workProfiles, stages, types, statuses } = data;
-      let destinations = data['deploy-destinations'];
-
-      const specializations = Object.keys(workProfiles).reduce((result, key: string) => {
-        let profile = workProfiles[key];
-        profile.specializations.forEach(spec => result[spec.id] = spec);
-        return result;
-      }, {});
-
-      const transformLocations = (item) => {
-        return Object.keys(
-          item.locations.reduce((result, lId) => {
-            var l = locations[lId];
-            if (!l) return result;  // Unknown location ID
-
-            let location = locationsMap[l.name] || l.name;
-            if (Array.isArray(location)) {
-              location.forEach(l => result[l] = true);
-            } else {
-              result[location] = true;
-            }
-            return result;
-          }, {})
-        ).sort().join(', ');
-      };
-
-      const transformDestinations = (item) => {
-        let d = item.deployDestinations;
-        if (d && d.length === 1 && d[0] === 1) {
-          return 'Offshore';
-        }
-        let prefix = 'On-site ' + (item.availabilityForShortTrips ? 'short' : 'long');
-        return prefix + ' (' + item.deployDestinations.map(dId => (destinations[dId] || {}).name || dId).sort().join(', ') + ')';
-      };
-
-      Object.keys(load).forEach(id => {
-        let item = load[id];
-        let demand, status;
-        const requestId = (item.jobviteId || '')
-          .split(',')
-          .map((id: string) =>
-             (id || '').toUpperCase().replace(reqId, '$1')
-          );
-
-        try {
-          status = statuses[item.statusId].name;
-
-          const account = item.account.name;
-          const end = new Date(item.startDate);
-          end.setDate(end.getDate() + item.duration * 7);
-
-          const profile = workProfiles[item.workProfileId].name;
-          const specs = item.specializations
-            .filter(sid => !!specializations[sid])
-            .map(sid => specializations[sid].name)
-            .join(', ');
-          const pool = demandPoolsMap[profile + '-' + specs] || '';
-
-          demand = {
-            login: (id + ':' + specs + '_' + profile + '_for_' + account).replace(/[ .:]/g, '_'),
-            name: id + ' ' + specs + ' ' + profile,
-            account: account,
-            comment: item.comment,
-            candidates: item.proposedCandidates.map(candidate => candidate.name),
-            deployment: transformDestinations(item),
-            end: end.toISOString().substr(0, 10),
-            grades: item.gradeRequirements.map(rid => {
-              let grade = grades[rid];
-              return grade ? (grade.code + grade.level) : '?';
-            }).sort().join(', '),
-            locations: transformLocations(item),
-            profile,
-            project: item.project.name,
-            role: types[item.typeId].billableStatus,
-            start: item.startDate,
-            specializations: specs,
-            stage: stages[item.stageId].code,
-            isBooked: status === 'Booked',
-            requestId,
-            requirements: item.requirements,
-            duration: item.duration,
-
-            pool
-          };
-        } catch (e) {
-          return reject(e);
-        }
-
-        if (requestId && requestId.length) {
-          requestId
-            .filter(requisitionId => !!requisitionId)
-            .forEach(requisitionId => {
-              let r = newRd[requisitionId];
-              if (!r) {
-                r = {
-                  requisitionId,
-                  demandIds: [],
-                  updated: now
-                };
-              }
-            if (!r.demandIds.includes(demand.login)) {
-              r.demandIds.push(demand.login);
-              newRd[requisitionId] = r;
-            }
-          });
-        }
-
-        if (['Active', 'Booked'].includes(status)) {
-          setTimeout(() => new Demand(demand).save((err, data) => {
-            if (err) reject(err);
-          }), 0);
-        }
-
-      });
-
-      Object.keys(newRd).forEach(r => new RequisitionDemand(newRd[r]).save());
-
-      return resolve();
-    });
-  }
-
   private _queryNewDemand(): Promise<any> {
     let _error;
     return new Promise(async (resolve, reject) => {
       try {
         this._checkDemandInitiative();
 
-        await RequisitionDemand.deleteMany({}).exec();
         let requisitionDemands = {};
         let now = new Date();
 
@@ -789,6 +651,7 @@ export default class SyncCtrl {
           return reject(_error);
         }
 
+        await RequisitionDemand.deleteMany({}).exec();
         let load = getDeepProperty(data, 'data.positionDemands.content');
 
         load.forEach(item => {
