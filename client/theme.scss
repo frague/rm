@@ -1,0 +1,76 @@
+// Body
+$body: #f5feff;
+$lighterBody: color.adjust($body, $lightness: 5%);
+$darkerBody: color.adjust($body, $lightness: -5%);
+
+$textColor: color.adjust($body, $saturation: -80%, $lightness: -50%);
+$link: #006ba2;
+
+// Common colors
+$primary: #dfd;
+$danger: #fdd;
+$grid: #aaa;
+
+$cornerColor: #87afb3;
+$green: #dfd;
+$yellow: #ffb;
+$blue: #1ca1c0;
+$red: #ff6e27;
+
+$superGreen: #adff63;
+
+$good: #bbe2ba;
+$average: #e8ea9a;
+$bad: #eac39a;
+$critical: #ef853e;
+
+$warning: rgba(255, 85, 0, 0.25);
+$warningOpaque: #ffd5c1;
+$dim: rgba(0, 0, 0, 0.02);
+$vacation: #fff3cd;
+
+
+// Forms
+$formBody: #f9efdd;
+$formBorder: color.adjust($formBody, $lightness: -20%, $saturation: -50%);
+$formBorderRest: color.adjust($formBody, $lightness: -5%);
+$formDropDownColor: $formBorder;
+
+$formPerspective: 2px;
+
+
+// Buttons
+$btnColor: color.adjust($formBody, $saturation: -6%);
+$btnTextColor: color.adjust($body, $lightness: -44%, $saturation: -90%);
+$btnBorder: rgba(0, 0, 0, 0.1);
+
+
+// Icons
+$iconColor: color.adjust($body, $saturation: -70%, $lightness: -30%);
+$globeIconColor: color.adjust($cornerColor, $lightness: -18%, $saturation: -1%);
+$bedIconColor: color.adjust($vacation, $lightness: -50%);
+
+
+// Badges
+$badgeColor: color.adjust($body, $saturation: -12%);  // Check if needed
+$badgeBorderColor: color.adjust($body, $saturation: -30%);
+
+// Planner
+$plannerCardColor: color.adjust($body, $lightness: -2%, $saturation: -10%);
+$statusMatchedProposed: color.adjust($primary, $lightness: -40%, $saturation: -50%);
+$statusVacation: color.adjust($vacation, $saturation: 6%);
+$statusAnotherPosition: color.adjust($darkerBody, $lightness: -50%, $saturation: -80%);
+
+$demandCardHeight: 200px;
+$demandCardWidth: 120px;
+
+$lineHeight: 30px;
+$plannerLineHeight: 60px;
+
+// Tooltip
+$tooltipBackground: color.adjust($body, $saturation: -80%, $lightness: -60%);
+$tooltipBorder: color.adjust($body, $saturation: -80%, $lightness: -70%);
+
+
+$mdParagraph: 10px;
+

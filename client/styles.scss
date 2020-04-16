@@ -1,46 +1,5 @@
-$body: #f5feff;
-
-$primary: #dfd;
-$danger: #fdd;
-$grid: #aaa;
-
-$form-border: $body - #555;
-$text-normal: $body - #888;
-$form-body: #f9efdd;
-$form-border-rest: $form-body - #111;
-$form-perspective: 2px;
-
-$btn-color: $form-body - #111;
-$btn-border: rgba(0, 0, 0, 0.1);
-
-$green: #dfd;
-$yellow: #ffb;
-$blue: #1ca1c0;
-$red: #ff6e27;
-
-$super-green: #adff63;
-
-$good: #bbe2ba;
-$average: #e8ea9a;
-$bad: #eac39a;
-$critical: #ef853e;
-
-$warning: rgba(255, 85, 0, 0.25);
-$warning-opaque: #ffd5c1;
-$dim: rgba(0, 0, 0, 0.02);
-
-$cornerColor: #87afb3;
-$link: #006ba2;
-
-$demandCardHeight: 200px;
-$demandCardWidth: 120px;
-
-$lineHeight: 30px;
-$plannerLineHeight: 60px;
-
-$vacation: #fff3cd;
-
-$mdParagraph: 10px;
+@use "sass:color";
+@import "theme";
 
 body {
   background-color: $body;
@@ -61,7 +20,7 @@ body.modal-open .candidates {
 }
 
 .text-normal {
-  color: $text-normal;
+  color: $textColor;
 }
 
 button {
@@ -104,7 +63,7 @@ h1 {
 
   i.fa {
     font-size: 24px;
-    color: $body - #222;
+    color: $iconColor;
     margin-left: 10px;
   }
 
@@ -136,7 +95,7 @@ pre {
     top: 50%;
     right: 0;
     border-top: solid 2px $red;
-    transform:rotate(-5deg);
+    transform: rotate(-5deg);
   }
 }
 
@@ -157,12 +116,12 @@ pre {
   border-width: 0;
 
   button.btn {
-    border-color: $form-border-rest $form-border-rest $form-border $form-border-rest !important;
+    border-color: $formBorderRest $formBorderRest $formBorder $formBorderRest !important;
 
     &:not(disabled):active {
       margin-top: 0;
-      border-color: $form-border $form-border-rest !important;
-      border-width: $form-perspective 1px 1px 1px;
+      border-color: $formBorder $formBorderRest !important;
+      border-width: $formPerspective 1px 1px 1px;
     }
   }
 }
@@ -173,16 +132,15 @@ pre {
   &:visited,
   &:active {
     border-radius: 0;
-    border-color: $form-border $form-border-rest $form-border-rest $form-border-rest !important;
-    border-width: $form-perspective 1px 1px 1px;
-    background-color: $form-body;
+    border-color: $formBorder $formBorderRest $formBorderRest $formBorderRest !important;
+    border-width: $formPerspective 1px 1px 1px;
+    background-color: $formBody;
     z-index: 2 !important;
   }
 
-
   &:focus {
-    border-color: $form-border $form-border-rest $form-border-rest $form-border-rest !important;
-    background-color: $form-body + #111;
+    border-color: $formBorder $formBorderRest $formBorderRest $formBorderRest !important;
+    background-color: color.adjust($formBody, $saturation: 40%, $lightness: -5%);
   }
 }
 
@@ -279,14 +237,14 @@ pre {
 .btn {
   outline-width: 0px !important;
   border-radius: 0;
-  color: $body - #777;
-  background-color: $btn-color;
-  border-color: $btn-border $btn-border $form-border !important;
-  border-width: 1px 1px $form-perspective 1px;
+  color: $btnTextColor;
+  background-color: $btnColor;
+  border-color: $btnBorder $btnBorder $formBorder !important;
+  border-width: 1px 1px $formPerspective 1px;
   box-shadow: 0 3px 2px -2px rgba(0,0,0,0.2);
 
   &:active {
-    margin-top: $form-perspective - 1px;
+    margin-top: $formPerspective - 1px;
     border-width: 1px;
     box-shadow: none;
   }
@@ -295,10 +253,19 @@ pre {
   &:active,
   &:visited,
   &:focus,
-  &:focus:active,
+  &:focus:active {
+    color: $btnTextColor;
+    background-color: color.adjust($btnColor, $saturation: -6%, $lightness: -10%);
+  }
   &:disabled {
-    color: $body - #777;
-    background-color: $btn-color - #111;
+    &,
+    &:hover,
+    &:active,
+    &:focus,
+    &:focus:active {
+      color: color.adjust($btnTextColor, $alpha: -0.5);
+      background-color: color.adjust($btnColor, $saturation: -50%);
+    }
   }
 
   &:nth-child(n+2) {
@@ -306,50 +273,54 @@ pre {
   }
 
   &.btn-primary {
-    &,
+    background-color: color.adjust($primary, $saturation: -6%, $lightness: -10%);
+    border-color: color.adjust($primary, $saturation: -6%);
+    &:hover,
+    &:active,
+    &:focus,
+    &:focus:active {
+      background-color: color.adjust($primary, $saturation: -6%, $lightness: -15%);
+    }
     &:disabled {
-      background-color: $primary;
-      border-color: $primary - #111;
-      &:hover {
-        background-color: $primary - #111;
-        border-color: $primary - #111;
-      }
+      &,
+      &:hover,
       &:active,
       &:focus,
       &:focus:active {
-        background-color: $primary - #222;
-        border-color: $primary - #111;
+        background-color: color.adjust($primary, $saturation: -50%);
       }
     }
   }
 
   &.btn-danger {
-    &,
+    background-color: color.adjust($danger, $saturation: -6%, $lightness: -10%);
+    border-color: color.adjust($danger, $saturation: -6%);
+    &:hover,
+    &:active,
+    &:focus,
+    &:focus:active {
+      background-color: color.adjust($danger, $saturation: -6%, $lightness: -15%);
+    }
     &:disabled {
-      background-color: $danger;
-      border-color: $danger - #111;
-      &:hover {
-        background-color: $danger - #111;
-        border-color: $danger - #111;
-      }
+      &,
+      &:hover,
       &:active,
       &:focus,
       &:focus:active {
-        background-color: $danger - #222;
-        border-color: $danger - #111;
+        background-color: color.adjust($danger, $saturation: -50%);
       }
     }
   }
+}
 
-  &:disabled,
-  &.disabled {
-    color: rgba(0,0,0,0.2);
-    opacity: 1;
-
-    &,
-    &:hover {
-      background-color: $btn-color - #111;
-    }
+button.close {
+  color: $iconColor;
+  opacity: 1;
+  &:hover,
+  &:active,
+  &:focus,
+  &:focus:active {
+    color: $link;
   }
 }
 
@@ -436,7 +407,7 @@ ul.badges {
     list-style: none;
     display: inline;
     border-radius: 6px;
-    background-color: $body - #222;
+    // background-color: $badgeColor;
     white-space: nowrap;
     transition: margin 0.3s ease;
 
@@ -483,7 +454,7 @@ ul.badges {
             white-space: nowrap;
 
             &.selected {
-              background-color: $body - #222;
+              background-color: color.adjust($darkerBody, $saturation: -40%, $lightness: -10%);
             }
           }
         }
@@ -539,6 +510,9 @@ table.badges {
   }
   input[type=text] {
     width: 100%;
+  }
+  .btn-link {
+    @extend .clickable;
   }
 }
 
@@ -603,15 +577,14 @@ table.badges {
           float: right;
           margin: 0px 4px;
           position: relative;
-          top: 15px;
-          color: $body - #444;
+          color: $iconColor;
         }
       }
     }
 
     &.printable {
       h4.modal-title i.fa {
-        color: $body - #888;
+        color: color.adjust($iconColor, $lightness: -20%, $saturation: -10%);
       }
     }
 
@@ -703,7 +676,7 @@ table.badges {
           }
         }
         &.pending {
-          color: $green - #444;
+          color: color.adjust($green, $saturation: -25%);
           font-weight: 100;
 
           i.fa {
@@ -733,6 +706,8 @@ table.badges {
 
     .history {
       ul.diffs {
+        @extend #diff;
+
         padding-left: 0;
         margin-bottom: 0;
 
@@ -793,9 +768,9 @@ table.badges {
     max-width: 500px;
     font-size: 11px;
     font-weight: 100;
-    border: solid 1px $grid - #444;
+    border: solid 1px $tooltipBorder;
     border-radius: 0;
-    background-color: $body - #777;
+    background-color: $tooltipBackground;
     color: white;
   }
 }
@@ -841,7 +816,7 @@ i.initiative {
 
 .dashboard {
   & > div {
-    background-color: $body - #080808;
+    background-color: color.adjust($body, $saturation: -3%);
     padding-bottom: 15px;
     border-left: solid 1px $body;
 
@@ -968,10 +943,10 @@ i.initiative {
         color: $red;
       }
       &.fa-globe {
-        color: $cornerColor - #333;
+        color: $globeIconColor;
       }
       &.fa-bed {
-        color: $vacation - #888;
+        color: $bedIconColor;
         padding: 0 2px;
         font-size: 85%;
       }
@@ -1000,7 +975,7 @@ i.initiative {
         position: sticky;
         top: 0px;
         opacity: 0.94;
-        background-color: $body - #111;
+        background-color: $lighterBody;
         border: solid 1px $grid;
       }
 
@@ -1039,7 +1014,7 @@ i.initiative {
             padding: 0 6px;
             display: inline-block;
             margin: 0 4px 6px 0;
-            border: solid 1px $body - #555;
+            border: solid 1px $badgeBorderColor;
             white-space: nowrap;
             line-height: 1.4;
             min-width: auto;
@@ -1068,13 +1043,13 @@ i.initiative {
 
     &.lines div.line {
       padding-left: 5px;
-      background-color: $body - #070707;
+      background-color: $plannerCardColor;
 
       &.covered {
         background-color: $primary !important;
       }
       &.warning {
-        background-color: $warning-opaque;
+        background-color: $warningOpaque;
       }
       &.expired time {
         color: $red;
@@ -1151,12 +1126,12 @@ i.initiative {
           & > li {
             @extend .shadow;
             border-bottom: solid 1px $grid;
-            background-color: $body - #111;
+            background-color: $lighterBody;
           }
         }
 
         & > li {
-          background-color: $body - #070707;
+          background-color: $plannerCardColor;
           border-right: solid 1px $grid;
           border-top: solid 1px $grid;
           width: $demandCardWidth;
@@ -1182,7 +1157,7 @@ i.initiative {
           }
 
           &.billable {
-            background-color: $warning-opaque;
+            background-color: $warningOpaque;
             &.assigned {
               background-color: $yellow;
             }
@@ -1200,7 +1175,7 @@ i.initiative {
               rgba(255, 140, 0, 0.2) 10px,
               rgba(255, 140, 0, 0.2) 20px
             );
-            background-color: $body - #111;
+            background-color: $darkerBody;
 
             &.assigned {
               background-color: $primary;
@@ -1396,7 +1371,7 @@ i.initiative {
 
           span {
             position: absolute;
-            color: $text-normal;
+            color: $textColor;
             display: block;
             width: $demandCardWidth;
             font-size: 10px;
@@ -1417,27 +1392,27 @@ i.initiative {
             background-color: $primary;
             i.fa {
               display: inline-block;
-              color: $primary - #888;
+              color: $statusMatchedProposed;
             }
           }
 
           &.preselected {
             i.fa {
               display: inline-block;
-              color: $primary - #888;
+              color: color.adjust($statusMatchedProposed, $alpha: -0.2);
               opacity: 0.8;
             }
           }
 
           &.vacation {
-            background-color: $vacation+#111;
+            background-color: $statusVacation;
 
             &.proposed, &.matched {
-              background-color: $vacation - #202;
+              background-color: color.adjust($vacation, $red: -34, $blue: -34);
             }
 
             &.Rejected.proposed, &.Rejected.matched {
-              background-color: $vacation - #022 !important;
+              background-color: color.adjust($vacation, $green: -34, $blue: -34) !important;
             }
           }
 
@@ -1468,12 +1443,13 @@ i.initiative {
           }
 
           &.another {
+            background-color: color.adjust($statusAnotherPosition, $alpha: -0.9);
             &.proposed {
-              background-color: $body - #333;
+              background-color: color.adjust($statusAnotherPosition, $alpha: -0.7);
             }
 
             i.fa {
-              opacity: 0.5;
+              color: $statusAnotherPosition;
             }
           }
         }
@@ -1530,7 +1506,7 @@ dl.attributes {
         }
 
         &.another {
-          color: $body - #333;
+          color: $statusAnotherPosition;
         }
       }
     }
@@ -1698,7 +1674,7 @@ ul.tasks {
 
   &.printable {
     h1 i {
-      color: $body - #777;
+      color: color.adjust($iconColor, $lightness: -20%, $saturation: -10%);
     }
 
     a + i.fa {
@@ -1747,7 +1723,7 @@ ul.tasks {
     tbody {
       tr {
         &:nth-child(odd) {
-          background-color: $body - #080808;
+          background-color: color.adjust($body, $saturation: -3%);
         }
       }
     }
@@ -1891,7 +1867,11 @@ ul.tasks {
     }
 
     .fa {
-      color: $body - #444;
+      color: $iconColor;
+
+      &.fa-external-link-square {
+        color: $link;
+      }
     }
 
     .fa-check {
@@ -1946,7 +1926,7 @@ ul.tasks {
     border-top: solid 1px $grid;
     margin: 0;
     padding-top: 0;
-    background-color: $body + #222;
+    background-color: color.adjust($body, $saturation: 12%);
 
     & > div {
       white-space: nowrap;
@@ -1968,7 +1948,7 @@ ul.tasks {
         a {
           display: inline-block;
           float: right;
-          color: $link + #444;
+          color: color.adjust($link, $saturation: 25%);
         }
       }
     }
@@ -2028,7 +2008,7 @@ div.bottom-corner {
   overflow-y: auto;
   overflow-x: hidden;
   border: solid 1px $grid;
-  background-color: $body - #040404;
+  background-color: $darkerBody;
   margin-top: 20px;
 
   &.error {
@@ -2052,7 +2032,7 @@ div.bottom-corner {
 
 .open>.btn-secondary.dropdown-toggle {
   &, &:focus, &:hover {
-    background-color: $form-body - #222;
+    background-color: $formDropDownColor;
   }
 }
 
@@ -2247,7 +2227,7 @@ div.bottom-corner {
       margin-top: -76px;
 
       &:active {
-        margin-top: -76px + $form-perspective - 1px;
+        margin-top: -76px + $formPerspective - 1px;
       }
 
       comments-widget & {
@@ -2257,7 +2237,7 @@ div.bottom-corner {
         position: absolute;
 
         &:active {
-          margin-top: -53px + $form-perspective - 1px;
+          margin-top: -53px + $formPerspective - 1px;
         }
       }
     }
@@ -2268,7 +2248,7 @@ div.bottom-corner {
       margin-top: -73px;
 
       &:active {
-        margin-top: -73px + $form-perspective - 1px;
+        margin-top: -73px + $formPerspective - 1px;
       }
     }
 
@@ -2292,12 +2272,12 @@ div.bottom-corner {
 
   comment {
     &:nth-child(n + 3) > div {
-      border-top: solid 1px $grid + #222;
+      border-top: solid 1px color.adjust($grid, $saturation: 12%);
     }
 
     h6 {
       font-size: 100%;
-      font-weight: 800;  
+      font-weight: 800;
     }
 
     & > div {
@@ -2326,7 +2306,7 @@ div.bottom-corner {
           a {
             @extend .clickable;
 
-            color: $body - #222;
+            color: $iconColor;
             &:hover {
               color: $link;
             };
@@ -2443,7 +2423,7 @@ div.bottom-corner {
     }
 
     &:nth-child(n + 2) {
-      border-top: solid 1px $grid + #222;
+      border-top: solid 1px color.adjust($grid, $saturation: -12%);
     }
 
     h6 {
@@ -2541,7 +2521,7 @@ div.bottom-corner {
     bottom: 15px;
     left: 15px;
     right: 15px;
-    border: solid 1px $form-border;
+    border: solid 1px $formBorder;
     padding: 15px;
     overflow: hidden;
     background-color: #FFF;
@@ -2600,6 +2580,8 @@ div.bottom-corner {
   }
 
   .btn-link {
+    @extend .clickable;
+
     padding: 0;
     margin: 0;
     height: 22px;
@@ -2611,12 +2593,53 @@ div.bottom-corner {
   }
 }
 
+#diff {
+  ul {
+    margin-bottom: 0;
+    padding-left: 10px;
+
+    li {
+      list-style: none;
+      margin-bottom: 4px;
+
+      b {
+        margin-right: 4px;
+      }
+
+      span {
+        p {
+          display: inline;
+        }
+      }
+
+      strong {
+        font-weight: normal;
+        color: color.adjust($primary, $saturation: -60%, $lightness: -40%);
+      }
+
+      em {
+        font-style: normal;
+        color: $red;
+      }
+
+    }
+  }
+
+  .joined {
+    color: color.adjust($primary, $saturation: -60%, $lightness: -40%);
+  }
+
+  .left {
+    color: $red;
+  }
+}
+
 .deadpool {
   div {
     margin-bottom: 20px;
 
     &.col-lg-4:nth-child(even) {
-      background-color: $body - #080808;
+      background-color: color.adjust($body, $saturation: -3%);
     }
 
     h4 {
@@ -2625,6 +2648,8 @@ div.bottom-corner {
     }
 
     div.date {
+      @extend #diff;
+
       margin-bottom: 10px;
       overflow-x: hidden;
 
@@ -2632,43 +2657,8 @@ div.bottom-corner {
         @extend .clickable;
       }
 
-      ul {
-        margin-bottom: 0;
-        padding-left: 10px;
-
-        li {
-          list-style: none;
-          font-size: 12px;
-          margin-bottom: 4px;
-
-          b {
-            margin-right: 4px;
-          }
-
-          span {
-            p {
-              display: inline;
-            }
-          }
-
-          strong {
-            font-weight: normal;
-            color: $primary - #555;
-          }
-
-          em {
-            font-style: normal;
-            color: $red;
-          }
-        }
-      }
-
-      .joined {
-        color: $primary - #555;
-      }
-
-      .left {
-        color: $red;
+      ul li {
+        font-size: 12px;
       }
     }
   }

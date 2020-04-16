@@ -32,7 +32,7 @@
       			<b>{{ key }}:</b>
             <i *ngIf="key === 'payRate'; else noMoney" class="fa fa-eye" [ngbTooltip]="diff.diff[key][0] + ' &rarr; ' + diff.diff[key][1]"></i>
             <ng-template #noMoney>
-              <span [innerHTML]="diff|diff:key|cut:300|markdown" class="md"></span>
+              <span [innerHTML]="diff|diff:key|cut:500|markdown" class="md"></span>
             </ng-template>
           </li>
       	</ul>
