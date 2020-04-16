@@ -20,6 +20,7 @@ const defaultColumns = {
   'login': 1,
   'name': 1,
   'grade': 1,
+  'location': 1,
   'minDate': 1,
   'maxDate': 1,
   'isBillable': 1,

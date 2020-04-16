@@ -15,7 +15,9 @@ import { Schedule } from '../schedule';
 const defaultColumns = {
   name: 'Name',
   grade: 'Grade',
-  status: 'Status'
+  location: 'Location',
+  status: 'Status',
+  assignment: 'Assignment'
 };
 
 const candidatesQueryKeys = ['requisition', 'candidate'];
