@@ -57,9 +57,9 @@ abstract class BaseCtrl {
 
   // Prepares a list of enities, matched by comments.* criteria.
   // Strict - affect "and" conditions, soft - "or" conditions.
-  async preCommentsQuery(criteria: any[], prefix=''): Promise<{strict: string[], soft: string[]}> {
-    let strict = [];
-    let soft = [];
+  async preCommentsQuery(criteria: any[], prefix=''): Promise<{strict: any, soft: any}> {
+    let strict = {};
+    let soft = {};
     let found = false;
     let matchedKey = prefix ? `${prefix}.comments.` : 'comments.';
     let l = criteria.length - 1;
@@ -73,7 +73,16 @@ abstract class BaseCtrl {
         strict = (await this.preCommentsQuery(criterion[key], prefix)).soft;
       } else if (!key.indexOf(matchedKey)) {
         let [, title] = key.split(matchedKey);
-        soft.push(title);
+
+        // Register for matching
+        let existing = soft[title];
+        if (!existing) {
+          soft[title] = criterion[key];
+        } else if (existing[orKey]) {
+          soft[orKey].push(criterion[key]);
+        } else {
+          soft[orKey] = [existing, criterion[key]];
+        }
       }
       if (l === index) {
         soft = await this.fillModelsLogins(soft);
@@ -83,10 +92,18 @@ abstract class BaseCtrl {
   }
 
   // Fetches logins of matched comments
-  async fillModelsLogins(titles: string[]): Promise<string[]> {
-    if (!titles.length) return [];
+  async fillModelsLogins(conditions: {}): Promise<string[]> {
+    let keys = Object.keys(conditions);
+    if (!keys.length) return [];
     let result = (await Comment
-      .find({source: {'$in': titles}})
+      .find({[orKey]: keys.map(key => (
+        {
+          [andKey]: [
+            {source: key},
+            {text: conditions[key]}
+          ]
+        }
+      ))})
       .exec()).map(comment => comment.login);
     return result;
   }
