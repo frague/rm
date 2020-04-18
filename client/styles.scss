@@ -142,6 +142,10 @@ pre {
     border-color: $formBorder $formBorderRest $formBorderRest $formBorderRest !important;
     background-color: color.adjust($formBody, $saturation: 40%, $lightness: -5%);
   }
+
+  &[type="color"] {
+    height: 39px;
+  }
 }
 
 .md {
@@ -666,18 +670,20 @@ table.badges {
 
     .assignments {
       table tbody tr {
-        color: #bbb;
+        color: color.adjust($textColor, $alpha: -0.5);
+        font-weight: 300;
 
         &.active {
           color: inherit;
+          font-weight: 400;
 
           i.fa {
             display: none;
           }
         }
         &.pending {
-          color: color.adjust($green, $saturation: -25%);
-          font-weight: 100;
+          color: color.adjust($good, $saturation: -10%, $lightness: -20%);
+          font-weight: 400;
 
           i.fa {
             display: none;
@@ -2085,27 +2091,34 @@ div.bottom-corner {
   width: 100%;
   background-color: rgba(255, 255, 255, 0.98);
   z-index: 1000;
-  font-size: 11px;
+  // font-size: 11px;
   padding: 15px;
   padding-bottom: 0;
   overflow: hidden;
 
   h2 {
-    font-size: 16px;
+    // font-size: 16px;
     margin-top: 0;
+    font-weight: 200;
   }
 
   h3 {
-    font-size: 14px;
-    margin-bottom: 2px;
+    font-size: 20px;
+    font-weight: 400;
+    margin-bottom: 0;
   }
 
   h4 {
-    margin-top: 5px;
-    font-size: 12px;
-    font-weight: normal;
-    font-style: italic;
-    border-bottom: solid 1px $grid;
+    font-size: 16px;
+    font-weight: 300;
+    margin-bottom: 10px;
+  }
+
+  caption {
+    display: inline-block;
+    font-weight: 200;
+    padding-top: 0;
+    width: 100%;
   }
 
   ul {
@@ -2124,7 +2137,25 @@ div.bottom-corner {
       ul {
         padding-left: 10px;
       }
+      &.selected {
+        background-color: color.adjust($darkerBody, $saturation: -60%, $lightness: -10%);
+      }
+      dfn {
+        @extend .clickable;
+        font-weight: 600;
+        font-style: normal;
+        color: $link;
+      }
+      a {
+        @extend .clickable;
+        color: $link !important;
+      }
     }
+  }
+  .topics ul li {
+    @extend .clickable;
+    margin-left: -5px;
+    padding: 0 5px;
   }
 }
 

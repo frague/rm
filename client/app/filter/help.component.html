@@ -1,0 +1,219 @@
+<div class="help">
+  <h2>Query syntax reference</h2>
+  <div class="row">
+    <div class="col-sm-4 col-md-2 col-lg-2 topics">
+      <ul>
+        <li *ngFor="let section of sections" [ngClass]="{selected: isSelected(section)}">
+          <a (click)="select(section)">{{ getTitle(section) }}</a></li>
+      </ul>
+    </div>
+    <div class="col-sm-8 col-md-10 col-lg-10">
+      <ng-container *ngIf="isSelected('logic')">
+        <h3>Querying logic</h3>
+<caption>Query consists of a number of criteria, separated by comma. Criterion consists of a parameter name and condition, separated by matching combination. Matching combinations are listed below:</caption>
+
+        <ul class="col-sm-6">
+          <li><dfn>=</dfn> - strict equality. All strict criteria are combined as AND</li>
+          <li><dfn>~</dfn> - strict match regular expression</li>
+          <li><dfn>~=</dfn> - soft equality (OR condition)</li>
+          <li><dfn>~+</dfn> - soft equality to regular expression</li>
+          <li><dfn>,</dfn> - conditions separator</li>
+        </ul>
+
+        <ul class="col-sm-6">
+          <h4>Examples:</h4>
+
+          <li><b>A=1,B=2</b> - matches A=1 AND B=2</li>
+          <li><b>A=1,A=2</b> - matches A=1 OR A=2</li>
+          <li><b>A~ab</b> - macthes regular expression A=/ab/i</li>
+          <li><b>A=1,B+=2</b> - matches A=1 OR B=2</li>
+          <li><b>A=1,B=2,C+=3</b> - matches (A=1 AND B=2) OR C=3</li>
+        </ul>
+      </ng-container>
+      <ng-container *ngIf="isSelected('functions')">
+        <h3>Functions</h3>
+<caption>Below are several simple expressions that can be used with/instead of criteria conditions.</caption>
+
+        <ul class="col-sm-6">
+          <li><dfn>empty()</dfn> - value is null, empty string or does not exist</li>
+          <li><dfn>emptySet()</dfn> - empty array</li>
+          <li><dfn>exists()</dfn> - value is not empty</li>
+          <li><dfn>in(days)</dfn> - date in range</li>
+          <li><dfn>after(days)</dfn> - date shift from the current date in days</li>
+          <li><dfn>among(list|of|values)</dfn> - value is present among the listed set</li>
+        </ul>
+
+        <ul class="col-sm-6">
+          <h4>Examples:</h4>
+          <li><b>status=empty()</b> - uesers with empty status</li>
+          <li><b>nextPr=in(30)</b> - date of next PR is in 30 days</li>
+          <li><b>activeUsVisa.till=after(100)</b> - active US visa will be valid for at least next 100 days</li>
+          <li><b>grade=among(T2|T3)</b> - date of next PR is in 30 days</li>
+        </ul>
+      </ng-container>
+      <ng-container *ngIf="isSelected('persons')">
+        <h3>People</h3>
+        <caption>Query by a person attributes</caption>
+
+        <ul (click)="populate($event)" class="col-sm-6">
+          <li><dfn>name</dfn> - full name</li>
+          <li><dfn>login</dfn> - login (e.g. aivanov)</li>
+          <li><dfn>grade</dfn> - grade (e.g. T2)</li>
+          <li><dfn>location</dfn> - location abbreviation (e.g. MSK)</li>
+          <li><dfn>pool</dfn> - resource pool (e.g. UI)</li>
+          <li><dfn>profile</dfn> - engineering profile (e.g. Engineer)</li>
+          <li><dfn>specialization</dfn> - specialization (e.g. Java)</li>
+          <li><dfn>manager</dfn> - direct manager</li>
+          <li><dfn>canTravel</dfn> - whether a person has active US visa (boolean)</li>
+          <li><dfn>isBillable</dfn> - whether a person  billable assignment (boolean)</li>
+          <li><dfn>isFunded</dfn> - whether a person has funded assignment (boolean)</li>
+          <li><dfn>isBooked</dfn> - whether a person is booked (boolean)</li>
+          <li><dfn>onTrip</dfn> - whether a person is on business trip (boolean)</li>
+          <li><dfn>activeUsVisa</dfn> - search by visa type or till date</li>
+          <li><dfn>status</dfn> - search by status comment</li>
+        </ul>
+
+        <ul (click)="populate($event)" class="col-sm-6">
+          <h4>Examples:</h4>
+
+          <li><b>name~ivan</b> - full name contain "ivan"</li>
+          <li><b>login=iivanov</b> - login equals "iivanov"</li>
+          <li><b>grade~T[23]</b> - grade matches T2 OR T3</li>
+          <li><b>canTravel=true</b> - a person has valid US visa</li>
+        </ul>
+      </ng-container>
+      <ng-container *ngIf="isSelected('assignments')">
+        <h3>Assignments</h3>
+        <caption>Query by a person assignments</caption>
+
+        <ul (click)="populate($event, 'assignments')" class="col-sm-6">
+          <li><dfn>assignment.account</dfn> - account name</li>
+          <li><dfn>assignment.initiative</dfn> - project name</li>
+          <li><dfn>assignment.billability</dfn> - type of billability (e.g. Available)</li>
+          <li><dfn>assignment.isBillable</dfn> - is assignment billable</li>
+          <li><dfn>assignment.isFunded</dfn> - is assignment funded</li>
+          <li><dfn>assignment.isBooked</dfn> - is assignment booked</li>
+          <li><dfn>assignment.involvement</dfn> - % of involvement</li>
+          <li><dfn>assignment.start</dfn> - assignment start date</li>
+          <li><dfn>assignment.end</dfn> - assignment end date</li>
+          <li><dfn>assignment.comment</dfn> - assignment comment</li>
+        </ul>
+
+        <ul (click)="populate($event)" class="col-sm-6">
+          <h4>Examples:</h4>
+          <li><b>assignment.account~Inc</b> - account title contains "Inc"</li>
+          <li><b>assignment.end~2018-03</b> - assignment ends on March 2018</li>
+          <li><b>assignment.isBillable=false</b> - assignment is billable</li>
+        </ul>
+      </ng-container>
+      <ng-container *ngIf="isSelected('demands')">
+        <h3>Demands</h3>
+        <caption>Search for demands</caption>
+
+        <ul (click)="populate($event, 'demand')" class="col-sm-6">
+          <li><dfn>demand.account</dfn> - account name</li>
+          <li><dfn>demand.project</dfn> - project name</li>
+          <li><dfn>demand.comment</dfn> - demand comments</li>
+          <li><dfn>demand.requirements</dfn> - demand requirements</li>
+          <li><dfn>demand.deployment</dfn> - on-site/offshore</li>
+          <li><dfn>demand.pool</dfn> - pool which demand belong to (e.g. ML)</li>
+          <li><dfn>demand.profile</dfn> - target engineering profile (e.g. UI)</li>
+          <li><dfn>demand.role</dfn> - billability</li>
+          <li><dfn>demand.requestId</dfn> - list of requisition ids for hiring (if exist)</li>
+          <li><dfn>demand.stage</dfn> - probability of demand (SP|VA|FC)</li>
+          <li><dfn>demand.start</dfn> - position start date</li>
+          <li><dfn>demand.end</dfn> - position end</li>
+          <li><dfn>demand.duration</dfn> - position duration in weeks</li>
+          <li><dfn>demand.candidates</dfn> - list of candidates proposed</li>
+          <li><dfn>demand.locations</dfn> - list of desirable locations</li>
+          <li><dfn>demand.grades</dfn> - list of grades</li>
+          <li><dfn>demand.comments</dfn> - find demands by comments. More details in <a (click)="select('comments')">Comments section</a></li>
+        </ul>
+
+        <ul (click)="populate($event)" class="col-sm-6">
+          <h4>Examples:</h4>
+
+          <li><b>demands=only</b> - exclude non-demand records from the resultset</li>
+          <li><b>demands=false</b> - exclude demands from the resultset</li>
+          <li><b>demand.account~Apple</b> - all demands for account</li>
+          <li><b>demand.candidates=emptySet()</b> - demands with no candidates proposed</li>
+        </ul>
+      </ng-container>
+      <ng-container *ngIf="isSelected('requisitions')">
+        <h3>Requisitions</h3>
+        <caption>Search for JobVite requisitions</caption>
+
+        <ul (click)="populate($event, 'requisition')" class="col-sm-6">
+          <li><dfn>requisition.title</dfn> - requisition title</li>
+          <li><dfn>requisition.category</dfn> - engineering pool</li>
+          <li><dfn>requisition.department</dfn> - department</li>
+          <li><dfn>requisition.jobState</dfn> - stage of the requisition lifecycle</li>
+          <li><dfn>requisition.location</dfn> - hiring locations</li>
+          <li><dfn>requisition.requisitionId</dfn> - ID of the requisition</li>
+          <li><dfn>requisition.demands</dfn> - list of demands related to the requisition</li>
+          <li><dfn>requisition.candidates</dfn> - list of the candidates considered for the requisition. See <a (click)="select('candidates')">Candidates section</a> for more details.</li>
+          <li><dfn>requisition.comments</dfn> - find requisitions by comments. More details in <a (click)="select('comments')">Comments section</a></li>
+        </ul>
+
+        <ul (click)="populate($event)" class="col-sm-6">
+          <h4>Examples:</h4>
+
+          <li><b>requisitions=false</b> - exclude requisitions from the resultset</li>
+          <li><b>demand.account~Apple</b> - all demands for account</li>
+          <li><b>demand.candidates=emptySet()</b> - demands with no candidates proposed</li>
+        </ul>
+      </ng-container>
+      <ng-container *ngIf="isSelected('candidates')">
+        <h3>Candidates</h3>
+        <caption>Search for JobVite candidates</caption>
+
+        <ul (click)="populate($event, 'candidate')" class="col-sm-6">
+          <li><dfn>candidate.name</dfn> - full name</li>
+          <li><dfn>candidate.location</dfn> - location</li>
+          <li><dfn>candidate.city</dfn> - city</li>
+          <li><dfn>candidate.country</dfn> - country abbreviated</li>
+          <li><dfn>candidate.state</dfn> - candidate's processing stage</li>
+          <li><dfn>candidate.requisitionId</dfn> - id of the requisition</li>
+          <li><dfn>candidate.updated</dfn> - last status update date</li>
+          <li><dfn>candidate.comments</dfn> - find candidates by comments. More details in <a (click)="select('comments')">Comments section</a></li>
+        </ul>
+
+        <ul (click)="populate($event)" class="col-sm-6">
+          <h4>Examples:</h4>
+
+          <li><b>candidates=false</b> - exclude candidates from the resultset</li>
+          <li><b>candidate.requisitionId=GD86</b> - find candidates by the requisition id</li>
+        </ul>
+      </ng-container>
+      <ng-container *ngIf="isSelected('comments')">
+        <h3>Comments</h3>
+        <caption>Query entities by their comments</caption>
+
+        <ul (click)="populate($event)" class="col-sm-6">
+          <li><dfn>comments</dfn></li>
+        </ul>
+
+        <ul (click)="populate($event)" class="col-sm-6">
+          <h4>Examples:</h4>
+
+          <li>comments~Attrition</li>
+          <li>comments.english=Intermediate</li>
+        </ul>
+      </ng-container>
+      <ng-container *ngIf="isSelected('skills')">
+        <ul (click)="populate($event)" class="col-sm-6">
+          <h3>Skill</h3>
+
+          <li><dfn>skills</dfn></li>
+        </ul>
+
+        <ul (click)="populate($event)" class="col-sm-6">
+          <h4>Examples:</h4>
+
+          <li>skills=React Native</li>
+          <li>skills~Spark</li>
+        </ul>
+      </ng-container>
+    </div>
+  </div>
+</div>

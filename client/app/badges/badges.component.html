@@ -11,24 +11,24 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let badge of getBadges()">
+    <tr *ngFor="let badge of getBadges()" class="form-row">
       <td>
         <span *ngIf="selected!=badge._id">{{ badge.title }}</span>
-        <input *ngIf="selected==badge._id" type="text" name="title" [(ngModel)]="newBadge.title" placeholder="Title" (keyup)="hotKeysHandler($event)">
+        <input *ngIf="selected==badge._id" type="text" name="title" [(ngModel)]="newBadge.title" placeholder="Title" (keyup)="hotKeysHandler($event)" class="form-control">
       </td>
       <td>
         <span *ngIf="selected!=badge._id">
           <div class="circle" [ngStyle]="getBadgeStyle(badge)"></div> {{ badge.color }}
         </span>
-        <input *ngIf="selected==badge._id" type="color" name="color" [(ngModel)]="newBadge.color">
+        <input *ngIf="selected==badge._id" type="color" name="color" [(ngModel)]="newBadge.color" class="form-control">
       </td>
       <td>
         <span *ngIf="selected!=badge._id">{{ badge.short }}</span>
-        <input *ngIf="selected==badge._id" type="text" name="short" [(ngModel)]="newBadge.short" placeholder="Compact title" (keyup)="hotKeysHandler($event)">
+        <input *ngIf="selected==badge._id" type="text" name="short" [(ngModel)]="newBadge.short" placeholder="Compact title" (keyup)="hotKeysHandler($event)" class="form-control">
       </td>
       <td>
         <span *ngIf="selected!=badge._id">{{ badge.description }}</span>
-        <input *ngIf="selected==badge._id" type="text" name="description" [(ngModel)]="newBadge.description" placeholder="Description" (keyup)="hotKeysHandler($event)">
+        <input *ngIf="selected==badge._id" type="text" name="description" [(ngModel)]="newBadge.description" placeholder="Description" (keyup)="hotKeysHandler($event)" class="form-control">
       </td>
       <td>
         <span *ngIf="selected!=badge._id">

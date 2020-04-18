@@ -93,6 +93,8 @@ import { DemandRequisitionTabComponent } from './modal/tabs/demand-requisition-t
 import { AccountProjectTabComponent } from './modal/tabs/account-project-tab.component';
 import { FeedbacksTabComponent } from './modal/tabs/feedbacks-tab.component';
 
+import { HelpComponent } from './filter/help.component';
+
 import { QueryWidget } from './dashboard/query.widget';
 import { BirthdaysWidget } from './dashboard/birthdays.widget';
 import { CommentsWidget } from './dashboard/comments.widget';
@@ -130,6 +132,7 @@ export function tokenGetter() {
     SpinnerComponent,
     RequisitionDemandComponent,
     DashboardComponent,
+    HelpComponent,
 
     PersonModal, AssignmentModal, DemandModal, RequisitionModal, CommentsModal, CandidateModal,
 
