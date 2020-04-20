@@ -191,8 +191,8 @@ export default class AssignmentCtrl extends BaseCtrl {
     console.log('Final query:', JSON.stringify(finalQuery));
 
     let now = new Date();
-    now.setDate(this.shift + now.getDate());
-    now.setHours(0, 0, 0, 0);  // Good morning!
+    now.setUTCDate(this.shift + now.getDate());
+    now.setUTCHours(0, 0, 0, 0);  // Good morning!
 
     // Extended columns information
     group = group.reduce((result, column) => {
