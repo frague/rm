@@ -7,6 +7,7 @@
         class="form-control"
         placeholder="key1=value1,key2=value2,..."
         [(ngModel)]="criteria"
+        #criteriaElement
       >
     </div>
     <small class="pull-right form-text text-muted">
@@ -56,5 +57,5 @@
   </div>
 </div>
 <div class="row col-md-12">
-  <help *ngIf="isHelpShown"></help>
+  <help *ngIf="isHelpShown" (populate)="populate($event)"></help>
 </div>

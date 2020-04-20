@@ -1,4 +1,4 @@
-import { Component, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BusService } from '../services/bus.service';
 import { FilterService } from '../services/filter.service';
@@ -11,6 +11,7 @@ const serviceKeys = ['columns', 'order', 'group'];
   templateUrl: './filter.component.html'
 })
 export class FilterComponent {
+  @ViewChild('criteriaElement') criteriaElement: ElementRef;
   query = {};
   criteria = '';
   selectedFilter: any = {};
@@ -152,12 +153,9 @@ export class FilterComponent {
     };
   }
 
-  populate(e: MouseEvent, prefix: string = '') {
-    let srcElement = e.srcElement as Element;
-    if (srcElement && srcElement.tagName === 'LI') {
-      let appendix = (prefix ? prefix + '.' : '') + srcElement['innerText'];
-      this.criteria += (!this.criteria || this.criteria.endsWith(',') ? '' : ',') + appendix;
-    }
+  populate(text: string = '') {
+    this.criteria += (!this.criteria || this.criteria.endsWith(',') ? '' : ',') + `${text}=`;
+    this.criteriaElement.nativeElement.focus();
   }
 
   setTimeShift(shift: number) {

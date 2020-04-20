@@ -1,4 +1,4 @@
-import { Component, Output } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 
 const sections = {
   logic: 'Common logic',
@@ -18,6 +18,7 @@ const sections = {
 })
 export class HelpComponent {
   private _selectedSection = 'logic';
+  @Output() populate: EventEmitter<string> = new EventEmitter();
 
   public getTitle(section: string): string {
     return sections[section];
@@ -33,5 +34,12 @@ export class HelpComponent {
 
   public isSelected(section: string): boolean {
     return this._selectedSection === section;
+  }
+
+  public click(event: MouseEvent) {
+    let srcElement = event.srcElement as Element;
+    if (srcElement && srcElement.tagName === 'DFN') {
+      this.populate.emit(srcElement['innerText']);
+    }
   }
 }

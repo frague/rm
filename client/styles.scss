@@ -2125,15 +2125,15 @@ div.bottom-corner {
     margin-top: 5px;
     padding-left: 0;
 
-    &.clickable {
-      cursor: normal;
-      li {
-        cursor: pointer;
-      }
+    &:not(.no-click) li dfn {
+      @extend .clickable;
+      color: $link;
     }
+
 
     li {
       list-style: none;
+
       ul {
         padding-left: 10px;
       }
@@ -2141,10 +2141,8 @@ div.bottom-corner {
         background-color: color.adjust($darkerBody, $saturation: -60%, $lightness: -10%);
       }
       dfn {
-        @extend .clickable;
         font-weight: 600;
         font-style: normal;
-        color: $link;
       }
       a {
         @extend .clickable;
