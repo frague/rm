@@ -375,6 +375,7 @@ export default class AssignmentCtrl extends BaseCtrl {
         isFunded: {'$max': '$assignment.isFunded'},
         canTravel: { '$max': '$canTravel' },
         onVacation: { '$max': '$onVacation' },
+        location: { '$first': '$location' },
         login: { '$first': '$login' },
         status: { '$first': '$status' },
         commentsCount: { '$first': '$commentsCount' },
