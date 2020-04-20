@@ -54,7 +54,7 @@
         <dd>{{ person.room }}</dd>
 
         <dt>Phone</dt>
-        <dd>{{ person.phone }}</dd>
+        <dd><a [href]="getPhone()" *ngIf="person.phone">{{ person.phone }}</a></dd>
 
         <ng-container *ngIf="person.birthday">
           <dt>Birthday</dt>

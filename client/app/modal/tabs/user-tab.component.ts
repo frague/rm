@@ -29,7 +29,13 @@ export class UserTabComponent extends BaseTabComponent {
 
   getSkype() {
     return this.person.skype ?
-      this.sanitizer.bypassSecurityTrustUrl('skype:' + this.person.skype + '?chat') :
+      this.sanitizer.bypassSecurityTrustUrl(`skype:${this.person.skype}?chat`) :
+      '';
+  }
+
+  getPhone() {
+    return this.person.phone ?
+      this.sanitizer.bypassSecurityTrustUrl(`tel:${this.person.phone}`) :
       '';
   }
 

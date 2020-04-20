@@ -70,6 +70,7 @@ export default class BambooIntegrationsCtrl {
             <field id="4901" />
             <field id="4893" />
             <field id="4894" />
+            <field id="13" />
           </fields>
         </report>`
       );
@@ -78,7 +79,7 @@ export default class BambooIntegrationsCtrl {
   }
 
   // getReport = (req, res) => {
-  //   this.getTimeoffs()
+  //   this.getPRs()
   //     .then(data => {
   //       res.setHeader('Content-Type', 'application/json');
   //       res.send(data);

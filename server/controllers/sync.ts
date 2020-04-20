@@ -467,6 +467,7 @@ export default class SyncCtrl {
               bambooId: newPR.id,
               english,
               CV,
+              phone: newPR.mobilePhone
             };
 
             // Visas are received from two sources: wiki and bamboo.
@@ -507,7 +508,7 @@ export default class SyncCtrl {
             manager: person.manager,
             benchDays: person.daysOnBench,
             skype: who.skype,
-            phone: who.phone,
+            phone: pr.phone,
             room: who.room,
             passport: visa.passport,
             visas: visa.visas,
