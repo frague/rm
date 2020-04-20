@@ -123,7 +123,7 @@ export default class AssignmentCtrl extends BaseCtrl {
     or = await this.updateOr(or);
 
     this.order = this.determineOrder(req);
-    this.shift = +JSON.parse(req.query.shift || '0');
+    this.shift = +(req.query.shift || '0');
 
     let skillsList = this.filterSkills(or) || [];
 

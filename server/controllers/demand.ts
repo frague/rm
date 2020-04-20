@@ -63,7 +63,12 @@ export default class DemandCtrl extends BaseCtrl {
   getAll = async (req, res) => {
     printTitle('Demand');
 
+    let shift = +(req.query.shift || '0');
+
     let now = new Date();
+    now.setUTCDate(shift + now.getDate());
+    now.setUTCHours(0, 0, 0, 0);  // Good morning!
+
     let or;
     try {
       or = req.query.or ? JSON.parse(req.query.or) : [];
