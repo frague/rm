@@ -17,6 +17,8 @@ const listDiffs = [
 
 const vacations = ['paid vacation', 'unpaid vacation'];
 
+const domain = 'griddynamics.com';
+
 // Custom markdown renderer for links
 var renderer = new marked.Renderer();
 renderer.link = function (href: string, title: string, text: string) {
@@ -161,6 +163,15 @@ export class ColumnPipe implements PipeTransform {
           return `**${value.type}**: ${formatDate(value.till)}`;
         }
         return '';
+      case 'email':
+        try {
+          let {isDemand, eId, login, isHiree} = line;
+          // Exclude demands, hirees, external candidates and requisitions
+          if (isDemand || isHiree || eId || login.includes(' ')) return;
+          return `${login}@${domain}`;
+        } catch (e) {
+          return;
+        }
       case 'assignment':
         [, secondary] = name.split('.');
         value = line['assignments'];
