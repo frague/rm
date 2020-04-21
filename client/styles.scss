@@ -1413,12 +1413,20 @@ i.initiative {
           &.vacation {
             background-color: $statusVacation;
 
-            &.proposed, &.matched {
-              background-color: color.adjust($vacation, $red: -34, $blue: -34);
+            &.another {
+              background-color: $statusAnotherPositionVacation;
             }
 
-            &.Rejected.proposed, &.Rejected.matched {
-              background-color: color.adjust($vacation, $green: -34, $blue: -34) !important;
+            &.proposed, &.matched {
+              background-color: color.adjust($vacation, $red: -34, $blue: -34);
+
+              &.Rejected {
+                background-color: color.adjust($vacation, $green: -34, $blue: -34) !important;
+              }
+
+              &.another {
+                background-color: color.adjust($statusAnotherPositionVacation, $alpha: 0.2);
+              }
             }
           }
 

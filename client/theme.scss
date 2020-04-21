@@ -60,6 +60,7 @@ $plannerCardColor: color.adjust($body, $lightness: -2%, $saturation: -10%);
 $statusMatchedProposed: color.adjust($primary, $lightness: -40%, $saturation: -50%);
 $statusVacation: color.adjust($vacation, $saturation: 6%);
 $statusAnotherPosition: color.adjust($darkerBody, $lightness: -50%, $saturation: -80%);
+$statusAnotherPositionVacation: color.adjust(#698458, $alpha: -0.7);
 
 $demandCardHeight: 200px;
 $demandCardWidth: 120px;
