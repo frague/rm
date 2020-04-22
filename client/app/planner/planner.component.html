@@ -27,29 +27,12 @@
     <div class="planner row" *ngIf="items.length">
       <div class="col-md-3 demands lines">
         <div class="filters row" [ngClass]="stickyClass">
-          <ul class="col-xl-2 col-lg-3 col-md-6">
-            <h6>Shore</h6>
-            <li><label><input type="checkbox" [(ngModel)]="filterDeployments.onsite">ON</label></li>
-            <li><label><input type="checkbox" [(ngModel)]="filterDeployments.offshore">OFF</label></li>
-          </ul>
-          <ul class="col-xl-2 col-lg-3 col-md-6">
-            <h6>Status</h6>
-            <li><label><input type="checkbox" [(ngModel)]="filterStates.FC">FC</label></li>
-            <li><label><input type="checkbox" [(ngModel)]="filterStates.VA">VA</label></li>
-            <li><label><input type="checkbox" [(ngModel)]="filterStates.SP">SP</label></li>
-          </ul>
-          <ul class="col-xl-8 col-lg-6 col-md">
-            <h6>Location</h6>
-            <li *ngFor="let location of locations"><label><input type="checkbox" [(ngModel)]="filterLocations[location]">{{ location }}</label></li>
-            <li><label><input type="checkbox" (click)="toggleLocations($event)" checked>ALL</label></li>
-            <li><label><input type="checkbox" [(ngModel)]="filterUsers">Users</label></li>
-          </ul>
-          <ul class="col-xs-12">
-            <h6>Badges <a (click)="resetBadges()" *ngIf="badgesAreSelected">&times;</a></h6>
-            <li *ngFor="let badge of chosenBadges;let i = index" [ngStyle]="getBadgeStyle(badge)" class="badge">{{ getBadgeCaption(badge) }} <a (click)="removeBadge(i)">&times;</a></li>
-            <caption *ngIf="!badgesAreSelected">Any</caption>
-          </ul>
-        </div>
+          <badger [presetBadges]="locationsBadges" [allowManagement]="false" (click)="toggleFilter($event)"></badger>
+          <badger [presetBadges]="statesBadges" [allowManagement]="false" (click)="toggleFilter($event)"></badger>
+          <badger [presetBadges]="deploymentsBadges" [allowManagement]="false" (click)="toggleFilter($event)"></badger>
+          <badger [presetBadges]="serviceBadges" [allowManagement]="false" (click)="toggleFilter($event)"></badger>
+          <badger [presetBadges]="chosenBadges" [allowManagement]="false" (click)="removeBadge($event)"></badger>
+         </div>
         <div class="account" *ngFor="let account of getAccounts()">
           <h3>{{ account }} <a (click)="showAccount(account)"><i class="fa fa-pie-chart"></i></a></h3>
           <ng-container

@@ -24,6 +24,7 @@ const rowNumber = new RegExp(/^(\d+):/);
 const allowedStates = ['Open', 'Approved', 'Awaiting Approval', 'Draft'];
 const candidatesQueryKeys = ['requisition', 'candidate'];
 const boolenise = ['canTravel', 'isBillable', 'isFunded', 'isBooked', 'onTrip'];
+const allLocations = 'All';
 
 @Component({
 	selector: 'planner',
@@ -62,8 +63,21 @@ export class PlannerComponent extends Schedule {
   locations = [
     'SPB', 'SAR', 'US', 'KHR', 'KY', 'LV', 'KR', 'WR', 'BEL',
   ];
-  filterLocations = {};
-  filterUsers = false;
+  filterLocations = this.locations.reduce((result, location) => {
+    result[location] = true;
+    return result;
+  }, { All: true });
+  filterService = {
+    'Filter Users': false,
+  };
+  public get filterUsers(): boolean {
+    return this.filterService['Filter Users'];
+  }
+
+  statesBadges = this._makeBadges(this.filterStates);
+  deploymentsBadges = this._makeBadges(this.filterDeployments);
+  locationsBadges = this._makeBadges(this.filterLocations);
+  serviceBadges = this._makeBadges(this.filterService);
 
   private _bus: BusService;
 
@@ -185,7 +199,16 @@ export class PlannerComponent extends Schedule {
     this._cd = cd;
     this._cache = cache;
     this._bus = bus;
-    this.toggleLocations({target: {checked: true}});
+    // this.toggleLocations({target: {checked: true}});
+  }
+
+  _makeBadges(source: any): any[] {
+    return Object.keys(source).map(key => ({
+      _id: key,
+      title: key,
+      className: source[key] ? '' : 'inactive',
+      source
+    }));
   }
 
   ngOnInit() {
@@ -313,14 +336,6 @@ export class PlannerComponent extends Schedule {
     }, 0);
   }
 
-  toggleLocations(event: any) {
-    let state = event.target.checked;
-    this.filterLocations = this.locations.reduce((p, v) => {
-      p[v] = state;
-      return p;
-    }, {});
-  }
-
   getDemandStyles(demand: any) {
     let expired = new Date(demand.start) < this.now;
     return {
@@ -425,29 +440,47 @@ export class PlannerComponent extends Schedule {
       this.chosenBadges.push(badge);
       this._calculateVisibleCandidates();
     } else {
-      this.removeBadge(this.chosenBadges.indexOf(badge));
+      this.removeBadge(badge);
     }
+    this._bus.badgeUpdated.emit();
   }
 
-  removeBadge(index: number) {
-    let badge = this.chosenBadges[index];
+  removeBadge(badge: any) {
     delete this._chosenBadgesNames[badge.short || Utils.abbreviate(badge.title)];
-    this.chosenBadges.splice(index, 1);
+    this.chosenBadges = this.chosenBadges.filter(b => b._id !== badge._id);
     this._calculateVisibleCandidates();
-  }
-
-  getBadgeStyle(badge) {
-    return {
-      backgroundColor: badge.color
-    }
-  }
-
-  getBadgeCaption(badge) {
-    return badge.short || Utils.abbreviate(badge.title);
   }
 
   showAccount(account: string): void {
     this._bus.criteriaUpdated.emit(`assignments.account=${account},columns=name|grade|location,order=location|name`);
     this.router.navigate(['/reports']);
+  }
+
+  toggleFilter(badge) {
+    let {_id, source} = badge;
+    if (source) {
+      let toggled = !source[_id];
+      if (_id === allLocations) {
+        this.locationsBadges.forEach(locBadge => {
+          source[locBadge._id] = toggled;
+          locBadge.className = toggled ? '' : 'inactive';
+        });
+      } else {
+        source[_id] = toggled;
+        badge.className = toggled ? '' : 'inactive';
+
+        if (source.hasOwnProperty(allLocations)) {
+          let allState = this.locations.reduce((result, loc) => result && source[loc], toggled) && toggled;
+          source[allLocations] = allState;
+          this.locationsBadges.some(b => {
+            if (b._id === allLocations) {
+              b.className = allState ? '' : 'inactive';
+              return true;
+            }
+          });
+        }
+      }
+      this._bus.badgeUpdated.emit();
+    }
   }
 }

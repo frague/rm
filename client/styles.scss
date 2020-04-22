@@ -985,59 +985,26 @@ i.initiative {
         border: solid 1px $grid;
       }
 
-      ul {
-        position: block;
-        padding: 0;
-
-        label {
-          margin: 0;
-        }
-
-        &:nth-child(3) {
-          li {
-            display: inline-block;
-            min-width: 48px;
-          }
-        }
-
-        &:nth-child(4) {
-          h6 {
-            a {
-              color: $danger;
-            }
-          }
-
-          a {
-            @extend .clickable;
-          }
-
-          caption {
-            padding: 0;
-          }
-
-          li.badge {
-            border-radius: 8px;
-            padding: 0 6px;
-            display: inline-block;
-            margin: 0 4px 6px 0;
-            border: solid 1px $badgeBorderColor;
-            white-space: nowrap;
-            line-height: 1.4;
-            min-width: auto;
-            font-size: 80%;
-          }
-        }
-
+      ul.badges {
         li {
-          list-style: none;
-          padding: 0;
-          margin: 0;
+          border-radius: 6px;
+          padding: 1px 4px;
+          display: inline-block;
+          margin: 0 2px 4px 1px;
+          border: solid 1px $grid;
+          white-space: nowrap;
+          line-height: 1.4;
+          min-width: auto;
           font-size: 12px;
-          font-weight: 600;
+          background-color: color.adjust($plannerCardColor, $lightness: -20%, $saturation:-60%);
 
-          input {
-            margin-right: 4px;
+          &.inactive {
+            opacity: 0.5;
+            background-color: $body;
           }
+        }
+        &.hover li {
+          transition: margin none;
         }
       }
     }
@@ -1872,7 +1839,8 @@ ul.tasks {
     padding-top: 2px;
 
     &.selected {
-      @extend .shadow;
+      // @extend .shadow;
+      background-color: $darkerBody;
       position: relative;
     }
 

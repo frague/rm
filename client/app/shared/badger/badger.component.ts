@@ -13,6 +13,7 @@ import { Utils } from '../../utils';
 })
 export class BadgerComponent {
   @Input() itemId;
+  @Input() presetBadges: any[] = null;
   @Input() allowManagement: boolean = true;
   @Input() compactView: boolean = false;
   @Output() click: EventEmitter<any> = new EventEmitter();
@@ -31,6 +32,9 @@ export class BadgerComponent {
   private $badgesUpdated;
 
   get badges(): any[] {
+    if (this.presetBadges) {
+      return this.presetBadges;
+    }
     let ids = ((this.cacheService.get('itemBadges') || {})[this.itemId] || []);
     return ids.map(badgeId => this.allBadges[badgeId] || {title: '-'});
   }
@@ -211,13 +215,16 @@ export class BadgerComponent {
   }
 
   getBadgeStyle(badge: any) {
-    return {'background-color': badge.color};
+    return {
+      'background-color': badge.color,
+    };
   }
 
   getClass() {
     return {
       ['n' + this.badges.length]: this.compactView,
-      hover: this.isHovered
+      hover: this.isHovered,
+      'clickable': this.click.observers.length > 0,
     };
   }
 

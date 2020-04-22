@@ -1,5 +1,5 @@
 <ul class="badges" (mouseenter)="isHovered=true" (mouseleave)="isHovered=isEditing||false" (click)="cancelBubbling($event)" [ngClass]="getClass()">
-  <li *ngFor="let badge of badges" [ngStyle]="getBadgeStyle(badge)" (click)="clicked(badge, $event)">{{ getBadgeCaption(badge) }}<a *ngIf="allowManagement" (click)="delete(badge, $event)">&times;</a></li>
+  <li *ngFor="let badge of badges" [ngStyle]="getBadgeStyle(badge)" [ngClass]="badge.className" (click)="clicked(badge, $event)">{{ getBadgeCaption(badge) }}<a *ngIf="allowManagement" (click)="delete(badge, $event)">&times;</a></li>
   <li *ngIf="allowManagement" class="new clickable" (click)="add()" [ngStyle]="getBadgeStyle(newBadge)">
     <ng-container *ngIf="!isEditing">+</ng-container>
     <form *ngIf="isEditing" autocomplete="off">
