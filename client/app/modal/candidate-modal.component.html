@@ -1,13 +1,15 @@
 <ng-template #content let-c="close" let-d="dismiss">
   <div class="modal-header">
+    <div>
+      <h4 class="modal-title">
+        JobVite candidate {{ candidate.name }}
+        <a [href]="getJvApplicationLink()" target="_jobvite"><i class="fa fa-external-link-square"></i></a>
+      </h4>
+      <h6>{{ candidate.state }}</h6>
+    </div>
     <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
-    <h4 class="modal-title">
-      JobVite candidate {{ candidate.name }}
-      <a [href]="getJvApplicationLink()" target="_jobvite"><i class="fa fa-external-link-square"></i></a>
-    </h4>
-    <h6>{{ candidate.state }}</h6>
   </div>
   <div class="comments-modal modal-body">
     <ngb-tabset (tabChange)="tabChange($event)" #tabs="ngbTabset" *ngIf="!isLoading" [activeId]="activeId">

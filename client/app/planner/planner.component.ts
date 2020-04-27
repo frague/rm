@@ -140,6 +140,13 @@ export class PlannerComponent extends Schedule {
               };
               boolenise.forEach(key => result[key] = item[key] === 'true');
               [result.onVacation, result.proposed] = [item.onVacation, item.proposed];
+              result.bookedAt = Object.keys(item.assignments).reduce((r, key) => {
+                let a = item.assignments[key][0];
+                if (a.isActive && a.billability === 'Booked') {
+                  r = `${a.account}|${a.initiative}`;
+                }
+                return r;
+              });
               names.push(result.name);
               return result;
             })
@@ -302,8 +309,10 @@ export class PlannerComponent extends Schedule {
   }
 
   getCellCaption(candidate, demand) {
+    let bookedAt;
     let index = (demand.candidates || []).indexOf(candidate.name);
     if (index < 0) return '';
+    if (candidate.bookedAt === `${demand.account}|${demand.project}`) return 'Booked';
     return demand.candidatesStati[index];
   }
 

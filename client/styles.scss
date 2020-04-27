@@ -1,4 +1,8 @@
 @use "sass:color";
+
+@import "~bootstrap/dist/css/bootstrap.css";
+@import "~font-awesome/css/font-awesome.css";
+@import "~roboto-npm-webfont/full/style.css";
 @import "theme";
 
 body {
@@ -23,22 +27,33 @@ body.modal-open .candidates {
   color: $textColor;
 }
 
-button {
-  &:hover,
-  &:focus,
+a, button, input, textarea {
+  &,
+  &:visited,
   &:active {
-    outline: none !important;
+    &,
+    &:visited,
+    &:active,
+    &:hover,
+    &:focus {
+      outline: none !important;
+      box-shadow: none !important;
+    }
   }
 }
 
 a {
   &,
-  &:hover,
   &:visited,
-  &:active,
-  &:focus {
-    color: $link;
-    text-decoration: none;
+  &:active {
+    &,
+    &:visited,
+    &:active,
+    &:hover,
+    &:focus {
+      color: $link;
+      text-decoration: none;
+    }
   }
 }
 
@@ -46,6 +61,10 @@ i.fa-external-link-square {
   position: relative;
   bottom: 5px;
   font-size: 70%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: Roboto;
 }
 
 h1 {
@@ -117,12 +136,17 @@ pre {
 
   button.btn {
     border-color: $formBorderRest $formBorderRest $formBorder $formBorderRest !important;
+    margin-left: 0;
 
     &:not(disabled):active {
       margin-top: 0;
       border-color: $formBorder $formBorderRest !important;
       border-width: $formPerspective 1px 1px 1px;
     }
+  }
+  .show > .btn.dropdown-toggle {
+    background-color: color.adjust($formBody, $lightness: 20%) !important;
+    color: $textColor;
   }
 }
 
@@ -375,17 +399,19 @@ button.close {
   }
 }
 
-.nav {
+.navbar-nav {
+  width: 100%;
+
   .nav-item {
     padding-top: .425rem;
     padding-bottom: .425rem;
+  }
 
-    &.padded {
-      margin-right: 40px;
+  .updated {
+    color: color.adjust($textColor, $lightness: -40%);
 
-      i.fa {
-        margin-right: 4px;
-      }
+    i.fa {
+      margin-right: 4px;
     }
   }
 }
@@ -398,6 +424,10 @@ button.close {
   font-size: 8px;
   font-weight: 500;
   color: $grid;
+
+  ul.badges li {
+    display: inline;
+  }
 }
 
 ul.badges {
@@ -409,7 +439,7 @@ ul.badges {
     margin: 0 1px;
     padding: 2px 8px;
     list-style: none;
-    display: inline;
+    display: inline-block;
     border-radius: 6px;
     // background-color: $badgeColor;
     white-space: nowrap;
@@ -544,6 +574,7 @@ table.badges {
         font-weight: 100;
         line-height: 2.2;
         letter-spacing: -2px;
+        font-family: Roboto;
       }
 
       &.FC, &.Filled {
@@ -594,7 +625,7 @@ table.badges {
 
     h6 {
       font-weight: 100;
-      padding: 8px 0 0 0;
+      padding: 4px 0 0 0;
       margin-right: 10px;
     }
 
@@ -647,7 +678,7 @@ table.badges {
 
     a.nav-link {
       color: #888;
-      padding: 7px 20px 8px 20px;
+      padding: 7px 15px 8px 15px;
 
       &.active {
         color: #000;
@@ -758,10 +789,6 @@ table.badges {
 
 .modal-backdrop.fade {
   opacity: 0.2;
-}
-
-.modal-dialog {
-  top: 140px;
 }
 
 .tooltip {
@@ -1359,6 +1386,10 @@ i.initiative {
 
           i.fa {
             display: none;
+          }
+
+          &.Booked {
+            background: radial-gradient(circle at 100% 20%, $primary 0%, $yellow 50%, $body 100%);
           }
 
           &.matched, &.proposed {
@@ -2019,9 +2050,14 @@ div.bottom-corner {
 }
 
 .filter {
+  .form-group {
+    margin-bottom: 6px;
+  }
+
   .btn {
     width: 35px;
-    padding: 8px;
+    padding-left: 8px;
+    padding-right: 8px;
   }
   .dropdown-toggle::after {
     margin-left: 0px;
@@ -2031,6 +2067,10 @@ div.bottom-corner {
   }
   .dropdown-item {
     @extend .clickable;
+
+    &.active, &:active {
+      background-color: $darkerBody;
+    }
   }
 
   small {
@@ -2225,17 +2265,16 @@ div.bottom-corner {
 
 .comments {
   .new {
-    float: right;
-    padding-top: 10px;
+    width: 100%;
+    text-align: right;
+    position: absolute;
 
     button {
-      // @extend .shadow;
-      position: fixed;
-      right: 25px;
-      margin-top: -76px;
+      margin-right: 32px;
+      margin-top: -110px;
 
       &:active {
-        margin-top: -76px + $formPerspective - 1px;
+        margin-top: -110px + $formPerspective - 1px;
       }
 
       comments-widget & {

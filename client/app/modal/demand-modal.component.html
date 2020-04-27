@@ -1,17 +1,19 @@
 <ng-template #content let-c="close" let-d="dismiss">
   <div class="modal-header">
+    <div class="stage" [ngClass]="demand.stage"><span>{{ getId() }}</span></div>
+    <div>
+      <h4 class="modal-title">
+        Demand for {{ demand.specializations }} {{ demand.profile }}
+        <a [href]="getStaffingToolLink()" *ngIf="getStaffingToolLink()" target="_st"><i class="fa fa-external-link-square"></i></a>
+      </h4>
+      <h6 *ngIf="!notFound">
+        on {{ demand.project }} project of {{ demand.account }} account
+      </h6>
+      <badger [itemId]="demand.login"></badger>
+    </div>
     <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
-    <div class="stage" [ngClass]="demand.stage"><span>{{ getId() }}</span></div>
-    <h4 class="modal-title">
-      Demand for {{ demand.specializations }} {{ demand.profile }}
-      <a [href]="getStaffingToolLink()" *ngIf="getStaffingToolLink()" target="_st"><i class="fa fa-external-link-square"></i></a>
-    </h4>
-    <h6 *ngIf="!notFound">
-      on {{ demand.project }} project of {{ demand.account }} account
-    </h6>
-    <badger [itemId]="demand.login"></badger>
   </div>
   <div class="comments-modal modal-body">
     <ngb-tabset (tabChange)="tabChange($event)" #tabs="ngbTabset" *ngIf="!isLoading && !notFound" [activeId]="activeId">

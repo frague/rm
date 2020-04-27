@@ -1,15 +1,15 @@
 <div>
-  <div class="alert alert-info message" *ngIf="message">{{ message }}</div>
-  <div class="row">
-    <h1 class="col-md-7">
+  <div class="filter form-row">
+    <h1 class="form-group col-md-7">
       <span (click)="showReport()"><i class="fa fa-file-text-o"></i></span>
       Demand Planning Board
       <p>Demands: {{ demands?.length }}, employees: {{ assignmentsFound }}, candidates: {{ candidatesFound }}</p>
     </h1>
-    <div class="col-md-5">
+    <div class="form-group col-md-5">
       <demand-plan [rowsLogins]="reserved" (planHasChanged)="setReservations($event)"></demand-plan>
     </div>
   </div>
+  <div class="alert alert-info message" *ngIf="message">{{ message }}</div>
 
   <assignment-modal></assignment-modal>
 
@@ -26,7 +26,7 @@
   <spinner>
     <div class="planner row" *ngIf="items.length">
       <div class="col-md-3 demands lines">
-        <div class="filters row" [ngClass]="stickyClass">
+        <div class="filters" [ngClass]="stickyClass">
           <badger [presetBadges]="locationsBadges" [allowManagement]="false" (click)="toggleFilter($event)"></badger>
           <badger [presetBadges]="statesBadges" [allowManagement]="false" (click)="toggleFilter($event)"></badger>
           <badger [presetBadges]="deploymentsBadges" [allowManagement]="false" (click)="toggleFilter($event)"></badger>

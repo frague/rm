@@ -1,7 +1,7 @@
 <div class="main">
 
-  <nav class="navbar navbar-light">
-    <div class="nav navbar-nav">
+  <nav class="navbar navbar-light navbar-expand">
+    <div class="navbar-nav d-flex">
       <a
         [routerLink]="['dashboard']"
         class="nav-item nav-link"
@@ -76,35 +76,48 @@
         Sync
       </a>
 
-      <div class="pull-right">
-        <span class="nav-item padded"><i class="fa fa-database"></i>{{ dbUpdated }}</span>
+      <span class="updated navbar-text ml-auto mr-auto"><i class="fa fa-database"></i>{{ dbUpdated }}</span>
 
-        <a [routerLink]="['account']" class="nav-item nav-link" routerLinkActive="active" *ngIf="auth.loggedIn">
-          <i class="fa fa-user-circle-o"></i> Account ({{auth.currentUser.username}})
-        </a>
-        <a [routerLink]="['admin']" class="nav-item nav-link" routerLinkActive="active" *ngIf="auth.loggedIn && auth.isAdmin">
-          Admin
-        </a>
-        <a [routerLink]="['logout']" class="nav-item nav-link" routerLinkActive="active" *ngIf="auth.loggedIn">
-          Logout
-        </a>
-        <a
-          [routerLink]="['login']"
-          class="nav-item nav-link"
-          routerLinkActive="active"
-          *ngIf="!auth.loggedIn"
-        >
-          Login
-        </a>
-        <a
-          [routerLink]="['register']"
-          class="nav-item nav-link"
-          routerLinkActive="active"
-          *ngIf="!auth.loggedIn"
-        >
-          Register
-        </a>
-      </div>
+      <a
+        [routerLink]="['account']"
+        class="nav-item nav-link"
+        routerLinkActive="active"
+        *ngIf="auth.loggedIn"
+      >
+        <i class="fa fa-user-circle-o"></i> Account ({{auth.currentUser.username}})
+      </a>
+      <a
+        [routerLink]="['admin']"
+        class="nav-item nav-link"
+        routerLinkActive="active"
+        *ngIf="auth.loggedIn && auth.isAdmin"
+      >
+        Admin
+      </a>
+      <a
+        [routerLink]="['logout']"
+        class="nav-item nav-link"
+        routerLinkActive="active"
+        *ngIf="auth.loggedIn"
+      >
+        Logout
+      </a>
+      <a
+        [routerLink]="['login']"
+        class="nav-item nav-link"
+        routerLinkActive="active"
+        *ngIf="!auth.loggedIn"
+      >
+        Login
+      </a>
+      <a
+        [routerLink]="['register']"
+        class="nav-item nav-link"
+        routerLinkActive="active"
+        *ngIf="!auth.loggedIn"
+      >
+        Register
+      </a>
     </div>
   </nav>
 

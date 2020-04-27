@@ -1,12 +1,12 @@
 <ng-template #content let-c="close" let-d="dismiss">
   <div class="modal-header" [ngClass]="{printable: isPrintable}">
-    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
     <h4 class="modal-title right-buttons">
       <printable [elementId]="'report'" (stateChanged)="setPrintable($event)"></printable>
       Demand Staffing Report
     </h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
   </div>
   <div class="modal-body demand report" [ngClass]="{printable: isPrintable}" id="report">
     <div *ngFor="let account of getAccounts()">
