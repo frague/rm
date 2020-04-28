@@ -2,12 +2,12 @@ import { Component, Output, EventEmitter, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BaseComponent } from '../base.component';
 import { DpService } from '../services/dp.service';
+import { BusService } from '../services/bus.service';
 import { PrintableDatePipe } from '../pipes';
 import { Subscription, forkJoin } from 'rxjs';
 
 import { DemandModal } from '../modal/demand-modal.component';
 import { RequisitionModal } from '../modal/requisition-modal.component';
-import { PersonModal } from '../modal/person-modal.component';
 import { CandidateModal } from '../modal/candidate-modal.component';
 
 const rowNumber = /^\d+$:/g;
@@ -19,7 +19,6 @@ const rowNumber = /^\d+$:/g;
 export class DpComponent extends BaseComponent {
   @ViewChild(DemandModal, { static: true }) demandModal: DemandModal;
   @ViewChild(RequisitionModal, { static: true }) requisitionModal: RequisitionModal;
-  @ViewChild(PersonModal, { static: true }) personModal: PersonModal;
   @ViewChild(CandidateModal, { static: true }) candidateModal: CandidateModal;
 
   public form = new FormGroup({});
@@ -30,7 +29,8 @@ export class DpComponent extends BaseComponent {
 
   constructor(
     private makeDate: PrintableDatePipe,
-    private dp: DpService
+    private dp: DpService,
+    private bus: BusService,
   ) {
     super(dp);
     this.reset();
@@ -96,7 +96,7 @@ export class DpComponent extends BaseComponent {
 
   showPerson(diff: any) {
     if (diff.diff !== -1) {
-      this.personModal.show(diff.subject);
+      this.bus.showPerson.emit({entity: diff.subject});
     }
   }
 

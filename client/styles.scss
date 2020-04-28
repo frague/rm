@@ -57,6 +57,14 @@ a {
   }
 }
 
+mark, a[target="slack"] {
+  @extend .clickable;
+  background-color: transparent;
+  color: $link;
+  font-weight: 500;
+  padding: 0;
+}
+
 i.fa-external-link-square {
   position: relative;
   bottom: 5px;
@@ -1488,7 +1496,7 @@ dl.attributes {
     clear: left;
   }
   dd {
-    padding-left: 140px;
+    padding-left: 120px;
 
     &:empty:after,
     & > div:empty:after {
@@ -2278,13 +2286,13 @@ div.bottom-corner {
       }
 
       comments-widget & {
-        margin-left: -62px;
-        margin-top: -53px;
+        margin-left: -90px;
+        margin-top: -44px;
         right: unset;
         position: absolute;
 
         &:active {
-          margin-top: -53px + $formPerspective - 1px;
+          margin-top: -44px + $formPerspective - 1px;
         }
       }
     }
@@ -2511,6 +2519,7 @@ div.bottom-corner {
     font-weight: 900;
     font-size: 25px;
     text-shadow: 0 0 13px #444;
+    font-family: Roboto;
 
     & > i.fa {
       position: absolute;
@@ -2557,9 +2566,8 @@ div.bottom-corner {
   bottom: 0;
   left: 0;
   right: 0;
-  // background-color: rgba(255, 255, 255, 0.9);
   background-color: $body;
-  z-index: 1500;
+  z-index: 100;
 
   .panes {
     @extend .shadow;

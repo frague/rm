@@ -4,7 +4,6 @@ import { Subscription, from, forkJoin } from 'rxjs';
 
 import { Utils } from './utils';
 
-import { PersonModal } from './modal/person-modal.component';
 import { AssignmentModal } from './modal/assignment-modal.component';
 import { DemandModal } from './modal/demand-modal.component';
 import { RequisitionModal } from './modal/requisition-modal.component';
@@ -30,7 +29,6 @@ const demandCriteria = new RegExp(/\{['"]{0,1}(demand[.a-z]*)['"]{0,1}:['"]{0,1}
 export class Schedule {
 
   @ViewChild(DemandModal, { static: true }) demandModal: DemandModal;
-  @ViewChild(PersonModal, { static: true }) personModal: PersonModal;
   @ViewChild(AssignmentModal, { static: true }) assignmentModal: AssignmentModal;
   @ViewChild(RequisitionModal, { static: true }) requisitionModal: RequisitionModal;
   @ViewChild(CandidateModal, { static: true }) candidateModal: CandidateModal;
@@ -75,6 +73,7 @@ export class Schedule {
   assignmentsFound = 0;
 
   _cache: CacheService;
+  _bus: BusService;
 
   postFetch = (query, serviceData?) => from([]).subscribe();
 
@@ -95,6 +94,7 @@ export class Schedule {
     this.fromDate.setMonth(this.fromDate.getMonth() - 2);
     this.fromDate = this.adjustToMonday(this.fromDate.toString());
     this._cache = cache;
+    this._bus = bus;
   }
 
   ngOnInit() {
@@ -488,18 +488,6 @@ export class Schedule {
     this.requisitionModal.show(requisitionId, showComments && 'comments');
   }
 
-  private _showModal(entity, source, modal: {show: Function}, showComments=false) {
-    if (!entity || !source) {
-      return;
-    }
-
-    modal.show(source, showComments && 'comments')
-      .subscribe(({status, commentsCount}) => {
-        [entity.status, entity.commentsCount] = [status, commentsCount];
-        this.markForCheck();
-      });
-  }
-
   getDemandFrom(item: any) {
     return [item, item.demand ? item.demand : item];
   }
@@ -513,6 +501,18 @@ export class Schedule {
 
   getCandidateFrom(item: any) {
     return [item, item];
+  }
+
+  private _showModal(entity, source, modal: {show: Function}, showComments=false) {
+    if (!entity || !source) {
+      return;
+    }
+
+    modal.show(source, showComments && 'comments')
+      .subscribe(({status, commentsCount}) => {
+        [entity.status, entity.commentsCount] = [status, commentsCount];
+        this.markForCheck();
+      });
   }
 
   showResource(item, showComments=false, event: MouseEvent = null) {
@@ -530,7 +530,14 @@ export class Schedule {
       this.showRequisition(item.requisitionId, event, showComments);
     } else {
       let [entity, source] = this.getPersonFrom(item);
-      this._showModal(entity, source, this.personModal, showComments);
+      this._bus.showPerson.emit({
+        entity: source,
+        tab: showComments && 'comments',
+        callback: ({status, commentsCount}) => {
+          [entity.status, entity.commentsCount] = [status, commentsCount];
+          this.markForCheck();
+        }
+      });
     }
   }
 

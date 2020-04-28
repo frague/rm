@@ -1,9 +1,10 @@
-import { Component, Input, ChangeDetectorRef, EventEmitter } from '@angular/core';
+import { Component, Input, ChangeDetectorRef, ChangeDetectionStrategy, EventEmitter } from '@angular/core';
 import { LoaderService } from '../../services/loader.service';
 
 @Component({
 	selector: 'spinner',
-  templateUrl: './spinner.component.html'
+  templateUrl: './spinner.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SpinnerComponent {
   private $updated;

@@ -6,6 +6,12 @@ export type IEditedContent = {
   isStatus: boolean
 };
 
+export type IUserModal = {
+  entity: any,
+  tab?: string,
+  callback?: Function
+};
+
 @Injectable()
 export class BusService {
   filterQuery = {};
@@ -21,6 +27,7 @@ export class BusService {
   public dbUpdated: EventEmitter<string> = new EventEmitter();
 
   public editedContent: EventEmitter<{data: IEditedContent, resolve: Function, reject: Function}> = new EventEmitter();
+  public showPerson: EventEmitter<IUserModal> = new EventEmitter();
 
   updateQuery(query: any, criteria: string, serviceData = {}) {
     this.criteria = criteria;

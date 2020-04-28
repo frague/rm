@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ViewChildren, ElementRef, QueryList } from '@angular/core';
 import { forkJoin } from 'rxjs';
 
 import { AuthService } from './services/auth.service';
@@ -6,8 +6,9 @@ import { BadgeService } from './services/badge.service';
 import { ItemBadgeService } from './services/itemBadge.service';
 import { DpService } from './services/dp.service';
 import { CacheService } from './services/cache.service';
-import { BusService } from './services/bus.service';
+import { BusService, IUserModal } from './services/bus.service';
 import { PrintableDatePipe } from './pipes';
+import { PersonModal } from './modal/person-modal.component';
 
 @Component({
   selector: 'app-root',
@@ -17,10 +18,14 @@ export class AppComponent {
   isFilterVisible = true;
   private $refetchBadges;
   private $dbUpdated;
+  private $showUser;
 
   public get isLogged(): boolean {
     return this.auth.loggedIn;
   }
+
+  @ViewChildren('main') main: QueryList<ElementRef>;
+  @ViewChild(PersonModal, { static: true }) personModal: PersonModal;
 
   dbUpdated = '?';
 
@@ -70,10 +75,25 @@ export class AppComponent {
     this.$dbUpdated = this.bus.dbUpdated.subscribe(() => this._getDbUpdateDate());
     this._refetchBadges();
     this._getDbUpdateDate();
+    this.$showUser = this.bus.showPerson.subscribe((info: IUserModal) => {
+      this.personModal.show(info.entity, info.tab).subscribe(value => info.callback ? info.callback(value) : null);
+    });
+  }
+
+  clicked = (element: HTMLElement) => {
+    let name = element.innerText;
+    if (name && name.startsWith('@')) {
+      this.bus.showPerson.emit({entity: name.substr(1)});
+    }
+  };
+
+  ngAfterViewChecked() {
+    let marks = Array.from(document.getElementsByTagName('mark')).forEach((mark, index) => {
+      if (!mark.onclick) mark.onclick = () => this.clicked(mark);
+    });
   }
 
   ngOnDestroy() {
-    this.$refetchBadges.unsubscribe();
-    this.$dbUpdated.unsubscribe();
+    [this.$refetchBadges, this.$dbUpdated].forEach(subscription => subscription.unsubscribe());
   }
 }

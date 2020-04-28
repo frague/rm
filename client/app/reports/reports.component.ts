@@ -9,7 +9,6 @@ import { RequisitionService } from '../services/requisition.service';
 import { CacheService } from '../services/cache.service';
 import { BusService } from '../services/bus.service';
 
-import { PersonModal } from '../modal/person-modal.component';
 import { Schedule } from '../schedule';
 
 const defaultColumns = {
@@ -90,11 +89,6 @@ export class ReportsComponent extends Schedule {
       }) ?
         this.requisitionService.getAll({...query, order}) : from([[]])
     );
-
-    // let candidatesQuery = this._cache.getObservable('candidates') || (
-    //   (!hideCandidates && queryString.includes('candidates.')) ? this.candidateService.getAll(query) : from([[]])
-    // );
-
 
     return requisitionsQuery.subscribe(data => {
       this._cache.set('requisitions', data);

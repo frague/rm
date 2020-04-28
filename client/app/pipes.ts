@@ -18,15 +18,23 @@ const listDiffs = [
 const vacations = ['paid vacation', 'unpaid vacation'];
 
 const domain = 'griddynamics.com';
-
-// Custom markdown renderer for links
-var renderer = new marked.Renderer();
-renderer.link = function (href: string, title: string, text: string) {
-  let target = `${href}`.replace(/^.+:\/\//, '').replace(/\/.*/, '');
-  return `<a href="${href}" title="${title}" target="${target}">${text}</a> <i class="fa fa-external-link-square"></i>`;
+const nameExpression = new RegExp(/(^|\s)(@[a-z]{3,}|#[a-z_\-0-9]{3,})/, 'gi');
+const replacer = (match: string, pre: string, name: string) => {
+  if (name.startsWith('@')) return `${pre}<mark>${name}</mark>`;
+  return `${pre}<a href="https://slack.com/app_redirect?channel=${name.substr(1)}" target="slack">${name}</a>`;
 };
-marked.setOptions({renderer});
-//
+
+// Custom markdown renderers
+var renderer = {
+  link: (href: string, title: string, text: string) => {
+    let target = `${href}`.replace(/^.+:\/\//, '').replace(/\/.*/, '');
+    return `<a href="${href}" title="${title}" target="${target}">${text}</a> <i class="fa fa-external-link-square"></i>`;
+  },
+  text: (text: string) => {
+    return text.replace(nameExpression, replacer);
+  }
+};
+marked.use({renderer});
 
 type dateFormat = 'full' | 'nodate' | 'noyear' | 'ten';
 
