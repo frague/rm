@@ -9,7 +9,7 @@ export type IEditedContent = {
 export type IUserModal = {
   entity: any,
   tab?: string,
-  callback?: Function
+  callback?: Function,
 };
 
 @Injectable()

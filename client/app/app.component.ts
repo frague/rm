@@ -76,14 +76,17 @@ export class AppComponent {
     this._refetchBadges();
     this._getDbUpdateDate();
     this.$showUser = this.bus.showPerson.subscribe((info: IUserModal) => {
-      this.personModal.show(info.entity, info.tab).subscribe(value => info.callback ? info.callback(value) : null);
+      this.personModal.show(info.entity, info.tab)
+        .subscribe(value => info.callback ? info.callback(value) : null);
     });
   }
 
   clicked = (element: HTMLElement) => {
     let name = element.innerText;
     if (name && name.startsWith('@')) {
-      this.bus.showPerson.emit({entity: name.substr(1)});
+      this.bus.showPerson.emit({
+        entity: name.substr(1),
+      });
     }
   };
 

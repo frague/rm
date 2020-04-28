@@ -3,6 +3,8 @@ import { Subject } from 'rxjs';
 import { BaseComponent } from '../base.component';
 import { NgbModal, ModalDismissReasons, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 
+const layerKey = 'modalLayerIndex';
+
 export abstract class BaseModalComponent {
   modalRef: any;
   content: any;
@@ -11,6 +13,14 @@ export abstract class BaseModalComponent {
   activeId = '';
 
   callback: Subject<any>;
+
+  public get layer(): number {
+    return window[layerKey] || 0;
+  }
+
+  public set layer(value: number) {
+    window[layerKey] = value;
+  }
 
   private baseOptions = {
     beforeDismiss: () => this._dismiss()
@@ -21,6 +31,7 @@ export abstract class BaseModalComponent {
 
   private _dismiss() {
     if (!this.isSafeToProceed()) return false;
+    this.layer--;
     this.callback.complete();
   }
 
@@ -34,9 +45,14 @@ export abstract class BaseModalComponent {
   }
 
   open(activeId = ''): Subject<any> {
+    this.layer++;
     this.callback = new Subject();
     this.activeId = activeId;
-    let options: NgbModalOptions = Object.assign(this.isLarge ? {size: 'lg'} : {}, this.baseOptions);
+    let options: NgbModalOptions = Object.assign(
+      this.isLarge ? { size: 'lg' } : {},
+      { windowClass: `layer${this.layer}` },
+      this.baseOptions
+    );
     this.modalRef = this.modalService.open(this.content, options);
     return this.callback;
   }

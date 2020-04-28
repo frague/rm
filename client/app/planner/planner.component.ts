@@ -79,8 +79,6 @@ export class PlannerComponent extends Schedule {
   locationsBadges = this._makeBadges(this.filterLocations);
   serviceBadges = this._makeBadges(this.filterService);
 
-  private _bus: BusService;
-
   chosenBadges = [];
   get badgesAreSelected() {
     return this.chosenBadges.length > 0;
@@ -205,8 +203,6 @@ export class PlannerComponent extends Schedule {
     super(assignmentService, resourceService, initiativeService, demandService, bus, cache, cd);
     this._cd = cd;
     this._cache = cache;
-    this._bus = bus;
-    // this.toggleLocations({target: {checked: true}});
   }
 
   _makeBadges(source: any): any[] {
