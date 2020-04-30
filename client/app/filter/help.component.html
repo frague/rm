@@ -7,7 +7,7 @@
           <a (click)="select(section)">{{ getTitle(section) }}</a></li>
       </ul>
     </div>
-    <div class="col-sm-8 col-md-10 col-lg-10">
+    <div class="col-sm-8 col-md-10 col-lg-10 row">
       <ng-container *ngIf="isSelected('logic')">
         <h3>Querying logic</h3>
 <caption>Query consists of a number of criteria, separated by comma. Criterion consists of a parameter name and condition, separated by matching combination. Matching combinations are listed below:</caption>
@@ -53,7 +53,7 @@
       </ng-container>
       <ng-container *ngIf="isSelected('persons')">
         <h3>People</h3>
-        <caption>Query by a person attributes</caption>
+        <caption>Query by a person's attributes</caption>
 
         <ul (click)="click($event)" class="col-sm-6">
           <li><dfn>name</dfn> - full name</li>
@@ -84,7 +84,7 @@
       </ng-container>
       <ng-container *ngIf="isSelected('assignments')">
         <h3>Assignments</h3>
-        <caption>Query by a person assignments</caption>
+        <caption>Query by a person's assignments</caption>
 
         <ul (click)="click($event)" class="col-sm-6">
           <li><dfn>assignment.account</dfn> - account name</li>

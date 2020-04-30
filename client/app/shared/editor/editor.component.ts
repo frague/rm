@@ -33,14 +33,6 @@ export class EditorComponent {
 
   }
 
-  public get layer(): number {
-    return window[layerKey] || 0;
-  }
-
-  public set layer(value: number) {
-    window[layerKey] = value;
-  }
-
   resetClose() {
     this.close = (returnData=false) => this.isVisible = false;
   }
@@ -51,11 +43,9 @@ export class EditorComponent {
       this.form.setValue(data);
       this.manageListener(true);
       this.isVisible = true;
-      this.layer++;
       this.close = (returnData = false) => {
         this.isVisible = false;
         this.resetClose();
-        this.layer--;
         if (returnData) {
           this.manageListener();
           resolve(this.editedValue);
@@ -85,10 +75,6 @@ export class EditorComponent {
 
   isFormValid() {
     return this.form.status !== 'INVALID';
-  }
-
-  getClass() {
-    return `layer${this.layer}`;
   }
 
   reposition(event: Event) {

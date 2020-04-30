@@ -91,12 +91,16 @@ export class AppComponent {
   };
 
   ngAfterViewChecked() {
-    let marks = Array.from(document.getElementsByTagName('mark')).forEach((mark, index) => {
-      if (!mark.onclick) mark.onclick = () => this.clicked(mark);
-    });
+    // Addig onclick handler to marks
+    // let marks = Array.from(document.getElementsByTagName('mark')).forEach((mark, index) => {
+    //   if (!mark.onclick) {
+    //     mark.onclick = () => this.clicked(mark);
+    //     mark.setAttribute('charged', 'true');
+    //   }
+    // });
   }
 
   ngOnDestroy() {
-    [this.$refetchBadges, this.$dbUpdated].forEach(subscription => subscription.unsubscribe());
+    [this.$refetchBadges, this.$dbUpdated, this.$showUser].forEach(subscription => subscription.unsubscribe());
   }
 }
