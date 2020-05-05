@@ -68,10 +68,10 @@ export class PlannerComponent extends Schedule {
     return result;
   }, { All: true });
   filterService = {
-    'Filter Users': false,
+    'Apply to Users': false,
   };
   public get filterUsers(): boolean {
-    return this.filterService['Filter Users'];
+    return this.filterService['Apply to Users'];
   }
 
   statesBadges = this._makeBadges(this.filterStates);
@@ -144,7 +144,7 @@ export class PlannerComponent extends Schedule {
                   r = `${a.account}|${a.initiative}`;
                 }
                 return r;
-              });
+              }, null);
               names.push(result.name);
               return result;
             })

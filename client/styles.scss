@@ -2303,10 +2303,10 @@ div.bottom-corner {
 
   &.project {
     .new button {
-      margin-top: -73px;
+      margin-top: -105px;
 
       &:active {
-        margin-top: -73px + $formPerspective - 1px;
+        margin-top: -105px + $formPerspective - 1px;
       }
     }
 
