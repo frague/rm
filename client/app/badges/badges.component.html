@@ -11,7 +11,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let badge of getBadges()" class="form-row">
+    <tr *ngFor="let badge of getBadges()">
       <td>
         <span *ngIf="selected!=badge._id">{{ badge.title }}</span>
         <input *ngIf="selected==badge._id" type="text" name="title" [(ngModel)]="newBadge.title" placeholder="Title" (keyup)="hotKeysHandler($event)" class="form-control">
