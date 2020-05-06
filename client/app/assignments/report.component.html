@@ -1,40 +1,41 @@
 <ng-template #content let-c="close" let-d="dismiss">
   <div class="modal-header">
+    <h4 class="modal-title right-buttons">
+      Assignments Report
+      <printable [elementId]="'report'" (stateChanged)="setPrintable($event)"></printable>
+    </h4>
     <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
-    <h4 class="modal-title">Assignments Report</h4>
   </div>
-  <div class="modal-body assignments report">
+  <div class="modal-body assignments report"  [ngClass]="{printable: isPrintable}" id="report">
     <div class="billability" *ngFor="let billability of ['Billable', 'Non-billable']">
       <h2>{{ billability }} ({{ assignments[billability].length }})</h2>
-      <table>
+      <table class="table">
         <thead>
           <tr>
             <th>Name</th>
-            <th>Account/Initiative</th>
-            <th>Start</th>
-            <th>End</th>
-            <th>Billable</th>
-            <th>Involvement</th>
-            <th>Comments</th>
+            <th>Assignment</th>
+            <th>Status</th>
           </tr>
         </thead>
-        <tbody *ngFor="let person of assignments[billability]">
-          <tr
-            *ngFor="let assignment of person.assignmentsArray;let i = index"
-            [ngClass]="getClass(assignment)"
-          >
-            <th [rowSpan]="person.assignmentsCount || 1" *ngIf="!i">{{ person.grade }}, {{ person.name }} ({{ person.location }})</th>
-            <td>{{ assignment.account || '-' }}/{{ assignment.initiative || '-' }}</td>
-            <td>{{ assignment.start|date }}</td>
-            <td>{{ assignment.end|date }}</td>
-            <td>{{ assignment.billability }}</td>
-            <td>{{ assignment.involvement || 0 }}%</td>
-            <td [rowSpan]="person.assignmentsCount || 1" *ngIf="!i" class="neutral">
-              <div *ngIf="person.status" [innerHTML]="person.status.text|markdown"></div>
-            </td>
-          </tr>
+        <tbody>
+          <ng-container *ngFor="let person of assignments[billability]">
+            <tr *ngFor="let assignment of person.assignmentsArray;let i = index">
+              <td [rowSpan]="person.assignmentsCount || 1" *ngIf="!i" [ngClass]="getClass(person)">
+                <p>{{ person.name }}</p>
+                <p>{{ person.grade }}, {{ person.location }}</p>
+              </td>
+              <td [ngClass]="getClass(assignment)">
+                <p>{{ assignment.account || '-' }}/{{ assignment.initiative || '-' }}</p>
+                <p>{{ assignment.start|date }} - {{ assignment.end|date }}</p>
+                <p>{{ assignment.involvement || 0 }}% {{ assignment.billability }}</p>
+              </td>
+              <td [rowSpan]="person.assignmentsCount || 1" *ngIf="!i">
+                <div *ngIf="person.status" [innerHTML]="person.status.text|markdown" class="md"></div>
+              </td>
+            </tr>
+          </ng-container>
         </tbody>
       </table>
     </div>

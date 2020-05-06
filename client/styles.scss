@@ -638,7 +638,7 @@ table.badges {
       line-height: 1;
 
       &.right-buttons {
-        padding-right: 30px;
+        flex-grow: 1 !important;
 
         i.fa {
           @extend .clickable;
@@ -2226,66 +2226,29 @@ div.bottom-corner {
   }
 
   &.assignments table {
-    thead {
-      th {
-        text-align: center;
-        border-top-width: 1px;
-
-        &:nth-child(1) {
-          width: 20%;
-        }
-        &:nth-last-child(-n + 4) {
-          width: 100px;
-        }
-        &:last-child {
-          border-right-width: 1px;
-        }
-      }
-    }
-
     tr {
-      &.billable td {
-        background-color: $green;
-      }
-      &.non td {
-        background-color: #fed;
-      }
+      background-color: white !important;
 
-      &:last-child td,
-      &:last-child th {
-        // border-bottom-width: 1px;
-      }
-
-      &:first-child {
-        td:nth-child(3) {
-          text-align: center;
+      th {
+        &:first-child {
+          min-width: 200px;
         }
-      }
-
-      th,
-      td {
-        border-bottom-width: 1px;
+        &:nth-child(2) {
+          min-width: 200px;
+        }
       }
 
       td {
-        font-weight: 100;
-
-        &.neutral {
-          background-color: #eee;
+        div {
+          float: none;
         }
-
-        &:nth-last-child(-n + 4) {
-          text-align: center;
+        &.billable {
+          background-color: $green;
         }
-
-        &:last-child {
-          border-right-width: 1px;
+        &.non {
+          background-color: #fed;
         }
       }
-    }
-
-    tbody:last-child th {
-      border-bottom-width: 1px;
     }
   }
 }

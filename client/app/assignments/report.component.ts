@@ -10,6 +10,7 @@ const billables = ['Billable', 'Funded', 'PTO Coverage', 'Booked'];
 export class AssignmentsReportComponent {
   @ViewChild('content', { static: true }) content;
   assignments: any = {};
+  isPrintable = false;
 
   constructor(private modalService: NgbModal) {}
 
@@ -25,12 +26,16 @@ export class AssignmentsReportComponent {
     return billables.indexOf(assignment.billability) >= 0 && assignment.involvement > 0;
   }
 
-  getClass(assignment: any) {
-    let isBillable = this.isAssignmentBillable(assignment);
+  getClass(userOrAssignment: any) {
+    let isBillable = `${userOrAssignment.isBillable}` === 'true';
     return {
       'billable': isBillable,
       'non': !isBillable
     }
+  }
+
+  setPrintable(state: boolean) {
+    this.isPrintable = state;
   }
 
   show(assignments: any) {
@@ -41,14 +46,15 @@ export class AssignmentsReportComponent {
       }
 
       let isBillable = false;
-      resource.assignmentsArray = [].concat(...Object.values(resource.assignments)).reduce((result, assignment) => {
-        let end = assignment.end ? new Date(assignment.end).getTime() : Infinity;
-        if (!assignment.demand && today < end) {
-          result.push(assignment);
-          isBillable = isBillable || this.isAssignmentBillable(assignment);
-        }
-        return result;
-      }, []);
+      resource.assignmentsArray = [].concat(...Object.values(resource.assignments))
+        .reduce((result, assignment) => {
+          let end = assignment.end ? new Date(assignment.end).getTime() : Infinity;
+          if (!assignment.demand && today < end) {
+            result.push(assignment);
+            isBillable = isBillable || this.isAssignmentBillable(assignment);
+          }
+          return result;
+        }, []);
       resource.assignmentsCount = resource.assignmentsArray.length;
       if (!resource.assignmentsCount) {
         resource.assignmentsArray = [{}];
@@ -56,6 +62,6 @@ export class AssignmentsReportComponent {
       divided[isBillable ? 'Billable' : 'Non-billable'].push(resource);
       return divided;
     }, {'Billable': [], 'Non-billable': []});
-    this.modalService.open(this.content, {size: 'lg'});
+    this.modalService.open(this.content, {size: 'xl'});
   }
 }
