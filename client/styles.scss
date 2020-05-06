@@ -15,6 +15,13 @@ body.modal-open .candidates {
   overflow-x: hidden;
 }
 
+footer {
+  position: fixed;
+  bottom: 10px;
+  right: 30px;
+  opacity: 0.2;
+}
+
 .grey {
   color: #888;
 }
@@ -552,6 +559,11 @@ ul.badges {
 }
 
 table.badges {
+  td:last-child {
+    text-align: right;
+    white-space: nowrap;
+  }
+
   .circle {
     width: 15px;
     height: 15px;
@@ -563,6 +575,11 @@ table.badges {
   }
   .btn-link {
     @extend .clickable;
+    padding: 0;
+
+    &:nth-child(n+2) {
+      padding-left: 8px;
+    }
   }
 }
 
@@ -1955,7 +1972,7 @@ ul.tasks {
     border-top: solid 1px $grid;
     margin: 0;
     padding-top: 0;
-    background-color: color.adjust($body, $saturation: 12%);
+    background-color: white;
 
     & > div {
       white-space: nowrap;
