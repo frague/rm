@@ -6,6 +6,8 @@ const orKey = '$or';
 
 const keywordExtender = new RegExp(/\.[^\s]+$/);
 const funcValue = new RegExp(/^([a-z]+)\(/i);
+const regexMatch = new RegExp(/^\!?\/([^\/]+)\/i$/);
+
 const valueModifiers = {
   'among': (key, value, [values]) => [key, {'$in': values.split('|')}, false],
   'in': (key, value, [days]) => {
@@ -144,8 +146,12 @@ abstract class BaseCtrl {
 
       // Values modifiers
       [key, value, skipKey] = this._modifyValue(key, value);
-      if (typeof value === 'string' && !value.indexOf('/')) {
-        value = new RegExp(value.replace(/^\/([^\/]+)\/i$/, '$1'), 'i');
+      if (typeof value === 'string' && regexMatch.test(value)) {
+        let negate = !value.indexOf('!');
+        value = new RegExp(value.replace(regexMatch, '$1'), 'i');
+        if (negate) {
+          value = {'$not': value};
+        }
       }
       criterion = skipKey ? value : {[key]: value};
 

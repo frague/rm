@@ -11,6 +11,7 @@ export class AssignmentModal extends BaseModalComponent {
   @ViewChild('content', { static: true }) content;
   person: any = {};
   assignment: any = {};
+  isLarge = true;
 
   constructor(
     modalService: NgbModal,

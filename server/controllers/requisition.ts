@@ -56,7 +56,8 @@ export default class RequisitionCtrl extends BaseCtrl {
     };
     let makeQuery = (model: string, isFinal: boolean, preservePrefix: boolean) => {
       let query = this.fixOr(this.modifyCriteria(ors[model], this._getModifiers(model, isFinal, preservePrefix)));
-      console.log(`${model} ${isFinal ? 'final' : 'base'} ${preservePrefix ? 'prefixed' : 'trimmed'}:`, JSON.stringify(query));
+      // console.log(`${model} ${isFinal ? 'final' : 'base'} ${preservePrefix ? 'prefixed' : 'trimmed'}:`, JSON.stringify(query));
+      console.log(`${model} ${isFinal ? 'final' : 'base'} ${preservePrefix ? 'prefixed' : 'trimmed'}:`, query);
       return query;
     };
 
@@ -183,6 +184,10 @@ export default class RequisitionCtrl extends BaseCtrl {
           },
         })
         .match(makeQuery('candidate', true, true))
+        .sort({
+          'candidate.updated': -1,
+          'candidate.state': -1,
+        })
 
         // Group by requisition
         .group({
@@ -265,7 +270,7 @@ export default class RequisitionCtrl extends BaseCtrl {
             '$setDifference': ['$demands', [null]]
           },
           candidates: {
-            '$setDifference': ['$candidates', [{comments: [], commentsCount: 0}]]
+            '$setDifference': ['$candidates', [{comments: {}, commentsCount: 0}]]
           },
           index: {
             '$convert': {

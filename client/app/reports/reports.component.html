@@ -1,4 +1,7 @@
 <div class="people" [ngClass]="getPrintableClass()">
+
+  <div class="alert alert-info message" *ngIf="message">{{ message }}</div>
+
   <h1>
     <printable [elementId]="'report'" (stateChanged)="setPrintable($event)"></printable>
     Report ({{ items.length }})

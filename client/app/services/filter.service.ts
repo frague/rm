@@ -53,7 +53,14 @@ export class FilterService extends BaseService {
           serviceData[param] = this._parseParam(param, value);
         } else {
           let addition = false;
-          let regexValue = `/${value}/i`;
+          let regexValue: any = `/${value}/i`;
+
+          // Negative matches
+          if (operation.includes('!')) {
+            operation = operation.replace('!', '');
+            value = {'$ne': value};
+            regexValue = `!${regexValue}`;
+          }
           switch (operation) {
             case '+~':
               addition = true;
@@ -64,15 +71,14 @@ export class FilterService extends BaseService {
               addition = true;
               value = {[param]: value};
               break;
-            case '!=':
-              value = {[param]: {'$ne': value}};
-              break;
             case '=':
               if (!inOperator[param]) {
                 inOperator[param] = [];
               }
               inOperator[param].push(value);
               return;
+            default:
+              value = {[param]: regexValue};
           }
           (addition ? orOperator : andOperator).push(value);
         }

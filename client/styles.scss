@@ -18,7 +18,7 @@ body.modal-open .candidates {
 footer {
   position: fixed;
   bottom: 10px;
-  right: 30px;
+  right: 40px;
   opacity: 0.2;
 }
 
@@ -1832,14 +1832,21 @@ ul.tasks {
     padding-top: 8px;
   }
 
-  .requisition div.corner {
-    border-right: 16px solid transparent;
-    border-left: none;
-    margin-top: -26px;
-    left: 0;
+  .requisition {
+    div {
+      &.corner {
+        border-right: 16px solid transparent;
+        border-left: none;
+        margin-top: -26px;
+        left: 0;
 
-    b {
-      right: 5px;
+        b {
+          right: 5px;
+        }
+      }
+      &:nth-child(2) {
+        font-weight: 500;
+      }
     }
   }
 
@@ -1865,7 +1872,7 @@ ul.tasks {
         text-align: center;
         display: inline-block;
         list-style: none;
-        border: solid 1px $grid;
+        border: solid 1px color.adjust($body, $saturation: -80%, $lightness: -20%);
         border-radius: 4px;
         background-color: white;
         transition: margin 0.3s ease;
@@ -1954,10 +1961,6 @@ ul.tasks {
           float: right;
           color: #888;
         }
-      }
-
-      &:nth-child(2) {
-        font-weight: 500;
       }
 
       &:last-child a {
