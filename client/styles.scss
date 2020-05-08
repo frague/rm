@@ -190,6 +190,20 @@ pre {
   }
 }
 
+form.middle {
+  min-width: 200px;
+  max-width: 300px;
+  margin: 0px auto;
+
+  h1 {
+    margin-bottom: 20px;
+  }
+
+  button {
+    float: right;
+  }
+}
+
 .md {
   h1 {
     font-weight: 400;
@@ -314,7 +328,7 @@ pre {
     }
   }
 
-  &:nth-child(n+2) {
+  & + .btn {
     margin-left: 10px;
   }
 

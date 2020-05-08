@@ -27,7 +27,6 @@ export class AuthService {
 
   login(emailAndPassword) {
     return this.userService.login(emailAndPassword)
-      .pipe(map(res => res.json()))
       .pipe(map(
         res => {
           localStorage.setItem('token', res.token);

@@ -1,10 +1,14 @@
 <h1>Dashboard</h1>
 
-<div class="dashboard row">
+<div class="dashboard row" *ngIf="auth.loggedIn">
   <div class="col-md-8">
     <comments-widget></comments-widget>
   </div>
   <div class="col-md-4">
     <birthdays-widget [title]="'Birthdays'" [criteria]="'birthday=month(),columns=name|pool|birthday,order=pool|name'"></birthdays-widget>
   </div>
+</div>
+
+<div *ngIf="!auth.loggedIn">
+  Welcome to EM Tool application. Please <a [routerLink]="['/register']">register</a> and <a [routerLink]="['/login']">login</a> in order to access its features.
 </div>

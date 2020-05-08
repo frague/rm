@@ -76,16 +76,18 @@
         Sync
       </a>
 
-      <span class="updated navbar-text ml-auto mr-auto"><i class="fa fa-database"></i>{{ dbUpdated }}</span>
+      <span class="updated navbar-text ml-auto mr-auto">
+        <span *ngIf="isLogged">
+          <i class="fa fa-database"></i>{{ dbUpdated }}
+        </span>
+      </span>
 
-      <a
-        [routerLink]="['account']"
-        class="nav-item nav-link"
-        routerLinkActive="active"
+      <span
+        class="navbar-text"
         *ngIf="auth.loggedIn"
       >
         <i class="fa fa-user-circle-o"></i> Account ({{auth.currentUser.username}})
-      </a>
+      </span>
       <a
         [routerLink]="['admin']"
         class="nav-item nav-link"

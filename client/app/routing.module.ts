@@ -6,7 +6,6 @@ import { ReportsComponent } from './reports/reports.component';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { LogoutComponent } from './logout/logout.component';
-import { AccountComponent } from './account/account.component';
 import { AdminComponent } from './admin/admin.component';
 import { SyncComponent } from './sync/sync.component';
 import { NotFoundComponent } from './not-found/not-found.component';
@@ -43,7 +42,6 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
   { path: 'logout', component: LogoutComponent },
-  { path: 'account', component: AccountComponent, canActivate: [AuthGuardLogin] },
   { path: 'admin', component: AdminComponent, canActivate: [AuthGuardAdmin] },
   { path: '**', component: NotFoundComponent },
 ];
