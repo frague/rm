@@ -44,9 +44,9 @@
       <dd>{{ demand.requestId }}</dd>
 
       <dt>Candidates</dt>
-      <dd>
-        <ul *ngIf="hasCandidates">
-          <li *ngFor="let candidate of demand.candidates;let i = index" [ngClass]="demand.candidatesStati[i]">{{ candidate }} ({{ demand.candidatesStati[i] }})</li>
+      <dd class="full-width">
+        <ul *ngIf="hasCandidates" class="candidates">
+          <li *ngFor="let candidate of demand.candidates;let i = index" [ngClass]="demand.candidatesStati[i]">{{ candidate }} <span>({{ demand.candidatesStati[i] }})</span></li>
         </ul>
       </dd>
 

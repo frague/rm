@@ -1549,12 +1549,11 @@ dl.attributes {
       margin-top: 10px;
     }
 
-    & > ul {
-      padding-left: 0px;
+    & > ul.candidates {
+      padding-left: 20px;
       margin-bottom: 0px;
 
       li {
-        list-style: none;
         &:empty {
           display: none;
         }
@@ -1566,6 +1565,10 @@ dl.attributes {
 
         &.another {
           color: $statusAnotherPosition;
+        }
+
+        span {
+          font-weight: 200;
         }
       }
     }
