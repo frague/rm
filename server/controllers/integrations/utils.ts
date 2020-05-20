@@ -22,7 +22,7 @@ export const login = (url: string, j_username: string, j_password: string) => {
 const ssoLogin = (): Promise<any> => {
   let payload = {
     userName: env.INGRID_LOGIN,
-    encodedPassword: env.INGRID_PASSWORD,
+    encodedPassword: env.INGRID_PASSWORD_BASE64,
     // encodedPassword: Buffer.from(env.INGRID_PASSWORD).toString('base64')
   };
   return new Promise((resolve, reject) =>
