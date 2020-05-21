@@ -1535,7 +1535,7 @@ dl.attributes {
     clear: left;
   }
   dd {
-    padding-left: 120px;
+    padding-left: 115px;
 
     &:empty:after,
     & > div:empty:after {
@@ -1549,11 +1549,19 @@ dl.attributes {
       margin-top: 10px;
     }
 
-    & > ul.candidates {
-      padding-left: 20px;
+    & > ul{
+      &.candidates {
+        padding-left: 20px;
+
+        li {
+          list-style: disc;
+        }
+      }
+      padding-left: 0px;
       margin-bottom: 0px;
 
       li {
+        list-style: none;
         &:empty {
           display: none;
         }
